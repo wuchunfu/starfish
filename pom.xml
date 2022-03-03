@@ -11,9 +11,9 @@
     <modules>
         <module>starfish-message</module>
         <module>starfish-collector</module>
-        <module>starfish-gateway</module>
         <module>starfish-parser</module>
         <module>starfish-scheduler</module>
+        <module>starfish-api</module>
     </modules>
 
     <properties>
@@ -48,7 +48,16 @@
     <dependencyManagement>
         <dependencies>
             <!-- starfish -->
-
+            <dependency>
+                <groupId>org.metahut.starfish</groupId>
+                <artifactId>starfish-message-api</artifactId>
+                <version>${project.version}</version>
+            </dependency>
+            <dependency>
+                <groupId>org.metahut.starfish</groupId>
+                <artifactId>starfish-scheduler-api</artifactId>
+                <version>${project.version}</version>
+            </dependency>
 
             <!-- springboot -->
             <dependency>
