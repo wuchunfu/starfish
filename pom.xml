@@ -14,6 +14,7 @@
         <module>starfish-parser</module>
         <module>starfish-scheduler</module>
         <module>starfish-api</module>
+        <module>starfish-storage</module>
     </modules>
 
     <properties>
