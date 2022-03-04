@@ -5,6 +5,8 @@ import org.springframework.core.io.ClassPathResource;
 
 import java.util.Properties;
 
+import static org.metahut.starfish.collector.common.Constants.COLLECTOR_CONFIG_FILE;
+
 public class YamlFactory {
 
     private YamlFactory() {
@@ -19,7 +21,7 @@ public class YamlFactory {
         private Properties singleton;
 
         private Singleton() {
-            singleton = loadYamlToProperties("");
+            singleton = loadYamlToProperties(COLLECTOR_CONFIG_FILE);
         }
 
         public Properties getInstance() {
@@ -34,6 +36,7 @@ public class YamlFactory {
     private static Properties loadYamlToProperties(String application) {
         YamlPropertiesFactoryBean yaml = new YamlPropertiesFactoryBean();
         yaml.setResources(new ClassPathResource(application));
+        yaml.setSupportedTypes();
         return yaml.getObject();
     }
 

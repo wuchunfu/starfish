@@ -15,31 +15,6 @@
 # limitations under the License.
 #
 
-server:
-  port: 8801
-  servlet:
-    session:
-      timeout: 120m
-    context-path: /
-  compression:
-    enabled: true
-    mime-types: text/html,text/xml,text/plain,text/css,text/javascript,application/javascript,application/json,application/xml
-  jetty:
-    max-http-form-post-size: 5000000
-
-spring:
-  application:
-    name: starfish-api
-  jackson:
-    time-zone: GMT+8
-  servlet:
-    multipart:
-      max-file-size: 1024MB
-      max-request-size: 1024MB
-  messages:
-    basename: i18n/messages
-    encoding: UTF-8
-
 starfish:
   message:
     type: none
@@ -55,5 +30,3 @@ starfish:
           topic-name: my-topic
           subscription-name: my-subscription
           subscription-type: Key_Shared
-
-
