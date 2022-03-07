@@ -1,4 +1,4 @@
-package org.metahut.starfish.parser.antlr4.json5;
+package org.metahut.starfish.parser.antlr4.json;
 
 import org.antlr.v4.runtime.CharStream;
 import org.antlr.v4.runtime.CharStreams;
@@ -9,19 +9,16 @@ import org.antlr.v4.runtime.CommonTokenStream;
  * Create at 2022/3/3
  * @description
  */
-public class OctopusJson5Analyser {
+public class OctopusJsonAnalyser {
 
     public void visitor(String json) {
         CharStream input = CharStreams.fromString(json);
-        Json5Lexer lexer = new Json5Lexer(input);
+        JsonLexer lexer = new JsonLexer(input);
         CommonTokenStream tokens = new CommonTokenStream(lexer);
-        Json5Parser parser = new Json5Parser(tokens);
-        Json5Parser.Json5Context tree = parser.json5();
-        OctopusJson5Visitor tv = new OctopusJson5Visitor();
+        JsonParser parser = new JsonParser(tokens);
+        JsonParser.JsonContext tree = parser.json();
+        OctopusJsonVisitor tv = new OctopusJsonVisitor();
         Object object = tv.visit(tree);
         System.out.println(object);
     }
-
-
-
 }
