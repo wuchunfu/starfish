@@ -7,7 +7,7 @@ import java.util.stream.Collectors;
 /**
  *
  */
-public final class MetaStorage {
+public final class FinalStorage {
 
     private final Map<String, MetaMap> envMetaTreeMap = new ConcurrentHashMap<>();
 

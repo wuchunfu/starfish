@@ -1,6 +1,6 @@
 package org.metahut.starfish.parser.function;
 
-import org.metahut.starfish.parser.domain.model.AbstractStructModel;
+import org.metahut.starfish.parser.domain.struct.AbstractStructModel;
 
 import java.util.List;
 import java.util.Map;

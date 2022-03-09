@@ -1,4 +1,4 @@
-package org.metahut.starfish.parser.domain.model;
+package org.metahut.starfish.parser.domain.struct;
 
 import java.util.List;
 

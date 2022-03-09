@@ -1,7 +1,5 @@
 package org.metahut.starfish.parser.domain.struct;
 
-import org.metahut.starfish.parser.domain.model.AbstractStructModel;
-
 import java.util.HashSet;
 import java.util.Set;
 
