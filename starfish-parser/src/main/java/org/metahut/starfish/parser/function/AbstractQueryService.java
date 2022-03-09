@@ -38,7 +38,6 @@ public interface AbstractQueryService<T> {
         return new FakeFuture<>(query(condition.get()));
     }
 
-
     /**
      * TODO ArrayList replace
      * TODO async

@@ -12,7 +12,7 @@ import java.util.List;
  * Create at 2022/3/3
  * @description
  */
-public class OctopusJsonVisitor extends JsonBaseVisitor{
+public class OctopusJsonVisitor extends JsonBaseVisitor {
 
     @Override
     public Object visitJson(JsonParser.JsonContext ctx) {
@@ -39,8 +39,8 @@ public class OctopusJsonVisitor extends JsonBaseVisitor{
 
     @Override
     public Object visitPair(JsonParser.PairContext ctx) {
-        String text = ctx.STRING().getText();;
-        Object key = text.substring(1,text.length()-1);
+        String text = ctx.STRING().getText();
+        Object key = text.substring(1,text.length() - 1);
         Object value = visitValue(ctx.value());
         System.out.println("key:" + key + " value:" +value);
         return key;

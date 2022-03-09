@@ -1,4 +1,3 @@
-// Generated from /Users/xuyang/JavaProject/octopus/octopus-meta/octopus-meta-parser/src/main/java/org/metahut/octopus/meta/parser/antlr4/json5/Json5.g4 by ANTLR 4.9.1
 package org.metahut.starfish.parser.antlr4.json5;
 
 import org.antlr.v4.runtime.ParserRuleContext;

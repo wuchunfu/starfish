@@ -1,4 +1,3 @@
-// Generated from /Users/xuyang/JavaProject/octopus/octopus-meta/octopus-meta-parser/src/main/java/org/metahut/octopus/meta/parser/antlr4/json5/Json5.g4 by ANTLR 4.9.1
 package org.metahut.starfish.parser.antlr4.json5;
 
 import org.antlr.v4.runtime.*;
@@ -16,8 +15,8 @@ public class Json5Lexer extends Lexer {
 	protected static final PredictionContextCache _sharedContextCache =
 		new PredictionContextCache();
 	public static final int
-		T__0=1, T__1=2, T__2=3, T__3=4, T__4=5, T__5=6, SINGLE_LINE_COMMENT=7, 
-		MULTI_LINE_COMMENT=8, LITERAL=9, STRING=10, NUMBER=11, NUMERIC_LITERAL=12, 
+		T__0=1, T__1=2, T__2=3, T__3=4, T__4=5, T__5=6, SINGLE_LINE_COMMENT=7,
+		MULTI_LINE_COMMENT=8, LITERAL=9, STRING=10, NUMBER=11, NUMERIC_LITERAL=12,
 		SYMBOL=13, IDENTIFIER=14, WS=15;
 	public static String[] channelNames = {
 		"DEFAULT_TOKEN_CHANNEL", "HIDDEN"
@@ -29,10 +28,10 @@ public class Json5Lexer extends Lexer {
 
 	private static String[] makeRuleNames() {
 		return new String[] {
-			"T__0", "T__1", "T__2", "T__3", "T__4", "T__5", "SINGLE_LINE_COMMENT", 
-			"MULTI_LINE_COMMENT", "LITERAL", "STRING", "DOUBLE_QUOTE_CHAR", "SINGLE_QUOTE_CHAR", 
-			"ESCAPE_SEQUENCE", "NUMBER", "NUMERIC_LITERAL", "SYMBOL", "HEX", "INT", 
-			"EXP", "IDENTIFIER", "IDENTIFIER_START", "IDENTIFIER_PART", "UNICODE_SEQUENCE", 
+			"T__0", "T__1", "T__2", "T__3", "T__4", "T__5", "SINGLE_LINE_COMMENT",
+			"MULTI_LINE_COMMENT", "LITERAL", "STRING", "DOUBLE_QUOTE_CHAR", "SINGLE_QUOTE_CHAR",
+			"ESCAPE_SEQUENCE", "NUMBER", "NUMERIC_LITERAL", "SYMBOL", "HEX", "INT",
+			"EXP", "IDENTIFIER", "IDENTIFIER_START", "IDENTIFIER_PART", "UNICODE_SEQUENCE",
 			"NEWLINE", "WS"
 		};
 	}
@@ -46,8 +45,8 @@ public class Json5Lexer extends Lexer {
 	private static final String[] _LITERAL_NAMES = makeLiteralNames();
 	private static String[] makeSymbolicNames() {
 		return new String[] {
-			null, null, null, null, null, null, null, "SINGLE_LINE_COMMENT", "MULTI_LINE_COMMENT", 
-			"LITERAL", "STRING", "NUMBER", "NUMERIC_LITERAL", "SYMBOL", "IDENTIFIER", 
+			null, null, null, null, null, null, null, "SINGLE_LINE_COMMENT", "MULTI_LINE_COMMENT",
+			"LITERAL", "STRING", "NUMBER", "NUMERIC_LITERAL", "SYMBOL", "IDENTIFIER",
 			"WS"
 		};
 	}

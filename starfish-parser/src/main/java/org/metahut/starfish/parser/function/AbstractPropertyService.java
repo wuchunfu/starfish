@@ -17,7 +17,6 @@ public abstract class AbstractPropertyService<K extends Comparable,E extends Com
      */
     abstract Map<K, Map<String,Object>> propertyMap(E env);
 
-
     // update
 
     /**
@@ -48,6 +47,5 @@ public abstract class AbstractPropertyService<K extends Comparable,E extends Com
      * @param property
      */
     abstract void delete(K id,String property);
-
 
 }

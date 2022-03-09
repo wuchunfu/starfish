@@ -1,4 +1,3 @@
-// Generated from /Users/xuyang/JavaProject/starfish/starfish-parser/src/main/java/org/metahut/starfish/parser/antlr4/json/Json.g4 by ANTLR 4.9.1
 package org.metahut.starfish.parser.antlr4.json;
 
 import org.antlr.v4.runtime.ParserRuleContext;
