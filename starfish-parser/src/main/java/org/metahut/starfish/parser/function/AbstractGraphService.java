@@ -1,15 +1,21 @@
 package org.metahut.starfish.parser.function;
 
+import org.metahut.starfish.parser.domain.instance.SfNode;
+
 import java.util.Collection;
+import java.util.Map;
+import java.util.Set;
+import java.util.concurrent.Future;
+import java.util.function.Supplier;
 
 /**
  *
  */
 public abstract class AbstractGraphService<K extends Comparable,E extends Comparable,T> implements AbstractQueryService<T> {
 
-    private final AbstractNodeService<K,E,T> nodeService;
+    final AbstractNodeService<K,E,T> nodeService;
 
-    private final AbstractRelationService<K,E,T> relationService;
+    final AbstractRelationService<K,E,T> relationService;
 
     /**
      * TODO check not null
@@ -24,5 +30,18 @@ public abstract class AbstractGraphService<K extends Comparable,E extends Compar
     @Override
     public Collection<T> query(AbstractQueryCondition condition) {
         return merge(nodeService.query(condition),relationService.query(condition));
+    }
+
+    @Override
+    public Future<Collection<T>> query(Supplier<AbstractQueryCondition> condition) {
+        return new FakeFuture<>(merge(nodeService.query(condition),relationService.query(condition)));
+    }
+
+    public SfNode<K> query(E env) {
+        Supplier<E> string = () -> env;
+        Set<K> ks = nodeService.classService.instanceMap(env);
+        Map<K, Map<String, Object>> kMapMap = nodeService.propertyService.propertyMap(env);
+
+        return null;
     }
 }

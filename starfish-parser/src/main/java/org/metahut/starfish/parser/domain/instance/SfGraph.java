@@ -9,7 +9,6 @@ public class SfGraph<K extends Comparable> {
 
     private Map<String,SfNode<K>> owner;
 
-    private
     //find Object (perfect ? )or do cache
     //visit method
     //单纯序列化用 ？

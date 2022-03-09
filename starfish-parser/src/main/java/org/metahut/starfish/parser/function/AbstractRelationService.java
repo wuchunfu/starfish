@@ -16,7 +16,6 @@ public abstract class AbstractRelationService<K extends Comparable,E extends Com
 
     abstract void link(E env,K pId,K cId);
     //itetator
-
     abstract K crack(E env,K pId,String attribute);
 
     abstract K crack(E env,K pId,K cId);

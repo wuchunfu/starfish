@@ -1,4 +1,10 @@
 /**
+ *
+ * graphService -> {@link org.metahut.starfish.parser.function.AbstractGraphService#query(java.util.function.Supplier)}
+ *                              |
+ *                 {@link org.metahut.starfish.parser.function.AbstractGraphService#query(java.lang.Comparable)}
+ *
+ *
  * 流程 function
  *  find Object (perfect ? )or do cache
  *  visit method

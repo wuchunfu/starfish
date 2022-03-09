@@ -5,7 +5,9 @@ import java.util.concurrent.ConcurrentHashMap;
 import java.util.stream.Collectors;
 
 /**
- *
+ * 1. 组装
+ * 2. 序列化
+ * 3.
  */
 public final class FinalStorage {
 
