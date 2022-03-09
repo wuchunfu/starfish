@@ -9,10 +9,12 @@
     </parent>
     <modelVersion>4.0.0</modelVersion>
 
-    <artifactId>starfish-collector</artifactId>
+    <artifactId>starfish-store</artifactId>
     <packaging>pom</packaging>
     <modules>
-        <module>starfish-collector-common</module>
+        <module>starfish-store-api</module>
+        <module>starfish-store-rdbm</module>
+        <module>starfish-store-graphdb</module>
     </modules>
 
     <properties>
