@@ -5,7 +5,7 @@ import java.util.Map;
 /**
  *
  */
-public abstract class AbstractPropertyService<K extends Comparable,E extends Comparable,T> implements AbstractQueryService<T> {
+public abstract class AbstractPropertyService<K extends Comparable,E extends Comparable,T> extends AbstractQueryService<T> {
 
     /**
      * get all instance property by env

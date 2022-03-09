@@ -9,7 +9,7 @@ import java.util.function.Supplier;
 /**
  *
  */
-public abstract class AbstractNodeService<K extends Comparable,E extends Comparable,T> implements AbstractQueryService<T> {
+public abstract class AbstractNodeService<K extends Comparable,E extends Comparable,T> extends AbstractQueryService<T> {
 
     final AbstractInstanceService<K,E,T> classService;
 

@@ -7,7 +7,7 @@ import java.util.function.Supplier;
 /**
  *  Graph [Node {Class:{properties}}] - line - Graph
  */
-public abstract class AbstractInstanceService<K extends Comparable,E extends Comparable,T> implements AbstractQueryService<T> {
+public abstract class AbstractInstanceService<K extends Comparable,E extends Comparable,T> extends AbstractQueryService<T> {
 
     /**
      * read all instance key info from env

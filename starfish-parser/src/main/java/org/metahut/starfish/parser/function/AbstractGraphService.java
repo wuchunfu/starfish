@@ -11,7 +11,7 @@ import java.util.function.Supplier;
 /**
  *
  */
-public abstract class AbstractGraphService<K extends Comparable,E extends Comparable,T> implements AbstractQueryService<T> {
+public abstract class AbstractGraphService<K extends Comparable,E extends Comparable,T> extends AbstractQueryService<T> {
 
     final AbstractNodeService<K,E,T> nodeService;
 
