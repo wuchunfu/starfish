@@ -11,6 +11,11 @@ public abstract class AbstractGraphService<K extends Comparable,E extends Compar
 
     private final AbstractRelationService<K,E,T> relationService;
 
+    /**
+     * TODO check not null
+     * @param nodeService
+     * @param relationService
+     */
     public AbstractGraphService(AbstractNodeService<K,E,T> nodeService, AbstractRelationService<K,E,T> relationService) {
         this.nodeService = nodeService;
         this.relationService = relationService;

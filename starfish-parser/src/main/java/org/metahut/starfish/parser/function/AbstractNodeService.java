@@ -11,6 +11,11 @@ public abstract class AbstractNodeService<K extends Comparable,E extends Compara
 
     private final AbstractPropertyService<K,E,T> propertyService;
 
+    /**
+     * TODO check not null
+     * @param classService
+     * @param propertyService
+     */
     public AbstractNodeService(AbstractInstanceService<K,E,T> classService, AbstractPropertyService<K,E,T> propertyService) {
         this.classService = classService;
         this.propertyService = propertyService;
