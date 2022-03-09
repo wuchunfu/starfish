@@ -1,11 +1,13 @@
 package org.metahut.starfish.parser.domain.instance;
 
+import java.util.Map;
+
 /**
  *
  */
-public class SfGraph {
+public class SfGraph<K extends Comparable> {
 
-    private Map<String,Node> owner;
+    private Map<String,SfNode<K>> owner;
 
     private
     //find Object (perfect ? )or do cache

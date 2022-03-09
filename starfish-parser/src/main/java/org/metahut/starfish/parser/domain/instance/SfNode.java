@@ -1,6 +1,5 @@
 package org.metahut.starfish.parser.domain.instance;
 
-import java.io.Serializable;
 import java.util.Map;
 
 /**

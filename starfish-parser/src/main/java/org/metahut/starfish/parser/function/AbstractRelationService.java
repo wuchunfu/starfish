@@ -5,7 +5,7 @@ import java.util.List;
 /**
  *
  */
-public abstract class AbstractRelationService<K extends Comparable,E extends Comparable>{
+public abstract class AbstractRelationService<K extends Comparable,E extends Comparable,T> implements AbstractQueryService<T> {
     /**
      *  pId cId properties
      * @param env
