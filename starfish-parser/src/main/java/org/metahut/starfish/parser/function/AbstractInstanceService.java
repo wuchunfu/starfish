@@ -5,13 +5,13 @@ import java.util.Set;
 /**
  *  Graph [Node {Class:{properties}}] - line - Graph
  */
-public abstract class AbstractInstanceService<K extends Comparable> {
+public abstract class AbstractInstanceService<K extends Comparable,E extends Comparable> {
 
     /**
      * read classInfo
      * @param env
      * @return
      */
-    abstract Set<K> instanceMap(String env);
+    abstract Set<K> instanceMap(E env);
 
 }

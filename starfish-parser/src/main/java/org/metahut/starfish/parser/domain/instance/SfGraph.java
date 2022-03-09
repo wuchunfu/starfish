@@ -3,11 +3,11 @@ package org.metahut.starfish.parser.domain.instance;
 /**
  *
  */
-public class Graph {
+public class SfGraph {
 
-//    private Map<String,Node> owner;
-//
-//    private
+    private Map<String,Node> owner;
+
+    private
     //find Object (perfect ? )or do cache
     //visit method
     //单纯序列化用 ？

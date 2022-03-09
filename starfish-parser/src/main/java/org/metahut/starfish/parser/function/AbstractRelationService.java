@@ -5,19 +5,19 @@ import java.util.List;
 /**
  *
  */
-public abstract class AbstractRelationService<K extends Comparable>{
+public abstract class AbstractRelationService<K extends Comparable,E extends Comparable>{
     /**
      *  pId cId properties
      * @param env
      * @return
      */
-    abstract List<?> lines(String env);
+    abstract List<?> lines(E env);
 
 
-    abstract void link(String pId,String cId);
+    abstract void link(E env,K pId,K cId);
     //itetator
 
-    abstract K crack(K pId,String attribute);
+    abstract K crack(E env,K pId,String attribute);
 
-    abstract K crack(K pId,K cId);
+    abstract K crack(E env,K pId,K cId);
 }

@@ -6,13 +6,13 @@ import java.util.Set;
 /**
  * 应该是抽象的
  */
-public abstract class AbstractNodeService<K extends Comparable> {
+public abstract class AbstractNodeService<K extends Comparable,E extends Comparable> {
 
-    private final AbstractInstanceService<K> classService;
+    private final AbstractInstanceService<K,E> classService;
 
-    private final AbstractPropertyService<K> propertyService;
+    private final AbstractPropertyService<K,E> propertyService;
 
-    public AbstractNodeService(AbstractInstanceService<K> classService, AbstractPropertyService<K> propertyService) {
+    public AbstractNodeService(AbstractInstanceService<K,E> classService, AbstractPropertyService<K,E> propertyService) {
         this.classService = classService;
         this.propertyService = propertyService;
     }

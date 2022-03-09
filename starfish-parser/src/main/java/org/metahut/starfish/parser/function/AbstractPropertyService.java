@@ -6,13 +6,13 @@ import java.util.Map;
 /**
  *
  */
-public abstract class AbstractPropertyService<K extends Comparable> {
+public abstract class AbstractPropertyService<K extends Comparable,E extends Comparable> {
 
     /**
      * get all Properies by key
      * @return
      */
-    abstract Map<K, List<?>> propertyMap();
+    abstract Map<K, List<?>> propertyMap(E env);
 
 
     // update
