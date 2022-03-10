@@ -50,6 +50,7 @@ public abstract class AbstractQueryService<T> {
 
     /**
      * TODO error data handle
+     * TODO future chain
      * @param collections
      * @return
      */
