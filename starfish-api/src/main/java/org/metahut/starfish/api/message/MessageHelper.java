@@ -2,12 +2,14 @@ package org.metahut.starfish.api.message;
 
 import org.metahut.starfish.message.api.MessageConsumer;
 import org.metahut.starfish.message.api.MessageManager;
+
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.scheduling.annotation.Async;
 import org.springframework.stereotype.Component;
 
 import javax.annotation.PostConstruct;
+
 import java.io.IOException;
 
 @Component

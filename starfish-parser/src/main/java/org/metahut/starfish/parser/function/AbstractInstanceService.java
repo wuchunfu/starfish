@@ -20,4 +20,9 @@ public abstract class AbstractInstanceService<K extends Comparable,E extends Com
         return new FakeFuture<>(instanceMap(env.get()));
     }
 
+    abstract void add(E env,K id);
+
+    abstract void delete(E env,K id);
+
+    abstract void update(E env,K id);
 }

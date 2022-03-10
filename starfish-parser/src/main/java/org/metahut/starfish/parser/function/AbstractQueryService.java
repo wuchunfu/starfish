@@ -18,7 +18,7 @@ import java.util.stream.Stream;
  */
 public abstract class AbstractQueryService<T> {
 
-    Logger LOG = LoggerFactory.getLogger(AbstractQueryService.class);
+    private static final Logger LOG = LoggerFactory.getLogger(AbstractQueryService.class);
 
     /**
      * query by condition

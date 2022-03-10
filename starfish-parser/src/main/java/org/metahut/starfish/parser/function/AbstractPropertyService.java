@@ -24,9 +24,9 @@ public abstract class AbstractPropertyService<K extends Comparable,E extends Com
      * @param id
      * @param property
      * @param obj
-     * @param <T>
+     * @param <M>
      */
-    abstract <T> void add(K id,String property,T obj);
+    abstract <M> void add(E env,K id,String property,M obj);
 
     //add
 
@@ -35,9 +35,9 @@ public abstract class AbstractPropertyService<K extends Comparable,E extends Com
      * @param id
      * @param property
      * @param obj
-     * @param <T>
+     * @param <M>
      */
-    abstract <T> void update(K id,String property,T obj);
+    abstract <M> void update(E env,K id,String property,M obj);
 
     //delete
 
@@ -46,6 +46,12 @@ public abstract class AbstractPropertyService<K extends Comparable,E extends Com
      * @param id
      * @param property
      */
-    abstract void delete(K id,String property);
+    abstract void delete(E env,K id,String property);
+
+    /**
+     * delete all property
+     * @param id
+     */
+    abstract void delete(E env,K id);
 
 }

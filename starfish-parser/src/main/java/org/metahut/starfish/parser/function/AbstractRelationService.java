@@ -1,5 +1,8 @@
 package org.metahut.starfish.parser.function;
 
+import org.metahut.starfish.parser.domain.instance.SfLine;
+
+import java.util.Collection;
 import java.util.List;
 
 /**
@@ -7,16 +10,53 @@ import java.util.List;
  */
 public abstract class AbstractRelationService<K extends Comparable,E extends Comparable,T> extends AbstractQueryService<T> {
     /**
-     *  pId cId properties
+     * pId cId properties
+     * TODO line ？
      * @param env
      * @return
      */
-    abstract List<?> lines(E env);
+    abstract List<SfLine<K>> lines(E env);
 
-    abstract void link(E env,K pId,K cId);
+    /**
+     *
+     * @param env
+     * @param headId
+     * @param tailId
+     * @param property
+     */
+    abstract void link(E env,K headId,K tailId,String property);
 
-    //itetator
-    abstract K crack(E env,K pId,String attribute);
+    /**
+     *
+     * @param env
+     * @param headId
+     * @param tailId
+     * @param property
+     */
+    abstract void crack(E env,K headId,K tailId,String property);
 
-    abstract K crack(E env,K pId,K cId);
+    /**
+     *
+     * @param env
+     * @param instanceId
+     */
+    abstract void delete(E env,K instanceId);
+
+    /**
+     *
+     * @param env
+     * @param instanceIds
+     */
+    abstract void delete(E env, Collection<K> instanceIds);
+
+    /**
+     *
+     * @param env
+     * @param oldHeadId
+     * @param newHeadId
+     * @param tailId
+     * @param property
+     */
+    abstract void move(E env,K oldHeadId,K newHeadId,K tailId,String property);
+
 }
