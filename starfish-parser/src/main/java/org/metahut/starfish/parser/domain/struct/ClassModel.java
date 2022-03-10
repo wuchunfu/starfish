@@ -1,11 +1,9 @@
-package org.metahut.starfish.parser.domain.model;
+package org.metahut.starfish.parser.domain.struct;
 
 import java.util.List;
 
 /**
- * @author Moouna
- * Create at 2022/2/18
- * @description
+ *
  */
 public class ClassModel extends AbstractStructModel {
 

@@ -1,9 +1,9 @@
 package org.metahut.starfish.parser.function;
 
 import org.metahut.starfish.parser.domain.SymbolConstants;
-import org.metahut.starfish.parser.domain.model.AbstractStructModel;
-import org.metahut.starfish.parser.domain.model.AttributeModel;
-import org.metahut.starfish.parser.domain.model.ClassModel;
+import org.metahut.starfish.parser.domain.struct.AbstractStructModel;
+import org.metahut.starfish.parser.domain.struct.AttributeModel;
+import org.metahut.starfish.parser.domain.struct.ClassModel;
 import org.metahut.starfish.parser.domain.struct.StructWorker;
 import org.metahut.starfish.parser.exception.AbstractMetaParserException;
 import org.metahut.starfish.parser.exception.DataValidExceptionMeta;
@@ -20,7 +20,7 @@ public class ModelParserHandler {
 
     private EnvironmentUnit environmentUnit;
 
-    private MetaStorage metaStorage;
+    private FinalStorage metaStorage;
 
     public void valid(List<AbstractStructModel> structModels) throws AbstractMetaParserException {
         if (structModels == null || structModels.size() == 0) {

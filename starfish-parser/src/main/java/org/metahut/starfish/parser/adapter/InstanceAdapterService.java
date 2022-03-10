@@ -1,6 +1,6 @@
 package org.metahut.starfish.parser.adapter;
 
-import org.metahut.starfish.parser.domain.model.AbstractStructModel;
+import org.metahut.starfish.parser.domain.struct.AbstractStructModel;
 import org.metahut.starfish.parser.exception.AbstractMetaParserException;
 import org.metahut.starfish.parser.function.MetaMap;
 
@@ -67,12 +67,12 @@ public interface InstanceAdapterService {
 
     void delete(Long instanceId,String attribute,Long... deleteIds) throws AbstractMetaParserException;
 
-    void split(Long rootId,String attribute,Long... Ids);
+    void split(Long rootId,String attribute,Long... ids);
+
     /**
      * 伪删除呢 数据状态修改为不可见
      * @param instanceId
      */
     void delete(Long instanceId,boolean all);
-
 
 }

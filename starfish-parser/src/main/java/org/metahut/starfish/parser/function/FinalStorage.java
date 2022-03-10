@@ -1,13 +1,20 @@
 package org.metahut.starfish.parser.function;
 
-import java.util.*;
+import java.util.Arrays;
+import java.util.Collection;
+import java.util.LinkedHashSet;
+import java.util.List;
+import java.util.Map;
+import java.util.Set;
 import java.util.concurrent.ConcurrentHashMap;
 import java.util.stream.Collectors;
 
 /**
- *
+ * 1. 组装
+ * 2. 序列化
+ * 3.
  */
-public final class MetaStorage {
+public final class FinalStorage {
 
     private final Map<String, MetaMap> envMetaTreeMap = new ConcurrentHashMap<>();
 
