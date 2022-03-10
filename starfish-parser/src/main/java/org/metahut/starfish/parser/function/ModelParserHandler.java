@@ -6,8 +6,8 @@ import org.metahut.starfish.parser.domain.struct.AttributeModel;
 import org.metahut.starfish.parser.domain.struct.ClassModel;
 import org.metahut.starfish.parser.domain.struct.StructWorker;
 import org.metahut.starfish.parser.exception.AbstractMetaParserException;
-import org.metahut.starfish.parser.exception.DataValidExceptionMeta;
-import org.metahut.starfish.parser.exception.ModelValidExceptionMeta;
+import org.metahut.starfish.parser.exception.DataValidException;
+import org.metahut.starfish.parser.exception.ModelValidException;
 
 import java.util.HashSet;
 import java.util.List;
@@ -24,27 +24,27 @@ public class ModelParserHandler {
 
     public void valid(List<AbstractStructModel> structModels) throws AbstractMetaParserException {
         if (structModels == null || structModels.size() == 0) {
-            throw new DataValidExceptionMeta("Non data in ,please check.");
+            throw new DataValidException("Non data in ,please check.");
         }
         Set<String> packages = new HashSet<>();
         for (AbstractStructModel structModel : structModels) {
             if (structModel.getPackagePath() == null || !structModel.getPackagePath().matches(SymbolConstants.PACKAGE_REGEX)) {
-                throw new ModelValidExceptionMeta();
+                throw new ModelValidException();
             }
             if (structModel.getName() == null || !structModel.getName().matches(SymbolConstants.CLASS_NAME_REGEX)) {
-                throw new ModelValidExceptionMeta("ClassName not biaozhun");
+                throw new ModelValidException("ClassName not biaozhun");
             }
             if (!packages.add(structModel.getPackagePath())) {
-                throw new ModelValidExceptionMeta("Repeat class");
+                throw new ModelValidException("Repeat class");
             }
             if (structModel instanceof ClassModel) {
                 ClassModel classModel = (ClassModel) structModel;
                 if (classModel.getAttributeModels() == null || classModel.getAttributeModels().size() == 0) {
-                    throw new ModelValidExceptionMeta();
+                    throw new ModelValidException();
                 }
                 for (AttributeModel attributeModel : classModel.getAttributeModels()) {
                     if (attributeModel.getClassName() == null || !attributeModel.getClassName().matches(SymbolConstants.FULL_CLASS_REGEX)) {
-                        throw new ModelValidExceptionMeta();
+                        throw new ModelValidException();
                     }
                 }
             }
