@@ -1,9 +1,7 @@
 package org.metahut.starfish.parser.antlr4.json;
 
 /**
- * @author XuYang
- * Create at 2022/3/3
- * @description
+ *
  */
 public class OctopusJsonAnalyser {
 

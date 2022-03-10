@@ -56,5 +56,4 @@ public abstract class AbstractInstanceService<K extends Comparable,E extends Com
      * @throws StarFishMetaDataOperatingException
      */
     abstract void delete(E env, Collection<K> instanceIds) throws StarFishMetaDataOperatingException;
-
 }

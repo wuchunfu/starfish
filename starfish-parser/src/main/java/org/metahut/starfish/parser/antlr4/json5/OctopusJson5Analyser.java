@@ -16,5 +16,4 @@ public class OctopusJson5Analyser {
         //OctopusJson5Visitor tv = new OctopusJson5Visitor();
         //Object object = tv.visit(tree);
     }
-
 }

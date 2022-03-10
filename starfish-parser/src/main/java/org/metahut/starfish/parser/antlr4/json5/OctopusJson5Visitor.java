@@ -1,8 +1,5 @@
 package org.metahut.starfish.parser.antlr4.json5;
 
-/**
- * extends Json5BaseVisitor
- */
 public class OctopusJson5Visitor  {
 
     private static final String VARIABLE_ID = "id";
