@@ -1,6 +1,8 @@
 package org.metahut.starfish.api.message;
 
+import org.metahut.starfish.message.api.ConsumerResult;
 import org.metahut.starfish.message.api.MessageConsumer;
+import org.metahut.starfish.message.api.MessageException;
 import org.metahut.starfish.message.api.MessageManager;
 
 import org.slf4j.Logger;
@@ -11,6 +13,8 @@ import org.springframework.stereotype.Component;
 import javax.annotation.PostConstruct;
 
 import java.io.IOException;
+import java.util.List;
+import java.util.Objects;
 
 @Component
 public class MessageHelper {
@@ -35,13 +39,18 @@ public class MessageHelper {
     @Async
     public void autoMetaEventConsumer() {
         MessageConsumer consumer = messageManager.getConsumer("");
+        // TODO
+        if (Objects.isNull(consumer)) {
+            return;
+        }
+
         while (true) {
             try {
-                String receive = consumer.receive();
+                List<ConsumerResult> result = consumer.batchReceive();
 
                 // TODO Store to metadata
 
-            } catch (Exception e) {
+            } catch (MessageException e) {
                 // TODO How to consume or handle exceptions
                 logger.error(e.getMessage(), e);
             }

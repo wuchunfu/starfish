@@ -17,7 +17,7 @@
 
 starfish:
   message:
-    type: none
+    type: NONE
     pulsar:
       service-url: pulsar://localhost:6650
       producers:
@@ -30,3 +30,6 @@ starfish:
           topic-name: my-topic
           subscription-name: my-subscription
           subscription-type: Key_Shared
+  rest:
+    service-url: http://localhost:8801/starfish/api/v1/createMeta
+    token: 123-1

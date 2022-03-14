@@ -1,13 +1,12 @@
 package org.metahut.starfish.message.pulsar;
 
+import org.metahut.starfish.message.api.*;
+
 import org.apache.pulsar.client.api.PulsarClient;
 import org.apache.pulsar.client.api.PulsarClientException;
-import org.metahut.starfish.message.api.MessageConsumer;
-import org.metahut.starfish.message.api.MessageManager;
-import org.metahut.starfish.message.api.MessageProducer;
-import org.metahut.starfish.message.api.MessageProperties;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.autoconfigure.condition.ConditionalOnProperty;
 import org.springframework.stereotype.Component;
 
@@ -16,23 +15,36 @@ import java.util.Map;
 import java.util.Objects;
 import java.util.concurrent.ConcurrentHashMap;
 
+import static org.metahut.starfish.message.api.Constants.MESSAGE_CONFIG_PREFIX;
+import static org.metahut.starfish.message.api.MessageType.pulsar;
+
 /**
  * pulsar meta message manager
  */
 @Component
-@ConditionalOnProperty(prefix = "starfish.message", name = "type", havingValue = "PULSAR")
+@ConditionalOnProperty(prefix = MESSAGE_CONFIG_PREFIX, name = "type", havingValue = "pulsar")
 public class PulsarMessageManager implements MessageManager {
 
     private static final Logger logger = LoggerFactory.getLogger(PulsarMessageManager.class);
 
-    private final PulsarClient client;
+    private PulsarClient client;
 
-    private final MessageProperties.Pulsar pulsarProperties;
+    private MessageProperties.Pulsar pulsarProperties;
 
     private final Map<String, MessageProducer> messageProducerMap = new ConcurrentHashMap(16);
     private final Map<String, MessageConsumer> messageConsumerMap = new ConcurrentHashMap(16);
 
-    public PulsarMessageManager(MessageProperties messageProperties) {
+    @Autowired
+    public PulsarMessageManager(MessageProperties messageProperties) throws MessageException {
+        init(messageProperties);
+    }
+
+    public PulsarMessageManager() {
+
+    }
+
+    @Override
+    public void init(MessageProperties messageProperties) throws MessageException {
         pulsarProperties = messageProperties.getPulsar();
         try {
             client = PulsarClient.builder()
@@ -42,9 +54,7 @@ public class PulsarMessageManager implements MessageManager {
             this.setConsumers(pulsarProperties.getConsumers());
 
         } catch (PulsarClientException e) {
-            logger.error(e.getMessage(), e);
-            // TODO Exception type???
-            throw new IllegalArgumentException(e);
+            throw new MessageException("Pulsar create client exception", e);
         }
     }
 
@@ -80,6 +90,11 @@ public class PulsarMessageManager implements MessageManager {
             // TODO Exception type???
             throw new IllegalArgumentException(e);
         }
+    }
+
+    @Override
+    public MessageType getType() {
+        return pulsar;
     }
 
     @Override

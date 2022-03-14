@@ -4,9 +4,7 @@ import org.springframework.boot.context.properties.ConfigurationProperties;
 import org.springframework.context.annotation.Configuration;
 
 @Configuration
-@ConfigurationProperties(
-        prefix = "octopus.scheduler"
-)
+@ConfigurationProperties( prefix = "starfish.scheduler")
 public class SchedulerProperties {
 
     private SchedulerType type;

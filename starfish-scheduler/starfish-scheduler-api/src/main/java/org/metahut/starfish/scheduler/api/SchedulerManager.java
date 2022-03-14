@@ -1,5 +1,7 @@
 package org.metahut.starfish.scheduler.api;
 
-public interface SchedulerManager {
+import java.io.Closeable;
+
+public interface SchedulerManager extends Closeable {
     Scheduler getScheduler();
 }

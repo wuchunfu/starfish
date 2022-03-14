@@ -1,5 +1,6 @@
 package org.metahut.starfish.api.dto;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import org.metahut.starfish.api.enums.Status;
 
 import static org.metahut.starfish.api.enums.Status.SUCCESS;
@@ -39,10 +40,12 @@ public class ResultEntity<T> {
         return success(null);
     }
 
+    @JsonIgnore
     public boolean isSuccess() {
         return this.isStatus(SUCCESS);
     }
 
+    @JsonIgnore
     public boolean isFailed() {
         return !this.isSuccess();
     }
