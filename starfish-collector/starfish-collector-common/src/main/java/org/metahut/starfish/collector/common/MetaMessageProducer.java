@@ -17,14 +17,10 @@
 
 package org.metahut.starfish.collector.common;
 
-import org.metahut.starfish.message.api.MessageManager;
-import org.metahut.starfish.message.api.MessageProducer;
-import org.metahut.starfish.message.api.MessageProperties;
-import org.metahut.starfish.message.api.MessageType;
+import org.metahut.starfish.message.api.*;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
-import java.text.MessageFormat;
-import java.util.HashMap;
-import java.util.Map;
 import java.util.Objects;
 import java.util.ServiceLoader;
 
@@ -33,6 +29,8 @@ import static org.metahut.starfish.message.api.Constants.MESSAGE_CONFIG_PREFIX;
 import static org.metahut.starfish.message.api.Constants.MESSAGE_META_EVENT;
 
 public class MetaMessageProducer {
+
+    private final static Logger logger = LoggerFactory.getLogger(MetaMessageProducer.class);
 
     private MetaMessageProducer() {
 
@@ -70,7 +68,11 @@ public class MetaMessageProducer {
                 MessageType type = manager.getType();
                 if (messageProperties.getType() == type) {
                     messageManager = manager;
-                    messageManager.init(messageProperties);
+                    try {
+                        messageManager.init(messageProperties);
+                    } catch (MessageException e) {
+                        logger.error("message init exception, message:{}", e);
+                    }
                     return;
                 }
             });
