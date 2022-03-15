@@ -10,13 +10,14 @@
     <version>1.0-SNAPSHOT</version>
     <modules>
         <module>starfish-message</module>
-        <module>starfish-collector</module>
+        <module>starfish-ingestion</module>
         <module>starfish-parser</module>
         <module>starfish-scheduler</module>
         <module>starfish-api</module>
         <module>starfish-store</module>
         <module>starfish-client</module>
         <module>starfish-ui</module>
+        <module>starfish-server</module>
     </modules>
 
     <properties>
@@ -63,6 +64,11 @@
     <dependencyManagement>
         <dependencies>
             <!-- starfish -->
+            <dependency>
+                <groupId>org.metahut.starfish</groupId>
+                <artifactId>starfish-api</artifactId>
+                <version>${project.version}</version>
+            </dependency>
             <dependency>
                 <groupId>org.metahut.starfish</groupId>
                 <artifactId>starfish-message-api</artifactId>
