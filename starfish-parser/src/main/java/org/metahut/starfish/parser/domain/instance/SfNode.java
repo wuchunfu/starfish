@@ -5,11 +5,11 @@ import java.util.Map;
 /**
  *
  */
-public class SfNode<K extends Comparable> {
+public class SfNode<K,T> {
 
     private K instanceId;
 
-    private Map<String,Object> values;
+    private Map<String,T> values;
 
     public K getInstanceId() {
         return instanceId;
@@ -19,19 +19,19 @@ public class SfNode<K extends Comparable> {
         this.instanceId = instanceId;
     }
 
-    public Map<String, Object> getValues() {
-        return values;
-    }
-
-    public void setValues(Map<String, Object> values) {
-        this.values = values;
-    }
-
     public SfNode() {
     }
 
-    public SfNode(K instanceId, Map<String, Object> values) {
+    public SfNode(K instanceId, Map<String, T> values) {
         this.instanceId = instanceId;
+        this.values = values;
+    }
+
+    public Map<String, T> getValues() {
+        return values;
+    }
+
+    public void setValues(Map<String, T> values) {
         this.values = values;
     }
 }

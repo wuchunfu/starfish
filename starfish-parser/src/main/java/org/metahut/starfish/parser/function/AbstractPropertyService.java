@@ -1,6 +1,7 @@
 package org.metahut.starfish.parser.function;
 
 import org.metahut.starfish.parser.exception.StarFishMetaDataOperatingException;
+import org.metahut.starfish.parser.exception.StarFishMetaDataQueryException;
 
 import java.util.Collection;
 import java.util.Map;
@@ -8,7 +9,7 @@ import java.util.Map;
 /**
  *
  */
-public abstract class AbstractPropertyService<K extends Comparable,E extends Comparable,T> extends AbstractQueryService<T> {
+public abstract class AbstractPropertyService<E,K,T> extends AbstractQueryService<T> {
 
     /**
      * get all instance property by env
@@ -18,16 +19,15 @@ public abstract class AbstractPropertyService<K extends Comparable,E extends Com
      *      value : map (propMap) {k1:v1,K2:v2...}
      *  }
      */
-    abstract <M> Map<K, Map<String,M>> attributesMap(E env);
+    abstract Map<K, Map<String,T>> attributesMap(E env) throws StarFishMetaDataQueryException;
 
     /**
      * get all attributes by env and instanceId
      * @param env
      * @param instanceId
-     * @param <M>
      * @return
      */
-    abstract <M> Map<String,M> attributesMap(E env,K instanceId);
+    abstract Map<String,T> attributesMap(E env,K instanceId) throws StarFishMetaDataQueryException;
 
     // add
     /**
@@ -36,18 +36,16 @@ public abstract class AbstractPropertyService<K extends Comparable,E extends Com
      * @param id
      * @param property
      * @param obj
-     * @param <M>
      */
-    abstract <M> void add(E env,K id,String property,M obj);
+    abstract void add(E env,K id,String property,T obj) throws StarFishMetaDataOperatingException;
 
     /**
      * add attributes to the node
      * @param env
      * @param instanceId
      * @param attributes
-     * @param <M>
      */
-    abstract <M> void add(E env,K instanceId,Map<String,M> attributes);
+    abstract void add(E env,K instanceId,Map<String,T> attributes) throws StarFishMetaDataOperatingException;
 
     // update
     /**
@@ -56,20 +54,18 @@ public abstract class AbstractPropertyService<K extends Comparable,E extends Com
      * @param instanceId
      * @param property
      * @param obj
-     * @param <M>
      * @throws StarFishMetaDataOperatingException
      */
-    abstract <M> void update(E env,K instanceId,String property,M obj) throws StarFishMetaDataOperatingException;
+    abstract void update(E env,K instanceId,String property,T obj) throws StarFishMetaDataOperatingException;
 
     /**
      * clever update some props of one node
      * @param env
      * @param instanceId
      * @param attributes
-     * @param <M>
      * @throws StarFishMetaDataOperatingException
      */
-    abstract <M> void update(E env,K instanceId,Map<String,M> attributes) throws StarFishMetaDataOperatingException;
+    abstract void update(E env,K instanceId,Map<String,T> attributes) throws StarFishMetaDataOperatingException;
 
     // modify
     /**
@@ -77,10 +73,9 @@ public abstract class AbstractPropertyService<K extends Comparable,E extends Com
      * @param env
      * @param instanceId
      * @param attributes
-     * @param <M>
      * @throws StarFishMetaDataOperatingException
      */
-    abstract <M> void modify(E env,K instanceId,Map<String,M> attributes) throws StarFishMetaDataOperatingException;
+    abstract void modify(E env,K instanceId,Map<String,T> attributes) throws StarFishMetaDataOperatingException;
 
     // move
     /**
@@ -103,7 +98,23 @@ public abstract class AbstractPropertyService<K extends Comparable,E extends Com
      */
     abstract void copy(E env,K fromInstanceId,K toInstanceId) throws StarFishMetaDataOperatingException;
 
+    /**
+     *  copy attributes from the env to another env
+     * @param oldEnv
+     * @param newEnv
+     * @param deleteOld
+     * @throws StarFishMetaDataOperatingException
+     */
+    abstract void copy(E oldEnv,E newEnv,boolean deleteOld) throws StarFishMetaDataOperatingException;
+
     // delete
+    /**
+     * delete all property in env
+     * @param env
+     * @throws StarFishMetaDataOperatingException
+     */
+    abstract void delete(E env) throws StarFishMetaDataOperatingException;
+
     /**
      * delete attribute
      * @param env

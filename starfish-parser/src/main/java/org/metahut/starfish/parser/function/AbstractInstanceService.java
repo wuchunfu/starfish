@@ -1,6 +1,7 @@
 package org.metahut.starfish.parser.function;
 
 import org.metahut.starfish.parser.exception.StarFishMetaDataOperatingException;
+import org.metahut.starfish.parser.exception.StarFishMetaDataQueryException;
 
 import java.util.Collection;
 import java.util.Set;
@@ -10,16 +11,16 @@ import java.util.function.Supplier;
 /**
  *  Graph [Node {Class:{properties}}] - line - Graph
  */
-public abstract class AbstractInstanceService<K extends Comparable,E extends Comparable,T> extends AbstractQueryService<T> {
+public abstract class AbstractInstanceService<E,K,T> extends AbstractQueryService<T> {
 
     /**
      * read all instance key info from env
      * @param env
      * @return
      */
-    abstract Set<K> instanceMap(E env);
+    abstract Set<K> instanceMap(E env) throws StarFishMetaDataQueryException;
 
-    public Future<Set<K>> instanceMap(Supplier<E> env) {
+    public Future<Set<K>> instanceMap(Supplier<E> env) throws StarFishMetaDataQueryException {
         return new FakeFuture<>(instanceMap(env.get()));
     }
 
@@ -40,6 +41,22 @@ public abstract class AbstractInstanceService<K extends Comparable,E extends Com
      * @throws StarFishMetaDataOperatingException
      */
     abstract K create(E env) throws StarFishMetaDataOperatingException;
+
+    /**
+     * copy from the env to another env
+     * @param oldEnv
+     * @param newEnv
+     * @param deleteOld
+     * @throws StarFishMetaDataOperatingException
+     */
+    abstract void copy(E oldEnv,E newEnv,boolean deleteOld) throws StarFishMetaDataOperatingException;
+    // delete
+    /**
+     * delete all instance in env
+     * @param env
+     * @throws StarFishMetaDataOperatingException
+     */
+    abstract void delete(E env) throws StarFishMetaDataOperatingException;
 
     /**
      * delete a node by id

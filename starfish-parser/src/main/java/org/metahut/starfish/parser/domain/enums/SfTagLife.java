@@ -5,6 +5,6 @@ package org.metahut.starfish.parser.domain.enums;
  * Create at 2022/2/19
  * @description
  */
-public enum TagLife {
+public enum SfTagLife {
     COMPILE,RUNTIME;
 }

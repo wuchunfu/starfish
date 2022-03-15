@@ -1,13 +1,16 @@
-package org.metahut.starfish.parser.domain.struct;
+package org.metahut.starfish.parser.domain.instance;
 
 import org.metahut.starfish.parser.domain.SymbolConstants;
+import org.metahut.starfish.parser.domain.instance.SfAttribute;
+import org.metahut.starfish.parser.domain.struct.TagLoader;
 
+import java.util.List;
 import java.util.concurrent.ThreadLocalRandom;
 
 /**
  *
  */
-public abstract class AbstractStructModel extends TagLoader {
+public class SfClass extends TagLoader {
     /**
      * Serial Version UID
      */
@@ -49,5 +52,15 @@ public abstract class AbstractStructModel extends TagLoader {
 
     public final String getFullClassName() {
         return packagePath + SymbolConstants.PACKAGE_SPLIT + name;
+    }
+
+
+    /**
+     * attribute model list
+     */
+    private List<SfAttribute> sfAttributes;
+
+    public List<SfAttribute> getAttributeModels() {
+        return sfAttributes;
     }
 }

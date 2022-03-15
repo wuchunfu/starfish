@@ -1,6 +1,6 @@
 package org.metahut.starfish.parser.adapter;
 
-import org.metahut.starfish.parser.domain.struct.AbstractStructModel;
+import org.metahut.starfish.parser.domain.instance.SfClass;
 import org.metahut.starfish.parser.exception.AbstractMetaParserException;
 import org.metahut.starfish.parser.function.MetaMap;
 
@@ -58,10 +58,10 @@ public interface InstanceAdapterService {
     /**
      *
      * @param env
-     * @param abstractStructModel
+     * @param sfClass
      * @return
      */
-    MetaMap metaMap(String env, AbstractStructModel abstractStructModel);
+    MetaMap metaMap(String env, SfClass sfClass);
 
     void move(Long fromInstanceId,Long toInstanceId,String attribute) throws AbstractMetaParserException;
 

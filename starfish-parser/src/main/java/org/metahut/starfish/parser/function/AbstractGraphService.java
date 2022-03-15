@@ -1,8 +1,13 @@
 package org.metahut.starfish.parser.function;
 
+import org.metahut.starfish.parser.domain.instance.SfGraph;
+import org.metahut.starfish.parser.domain.instance.SfLine;
+import org.metahut.starfish.parser.domain.instance.SfNode;
 import org.metahut.starfish.parser.exception.StarFishMetaDataOperatingException;
+import org.metahut.starfish.parser.exception.StarFishMetaDataQueryException;
 
 import java.util.Collection;
+import java.util.List;
 import java.util.Map;
 import java.util.concurrent.Future;
 import java.util.function.Supplier;
@@ -10,11 +15,15 @@ import java.util.function.Supplier;
 /**
  *
  */
-public abstract class AbstractGraphService<K extends Comparable,E extends Comparable,T> extends AbstractQueryService<T> {
+public abstract class AbstractGraphService<E,K,T> extends AbstractQueryService<T> {
 
-    abstract AbstractNodeService<K,E,T> getNodeService();
+    abstract AbstractNodeService<E,K,T> getNodeService();
 
-    abstract AbstractRelationService<K,E,T> getRelationService();
+    abstract AbstractRelationService<E,K,T> getRelationService();
+
+    public SfGraph<K,T> union(Map<K,SfNode<K,T>> nodes, List<SfLine<K>> lines) {
+        return new SfGraph<>(nodes,lines);
+    }
 
     @Override
     public Collection<T> query(AbstractQueryCondition condition) {
@@ -26,16 +35,19 @@ public abstract class AbstractGraphService<K extends Comparable,E extends Compar
         return new FakeFuture<>(merge(getNodeService().query(condition),getRelationService().query(condition)));
     }
 
+    public SfGraph<K,T> graph(E env) throws StarFishMetaDataQueryException {
+        return union(getNodeService().nodes(env),getRelationService().lines(env));
+    }
+
     // create
     /**
      * create a node
      * @param env
      * @param attributes
-     * @param <M>
      * @return
      * @throws StarFishMetaDataOperatingException
      */
-    public <M> K create(E env,Map<String,M> attributes) throws StarFishMetaDataOperatingException {
+    public K create(E env,Map<String,T> attributes) throws StarFishMetaDataOperatingException {
         return getNodeService().create(env,attributes);
     }
 
@@ -45,13 +57,12 @@ public abstract class AbstractGraphService<K extends Comparable,E extends Compar
      * @param parentInstanceId
      * @param property
      * @param attributes
-     * @param <M>
      * @return
      * @throws StarFishMetaDataOperatingException
      */
-    public <M> K create(E env,K parentInstanceId,String property,Map<String,M> attributes) throws StarFishMetaDataOperatingException {
+    public K create(E env,K parentInstanceId,String property,Map<String,T> attributes) throws StarFishMetaDataOperatingException {
         K key = getNodeService().create(env, attributes);
-        getNodeService().getClassService().valid(env,parentInstanceId);
+        getNodeService().getInstanceService().valid(env,parentInstanceId);
         getRelationService().link(env,parentInstanceId,key,property);
         return key;
     }
@@ -63,10 +74,9 @@ public abstract class AbstractGraphService<K extends Comparable,E extends Compar
      * @param instanceId
      * @param property
      * @param obj
-     * @param <M>
      * @throws StarFishMetaDataOperatingException
      */
-    public <M> void add(E env,K instanceId,String property,M obj) throws StarFishMetaDataOperatingException {
+    public void add(E env,K instanceId,String property,T obj) throws StarFishMetaDataOperatingException {
         getNodeService().add(env,instanceId,property,obj);
     }
 
@@ -80,7 +90,7 @@ public abstract class AbstractGraphService<K extends Comparable,E extends Compar
      * @throws StarFishMetaDataOperatingException
      */
     public void link(E env,K headId,K tailId,String property) throws StarFishMetaDataOperatingException {
-        getNodeService().getClassService().valid(env,headId,tailId);
+        getNodeService().getInstanceService().valid(env,headId,tailId);
         getRelationService().link(env,headId,tailId,property);
     }
 
@@ -91,10 +101,9 @@ public abstract class AbstractGraphService<K extends Comparable,E extends Compar
      * @param instanceId
      * @param property
      * @param obj
-     * @param <M>
      * @throws StarFishMetaDataOperatingException
      */
-    public <M> void update(E env,K instanceId,String property,M obj) throws StarFishMetaDataOperatingException {
+    public void update(E env,K instanceId,String property,T obj) throws StarFishMetaDataOperatingException {
         getNodeService().update(env,instanceId,property,obj);
     }
 
@@ -103,10 +112,9 @@ public abstract class AbstractGraphService<K extends Comparable,E extends Compar
      * @param env
      * @param instanceId
      * @param attributes
-     * @param <M>
      * @throws StarFishMetaDataOperatingException
      */
-    public <M> void update(E env,K instanceId,Map<String,M> attributes) throws StarFishMetaDataOperatingException {
+    public void update(E env,K instanceId,Map<String,T> attributes) throws StarFishMetaDataOperatingException {
         getNodeService().update(env,instanceId,attributes);
     }
 
@@ -116,10 +124,9 @@ public abstract class AbstractGraphService<K extends Comparable,E extends Compar
      * @param env
      * @param instanceId
      * @param attributes
-     * @param <M>
      * @throws StarFishMetaDataOperatingException
      */
-    public <M> void modify(E env,K instanceId,Map<String,M> attributes) throws StarFishMetaDataOperatingException {
+    public void modify(E env,K instanceId,Map<String,T> attributes) throws StarFishMetaDataOperatingException {
         getNodeService().modify(env,instanceId,attributes);
     }
 
@@ -136,6 +143,19 @@ public abstract class AbstractGraphService<K extends Comparable,E extends Compar
     }
 
     /**
+     * SerializationID
+     * copy from the old env to newEnv
+     * @param oldEnv
+     * @param newEnv
+     * @param deleteOld
+     * @throws StarFishMetaDataOperatingException
+     */
+    public void copy(E oldEnv,E newEnv,boolean deleteOld) throws StarFishMetaDataOperatingException {
+        getNodeService().copy(oldEnv,newEnv,deleteOld);
+        getRelationService().copy(oldEnv,newEnv,deleteOld);
+    }
+
+    /**
      * copy a node and link to another node
      * @param env
      * @param fromInstanceId
@@ -145,7 +165,7 @@ public abstract class AbstractGraphService<K extends Comparable,E extends Compar
      * @throws StarFishMetaDataOperatingException
      */
     public K copy(E env,K fromInstanceId,K toInstanceId,String property) throws StarFishMetaDataOperatingException {
-        getNodeService().getClassService().valid(env,toInstanceId);
+        getNodeService().getInstanceService().valid(env,toInstanceId);
         K newInstanceId = getNodeService().copy(env, fromInstanceId);
         getRelationService().link(env,newInstanceId,toInstanceId,property);
         return newInstanceId;
@@ -174,11 +194,20 @@ public abstract class AbstractGraphService<K extends Comparable,E extends Compar
      * @throws StarFishMetaDataOperatingException
      */
     public void move(E env,K oldHeadId,K newHeadId,K tailId,String property) throws StarFishMetaDataOperatingException {
-        getNodeService().getClassService().valid(env,oldHeadId,newHeadId,tailId);
+        getNodeService().getInstanceService().valid(env,oldHeadId,newHeadId,tailId);
         getRelationService().move(env,oldHeadId,newHeadId,tailId,property);
     }
 
     // delete
+    /**
+     * delete all node in env
+     * @param env
+     * @throws StarFishMetaDataOperatingException
+     */
+    public void delete(E env) throws StarFishMetaDataOperatingException {
+        getNodeService().delete(env);
+        getRelationService().delete(env);
+    }
     /**
      * delete a node
      * @param env
@@ -211,7 +240,7 @@ public abstract class AbstractGraphService<K extends Comparable,E extends Compar
      * @throws StarFishMetaDataOperatingException
      */
     public void crack(E env,K headId,K tailId,String property) throws StarFishMetaDataOperatingException {
-        getNodeService().getClassService().valid(env,headId,tailId);
+        getNodeService().getInstanceService().valid(env,headId,tailId);
         getRelationService().crack(env,headId,tailId,property);
     }
 

@@ -10,7 +10,7 @@
 ````
     name
     className
-    relType
+    sfRelType
     array
     defaultValue
 ````

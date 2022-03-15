@@ -1,5 +1,24 @@
 /**
  *
+ *  Env管理
+ *  如果参照gitlab产生记录
+ *      E0                                          close                   |    instanceold
+ *      E1                                          final                   |    instances
+ *      E2(user:A,model:Hbase)                       dev                    |        X
+ *                  E3(user:B,model:hive)            dev                    |        X
+ *      E4(user:A,model:Flink)                       dev                    |        X
+ *      E5(merge(A & B))                            final                   |    instancesNew (from instances)
+ *                                         api(Env)
+ *                                          |
+ *                     graph <-------------valid--------------class
+ *                     |                                       |
+ *          ---------------------                          attribute
+ *          |                   |
+ *         node              relation
+ *          |
+ *    -------------
+ *   |             |
+ * props       instance
  * graphService -> {@link org.metahut.starfish.parser.function.AbstractGraphService#query(java.util.function.Supplier)}
  *                              |
  *                 {@link org.metahut.starfish.parser.function.AbstractGraphService#query(java.lang.Comparable)}
