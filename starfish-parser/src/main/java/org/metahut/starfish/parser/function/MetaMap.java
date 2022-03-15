@@ -1,6 +1,6 @@
 package org.metahut.starfish.parser.function;
 
-import org.metahut.starfish.parser.domain.struct.AbstractStructModel;
+import org.metahut.starfish.parser.domain.instance.SfClass;
 
 import java.util.List;
 import java.util.Map;
@@ -123,11 +123,11 @@ public class MetaMap {
      *  add(String env,String classFullName,String... props) X
      *  init(String env,AbstractStructModel[] models)  -> constructor
      */
-    public MetaMap(List<AbstractStructModel> modelNodes) {
+    public MetaMap(List<SfClass> modelNodes) {
         this.modelNodes = modelNodes;
     }
 
-    public AbstractStructModel getModelByName(String fullClassName) {
+    public SfClass getModelByName(String fullClassName) {
         return null;
     }
 
@@ -174,7 +174,7 @@ public class MetaMap {
     /**
      * map or list
      */
-    private final List<AbstractStructModel> modelNodes;
+    private final List<SfClass> modelNodes;
 
     /**
      *

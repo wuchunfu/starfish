@@ -6,9 +6,8 @@ import org.codehaus.commons.compiler.util.resource.MapResourceCreator;
 import org.codehaus.commons.compiler.util.resource.Resource;
 import org.codehaus.commons.compiler.util.resource.StringResource;
 import org.metahut.starfish.parser.domain.SymbolConstants;
-import org.metahut.starfish.parser.domain.enums.RelType;
-import org.metahut.starfish.parser.domain.struct.AbstractStructModel;
-import org.metahut.starfish.parser.domain.struct.ClassModel;
+import org.metahut.starfish.parser.domain.enums.SfRelType;
+import org.metahut.starfish.parser.domain.instance.SfClass;
 
 import java.util.HashMap;
 import java.util.HashSet;
@@ -69,57 +68,51 @@ public class ModelGenerator {
      * @param model
      * @return
      */
-    public static final String toClassFile(String env, AbstractStructModel model) {
-        if (model instanceof ClassModel) {
-            ClassModel classModel = (ClassModel)model;
-            LineStringBuilder packageBuilder = new LineStringBuilder();
-            packageBuilder.appendLine("package ",env,".",model.getPackagePath(),";\n");
-            LineStringBuilder importBuilder = new LineStringBuilder();
-            LineStringBuilder classNameBuilder = new LineStringBuilder()
-                    .appendLine("public class ",classModel.getName()," {\n");
-            LineStringBuilder attributesBuilder = new LineStringBuilder();
-            attributesBuilder.appendLine(SymbolConstants.INDENT,"private static final long ",String.valueOf(model.getSerialVersionUID()),"L", SymbolConstants.LINE_TAIL);
-            Set<String> imports = new HashSet<>();
-            //attribute -> import how o（n）
-            classModel.getAttributeModels()
-                    .stream()
-                    .filter(attributeModel -> attributeModel != null
-                            && attributeModel.getClassName() != null)
-                    .forEach(attributeModel -> {
-                        int index = attributeModel.getName().lastIndexOf(SymbolConstants.PACKAGE_SPLIT);
-                        if (attributeModel.isArray() && imports.add(SymbolConstants.LIST_IMPORT)) {
-                            importBuilder.appendLine(SymbolConstants.LIST_IMPORT);
+    public static final String toClassFile(String env, SfClass sfClass) {
+        LineStringBuilder packageBuilder = new LineStringBuilder();
+        packageBuilder.appendLine("package ",env,".", sfClass.getPackagePath(),";\n");
+        LineStringBuilder importBuilder = new LineStringBuilder();
+        LineStringBuilder classNameBuilder = new LineStringBuilder()
+                .appendLine("public class ", sfClass.getName()," {\n");
+        LineStringBuilder attributesBuilder = new LineStringBuilder();
+        attributesBuilder.appendLine(SymbolConstants.INDENT,"private static final long ",String.valueOf(sfClass.getSerialVersionUID()),"L", SymbolConstants.LINE_TAIL);
+        Set<String> imports = new HashSet<>();
+        //attribute -> import how o（n）
+        sfClass.getAttributeModels()
+                .stream()
+                .filter(attributeModel -> attributeModel != null
+                        && attributeModel.getClassName() != null)
+                .forEach(attributeModel -> {
+                    int index = attributeModel.getName().lastIndexOf(SymbolConstants.PACKAGE_SPLIT);
+                    if (attributeModel.isArray() && imports.add(SymbolConstants.LIST_IMPORT)) {
+                        importBuilder.appendLine(SymbolConstants.LIST_IMPORT);
+                    }
+                    // import Class
+                    String simpleClassName;
+                    if (index != -1) {
+                        String preName = "";
+                        if (SfRelType.CUSTOM == attributeModel.getRelType()) {
+                            preName = env + SymbolConstants.PACKAGE_SPLIT;
                         }
-                        // import Class
-                        String simpleClassName;
-                        if (index != -1) {
-                            String preName = "";
-                            if (RelType.CUSTOM == attributeModel.getRelType()) {
-                                preName = env + SymbolConstants.PACKAGE_SPLIT;
-                            }
-                            importBuilder.appendLine(SymbolConstants.IMPORT,preName,attributeModel.getClassName(), SymbolConstants.LINE_TAIL);
-                            simpleClassName = attributeModel.getClassName().substring(index + 1);
-                        } else {
-                            simpleClassName = attributeModel.getClassName();
-                        }
-                        // addAttribute
-                        if (attributeModel.isArray()) {
-                            attributesBuilder.appendLine(SymbolConstants.INDENT,"List<",simpleClassName,">",attributeModel.getName(), SymbolConstants.LINE_TAIL);
-                        } else {
-                            attributesBuilder.appendLine(SymbolConstants.INDENT,simpleClassName,attributeModel.getName(), SymbolConstants.LINE_TAIL);
-                        }
-                    });
-            return new LineStringBuilder()
-                    .union(packageBuilder)
-                    .union(importBuilder)
-                    .union(classNameBuilder)
-                    .union(attributesBuilder)
-                    .append('}')
-                    .toString();
-        } else {
-            SymbolConstants.LOG.error("No support Model type[{}]", model.getClass());
-        }
-        return null;
+                        importBuilder.appendLine(SymbolConstants.IMPORT,preName,attributeModel.getClassName(), SymbolConstants.LINE_TAIL);
+                        simpleClassName = attributeModel.getClassName().substring(index + 1);
+                    } else {
+                        simpleClassName = attributeModel.getClassName();
+                    }
+                    // addAttribute
+                    if (attributeModel.isArray()) {
+                        attributesBuilder.appendLine(SymbolConstants.INDENT,"List<",simpleClassName,">",attributeModel.getName(), SymbolConstants.LINE_TAIL);
+                    } else {
+                        attributesBuilder.appendLine(SymbolConstants.INDENT,simpleClassName,attributeModel.getName(), SymbolConstants.LINE_TAIL);
+                    }
+                });
+        return new LineStringBuilder()
+                .union(packageBuilder)
+                .union(importBuilder)
+                .union(classNameBuilder)
+                .union(attributesBuilder)
+                .append('}')
+                .toString();
     }
 
 }

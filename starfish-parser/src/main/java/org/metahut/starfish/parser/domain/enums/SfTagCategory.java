@@ -7,7 +7,7 @@ package org.metahut.starfish.parser.domain.enums;
  *      uniqueConstraint;
  *      typeConvertConstraint (强校验，补正java的泛型的不足？ 不对 继承的回原）
  */
-public enum TagCategory {
+public enum SfTagCategory {
     SEARCH,
     DESCRIPTION,
     INDEX,

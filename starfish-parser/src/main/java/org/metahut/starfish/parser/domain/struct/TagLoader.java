@@ -1,23 +1,21 @@
 package org.metahut.starfish.parser.domain.struct;
 
-import org.metahut.starfish.parser.domain.enums.TagLife;
+import org.metahut.starfish.parser.domain.enums.SfTagLife;
 
 import java.util.Map;
 
 /**
- * @author XuYang
- * Create at 2022/2/19
- * @description
+ *
  */
 public abstract class TagLoader {
 
-    private Map<TagLife, TagModel> tagModelMap;
+    private Map<SfTagLife, TagModel> tagModelMap;
 
-    public Map<TagLife, TagModel> getTagModelMap() {
+    public Map<SfTagLife, TagModel> getTagModelMap() {
         return tagModelMap;
     }
 
-    public void setTagModelMap(Map<TagLife, TagModel> tagModelMap) {
+    public void setTagModelMap(Map<SfTagLife, TagModel> tagModelMap) {
         this.tagModelMap = tagModelMap;
     }
 }

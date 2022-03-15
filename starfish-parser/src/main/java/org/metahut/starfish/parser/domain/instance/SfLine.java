@@ -3,7 +3,7 @@ package org.metahut.starfish.parser.domain.instance;
 /**
  *
  */
-public class SfLine<K extends Comparable> {
+public class SfLine<K> {
     private K headId;
     private K tailId;
     private String property;
