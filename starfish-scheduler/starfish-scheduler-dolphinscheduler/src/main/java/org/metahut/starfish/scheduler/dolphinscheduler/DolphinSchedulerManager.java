@@ -9,7 +9,7 @@ import org.springframework.stereotype.Component;
 import java.io.IOException;
 
 @Component
-@ConditionalOnProperty(prefix = "starfish.scheduler", name = "type", havingValue = "DOLPHINSCHEDULER")
+@ConditionalOnProperty(prefix = "starfish.scheduler", name = "type", havingValue = "dolphinscheduler")
 public class DolphinSchedulerManager implements SchedulerManager {
 
     private final SchedulerProperties.DolphinScheduler dolphinSchedulerProperties;
