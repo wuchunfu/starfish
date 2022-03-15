@@ -6,11 +6,13 @@ import org.metahut.starfish.scheduler.api.SchedulerProperties;
 import org.springframework.boot.autoconfigure.condition.ConditionalOnProperty;
 import org.springframework.stereotype.Component;
 
+import java.io.IOException;
+
 @Component
 @ConditionalOnProperty(prefix = "starfish.scheduler", name = "type", havingValue = "DOLPHINSCHEDULER")
 public class DolphinSchedulerManager implements SchedulerManager {
 
-    private SchedulerProperties.DolphinScheduler dolphinSchedulerProperties;
+    private final SchedulerProperties.DolphinScheduler dolphinSchedulerProperties;
 
     private final DolphinScheduler dolphinScheduler;
 
@@ -25,4 +27,8 @@ public class DolphinSchedulerManager implements SchedulerManager {
         return dolphinScheduler;
     }
 
+    @Override
+    public void close() throws IOException {
+
+    }
 }

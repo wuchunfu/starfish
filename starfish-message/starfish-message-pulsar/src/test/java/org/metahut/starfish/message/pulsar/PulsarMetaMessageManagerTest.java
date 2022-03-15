@@ -1,5 +1,6 @@
 package org.metahut.starfish.message.pulsar;
 
+import org.metahut.starfish.message.api.MessageException;
 import org.metahut.starfish.message.api.MessageProducer;
 import org.metahut.starfish.message.api.MessageProperties;
 import org.metahut.starfish.message.api.MessageType;
@@ -23,10 +24,10 @@ class PulsarMetaMessageManagerTest {
     private static final String PULSAR_PRODUCER_1_NAME = "metaProducer";
 
     @BeforeEach
-    public void before() {
+    public void before() throws MessageException {
 
         MessageProperties messageProperties = new MessageProperties();
-        messageProperties.setType(MessageType.PULSAR);
+        messageProperties.setType(MessageType.pulsar);
         MessageProperties.Pulsar pulsar = new MessageProperties.Pulsar();
         pulsar.setServiceUrl(PULSAR_SERVICE_URL);
 
@@ -53,7 +54,7 @@ class PulsarMetaMessageManagerTest {
     }
 
     @Test
-    public void testProducer() {
+    public void testProducer() throws MessageException {
         MessageProducer producer = pulsarMessageManager.getProducer(PULSAR_PRODUCER_1_NAME);
         producer.send("k1", "v1");
     }

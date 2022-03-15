@@ -1,17 +1,21 @@
 package org.metahut.starfish.message.pulsar;
 
+import org.apache.pulsar.client.api.Messages;
+import org.apache.pulsar.client.api.PulsarClientException;
+import org.metahut.starfish.message.api.ConsumerResult;
+import org.metahut.starfish.message.api.MessageConsumer;
+
 import org.apache.pulsar.client.api.Consumer;
 import org.apache.pulsar.client.api.Message;
-import org.metahut.starfish.message.api.MessageConsumer;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
+import org.metahut.starfish.message.api.MessageException;
 
 import java.io.IOException;
+import java.text.MessageFormat;
+import java.util.ArrayList;
+import java.util.List;
 import java.util.Objects;
 
 public class PulsarMessageConsumer implements MessageConsumer {
-
-    private static final Logger logger = LoggerFactory.getLogger(PulsarMessageConsumer.class);
 
     private final Consumer consumer;
 
@@ -19,22 +23,47 @@ public class PulsarMessageConsumer implements MessageConsumer {
         this.consumer = consumer;
     }
 
-    @Override
-    public String receive() throws Exception {
+    public ConsumerResult receive() throws MessageException {
         // Wait for a message
-        Message msg = consumer.receive();
-        String data = null;
+        Message message = null;
         try {
-            data = new String(msg.getData());
+            message = consumer.receive();
+            String data = new String(message.getData());
             // Acknowledge the message so that it can be deleted by the message broker
-            consumer.acknowledge(msg);
-
-        } catch (Exception e) {
-            logger.error(e.getMessage(), e);
+            consumer.acknowledge(message);
+            return ConsumerResult.of(consumer.getTopic(), message.getMessageId().toString(), null, message.getKey(), data);
+        } catch (PulsarClientException e) {
             // Message failed to process, redeliver later
-            consumer.negativeAcknowledge(msg);
+            if (Objects.nonNull(message)) {
+                consumer.negativeAcknowledge(message);
+            }
+            throw new MessageException(MessageFormat.format("Pulsar consumer receive data exception, topic:{0}, messageId:{1}",
+                    consumer.getTopic(), Objects.nonNull(message) ? message.getMessageId().toString() : null), e);
         }
-        return data;
+
+    }
+
+    @Override
+    public List<ConsumerResult> batchReceive() throws MessageException {
+        List<ConsumerResult> result = new ArrayList<>();
+        Messages<byte[]> messages = null;
+        try {
+            messages = consumer.batchReceive();
+            for (Message message : messages) {
+                // do something
+                String data = new String(message.getData());
+                result.add(ConsumerResult.of(consumer.getTopic(), message.getMessageId().toString(), null, message.getKey(), data));
+            }
+            consumer.acknowledge(messages);
+        } catch (PulsarClientException e) {
+            // Message failed to process, redeliver later
+            if (Objects.nonNull(messages)) {
+                consumer.negativeAcknowledge(messages);
+            }
+            throw new MessageException(MessageFormat.format("Pulsar consumer batch receive data exception, topic:{0}", consumer.getTopic()), e);
+        }
+
+        return result;
     }
 
     @Override

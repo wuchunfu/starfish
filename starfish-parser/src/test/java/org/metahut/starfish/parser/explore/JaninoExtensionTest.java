@@ -8,20 +8,13 @@ import org.codehaus.commons.compiler.util.resource.MapResourceFinder;
 import org.codehaus.commons.compiler.util.resource.Resource;
 import org.codehaus.commons.compiler.util.resource.StringResource;
 import org.junit.jupiter.api.Assertions;
+import org.junit.jupiter.api.Disabled;
 import org.junit.jupiter.api.Test;
 
 import java.util.HashMap;
 import java.util.Map;
 
-/**
-<<<<<<< HEAD
- *
-=======
- * @author XuYang
- * Create at 2022/2/17
- * @description
->>>>>>> af6836df91ef821e50f66436bb12500fa3469eed
- */
+@Disabled
 public class JaninoExtensionTest {
 
 

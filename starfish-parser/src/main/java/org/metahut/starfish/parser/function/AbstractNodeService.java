@@ -146,7 +146,6 @@ public abstract class AbstractNodeService<E,K,T> extends AbstractQueryService<T>
     }
 
     //delete
-
     /**
      * delete all node in env
      * @param env

@@ -5,31 +5,15 @@ import org.springframework.context.annotation.Configuration;
 
 import java.util.Map;
 
+import static org.metahut.starfish.message.api.Constants.MESSAGE_CONFIG_PREFIX;
+
 @Configuration
-@ConfigurationProperties(
-        prefix = "starfish.message"
-)
+@ConfigurationProperties(prefix = MESSAGE_CONFIG_PREFIX)
 public class MessageProperties {
 
     private MessageType type;
     private final Kafka kafka = new Kafka();
     private final Pulsar pulsar = new Pulsar();
-
-    public MessageType getType() {
-        return type;
-    }
-
-    public void setType(MessageType type) {
-        this.type = type;
-    }
-
-    public Kafka getKafka() {
-        return kafka;
-    }
-
-    public Pulsar getPulsar() {
-        return pulsar;
-    }
 
     public static class Kafka {
 
@@ -66,6 +50,15 @@ public class MessageProperties {
         public void setConsumers(Map<String, PulsarConsumer> consumers) {
             this.consumers = consumers;
         }
+
+        @Override
+        public String toString() {
+            return "Pulsar{" +
+                    "serviceUrl='" + serviceUrl + '\'' +
+                    ", producers=" + producers +
+                    ", consumers=" + consumers +
+                    '}';
+        }
     }
 
     public static class PulsarProducer {
@@ -99,6 +92,15 @@ public class MessageProperties {
         public void setProducerName(String producerName) {
             this.producerName = producerName;
         }
+
+        @Override
+        public String toString() {
+            return "PulsarProducer{" +
+                    "topicName='" + topicName + '\'' +
+                    ", schema='" + schema + '\'' +
+                    ", producerName='" + producerName + '\'' +
+                    '}';
+        }
     }
 
     public static class PulsarConsumer {
@@ -122,6 +124,38 @@ public class MessageProperties {
         public void setSubscriptionName(String subscriptionName) {
             this.subscriptionName = subscriptionName;
         }
+
+        @Override
+        public String toString() {
+            return "PulsarConsumer{" +
+                    "topicName='" + topicName + '\'' +
+                    ", subscriptionName='" + subscriptionName + '\'' +
+                    '}';
+        }
     }
 
+    public MessageType getType() {
+        return type;
+    }
+
+    public void setType(MessageType type) {
+        this.type = type;
+    }
+
+    public Kafka getKafka() {
+        return kafka;
+    }
+
+    public Pulsar getPulsar() {
+        return pulsar;
+    }
+
+    @Override
+    public String toString() {
+        return "MessageProperties{" +
+                "type=" + type +
+                ", kafka=" + kafka +
+                ", pulsar=" + pulsar +
+                '}';
+    }
 }

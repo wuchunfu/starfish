@@ -1,8 +1,9 @@
 package org.metahut.starfish.message.api;
 
 import java.io.Closeable;
+import java.util.List;
 
 public interface MessageConsumer extends Closeable {
 
-    String receive() throws Exception;
+    List<ConsumerResult> batchReceive() throws MessageException;
 }

@@ -2,7 +2,10 @@ package org.metahut.starfish.parser.function;
 
 import org.metahut.starfish.parser.domain.instance.SfLine;
 import org.metahut.starfish.parser.exception.StarFishMetaDataOperatingException;
+<<<<<<< HEAD
 import org.metahut.starfish.parser.exception.StarFishMetaDataQueryException;
+=======
+>>>>>>> d2c7ca99a36c7371bf95f2d3588c9c3bf64a4aed
 
 import java.util.Collection;
 import java.util.List;
@@ -17,7 +20,11 @@ public abstract class AbstractRelationService<E,K,T> extends AbstractQueryServic
      * @param env
      * @return
      */
+<<<<<<< HEAD
     abstract List<SfLine<K>> lines(E env) throws StarFishMetaDataQueryException;
+=======
+    abstract List<SfLine<K>> lines(E env);
+>>>>>>> d2c7ca99a36c7371bf95f2d3588c9c3bf64a4aed
 
     // link
     /**
@@ -43,6 +50,7 @@ public abstract class AbstractRelationService<E,K,T> extends AbstractQueryServic
 
     // delete
     /**
+<<<<<<< HEAD
      * delete all relation in env
      * @param env
      * @throws StarFishMetaDataOperatingException
@@ -87,4 +95,34 @@ public abstract class AbstractRelationService<E,K,T> extends AbstractQueryServic
      * @throws StarFishMetaDataOperatingException
      */
     abstract void copy(E oldEnv,E newEnv,boolean deleteOld) throws StarFishMetaDataOperatingException;
+=======
+     * delete all nodes direct rel to the appointed node
+     * @param env
+     * @param instanceId
+     * @throws StarFishMetaDataOperatingException
+     */
+    abstract void delete(E env,K instanceId) throws StarFishMetaDataOperatingException;
+
+    /**
+     * batch delete instances
+     * @param env
+     * @param instanceIds
+     * @throws StarFishMetaDataOperatingException
+     */
+    abstract void delete(E env, Collection<K> instanceIds) throws StarFishMetaDataOperatingException;
+
+    // move
+
+    /**
+     * repoint the node to another node
+     * @param env
+     * @param oldHeadId
+     * @param newHeadId
+     * @param tailId
+     * @param property
+     * @throws StarFishMetaDataOperatingException
+     */
+    abstract void move(E env,K oldHeadId,K newHeadId,K tailId,String property) throws StarFishMetaDataOperatingException;
+
+>>>>>>> d2c7ca99a36c7371bf95f2d3588c9c3bf64a4aed
 }
