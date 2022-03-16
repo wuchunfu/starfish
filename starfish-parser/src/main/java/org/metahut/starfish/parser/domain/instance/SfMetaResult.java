@@ -1,20 +1,27 @@
 package org.metahut.starfish.parser.domain.instance;
 
+import org.metahut.starfish.parser.domain.enums.SfType;
+
+import java.util.Collection;
+import java.util.Set;
+
 /**
  *
  */
 public class SfMetaResult<E,K,T> {
     private SfEnvironment<E> environment;
     private SfGraph<K,T> graph;
-    private SfClass classInfo;
+    private Collection<SfClass> classInfos;
+    private Set<SfType<K>> typesInfos;
 
     public SfMetaResult() {
     }
 
-    public SfMetaResult(SfEnvironment<E> environment, SfGraph<K, T> graph, SfClass classInfo) {
+    public SfMetaResult(SfEnvironment<E> environment, SfGraph<K, T> graph, Collection<SfClass> classInfos, Set<SfType<K>> typesInfos) {
         this.environment = environment;
         this.graph = graph;
-        this.classInfo = classInfo;
+        this.classInfos = classInfos;
+        this.typesInfos = typesInfos;
     }
 
     public SfEnvironment<E> getEnvironment() {
@@ -33,11 +40,20 @@ public class SfMetaResult<E,K,T> {
         this.graph = graph;
     }
 
-    public SfClass getClassInfo() {
-        return classInfo;
+    public Collection<SfClass> getClassInfos() {
+        return classInfos;
     }
 
-    public void setClassInfo(SfClass classInfo) {
-        this.classInfo = classInfo;
+    public void setClassInfos(Collection<SfClass> classInfos) {
+        this.classInfos = classInfos;
     }
+
+    public Set<SfType<K>> getTypesInfos() {
+        return typesInfos;
+    }
+
+    public void setTypesInfos(Set<SfType<K>> typesInfos) {
+        this.typesInfos = typesInfos;
+    }
+
 }

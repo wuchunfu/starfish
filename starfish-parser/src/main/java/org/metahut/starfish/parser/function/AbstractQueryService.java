@@ -16,16 +16,16 @@ import java.util.stream.Stream;
 /**
  * abstract class or interface
  */
-public abstract class AbstractQueryService<T> {
+public interface AbstractQueryService<T> {
 
-    private static final Logger LOG = LoggerFactory.getLogger(AbstractQueryService.class);
+    Logger LOG = LoggerFactory.getLogger(AbstractQueryService.class);
 
     /**
      * query by condition
      * @param condition query condition
      * @return
      */
-    abstract Collection<T> query(AbstractQueryCondition condition);
+    Collection<T> query(AbstractQueryCondition condition);
 
     /**
      * TODO better implement
@@ -34,7 +34,7 @@ public abstract class AbstractQueryService<T> {
      * @param condition
      * @return
      */
-    public Future<Collection<T>> query(Supplier<AbstractQueryCondition> condition) {
+    default Future<Collection<T>> query(Supplier<AbstractQueryCondition> condition) {
         return new FakeFuture<>(query(condition.get()));
     }
 
@@ -44,7 +44,7 @@ public abstract class AbstractQueryService<T> {
      * @param collections
      * @return
      */
-    public Collection<T> merge(Collection<T>... collections) {
+    default Collection<T> merge(Collection<T>... collections) {
         return Arrays.stream(collections).flatMap(collection -> collection.stream()).collect(Collectors.toCollection(ArrayList::new));
     }
 
@@ -54,7 +54,7 @@ public abstract class AbstractQueryService<T> {
      * @param collections
      * @return
      */
-    public Collection<T> merge(Future<Collection<T>>... collections) {
+    default Collection<T> merge(Future<Collection<T>>... collections) {
         return Arrays.stream(collections).flatMap(collection -> {
             try {
                 return collection.get().stream();

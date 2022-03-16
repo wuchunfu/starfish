@@ -1,7 +1,6 @@
 package org.metahut.starfish.parser.domain.instance;
 
 import org.metahut.starfish.parser.domain.SymbolConstants;
-import org.metahut.starfish.parser.domain.instance.SfAttribute;
 import org.metahut.starfish.parser.domain.struct.TagLoader;
 
 import java.util.List;
