@@ -6,6 +6,6 @@ public class Constants {
 
     }
 
-    public static final String COLLECTOR_CONFIG_FILE = "application-collector.yaml";
+    public static final String INGESTION_CONFIG_FILE = "application-ingestion.yaml";
 
 }
