@@ -3,74 +3,35 @@ package org.metahut.starfish.parser.function;
 import org.metahut.starfish.parser.exception.StarFishMetaDataOperatingException;
 import org.metahut.starfish.parser.exception.StarFishMetaDataQueryException;
 
-import java.util.Collection;
 import java.util.Set;
 import java.util.concurrent.Future;
 import java.util.function.Supplier;
 
-/**
- *  Graph [Node {Class:{properties}}] - line - Graph
- */
-public abstract class AbstractInstanceService<E,K,T> extends AbstractQueryService<T> {
+public abstract class AbstractInstanceService<E,K,T> implements IInstanceApi<E,K,T> {
 
-    /**
-     * read all instance key info from env
-     * @param env
-     * @return
-     */
-    abstract Set<K> instanceMap(E env) throws StarFishMetaDataQueryException;
+    @Override
+    public abstract Set<K> instanceMap(E env) throws StarFishMetaDataQueryException;
 
+    @Override
     public Future<Set<K>> instanceMap(Supplier<E> env) throws StarFishMetaDataQueryException {
         return new FakeFuture<>(instanceMap(env.get()));
     }
 
-    // valid
-    /**
-     * valid if it is all instance id illegal
-     * @param env
-     * @param instanceIds
-     * @throws StarFishMetaDataOperatingException
-     */
-    abstract void valid(E env,K... instanceIds) throws StarFishMetaDataOperatingException;
+    @Override
+    public abstract void valid(E env, K... instanceIds) throws StarFishMetaDataOperatingException;
 
-    // create
-    /**
-     * create a empty node
-     * @param env
-     * @return
-     * @throws StarFishMetaDataOperatingException
-     */
-    abstract K create(E env) throws StarFishMetaDataOperatingException;
+    @Override
+    public abstract K create(E env) throws StarFishMetaDataOperatingException;
 
-    /**
-     * copy from the env to another env
-     * @param oldEnv
-     * @param newEnv
-     * @param deleteOld
-     * @throws StarFishMetaDataOperatingException
-     */
-    abstract void copy(E oldEnv,E newEnv,boolean deleteOld) throws StarFishMetaDataOperatingException;
-    // delete
-    /**
-     * delete all instance in env
-     * @param env
-     * @throws StarFishMetaDataOperatingException
-     */
-    abstract void delete(E env) throws StarFishMetaDataOperatingException;
+    @Override
+    public abstract void copy(E oldEnv,E newEnv,boolean deleteOld) throws StarFishMetaDataOperatingException;
 
-    /**
-     * delete a node by id
-     * @param env
-     * @param instanceId
-     * @throws StarFishMetaDataOperatingException
-     */
-    abstract void delete(E env,K instanceId) throws StarFishMetaDataOperatingException;
+    @Override
+    public abstract void delete(E env) throws StarFishMetaDataOperatingException;
 
-    /**
-     * batch delete instances
-     * @param env
-     * @param instanceIds
-     * @throws StarFishMetaDataOperatingException
-     */
-    abstract void delete(E env, Collection<K> instanceIds) throws StarFishMetaDataOperatingException;
+    @Override
+    public abstract void delete(E env,K instanceId) throws StarFishMetaDataOperatingException;
+
+    @Override
+    public abstract void delete(E env, K... instanceIds) throws StarFishMetaDataOperatingException;
 }

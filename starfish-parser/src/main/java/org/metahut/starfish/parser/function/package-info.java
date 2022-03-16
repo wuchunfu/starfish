@@ -19,9 +19,9 @@
  *    -------------
  *   |             |
  * props       instance
- * graphService -> {@link org.metahut.starfish.parser.function.AbstractGraphService#query(java.util.function.Supplier)}
+ * graphService -> {@link org.metahut.starfish.parser.function.AbstractSqlGraphService#query(java.util.function.Supplier)}
  *                              |
- *                 {@link org.metahut.starfish.parser.function.AbstractGraphService#query(java.lang.Comparable)}
+ *                 {@link org.metahut.starfish.parser.function.AbstractSqlGraphService#query(java.lang.Comparable)}
  *
  *
  * 流程 function

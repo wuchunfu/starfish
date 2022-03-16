@@ -7,7 +7,7 @@ import java.util.Set;
 /**
  *
  */
-public abstract class AbstractRelToClassAndInstance<E,K> {
+public abstract class AbstractClassInstanceBridgeService<E,K> {
 
     abstract void save(E env,SfType<K> rel);
 

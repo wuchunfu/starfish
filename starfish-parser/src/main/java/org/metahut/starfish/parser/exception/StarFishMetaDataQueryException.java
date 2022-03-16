@@ -6,7 +6,7 @@ import java.io.PrintWriter;
 /**
  *
  */
-public class StarFishMetaDataQueryException extends AbstractMetaParserException{
+public class StarFishMetaDataQueryException extends AbstractMetaParserException {
 
     public StarFishMetaDataQueryException() {
         super();
