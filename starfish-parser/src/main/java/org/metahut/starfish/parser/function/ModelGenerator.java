@@ -65,7 +65,7 @@ public class ModelGenerator {
      * 4.graph ?  需要个解决依赖的方式
      * 5.封装 ？ 定义 rel ? 图 ？
      * @param env
-     * @param model
+     * @param sfClass
      * @return
      */
     public static final String toClassFile(String env, SfClass sfClass) {
