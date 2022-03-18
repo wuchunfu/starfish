@@ -32,7 +32,7 @@ public class YamlFactoryTest {
 
     @Test
     public void testLoadYamlToProperties() {
-        Properties properties = YamlFactory.loadYamlToProperties(Constants.COLLECTOR_CONFIG_FILE);
+        Properties properties = YamlFactory.loadYamlToProperties(Constants.INGESTION_CONFIG_FILE);
         String value = properties.getProperty("starfish.message.type");
         logger.info("type value:{}", value);
         Assertions.assertNotNull(value);
@@ -40,7 +40,7 @@ public class YamlFactoryTest {
 
     @Test
     public void testParseObject() {
-        MessageProperties messageProperties = YamlFactory.parseObject("starfish.message", Constants.COLLECTOR_CONFIG_FILE, new MessageProperties());
+        MessageProperties messageProperties = YamlFactory.parseObject("starfish.message", Constants.INGESTION_CONFIG_FILE, new MessageProperties());
         Assertions.assertNotNull(messageProperties);
         logger.info("messageProperties:{}", messageProperties);
     }

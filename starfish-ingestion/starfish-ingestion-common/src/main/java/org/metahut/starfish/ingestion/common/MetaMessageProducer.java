@@ -28,7 +28,7 @@ import org.slf4j.LoggerFactory;
 import java.util.Objects;
 import java.util.ServiceLoader;
 
-import static org.metahut.starfish.ingestion.common.Constants.COLLECTOR_CONFIG_FILE;
+import static org.metahut.starfish.ingestion.common.Constants.INGESTION_CONFIG_FILE;
 import static org.metahut.starfish.message.api.Constants.MESSAGE_CONFIG_PREFIX;
 import static org.metahut.starfish.message.api.Constants.MESSAGE_META_EVENT;
 
@@ -67,7 +67,7 @@ public class MetaMessageProducer {
         }
 
         private void init() {
-            MessageProperties messageProperties = YamlFactory.parseObject(MESSAGE_CONFIG_PREFIX, COLLECTOR_CONFIG_FILE, new MessageProperties());
+            MessageProperties messageProperties = YamlFactory.parseObject(MESSAGE_CONFIG_PREFIX, INGESTION_CONFIG_FILE, new MessageProperties());
             ServiceLoader.load(MessageManager.class).forEach(manager -> {
                 MessageType type = manager.getType();
                 if (messageProperties.getType() == type) {
