@@ -10,7 +10,7 @@ import java.util.concurrent.atomic.AtomicLong;
 
 /**
  * 必须单例 how
- * 解决多环境的问题？
+ * 解决多环境的问题
  */
 abstract class EnvironmentUnit<E> {
 
