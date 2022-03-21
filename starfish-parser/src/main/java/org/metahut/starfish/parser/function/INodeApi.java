@@ -1,6 +1,6 @@
 package org.metahut.starfish.parser.function;
 
-import org.metahut.starfish.parser.domain.instance.SfNode;
+import org.metahut.starfish.parser.domain.instance.Node;
 import org.metahut.starfish.parser.exception.StarFishMetaDataOperatingException;
 import org.metahut.starfish.parser.exception.StarFishMetaDataQueryException;
 
@@ -11,7 +11,7 @@ import java.util.Map;
  */
 public interface INodeApi<E,K,T> extends AbstractQueryService<T> {
 
-    Map<K, SfNode<K, T>> nodes(E env) throws StarFishMetaDataQueryException;
+    Map<K, Node<K, T>> nodes(E env) throws StarFishMetaDataQueryException;
 
     /**
      * creat a node

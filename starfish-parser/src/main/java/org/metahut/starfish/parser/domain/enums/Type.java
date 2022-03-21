@@ -3,14 +3,14 @@ package org.metahut.starfish.parser.domain.enums;
 /**
  *
  */
-public class SfType<K> {
+public class Type<K> {
     private K key;
     private long serialVersionId;
 
-    public SfType() {
+    public Type() {
     }
 
-    public SfType(K key, long serialVersionId) {
+    public Type(K key, long serialVersionId) {
         this.key = key;
         this.serialVersionId = serialVersionId;
     }

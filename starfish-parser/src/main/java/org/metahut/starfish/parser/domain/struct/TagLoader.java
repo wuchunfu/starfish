@@ -1,6 +1,6 @@
 package org.metahut.starfish.parser.domain.struct;
 
-import org.metahut.starfish.parser.domain.enums.SfTagLife;
+import org.metahut.starfish.parser.domain.enums.TagLife;
 
 import java.util.Map;
 
@@ -9,13 +9,13 @@ import java.util.Map;
  */
 public abstract class TagLoader {
 
-    private Map<SfTagLife, TagModel> tagModelMap;
+    private Map<TagLife, TagModel> tagModelMap;
 
-    public Map<SfTagLife, TagModel> getTagModelMap() {
+    public Map<TagLife, TagModel> getTagModelMap() {
         return tagModelMap;
     }
 
-    public void setTagModelMap(Map<SfTagLife, TagModel> tagModelMap) {
+    public void setTagModelMap(Map<TagLife, TagModel> tagModelMap) {
         this.tagModelMap = tagModelMap;
     }
 }

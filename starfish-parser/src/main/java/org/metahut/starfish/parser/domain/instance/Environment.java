@@ -3,7 +3,7 @@ package org.metahut.starfish.parser.domain.instance;
 /**
  *
  */
-public class SfEnvironment<E> {
+public class Environment<E> {
 
     protected E env;
 

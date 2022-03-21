@@ -1,8 +1,8 @@
 package org.metahut.starfish.parser.function;
 
-import org.metahut.starfish.parser.domain.instance.SfClass;
-import org.metahut.starfish.parser.domain.instance.SfEnvironment;
-import org.metahut.starfish.parser.domain.instance.SfMetaResult;
+import org.metahut.starfish.parser.domain.instance.Class;
+import org.metahut.starfish.parser.domain.instance.Environment;
+import org.metahut.starfish.parser.domain.instance.MetaResult;
 import org.metahut.starfish.parser.exception.AbstractMetaParserException;
 
 import java.util.Map;
@@ -26,7 +26,7 @@ interface IMetaDataApi<E,K,T> {
      * @return
      * @throws AbstractMetaParserException
      */
-    SfEnvironment<E> copy(E env) throws AbstractMetaParserException;
+    Environment<E> copy(E env) throws AbstractMetaParserException;
 
     /**
      * TODO core
@@ -73,14 +73,14 @@ interface IMetaDataApi<E,K,T> {
      * @return
      * @throws AbstractMetaParserException
      */
-    SfEnvironment<E> create() throws AbstractMetaParserException;
+    Environment<E> create() throws AbstractMetaParserException;
 
     /**
      * modify infos or change state of an env
      * @param env
      * @throws AbstractMetaParserException
      */
-    void modify(SfEnvironment<E> env) throws AbstractMetaParserException;
+    void modify(Environment<E> env) throws AbstractMetaParserException;
 
     /**
      * merge one env with antoher env
@@ -89,7 +89,7 @@ interface IMetaDataApi<E,K,T> {
      * @return a new merged env
      * @throws AbstractMetaParserException
      */
-    SfEnvironment<E> merge(E env1,E env2) throws AbstractMetaParserException;
+    Environment<E> merge(E env1,E env2) throws AbstractMetaParserException;
 
     /**
      * add classes to an env
@@ -97,7 +97,7 @@ interface IMetaDataApi<E,K,T> {
      * @param classes
      * @throws AbstractMetaParserException
      */
-    void add(E env, SfClass... classes) throws AbstractMetaParserException;
+    void add(E env, Class... classes) throws AbstractMetaParserException;
 
     /**
      * modify classes of an env
@@ -106,7 +106,7 @@ interface IMetaDataApi<E,K,T> {
      * @throws AbstractMetaParserException
      */
     @Deprecated
-    void modify(E env,SfClass... sfClass) throws AbstractMetaParserException;
+    void modify(E env, Class... sfClass) throws AbstractMetaParserException;
 
     /**
      * delete classes from an env
@@ -122,7 +122,7 @@ interface IMetaDataApi<E,K,T> {
      * @return
      * @throws AbstractMetaParserException
      */
-    SfMetaResult<E,K,T> all(E env) throws AbstractMetaParserException;
+    MetaResult<E,K,T> all(E env) throws AbstractMetaParserException;
 
     /**
      * create an node with property instance of the class

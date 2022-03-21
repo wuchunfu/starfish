@@ -1,6 +1,6 @@
 package org.metahut.starfish.parser.function;
 
-import org.metahut.starfish.parser.domain.instance.SfLine;
+import org.metahut.starfish.parser.domain.instance.Relation;
 import org.metahut.starfish.parser.exception.StarFishMetaDataOperatingException;
 import org.metahut.starfish.parser.exception.StarFishMetaDataQueryException;
 
@@ -16,7 +16,7 @@ public interface IRelationApi<E,K,T> extends AbstractQueryService<T> {
      * @param env
      * @return
      */
-    List<SfLine<K>> lines(E env) throws StarFishMetaDataQueryException;
+    List<Relation<K>> lines(E env) throws StarFishMetaDataQueryException;
 
     // link
     /**

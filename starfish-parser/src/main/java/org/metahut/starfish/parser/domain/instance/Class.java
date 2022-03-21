@@ -9,7 +9,7 @@ import java.util.concurrent.ThreadLocalRandom;
 /**
  *
  */
-public class SfClass extends TagLoader {
+public class Class extends TagLoader {
     /**
      * Serial Version UID
      */
@@ -28,7 +28,7 @@ public class SfClass extends TagLoader {
     /**
      * attribute model list
      */
-    private List<SfAttribute> sfAttributes;
+    private List<Attribute> sfAttributes;
 
     public long getSerialVersionUID() {
         return serialVersionUID;
@@ -58,7 +58,7 @@ public class SfClass extends TagLoader {
         return packagePath + SymbolConstants.PACKAGE_SPLIT + name;
     }
 
-    public List<SfAttribute> getAttributeModels() {
+    public List<Attribute> getAttributeModels() {
         return sfAttributes;
     }
 }

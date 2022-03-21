@@ -1,8 +1,8 @@
 package org.metahut.starfish.parser.function;
 
-import org.metahut.starfish.parser.domain.instance.SfGraph;
-import org.metahut.starfish.parser.domain.instance.SfLine;
-import org.metahut.starfish.parser.domain.instance.SfNode;
+import org.metahut.starfish.parser.domain.instance.Graph;
+import org.metahut.starfish.parser.domain.instance.Relation;
+import org.metahut.starfish.parser.domain.instance.Node;
 import org.metahut.starfish.parser.exception.StarFishMetaDataOperatingException;
 import org.metahut.starfish.parser.exception.StarFishMetaDataQueryException;
 
@@ -21,8 +21,8 @@ public abstract class AbstractSqlGraphService<E,K,T> implements IGraphApi<E, K, 
 
     abstract AbstractRelationService<E,K,T> getRelationService();
 
-    public SfGraph<K,T> union(Map<K,SfNode<K,T>> nodes, List<SfLine<K>> lines) {
-        return new SfGraph<>(nodes,lines);
+    public Graph<K,T> union(Map<K, Node<K,T>> nodes, List<Relation<K>> lines) {
+        return new Graph<>(nodes,lines);
     }
 
     @Override
@@ -36,7 +36,7 @@ public abstract class AbstractSqlGraphService<E,K,T> implements IGraphApi<E, K, 
     }
 
     @Override
-    public SfGraph<K,T> graph(E env) throws StarFishMetaDataQueryException {
+    public Graph<K,T> graph(E env) throws StarFishMetaDataQueryException {
         return union(getNodeService().nodes(env),getRelationService().lines(env));
     }
 

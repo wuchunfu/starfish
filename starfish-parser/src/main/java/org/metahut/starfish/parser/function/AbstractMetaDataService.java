@@ -1,9 +1,9 @@
 package org.metahut.starfish.parser.function;
 
-import org.metahut.starfish.parser.domain.enums.SfType;
-import org.metahut.starfish.parser.domain.instance.SfClass;
-import org.metahut.starfish.parser.domain.instance.SfEnvironment;
-import org.metahut.starfish.parser.domain.instance.SfMetaResult;
+import org.metahut.starfish.parser.domain.enums.Type;
+import org.metahut.starfish.parser.domain.instance.Class;
+import org.metahut.starfish.parser.domain.instance.Environment;
+import org.metahut.starfish.parser.domain.instance.MetaResult;
 import org.metahut.starfish.parser.exception.AbstractMetaParserException;
 
 import java.util.Map;
@@ -41,8 +41,8 @@ public abstract class AbstractMetaDataService<E,K,T> implements IMetaDataApi<E,K
     }
 
     @Override
-    public SfEnvironment<E> copy(E env) throws AbstractMetaParserException {
-        SfEnvironment<E> copy = environmentApi().copy(env);
+    public Environment<E> copy(E env) throws AbstractMetaParserException {
+        Environment<E> copy = environmentApi().copy(env);
         return copy;
     }
 
@@ -62,30 +62,30 @@ public abstract class AbstractMetaDataService<E,K,T> implements IMetaDataApi<E,K
     }
 
     @Override
-    public SfEnvironment<E> create() throws AbstractMetaParserException {
+    public Environment<E> create() throws AbstractMetaParserException {
         return environmentApi().create();
     }
 
     @Override
-    public void modify(SfEnvironment<E> env) throws AbstractMetaParserException {
+    public void modify(Environment<E> env) throws AbstractMetaParserException {
         environmentApi().valid(env.getEnv());
         environmentApi().modify(env);
     }
 
     @Override
-    public SfEnvironment<E> merge(E env1, E env2) throws AbstractMetaParserException {
+    public Environment<E> merge(E env1, E env2) throws AbstractMetaParserException {
         return environmentApi().merge(env1, env2);
     }
 
     @Override
-    public void add(E env, SfClass... classes) throws AbstractMetaParserException {
+    public void add(E env, Class... classes) throws AbstractMetaParserException {
         environmentApi().valid(env);
         environmentApi().testUnderDevelopment(env,true);
         classApi().add(env,classes);
     }
 
     @Override
-    public void modify(E env, SfClass... sfClass) throws AbstractMetaParserException {
+    public void modify(E env, Class... sfClass) throws AbstractMetaParserException {
         environmentApi().valid(env);
         environmentApi().testUnderDevelopment(env,true);
         classApi().modify(env,sfClass);
@@ -99,8 +99,8 @@ public abstract class AbstractMetaDataService<E,K,T> implements IMetaDataApi<E,K
     }
 
     @Override
-    public SfMetaResult<E, K, T> all(E env) throws AbstractMetaParserException {
-        SfMetaResult<E,K,T> result = new SfMetaResult<>();
+    public MetaResult<E, K, T> all(E env) throws AbstractMetaParserException {
+        MetaResult<E,K,T> result = new MetaResult<>();
         result.setEnvironment(environmentApi().env(env));
         result.setGraph(graphApi().graph(env));
         result.setClassInfos(classApi().classes(env));
@@ -136,7 +136,7 @@ public abstract class AbstractMetaDataService<E,K,T> implements IMetaDataApi<E,K
     public void add(E env, K instanceId, String property, T obj) throws AbstractMetaParserException {
         environmentApi().valid(env);
         environmentApi().testUnderDevelopment(env,false);
-        SfType<K> type = classInstanceBridgeApi().query(env, instanceId);
+        Type<K> type = classInstanceBridgeApi().query(env, instanceId);
         classApi().query(env,type.getSerialVersionId());
         graphApi().add(env,instanceId,property,obj);
 
@@ -146,7 +146,7 @@ public abstract class AbstractMetaDataService<E,K,T> implements IMetaDataApi<E,K
     public void link(E env, K headId, K tailId, String property) throws AbstractMetaParserException {
         environmentApi().valid(env);
         environmentApi().testUnderDevelopment(env,false);
-        Set<SfType<K>> types = classInstanceBridgeApi().query(env, headId, tailId);
+        Set<Type<K>> types = classInstanceBridgeApi().query(env, headId, tailId);
         long[] ids = types.stream().mapToLong(kSfType -> kSfType.getSerialVersionId()).toArray();
         classApi().query(env,ids);
     }
@@ -155,7 +155,7 @@ public abstract class AbstractMetaDataService<E,K,T> implements IMetaDataApi<E,K
     public void update(E env, K instanceId, Map<String, T> attributes) throws AbstractMetaParserException {
         environmentApi().valid(env);
         environmentApi().testUnderDevelopment(env,false);
-        SfType<K> type = classInstanceBridgeApi().query(env, instanceId);
+        Type<K> type = classInstanceBridgeApi().query(env, instanceId);
         classApi().query(env,type.getSerialVersionId());
         graphApi().update(env,instanceId,attributes);
     }
@@ -164,7 +164,7 @@ public abstract class AbstractMetaDataService<E,K,T> implements IMetaDataApi<E,K
     public void modify(E env, K instanceId, Map<String, T> attributes) throws AbstractMetaParserException {
         environmentApi().valid(env);
         environmentApi().testUnderDevelopment(env,false);
-        SfType<K> type = classInstanceBridgeApi().query(env, instanceId);
+        Type<K> type = classInstanceBridgeApi().query(env, instanceId);
         classApi().query(env,type.getSerialVersionId());
         graphApi().modify(env,instanceId,attributes);
     }

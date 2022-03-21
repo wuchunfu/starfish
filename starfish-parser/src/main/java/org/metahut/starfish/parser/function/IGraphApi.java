@@ -1,6 +1,6 @@
 package org.metahut.starfish.parser.function;
 
-import org.metahut.starfish.parser.domain.instance.SfGraph;
+import org.metahut.starfish.parser.domain.instance.Graph;
 import org.metahut.starfish.parser.exception.StarFishMetaDataOperatingException;
 import org.metahut.starfish.parser.exception.StarFishMetaDataQueryException;
 
@@ -11,7 +11,7 @@ import java.util.Map;
  */
 interface IGraphApi<E, K, T> extends AbstractQueryService<T> {
 
-    SfGraph<K, T> graph(E env) throws StarFishMetaDataQueryException;
+    Graph<K, T> graph(E env) throws StarFishMetaDataQueryException;
 
     K create(E env, String property,T obj) throws StarFishMetaDataOperatingException;
 

@@ -1,6 +1,6 @@
 package org.metahut.starfish.parser.domain.struct;
 
-import org.metahut.starfish.parser.domain.instance.SfClass;
+import org.metahut.starfish.parser.domain.instance.Class;
 
 import java.util.HashSet;
 import java.util.Set;
@@ -28,7 +28,7 @@ public class StructWorker {
     private String javaResource;
     private String fullClassName;
 
-    private SfClass model;
+    private Class model;
 
     private Set<String> relClassNames = new HashSet<>();
 

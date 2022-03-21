@@ -1,6 +1,6 @@
 package org.metahut.starfish.parser.function;
 
-import org.metahut.starfish.parser.domain.enums.SfType;
+import org.metahut.starfish.parser.domain.enums.Type;
 
 import java.util.Collection;
 import java.util.Set;
@@ -9,13 +9,13 @@ import java.util.Set;
  *
  */
 interface IClassInstanceBridgeApi<E,K> {
-    void save(E env, SfType<K> rel);
+    void save(E env, Type<K> rel);
 
-    Set<SfType<K>> query(E env);
+    Set<Type<K>> query(E env);
 
-    SfType<K> query(E env,K instanceId);
+    Type<K> query(E env,K instanceId);
 
-    Set<SfType<K>> query(E env,K... instanceId);
+    Set<Type<K>> query(E env,K... instanceId);
 
     /**
      * copy all c
@@ -30,5 +30,5 @@ interface IClassInstanceBridgeApi<E,K> {
 
     void delete(E env,K... instanceIds);
 
-    void delete(E env,SfType<K> rel);
+    void delete(E env, Type<K> rel);
 }

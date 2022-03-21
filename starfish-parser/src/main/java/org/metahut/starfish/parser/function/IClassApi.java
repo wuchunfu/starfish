@@ -1,6 +1,6 @@
 package org.metahut.starfish.parser.function;
 
-import org.metahut.starfish.parser.domain.instance.SfClass;
+import org.metahut.starfish.parser.domain.instance.Class;
 import org.metahut.starfish.parser.exception.AbstractMetaParserException;
 
 import java.util.Collection;
@@ -15,7 +15,7 @@ interface IClassApi<E,T> extends AbstractQueryService<T>  {
      * @param env
      * @return
      */
-    Collection<SfClass> classes(E env);
+    Collection<Class> classes(E env);
 
     /**
      * query class by ids
@@ -23,7 +23,7 @@ interface IClassApi<E,T> extends AbstractQueryService<T>  {
      * @param classIds
      * @return
      */
-    Collection<SfClass> query(E env,long... classIds);
+    Collection<Class> query(E env,long... classIds);
 
     /**
      * query class
@@ -31,7 +31,7 @@ interface IClassApi<E,T> extends AbstractQueryService<T>  {
      * @param classId
      * @return
      */
-    SfClass query(E env,long classId);
+    Class query(E env,long classId);
 
     /**
      * valid
@@ -46,7 +46,7 @@ interface IClassApi<E,T> extends AbstractQueryService<T>  {
      * @param env
      * @param classes
      */
-    void add(E env,SfClass... classes);
+    void add(E env, Class... classes);
 
     /**
      *
@@ -63,7 +63,7 @@ interface IClassApi<E,T> extends AbstractQueryService<T>  {
      * @param classes
      * @return
      */
-    E modify(E env, SfClass... classes);
+    E modify(E env, Class... classes);
 
     void delete(E env);
 

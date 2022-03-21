@@ -3,7 +3,7 @@ package org.metahut.starfish.parser.domain.instance;
 /**
  *
  */
-public class SfLine<K> {
+public class Relation<K> {
     private K headId;
     private K tailId;
     private String property;
@@ -32,10 +32,10 @@ public class SfLine<K> {
         this.property = property;
     }
 
-    public SfLine() {
+    public Relation() {
     }
 
-    public SfLine(K headId, K tailId, String property) {
+    public Relation(K headId, K tailId, String property) {
         this.headId = headId;
         this.tailId = tailId;
         this.property = property;

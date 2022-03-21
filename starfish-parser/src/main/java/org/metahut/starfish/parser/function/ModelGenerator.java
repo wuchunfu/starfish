@@ -6,8 +6,8 @@ import org.codehaus.commons.compiler.util.resource.MapResourceCreator;
 import org.codehaus.commons.compiler.util.resource.Resource;
 import org.codehaus.commons.compiler.util.resource.StringResource;
 import org.metahut.starfish.parser.domain.SymbolConstants;
-import org.metahut.starfish.parser.domain.enums.SfRelType;
-import org.metahut.starfish.parser.domain.instance.SfClass;
+import org.metahut.starfish.parser.domain.enums.RelType;
+import org.metahut.starfish.parser.domain.instance.Class;
 
 import java.util.HashMap;
 import java.util.HashSet;
@@ -68,7 +68,7 @@ public class ModelGenerator {
      * @param sfClass
      * @return
      */
-    public static final String toClassFile(String env, SfClass sfClass) {
+    public static final String toClassFile(String env, Class sfClass) {
         LineStringBuilder packageBuilder = new LineStringBuilder();
         packageBuilder.appendLine("package ",env,".", sfClass.getPackagePath(),";\n");
         LineStringBuilder importBuilder = new LineStringBuilder();
@@ -91,7 +91,7 @@ public class ModelGenerator {
                     String simpleClassName;
                     if (index != -1) {
                         String preName = "";
-                        if (SfRelType.CUSTOM == attributeModel.getRelType()) {
+                        if (RelType.CUSTOM == attributeModel.getRelType()) {
                             preName = env + SymbolConstants.PACKAGE_SPLIT;
                         }
                         importBuilder.appendLine(SymbolConstants.IMPORT,preName,attributeModel.getClassName(), SymbolConstants.LINE_TAIL);

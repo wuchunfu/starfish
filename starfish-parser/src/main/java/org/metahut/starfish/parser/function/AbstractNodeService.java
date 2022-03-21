@@ -1,6 +1,6 @@
 package org.metahut.starfish.parser.function;
 
-import org.metahut.starfish.parser.domain.instance.SfNode;
+import org.metahut.starfish.parser.domain.instance.Node;
 import org.metahut.starfish.parser.exception.StarFishMetaDataOperatingException;
 import org.metahut.starfish.parser.exception.StarFishMetaDataQueryException;
 
@@ -20,8 +20,8 @@ public abstract class AbstractNodeService<E,K,T> implements INodeApi<E,K,T> {
 
     abstract AbstractPropertyService<E,K,T> getPropertyService();
 
-    public Map<K, SfNode<K,T>> union(Set<K> instance,Map<K, Map<String,T>> props) {
-        return instance.stream().collect(Collectors.toMap(k -> k, k -> new SfNode<>(k,props.get(k))));
+    public Map<K, Node<K,T>> union(Set<K> instance,Map<K, Map<String,T>> props) {
+        return instance.stream().collect(Collectors.toMap(k -> k, k -> new Node<>(k,props.get(k))));
     }
 
     @Override
@@ -35,7 +35,7 @@ public abstract class AbstractNodeService<E,K,T> implements INodeApi<E,K,T> {
     }
 
     @Override
-    public Map<K,SfNode<K,T>> nodes(E env) throws StarFishMetaDataQueryException {
+    public Map<K, Node<K,T>> nodes(E env) throws StarFishMetaDataQueryException {
         return union(getInstanceService().instanceMap(env),getPropertyService().attributesMap(env));
     }
 

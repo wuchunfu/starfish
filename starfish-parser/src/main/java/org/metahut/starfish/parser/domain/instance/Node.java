@@ -5,7 +5,7 @@ import java.util.Map;
 /**
  *
  */
-public class SfNode<K,T> {
+public class Node<K,T> {
 
     private K instanceId;
 
@@ -19,10 +19,10 @@ public class SfNode<K,T> {
         this.instanceId = instanceId;
     }
 
-    public SfNode() {
+    public Node() {
     }
 
-    public SfNode(K instanceId, Map<String, T> values) {
+    public Node(K instanceId, Map<String, T> values) {
         this.instanceId = instanceId;
         this.values = values;
     }

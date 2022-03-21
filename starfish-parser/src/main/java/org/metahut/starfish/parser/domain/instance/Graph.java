@@ -6,34 +6,34 @@ import java.util.Map;
 /**
  *
  */
-public class SfGraph<K,T> {
+public class Graph<K,T> {
 
-    protected Map<K,SfNode<K,T>> nodesMap;
+    protected Map<K, Node<K,T>> nodesMap;
 
-    protected List<SfLine<K>> links;
+    protected List<Relation<K>> links;
 
-    public Map<K, SfNode<K, T>> getNodesMap() {
+    public Map<K, Node<K, T>> getNodesMap() {
         return nodesMap;
     }
 
-    public void setNodesMap(Map<K, SfNode<K, T>> nodesMap) {
+    public void setNodesMap(Map<K, Node<K, T>> nodesMap) {
         this.nodesMap = nodesMap;
     }
 
-    public List<SfLine<K>> getLinks() {
+    public List<Relation<K>> getLinks() {
         return links;
     }
 
-    public void setLinks(List<SfLine<K>> links) {
+    public void setLinks(List<Relation<K>> links) {
         this.links = links;
     }
 
-    public SfGraph(Map<K, SfNode<K, T>> nodesMap, List<SfLine<K>> links) {
+    public Graph(Map<K, Node<K, T>> nodesMap, List<Relation<K>> links) {
         this.nodesMap = nodesMap;
         this.links = links;
     }
 
-    public SfGraph() {
+    public Graph() {
     }
 
     /**

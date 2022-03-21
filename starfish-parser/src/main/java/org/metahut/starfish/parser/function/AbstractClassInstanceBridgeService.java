@@ -1,6 +1,6 @@
 package org.metahut.starfish.parser.function;
 
-import org.metahut.starfish.parser.domain.enums.SfType;
+import org.metahut.starfish.parser.domain.enums.Type;
 
 import java.util.Set;
 
@@ -9,11 +9,11 @@ import java.util.Set;
  */
 public abstract class AbstractClassInstanceBridgeService<E,K> {
 
-    abstract void save(E env,SfType<K> rel);
+    abstract void save(E env, Type<K> rel);
 
-    abstract Set<SfType<K>> query(E env);
+    abstract Set<Type<K>> query(E env);
 
     abstract void delete(E env);
 
-    abstract void delete(E env,SfType<K> rel);
+    abstract void delete(E env, Type<K> rel);
 }

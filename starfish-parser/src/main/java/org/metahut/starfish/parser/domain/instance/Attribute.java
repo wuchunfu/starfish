@@ -1,11 +1,11 @@
 package org.metahut.starfish.parser.domain.instance;
 
-import org.metahut.starfish.parser.domain.enums.SfRelType;
+import org.metahut.starfish.parser.domain.enums.RelType;
 
 /**
  *
  */
-public class SfAttribute {
+public class Attribute {
 
     /**
      * Attribute Name
@@ -20,7 +20,7 @@ public class SfAttribute {
     /**
      * class type belongs to
      */
-    private SfRelType sfRelType = SfRelType.DEFAULT;
+    private RelType sfRelType = RelType.DEFAULT;
 
     /**
      * Attribute Is Array Or Not
@@ -55,11 +55,11 @@ public class SfAttribute {
         this.className = className;
     }
 
-    public SfRelType getRelType() {
+    public RelType getRelType() {
         return sfRelType;
     }
 
-    public void setRelType(SfRelType sfRelType) {
+    public void setRelType(RelType sfRelType) {
         this.sfRelType = sfRelType;
     }
 
