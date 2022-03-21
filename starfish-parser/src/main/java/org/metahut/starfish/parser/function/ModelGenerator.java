@@ -91,7 +91,7 @@ public class ModelGenerator {
                     String simpleClassName;
                     if (index != -1) {
                         String preName = "";
-                        if (RelType.CUSTOM == attributeModel.getRelType()) {
+                        if (RelType.ENTITY == attributeModel.getRelType()) {
                             preName = env + SymbolConstants.PACKAGE_SPLIT;
                         }
                         importBuilder.appendLine(SymbolConstants.IMPORT,preName,attributeModel.getClassName(), SymbolConstants.LINE_TAIL);

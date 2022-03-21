@@ -50,6 +50,10 @@
     <dependencies>
         <dependency>
             <groupId>org.junit.jupiter</groupId>
+            <artifactId>junit-jupiter</artifactId>
+        </dependency>
+        <dependency>
+            <groupId>org.junit.jupiter</groupId>
             <artifactId>junit-jupiter-api</artifactId>
         </dependency>
         <dependency>
@@ -82,7 +86,7 @@
             </dependency>
             <dependency>
                 <groupId>org.metahut.starfish</groupId>
-                <artifactId>starfish-ingestion-common</artifactId>
+                <artifactId>starfish-store-api</artifactId>
                 <version>${project.version}</version>
             </dependency>
 

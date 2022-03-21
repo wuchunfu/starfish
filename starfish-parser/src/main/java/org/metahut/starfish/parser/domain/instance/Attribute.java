@@ -20,7 +20,7 @@ public class Attribute {
     /**
      * class type belongs to
      */
-    private RelType sfRelType = RelType.DEFAULT;
+    private RelType relType = RelType.PRIMITIVE;
 
     /**
      * Attribute Is Array Or Not
@@ -56,11 +56,11 @@ public class Attribute {
     }
 
     public RelType getRelType() {
-        return sfRelType;
+        return relType;
     }
 
     public void setRelType(RelType sfRelType) {
-        this.sfRelType = sfRelType;
+        this.relType = sfRelType;
     }
 
     public String getDefaultValue() {

@@ -16,11 +16,23 @@
         <module>starfish-ingestion-hive-hook</module>
         <module>starfish-ingestion-server</module>
         <module>starfish-ingestion-collector-api</module>
+        <module>starfish-ingestion-collector-hive-jdbc</module>
     </modules>
 
-    <properties>
-        <maven.compiler.source>8</maven.compiler.source>
-        <maven.compiler.target>8</maven.compiler.target>
-    </properties>
+    <dependencyManagement>
+        <dependencies>
+            <dependency>
+                <groupId>org.metahut.starfish</groupId>
+                <artifactId>starfish-ingestion-collector-api</artifactId>
+                <version>${project.version}</version>
+            </dependency>
+
+            <dependency>
+                <groupId>org.metahut.starfish</groupId>
+                <artifactId>starfish-ingestion-common</artifactId>
+                <version>${project.version}</version>
+            </dependency>
+        </dependencies>
+    </dependencyManagement>
 
 </project>
