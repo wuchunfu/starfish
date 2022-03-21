@@ -25,6 +25,11 @@ public class SfClass extends TagLoader {
      */
     private String packagePath;
 
+    /**
+     * attribute model list
+     */
+    private List<SfAttribute> sfAttributes;
+
     public long getSerialVersionUID() {
         return serialVersionUID;
     }
@@ -52,12 +57,6 @@ public class SfClass extends TagLoader {
     public final String getFullClassName() {
         return packagePath + SymbolConstants.PACKAGE_SPLIT + name;
     }
-
-
-    /**
-     * attribute model list
-     */
-    private List<SfAttribute> sfAttributes;
 
     public List<SfAttribute> getAttributeModels() {
         return sfAttributes;

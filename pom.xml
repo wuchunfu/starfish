@@ -18,6 +18,7 @@
         <module>starfish-client</module>
         <module>starfish-ui</module>
         <module>starfish-server</module>
+        <module>starfish-dist</module>
     </modules>
 
     <properties>
@@ -77,6 +78,11 @@
             <dependency>
                 <groupId>org.metahut.starfish</groupId>
                 <artifactId>starfish-scheduler-api</artifactId>
+                <version>${project.version}</version>
+            </dependency>
+            <dependency>
+                <groupId>org.metahut.starfish</groupId>
+                <artifactId>starfish-ingestion-common</artifactId>
                 <version>${project.version}</version>
             </dependency>
 

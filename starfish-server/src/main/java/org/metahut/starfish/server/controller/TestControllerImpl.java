@@ -1,6 +1,6 @@
-package org.metahut.starfish.server.controller.v1;
+package org.metahut.starfish.server.controller;
 
-import org.metahut.starfish.api.controller.v1.TestController;
+import org.metahut.starfish.api.controller.TestController;
 import org.metahut.starfish.api.dto.ResultEntity;
 import org.springframework.web.bind.annotation.RestController;
 

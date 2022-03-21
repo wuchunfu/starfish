@@ -45,17 +45,17 @@ public class PulsarMessageManager implements MessageManager {
 
     @Override
     public void init(MessageProperties messageProperties) throws MessageException {
-//        pulsarProperties = messageProperties.getPulsar();
-//        try {
-//            client = PulsarClient.builder()
-//                    .serviceUrl(pulsarProperties.getServiceUrl())
-//                    .build();
-//            this.setProducers(pulsarProperties.getProducers());
-//            this.setConsumers(pulsarProperties.getConsumers());
-//
-//        } catch (PulsarClientException e) {
-//            throw new MessageException("Pulsar create client exception", e);
-//        }
+        pulsarProperties = messageProperties.getPulsar();
+        try {
+            client = PulsarClient.builder()
+                    .serviceUrl(pulsarProperties.getServiceUrl())
+                    .build();
+            this.setProducers(pulsarProperties.getProducers());
+            this.setConsumers(pulsarProperties.getConsumers());
+
+        } catch (PulsarClientException e) {
+            throw new MessageException("Pulsar create client exception", e);
+        }
     }
 
     public void setProducers(Map<String, MessageProperties.PulsarProducer> producerMap) {
