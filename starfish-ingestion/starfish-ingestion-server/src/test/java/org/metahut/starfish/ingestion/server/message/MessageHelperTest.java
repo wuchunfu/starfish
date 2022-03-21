@@ -1,4 +1,4 @@
-package org.metahut.starfish.server.message;
+package org.metahut.starfish.ingestion.server.message;
 
 import org.junit.jupiter.api.Disabled;
 import org.junit.jupiter.api.Test;

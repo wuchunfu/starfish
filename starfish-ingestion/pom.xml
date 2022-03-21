@@ -15,7 +15,7 @@
         <module>starfish-ingestion-common</module>
         <module>starfish-ingestion-hive-hook</module>
         <module>starfish-ingestion-server</module>
-        <module>starfish-ingestion-pull-api</module>
+        <module>starfish-ingestion-collector-api</module>
     </modules>
 
     <properties>

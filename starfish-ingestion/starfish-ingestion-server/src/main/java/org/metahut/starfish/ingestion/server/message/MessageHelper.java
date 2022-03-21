@@ -1,4 +1,4 @@
-package org.metahut.starfish.server.message;
+package org.metahut.starfish.ingestion.server.message;
 
 import org.metahut.starfish.message.api.ConsumerResult;
 import org.metahut.starfish.message.api.MessageConsumer;

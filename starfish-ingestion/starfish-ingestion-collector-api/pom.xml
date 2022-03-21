@@ -9,7 +9,7 @@
     </parent>
     <modelVersion>4.0.0</modelVersion>
 
-    <artifactId>starfish-ingestion-pull-api</artifactId>
+    <artifactId>starfish-ingestion-collector-api</artifactId>
 
     <properties>
         <maven.compiler.source>8</maven.compiler.source>
