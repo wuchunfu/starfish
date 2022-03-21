@@ -29,6 +29,11 @@ public class GlobalExceptionHandler {
         return ResultEntity.of(exception.getCode(), message);
     }
 
+    /**
+     * unknown exception handler
+     * @param exception exception
+     * @return result entity
+     */
     @ExceptionHandler(value = Exception.class)
     public ResultEntity exceptionHandler(Exception exception) {
         logger.error(exception.getMessage(), exception);
