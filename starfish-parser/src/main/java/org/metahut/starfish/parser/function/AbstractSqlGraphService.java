@@ -7,6 +7,7 @@ import org.metahut.starfish.parser.exception.StarFishMetaDataOperatingException;
 import org.metahut.starfish.parser.exception.StarFishMetaDataQueryException;
 
 import java.util.Collection;
+import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.concurrent.Future;
@@ -17,9 +18,9 @@ import java.util.function.Supplier;
  */
 public abstract class AbstractSqlGraphService<E,K,T> implements IGraphApi<E, K, T> {
 
-    abstract AbstractNodeService<E,K,T> getNodeService();
+    protected abstract AbstractNodeService<E,K,T> getNodeService();
 
-    abstract AbstractRelationService<E,K,T> getRelationService();
+    protected abstract AbstractRelationService<E,K,T> getRelationService();
 
     public Graph<K,T> union(Map<K, Node<K,T>> nodes, List<Relation<K>> lines) {
         return new Graph<>(nodes,lines);
@@ -41,6 +42,13 @@ public abstract class AbstractSqlGraphService<E,K,T> implements IGraphApi<E, K, 
     }
 
     // create
+    @Override
+    public K create(E env, String property, T obj) throws StarFishMetaDataOperatingException {
+        Map<String,T> map = new HashMap<>();
+        map.put(property,obj);
+        return create(env,map);
+    }
+
     /**
      * create a node
      * @param env

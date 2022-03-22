@@ -24,13 +24,13 @@ import java.util.Set;
  */
 public abstract class AbstractMetaDataService<E,K,T> implements IMetaDataApi<E,K,T> {
 
-    abstract IGraphApi<E,K,T> graphApi();
+    protected abstract IGraphApi<E,K,T> graphApi();
 
-    abstract IEnvironmentApi<E,T> environmentApi();
+    protected abstract IEnvironmentApi<E,T> environmentApi();
 
-    abstract IClassApi<E,T> classApi();
+    protected abstract IClassApi<E,T> classApi();
 
-    abstract IClassInstanceBridgeApi<E,K> classInstanceBridgeApi();
+    protected abstract IClassInstanceBridgeApi<E,K> classInstanceBridgeApi();
 
     @Override
     public void delete(E env) throws AbstractMetaParserException {

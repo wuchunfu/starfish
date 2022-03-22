@@ -16,9 +16,9 @@ import java.util.stream.Collectors;
  */
 public abstract class AbstractNodeService<E,K,T> implements INodeApi<E,K,T> {
 
-    abstract AbstractInstanceService<E,K,T> getInstanceService();
+    protected abstract AbstractInstanceService<E,K,T> getInstanceService();
 
-    abstract AbstractPropertyService<E,K,T> getPropertyService();
+    protected abstract AbstractPropertyService<E,K,T> getPropertyService();
 
     public Map<K, Node<K,T>> union(Set<K> instance,Map<K, Map<String,T>> props) {
         return instance.stream().collect(Collectors.toMap(k -> k, k -> new Node<>(k,props.get(k))));
