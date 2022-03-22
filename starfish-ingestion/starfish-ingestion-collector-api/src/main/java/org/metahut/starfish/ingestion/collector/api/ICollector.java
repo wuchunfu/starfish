@@ -1,4 +1,4 @@
 package org.metahut.starfish.ingestion.collector.api;
 
-public interface Collector extends AutoCloseable {
+public interface ICollector extends AutoCloseable {
 }

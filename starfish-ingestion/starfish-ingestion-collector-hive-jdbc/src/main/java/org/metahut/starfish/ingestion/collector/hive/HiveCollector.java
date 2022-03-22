@@ -1,10 +1,10 @@
 package org.metahut.starfish.ingestion.collector.hive;
 
-import org.metahut.starfish.ingestion.collector.api.Collector;
+import org.metahut.starfish.ingestion.collector.api.ICollector;
 import org.metahut.starfish.ingestion.common.MetaMessageProducer;
 import org.metahut.starfish.message.api.MessageProducer;
 
-public class HiveCollector implements Collector {
+public class HiveCollector implements ICollector {
 
     private final HiveParameter hiveParameter;
 

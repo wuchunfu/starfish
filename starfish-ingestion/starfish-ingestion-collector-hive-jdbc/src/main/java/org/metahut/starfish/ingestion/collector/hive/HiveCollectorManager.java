@@ -1,16 +1,16 @@
 package org.metahut.starfish.ingestion.collector.hive;
 
-import org.metahut.starfish.ingestion.collector.api.Collector;
-import org.metahut.starfish.ingestion.collector.api.CollectorManager;
+import org.metahut.starfish.ingestion.collector.api.ICollector;
+import org.metahut.starfish.ingestion.collector.api.ICollectorManager;
 
-public class HiveCollectorManager implements CollectorManager {
+public class HiveCollectorManager implements ICollectorManager {
     @Override
     public String getType() {
         return "hive-jdbc";
     }
 
     @Override
-    public Collector generateInstance(String parameter) {
+    public ICollector generateInstance(String parameter) {
         return null;
     }
 }
