@@ -1,4 +1,4 @@
-package org.metahut.starfish.store;
+package org.metahut.starfish.store.api;
 
 import java.util.Map;
 

@@ -90,6 +90,16 @@
                 <artifactId>starfish-store-api</artifactId>
                 <version>${project.version}</version>
             </dependency>
+            <dependency>
+                <groupId>org.metahut.starfish</groupId>
+                <artifactId>starfish-parser</artifactId>
+                <version>${project.version}</version>
+            </dependency>
+            <dependency>
+                <groupId>org.metahut.starfish</groupId>
+                <artifactId>starfish-service</artifactId>
+                <version>${project.version}</version>
+            </dependency>
 
             <!-- springboot -->
             <dependency>

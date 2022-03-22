@@ -6,7 +6,7 @@ import org.metahut.starfish.parser.exception.StarFishMetaDataQueryException;
 import org.metahut.starfish.parser.function.AbstractInstanceService;
 import org.metahut.starfish.parser.function.AbstractNodeService;
 import org.metahut.starfish.parser.function.AbstractPropertyService;
-import org.metahut.starfish.store.INodeRepository;
+import org.metahut.starfish.store.api.INodeRepository;
 
 import javax.annotation.Resource;
 import java.util.HashMap;

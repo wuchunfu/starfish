@@ -15,6 +15,5 @@ public class CollectorController {
 
     public void test() {
         ICollector collector = collectorHelper.generateInstance("", "");
-
     }
 }
