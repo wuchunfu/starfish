@@ -1,7 +1,8 @@
 package org.metahut.starfish.api.dto;
 
-import com.fasterxml.jackson.annotation.JsonIgnore;
 import org.metahut.starfish.api.enums.Status;
+
+import com.fasterxml.jackson.annotation.JsonIgnore;
 
 import static org.metahut.starfish.api.enums.Status.SUCCESS;
 
