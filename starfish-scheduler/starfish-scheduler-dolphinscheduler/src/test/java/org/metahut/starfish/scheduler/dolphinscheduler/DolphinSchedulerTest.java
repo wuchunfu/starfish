@@ -14,12 +14,12 @@ public class DolphinSchedulerTest {
 
     private DolphinScheduler scheduler;
 
-    private String serviceUrl = "http://dolphinscheduler.dev.zhaopin.com/dolphinscheduler";
+    private String serviceUrl = "xxx";
 
     @BeforeEach
     public void before() {
 
-        String token = "c6258d4a509df0f1b89f77fb552d8ddf";
+        String token = "xxx";
 
         SchedulerProperties schedulerProperties = new SchedulerProperties();
         schedulerProperties.setType(SchedulerType.dolphinscheduler);
