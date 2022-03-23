@@ -15,7 +15,7 @@
  * limitations under the License.
  */
 
-package org.metahut.starfish.ingestion.utils;
+package org.metahut.starfish.ingestion.common;
 
 import com.fasterxml.jackson.core.type.TypeReference;
 import com.fasterxml.jackson.databind.ObjectMapper;
