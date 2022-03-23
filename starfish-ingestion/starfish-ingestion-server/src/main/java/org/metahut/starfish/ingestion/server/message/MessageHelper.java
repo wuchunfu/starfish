@@ -57,7 +57,7 @@ public class MessageHelper {
         }
     }
 
-    public void close() throws IOException {
+    public void close() throws Exception {
         messageManager.close();
     }
 }

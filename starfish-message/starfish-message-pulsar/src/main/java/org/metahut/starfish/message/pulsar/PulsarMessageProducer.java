@@ -2,13 +2,12 @@ package org.metahut.starfish.message.pulsar;
 
 import org.metahut.starfish.message.api.MessageException;
 import org.metahut.starfish.message.api.MessageProducer;
+import org.metahut.starfish.message.api.MessageResult;
 
 import org.apache.pulsar.client.api.MessageId;
 import org.apache.pulsar.client.api.Producer;
 import org.apache.pulsar.client.api.PulsarClientException;
-import org.metahut.starfish.message.api.MessageResult;
 
-import java.io.IOException;
 import java.text.MessageFormat;
 import java.util.Objects;
 
@@ -36,7 +35,7 @@ public class PulsarMessageProducer implements MessageProducer {
     }
 
     @Override
-    public void close() throws IOException {
+    public void close() throws Exception {
         if (Objects.nonNull(producer)) {
             producer.close();
         }

@@ -67,7 +67,7 @@ public class PulsarMessageConsumer implements MessageConsumer {
     }
 
     @Override
-    public void close() throws IOException {
+    public void close() throws Exception {
         if (Objects.nonNull(consumer)) {
             consumer.close();
         }

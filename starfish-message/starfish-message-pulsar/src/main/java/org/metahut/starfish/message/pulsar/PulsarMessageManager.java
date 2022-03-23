@@ -108,11 +108,11 @@ public class PulsarMessageManager implements MessageManager {
     }
 
     @Override
-    public void close() throws IOException {
+    public void close() throws Exception {
         messageProducerMap.forEach((name, producer) -> {
             try {
                 producer.close();
-            } catch (IOException e) {
+            } catch (Exception e) {
                 logger.error(e.getMessage(), e);
             }
         });
@@ -120,7 +120,7 @@ public class PulsarMessageManager implements MessageManager {
         messageConsumerMap.forEach((name, consumer) -> {
             try {
                 consumer.close();
-            } catch (IOException e) {
+            } catch (Exception e) {
                 logger.error(e.getMessage(), e);
             }
         });

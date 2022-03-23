@@ -14,6 +14,7 @@ public class SchedulerProperties {
         private String serviceUrl;
         private String token;
         private Long projectCode;
+        private HttpClient httpClient;
 
         public String getServiceUrl() {
             return serviceUrl;
@@ -30,6 +31,10 @@ public class SchedulerProperties {
         public void setToken(String token) {
             this.token = token;
         }
+    }
+
+    public static class HttpClient {
+
     }
 
     public SchedulerType getType() {

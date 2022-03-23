@@ -47,7 +47,7 @@ class PulsarMetaMessageManagerTest {
     }
 
     @AfterEach
-    public void after() throws IOException {
+    public void after() throws Exception {
         if (Objects.nonNull(pulsarMessageManager)) {
             pulsarMessageManager.close();
         }

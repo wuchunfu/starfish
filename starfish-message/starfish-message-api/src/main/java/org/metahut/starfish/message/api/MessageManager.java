@@ -1,8 +1,6 @@
 package org.metahut.starfish.message.api;
 
-import java.io.Closeable;
-
-public interface MessageManager extends Closeable {
+public interface MessageManager extends AutoCloseable {
 
     MessageType getType();
 
