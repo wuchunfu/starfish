@@ -4,6 +4,8 @@ import org.metahut.starfish.scheduler.api.IScheduler;
 import org.metahut.starfish.scheduler.api.ISchedulerManager;
 import org.springframework.stereotype.Component;
 
+import javax.annotation.PreDestroy;
+
 @Component
 public class SchedulerHelper {
 
@@ -17,6 +19,7 @@ public class SchedulerHelper {
         return schedulerManager.getScheduler();
     }
 
+    @PreDestroy
     public void close() throws Exception {
         schedulerManager.close();
     }
