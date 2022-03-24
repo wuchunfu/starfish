@@ -2,9 +2,11 @@ package org.metahut.starfish.ingestion.server.collector;
 
 import org.metahut.starfish.ingestion.collector.api.ICollector;
 import org.metahut.starfish.ingestion.collector.api.ICollectorManager;
+
 import org.springframework.stereotype.Component;
 
 import javax.annotation.PostConstruct;
+
 import java.text.MessageFormat;
 import java.util.HashMap;
 import java.util.Map;

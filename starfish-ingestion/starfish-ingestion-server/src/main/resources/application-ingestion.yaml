@@ -17,7 +17,7 @@
 
 starfish:
   message:
-    type: NONE
+    type: none
     pulsar:
       service-url: pulsar://localhost:6650
       producers:
