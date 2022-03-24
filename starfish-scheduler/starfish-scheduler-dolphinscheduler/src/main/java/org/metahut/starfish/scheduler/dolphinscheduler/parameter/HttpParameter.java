@@ -22,7 +22,7 @@ import java.util.List;
 /**
  * http parameter
  */
-public class HttpTaskParameter {
+public class HttpParameter {
     /**
      * url
      */
@@ -31,7 +31,7 @@ public class HttpTaskParameter {
     /**
      * httpMethod
      */
-    private HttpMethod httpMethod;
+    private String httpMethod;
 
     /**
      *  http params
@@ -63,11 +63,11 @@ public class HttpTaskParameter {
         this.url = url;
     }
 
-    public HttpMethod getHttpMethod() {
+    public String getHttpMethod() {
         return httpMethod;
     }
 
-    public void setHttpMethod(HttpMethod httpMethod) {
+    public void setHttpMethod(String httpMethod) {
         this.httpMethod = httpMethod;
     }
 

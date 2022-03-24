@@ -15,21 +15,12 @@
         <dependency>
             <groupId>org.metahut.starfish</groupId>
             <artifactId>starfish-parser</artifactId>
-<<<<<<< HEAD
-            <version>1.0-SNAPSHOT</version>
-=======
->>>>>>> b40d1a915da00faceb19172ea1e908f2cb36a9f8
         </dependency>
         <dependency>
             <groupId>org.metahut.starfish</groupId>
             <artifactId>starfish-store-api</artifactId>
-<<<<<<< HEAD
-            <version>1.0-SNAPSHOT</version>
-        </dependency>
-=======
         </dependency>
 
->>>>>>> b40d1a915da00faceb19172ea1e908f2cb36a9f8
         <dependency>
             <groupId>org.springframework.boot</groupId>
             <artifactId>spring-boot-starter-web</artifactId>

@@ -120,6 +120,11 @@
                 <artifactId>starfish-service</artifactId>
                 <version>${project.version}</version>
             </dependency>
+            <dependency>
+                <groupId>org.metahut.starfish</groupId>
+                <artifactId>starfish-ingestion-collector-api</artifactId>
+                <version>${project.version}</version>
+            </dependency>
 
             <!-- springboot -->
             <dependency>

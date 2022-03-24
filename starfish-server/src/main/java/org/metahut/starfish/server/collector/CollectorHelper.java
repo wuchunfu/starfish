@@ -15,7 +15,7 @@
  * limitations under the License.
  */
 
-package org.metahut.starfish.ingestion.server.collector;
+package org.metahut.starfish.server.collector;
 
 import org.metahut.starfish.ingestion.collector.api.ICollector;
 import org.metahut.starfish.ingestion.collector.api.ICollectorManager;
