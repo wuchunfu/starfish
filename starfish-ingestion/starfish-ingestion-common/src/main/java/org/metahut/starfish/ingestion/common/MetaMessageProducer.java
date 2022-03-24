@@ -22,6 +22,7 @@ import org.metahut.starfish.message.api.MessageManager;
 import org.metahut.starfish.message.api.MessageProducer;
 import org.metahut.starfish.message.api.MessageProperties;
 import org.metahut.starfish.message.api.MessageType;
+
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -54,11 +55,11 @@ public class MetaMessageProducer {
         private Singleton() {
             init();
             if(Objects.nonNull(messageManager)) {
-                throw new RuntimeException("meta message manager create exception");
+                throw new RuntimeException("meta message manager init exception");
             }
             producer = messageManager.getProducer(MESSAGE_META_EVENT);
             if(Objects.nonNull(producer)) {
-                throw new RuntimeException("meta message producer create exception");
+                throw new RuntimeException("meta message producer init exception");
             }
         }
 
