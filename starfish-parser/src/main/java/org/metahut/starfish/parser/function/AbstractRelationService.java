@@ -3,6 +3,6 @@ package org.metahut.starfish.parser.function;
 /**
  *
  */
-public abstract class AbstractRelationService<E,K,T> implements IRelationApi<E,K,T> {
+public abstract class AbstractRelationService<V,K,T> implements IRelationApi<V,K,T> {
 
 }

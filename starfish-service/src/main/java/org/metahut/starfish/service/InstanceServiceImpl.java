@@ -4,7 +4,7 @@ import org.metahut.starfish.parser.exception.StarFishMetaDataOperatingException;
 import org.metahut.starfish.parser.exception.StarFishMetaDataQueryException;
 import org.metahut.starfish.parser.function.AbstractInstanceService;
 import org.metahut.starfish.parser.function.AbstractQueryCondition;
-import org.metahut.starfish.store.api.IEntityRepository;
+import org.metahut.starfish.store.IEntityRepository;
 
 import javax.annotation.Resource;
 import java.util.Collection;

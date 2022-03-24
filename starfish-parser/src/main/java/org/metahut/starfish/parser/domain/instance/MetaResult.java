@@ -9,7 +9,6 @@ import java.util.Set;
  *
  */
 public class MetaResult<E,K,T> {
-    private Environment<E> environment;
     private Graph<K,T> graph;
     private Collection<Class> classInfos;
     private Set<Type<K>> typesInfos;
@@ -17,19 +16,10 @@ public class MetaResult<E,K,T> {
     public MetaResult() {
     }
 
-    public MetaResult(Environment<E> environment, Graph<K, T> graph, Collection<Class> classInfos, Set<Type<K>> typesInfos) {
-        this.environment = environment;
+    public MetaResult(Graph<K, T> graph, Collection<Class> classInfos, Set<Type<K>> typesInfos) {
         this.graph = graph;
         this.classInfos = classInfos;
         this.typesInfos = typesInfos;
-    }
-
-    public Environment<E> getEnvironment() {
-        return environment;
-    }
-
-    public void setEnvironment(Environment<E> environment) {
-        this.environment = environment;
     }
 
     public Graph<K, T> getGraph() {

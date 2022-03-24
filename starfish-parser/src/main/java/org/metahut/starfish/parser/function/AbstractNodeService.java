@@ -14,11 +14,11 @@ import java.util.stream.Collectors;
 /**
  *
  */
-public abstract class AbstractNodeService<E,K,T> implements INodeApi<E,K,T> {
+public abstract class AbstractNodeService<V,K,T> implements INodeApi<V,K,T> {
 
-    protected abstract AbstractInstanceService<E,K,T> getInstanceService();
+    protected abstract AbstractInstanceService<V,K,T> getInstanceService();
 
-    protected abstract AbstractPropertyService<E,K,T> getPropertyService();
+    protected abstract AbstractPropertyService<V,K,T> getPropertyService();
 
     public Map<K, Node<K,T>> union(Set<K> instance,Map<K, Map<String,T>> props) {
         return instance.stream().collect(Collectors.toMap(k -> k, k -> new Node<>(k,props.get(k))));
@@ -35,86 +35,86 @@ public abstract class AbstractNodeService<E,K,T> implements INodeApi<E,K,T> {
     }
 
     @Override
-    public Map<K, Node<K,T>> nodes(E env) throws StarFishMetaDataQueryException {
-        return union(getInstanceService().instanceMap(env),getPropertyService().attributesMap(env));
+    public Map<K, Node<K,T>> nodes(V typeName) throws StarFishMetaDataQueryException {
+        return union(getInstanceService().instanceMap(typeName),getPropertyService().attributesMap(typeName));
     }
 
     // create
     @Override
-    public K create(E env,Map<String,T> attributes) throws StarFishMetaDataOperatingException {
-        K key = getInstanceService().create(env);
-        getPropertyService().add(env,key,attributes);
+    public K create(V typeName,Map<String,T> attributes) throws StarFishMetaDataOperatingException {
+        K key = getInstanceService().create(typeName);
+        getPropertyService().add(typeName,key,attributes);
         return key;
     }
 
     // add
     @Override
-    public void add(E env,K instanceId,String property,T obj) throws StarFishMetaDataOperatingException {
-        getPropertyService().add(env,instanceId,property,obj);
+    public void add(V typeName,K entityId,String property,T obj) throws StarFishMetaDataOperatingException {
+        getPropertyService().add(typeName,entityId,property,obj);
     }
 
     // update
     @Override
-    public void update(E env,K instanceId,String property,T obj) throws StarFishMetaDataOperatingException {
-        getInstanceService().valid(env,instanceId);
-        getPropertyService().update(env,instanceId,property,obj);
+    public void update(V typeName,K entityId,String property,T obj) throws StarFishMetaDataOperatingException {
+        getInstanceService().valid(typeName,entityId);
+        getPropertyService().update(typeName,entityId,property,obj);
     }
 
     @Override
-    public void update(E env,K instanceId,Map<String,T> attributes) throws StarFishMetaDataOperatingException {
-        getInstanceService().valid(env, instanceId);
-        getPropertyService().update(env,instanceId,attributes);
+    public void update(V typeName,K entityId,Map<String,T> attributes) throws StarFishMetaDataOperatingException {
+        getInstanceService().valid(typeName, entityId);
+        getPropertyService().update(typeName,entityId,attributes);
     }
 
     // modify
     @Override
-    public void modify(E env, K instanceId, Map<String, T> attributes) throws StarFishMetaDataOperatingException {
-        getInstanceService().valid(env, instanceId);
-        getPropertyService().modify(env,instanceId,attributes);
+    public void modify(V typeName, K entityId, Map<String, T> attributes) throws StarFishMetaDataOperatingException {
+        getInstanceService().valid(typeName, entityId);
+        getPropertyService().modify(typeName,entityId,attributes);
     }
 
     // copy
     @Override
-    public K copy(E env, K instanceId) throws StarFishMetaDataOperatingException {
-        K key = getInstanceService().create(env);
-        getPropertyService().copy(env,instanceId,key);
+    public K copy(V typeName, K entityId) throws StarFishMetaDataOperatingException {
+        K key = getInstanceService().create(typeName);
+        getPropertyService().copy(typeName,entityId,key);
         return key;
     }
 
     @Override
-    public void copy(E toEnv, E fromEnv, K... instanceIds) throws StarFishMetaDataOperatingException {
+    public void copy(V totypeName, V fromtypeName, K... entityIds) throws StarFishMetaDataOperatingException {
     }
 
     // move
     @Override
-    public void move(E env, K oldInstanceId, K newInstanceId, String property) throws StarFishMetaDataOperatingException {
-        getInstanceService().valid(env,oldInstanceId,newInstanceId);
-        getPropertyService().move(env,oldInstanceId,newInstanceId,property);
+    public void move(V typeName, K oldentityId, K newentityId, String property) throws StarFishMetaDataOperatingException {
+        getInstanceService().valid(typeName,oldentityId,newentityId);
+        getPropertyService().move(typeName,oldentityId,newentityId,property);
     }
 
     //delete
     @Override
-    public void delete(E env) throws StarFishMetaDataOperatingException {
-        getInstanceService().delete(env);
-        getPropertyService().delete(env);
+    public void delete(V typeName) throws StarFishMetaDataOperatingException {
+        getInstanceService().delete(typeName);
+        getPropertyService().delete(typeName);
     }
 
     @Override
-    public void delete(E env, K instanceId) throws StarFishMetaDataOperatingException {
-        getInstanceService().delete(env,instanceId);
-        getPropertyService().delete(env,instanceId);
+    public void delete(V typeName, K entityId) throws StarFishMetaDataOperatingException {
+        getInstanceService().delete(typeName,entityId);
+        getPropertyService().delete(typeName,entityId);
     }
 
     @Override
-    public void delete(E env, K instanceId, String property) throws StarFishMetaDataOperatingException {
-        getInstanceService().valid(env,instanceId);
-        getPropertyService().delete(env,instanceId,property);
+    public void delete(V typeName, K entityId, String property) throws StarFishMetaDataOperatingException {
+        getInstanceService().valid(typeName,entityId);
+        getPropertyService().delete(typeName,entityId,property);
     }
 
     @Override
-    public void delete(E env, K... instanceIds) throws StarFishMetaDataOperatingException {
-        getInstanceService().delete(env,instanceIds);
-        getPropertyService().delete(env,instanceIds);
+    public void delete(V typeName, K... entityIds) throws StarFishMetaDataOperatingException {
+        getInstanceService().delete(typeName,entityIds);
+        getPropertyService().delete(typeName,entityIds);
     }
 
 }
