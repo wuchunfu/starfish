@@ -8,7 +8,7 @@ import java.util.Set;
 /**
  *
  */
-interface IClassInstanceBridgeApi<E,K> {
+interface ITypeInstanceBridgeApi<E,K> {
     void save(E env, Type<K> rel);
 
     Set<Type<K>> query(E env);

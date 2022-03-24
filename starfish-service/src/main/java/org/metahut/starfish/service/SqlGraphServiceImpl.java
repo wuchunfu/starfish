@@ -2,7 +2,6 @@ package org.metahut.starfish.service;
 
 import org.metahut.starfish.parser.exception.StarFishMetaDataOperatingException;
 import org.metahut.starfish.parser.function.AbstractNodeService;
-import org.metahut.starfish.parser.function.AbstractRelation;
 import org.metahut.starfish.parser.function.AbstractRelationService;
 import org.metahut.starfish.parser.function.AbstractSqlGraphService;
 

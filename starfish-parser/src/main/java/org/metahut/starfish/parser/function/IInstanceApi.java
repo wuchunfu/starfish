@@ -10,66 +10,66 @@ import java.util.function.Supplier;
 /**
  * Graph [Node {Class:{properties}}] - line - Graph
  */
-interface IInstanceApi<E,K,T> extends AbstractQueryService<T> {
+interface IInstanceApi<V,K,T> extends AbstractQueryService<T> {
 
     /**
-     * read all instance key info from env
-     * @param env
+     * read all instance key info from typeName
+     * @param typeName
      * @return
      */
-    Set<K> instanceMap(E env) throws StarFishMetaDataQueryException;
+    Set<K> instanceMap(V typeName) throws StarFishMetaDataQueryException;
 
-    Future<Set<K>> instanceMap(Supplier<E> env) throws StarFishMetaDataQueryException;
+    Future<Set<K>> instanceMap(Supplier<V> typeName) throws StarFishMetaDataQueryException;
 
     // valid
     /**
      * valid if it is all instance id illegal
-     * @param env
+     * @param typeName
      * @param instanceIds
      * @throws StarFishMetaDataOperatingException
      */
-    void valid(E env,K... instanceIds) throws StarFishMetaDataOperatingException;
+    void valid(V typeName,K... instanceIds) throws StarFishMetaDataOperatingException;
 
     // create
     /**
      * create a empty node
-     * @param env
+     * @param typeName
      * @return
      * @throws StarFishMetaDataOperatingException
      */
-    K create(E env) throws StarFishMetaDataOperatingException;
+    K create(V typeName) throws StarFishMetaDataOperatingException;
 
     /**
-     * copy from the env to another env
-     * @param oldEnv
-     * @param newEnv
+     * copy from the typeName to another typeName
+     * @param oldtypeName
+     * @param newtypeName
      * @param deleteOld
      * @throws StarFishMetaDataOperatingException
      */
-    void copy(E oldEnv,E newEnv,boolean deleteOld) throws StarFishMetaDataOperatingException;
+    void copy(V oldtypeName, V newtypeName,boolean deleteOld) throws StarFishMetaDataOperatingException;
 
     // delete
     /**
-     * delete all instance in env
-     * @param env
+     * delete all instance in typeName
+     * @param typeName
      * @throws StarFishMetaDataOperatingException
      */
-    void delete(E env) throws StarFishMetaDataOperatingException;
+    void delete(V typeName) throws StarFishMetaDataOperatingException;
 
     /**
      * delete a node by id
-     * @param env
+     * @param typeName
      * @param instanceId
      * @throws StarFishMetaDataOperatingException
      */
-    void delete(E env,K instanceId) throws StarFishMetaDataOperatingException;
+    void delete(V typeName,K instanceId) throws StarFishMetaDataOperatingException;
 
     /**
      * batch delete instances
-     * @param env
+     * @param typeName
      * @param instanceIds
      * @throws StarFishMetaDataOperatingException
      */
-    void delete(E env, K... instanceIds) throws StarFishMetaDataOperatingException;
+    void delete(V typeName, K... instanceIds) throws StarFishMetaDataOperatingException;
 
 }

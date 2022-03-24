@@ -20,12 +20,20 @@ public class MetaDataServiceImpl extends AbstractMetaDataService<String,String,S
     }
 
     @Override
+<<<<<<< HEAD
+    protected AbstractTypeService<String, String> classApi() {
+=======
     protected AbstractClassService<String, String> classApi() {
+>>>>>>> b40d1a915da00faceb19172ea1e908f2cb36a9f8
         return null;
     }
 
     @Override
+<<<<<<< HEAD
+    protected AbstractTypeInstanceBridgeService<String, String> classInstanceBridgeApi() {
+=======
     protected AbstractClassInstanceBridgeService<String, String> classInstanceBridgeApi() {
+>>>>>>> b40d1a915da00faceb19172ea1e908f2cb36a9f8
         return null;
     }
 
