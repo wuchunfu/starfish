@@ -30,6 +30,9 @@ import org.springframework.stereotype.Component;
 import static org.metahut.starfish.message.api.Constants.MESSAGE_CONFIG_PREFIX;
 import static org.metahut.starfish.message.api.MessageType.none;
 
+/**
+ * none meta message manager
+ */
 @Component
 @ConditionalOnProperty(prefix = MESSAGE_CONFIG_PREFIX, name = "type", havingValue = "none")
 public class NoneMessageManager implements MessageManager {
