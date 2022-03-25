@@ -36,6 +36,7 @@
         <module>starfish-server</module>
         <module>starfish-service</module>
         <module>starfish-dist</module>
+        <module>starfish-examples</module>
     </modules>
 
     <properties>
