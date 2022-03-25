@@ -1,7 +1,6 @@
 package org.metahut.starfish.service;
 
 import org.metahut.starfish.parser.exception.AbstractMetaParserException;
-import org.metahut.starfish.parser.function.AbstractClassInstanceBridgeService;
 import org.metahut.starfish.parser.function.AbstractMetaDataService;
 import org.metahut.starfish.parser.function.AbstractSqlGraphService;
 import org.metahut.starfish.parser.function.AbstractTypeInstanceBridgeService;
