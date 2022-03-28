@@ -52,11 +52,12 @@ public class CollectorHelper {
         });
     }
 
-    public ICollectorManager getCollector(String type) {
+    private ICollectorManager getCollector(String type) {
         return collectorMap.get(type);
     }
 
     public ICollector generateInstance(String type, String parameter) {
         return getCollector(type).generateInstance(parameter);
     }
+
 }

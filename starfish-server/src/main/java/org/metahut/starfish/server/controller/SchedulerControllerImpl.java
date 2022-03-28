@@ -23,4 +23,10 @@ public class SchedulerControllerImpl implements SchedulerController {
         schedulerHelper.getScheduler().createSingleHttpTask(parameter);
         return null;
     }
+
+    // 创建单个Http任务
+
+    // 查看任务定义
+
+    // 查看任务日志
 }
