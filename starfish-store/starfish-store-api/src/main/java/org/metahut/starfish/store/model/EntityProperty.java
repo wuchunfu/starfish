@@ -2,7 +2,7 @@ package org.metahut.starfish.store.model;
 
 import java.io.Serializable;
 
-public class EntityProperty<ID extends Serializable> {
+public class EntityProperty<ID extends Serializable,T> {
 
     private ID id;
 
@@ -10,5 +10,5 @@ public class EntityProperty<ID extends Serializable> {
 
     private String name;
 
-    private Object value;
+    private T value;
 }

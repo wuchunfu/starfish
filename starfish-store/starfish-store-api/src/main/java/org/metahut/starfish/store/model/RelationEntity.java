@@ -3,7 +3,7 @@ package org.metahut.starfish.store.model;
 import java.io.Serializable;
 import java.util.List;
 
-public class RelationEntity<ID extends Serializable> {
+public class RelationEntity<ID extends Serializable, T> {
 
     private ID id;
 
@@ -13,5 +13,5 @@ public class RelationEntity<ID extends Serializable> {
 
     private ID endNodeId;
 
-    private List<EntityProperty<ID>> properties;
+    private List<EntityProperty<ID, T>> properties;
 }
