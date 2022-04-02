@@ -3,36 +3,36 @@ package org.metahut.starfish.store.api;
 import java.io.Serializable;
 import java.util.Collection;
 import java.util.List;
-import org.metahut.starfish.store.model.EntityProperty;
-import org.metahut.starfish.store.model.NodeEntity;
+import org.metahut.starfish.store.model.AbstractEntityProperty;
+import org.metahut.starfish.store.model.AbstractNodeEntity;
 
-public interface NodeEntityRepository<ID extends Serializable,T> {
+public interface NodeEntityRepository<ID extends Serializable, P extends AbstractEntityProperty> {
 
     /**
      *
      * @param entity
      * @return the number of affected records
      */
-    int create(NodeEntity<ID, T> entity);
+    int create(AbstractNodeEntity<ID, P> entity);
 
     /**
      *
      * @param entities
      * @return the number of affected records
      */
-    int createBatch(Collection<NodeEntity<ID, T>> entities);
+    int createBatch(Collection<AbstractNodeEntity<ID, P>> entities);
 
     /**
      * @param entity
      * @return the number of affected records
      */
-    int remove(NodeEntity<ID, T> entity);
+    int remove(AbstractNodeEntity<ID, P> entity);
 
     /**
      * @param entities
      * @return the number of affected records
      */
-    int removeBatchById(Collection<NodeEntity<ID, T>> entities);
+    int removeBatch(Collection<AbstractNodeEntity<ID, P>> entities);
 
     /**
      * @param ids
@@ -52,19 +52,19 @@ public interface NodeEntityRepository<ID extends Serializable,T> {
      * @param entity
      * @return
      */
-    int removeAllByCategory(NodeEntity<ID, T> entity);
+    int removeAllByCategory(AbstractNodeEntity<ID, P> entity);
 
     /**
      * @param entity
      * @return the number of affected records
      */
-    int update(NodeEntity<ID, T> entity);
+    int update(AbstractNodeEntity<ID, P> entity);
 
     /**
      * @param entities
      * @return the number of affected records
      */
-    int updateBatchById(Collection<NodeEntity<ID, T>> entities);
+    int updateBatchById(Collection<AbstractNodeEntity<ID, P>> entities);
 
     /**
      *
@@ -72,7 +72,7 @@ public interface NodeEntityRepository<ID extends Serializable,T> {
      * @param property
      * @return the instance of a node entity with all properties
      */
-    NodeEntity<ID, T> updatePropertyByEntityId(ID entityId, EntityProperty<ID, T> property);
+    AbstractNodeEntity<ID, P> updatePropertyByEntityId(ID entityId, P property);
 
     /**
      *
@@ -80,7 +80,7 @@ public interface NodeEntityRepository<ID extends Serializable,T> {
      * @param property
      * @return the instance of a node entity with all properties
      */
-    NodeEntity<ID, T> updatePropertyByEntityId(NodeEntity<ID, T> entity, EntityProperty<ID, T> property);
+    AbstractNodeEntity<ID, P> updatePropertyByEntityId(AbstractNodeEntity<ID, P> entity, P property);
 
     /**
      *
@@ -88,7 +88,7 @@ public interface NodeEntityRepository<ID extends Serializable,T> {
      * @param property
      * @return the instance of a node entity with all properties
      */
-    NodeEntity<ID, T> updatePropertiesByEntityId(NodeEntity<ID, T> entity, Collection<EntityProperty<ID, T>> property);
+    AbstractNodeEntity<ID, P> updatePropertiesByEntityId(AbstractNodeEntity<ID, P> entity, Collection<P> property);
 
     /**
      *
@@ -96,7 +96,7 @@ public interface NodeEntityRepository<ID extends Serializable,T> {
      * @param property
      * @return the instance of a node entity with all properties
      */
-    NodeEntity<ID, T> removePropertyByEntityId(NodeEntity<ID, T> entity, Collection<EntityProperty<ID, T>> property);
+    AbstractNodeEntity<ID, P> removePropertyByEntityId(AbstractNodeEntity<ID, P> entity, Collection<P> property);
 
     /**
      *
@@ -104,7 +104,7 @@ public interface NodeEntityRepository<ID extends Serializable,T> {
      * @param property
      * @return the instance of a node entity with all properties
      */
-    NodeEntity<ID, T> removePropertyByEntityId(ID entityId, Collection<EntityProperty<ID, T>> property);
+    AbstractNodeEntity<ID, P> removePropertyByEntityId(ID entityId, Collection<P> property);
 
     /**
      *
@@ -112,7 +112,7 @@ public interface NodeEntityRepository<ID extends Serializable,T> {
      * @param property
      * @return
      */
-    NodeEntity<ID, T> removeAllPropertiesByEntityId(ID entityId, Collection<EntityProperty<ID, T>> property);
+    AbstractNodeEntity<ID, P> removeAllPropertiesByEntityId(ID entityId, Collection<P> property);
 
     /**
      *
@@ -120,21 +120,21 @@ public interface NodeEntityRepository<ID extends Serializable,T> {
      * @param property
      * @return
      */
-    NodeEntity<ID, T> removeAllPropertiesByEntityId(NodeEntity<ID, T> entity, Collection<EntityProperty<ID, T>> property);
+    AbstractNodeEntity<ID, P> removeAllPropertiesByEntityId(AbstractNodeEntity<ID, P> entity, Collection<P> property);
 
     /**
      *
      * @param id
      * @return the instance of a node entity with all properties
      */
-    NodeEntity<ID, T> findById(ID id);
+    AbstractNodeEntity<ID, P> findById(ID id);
 
     /**
      *
      * @param entity
      * @return the instance of a node entity with all properties
      */
-    NodeEntity<ID, T> findById(NodeEntity<ID, T> entity);
+    AbstractNodeEntity<ID, P> findById(AbstractNodeEntity<ID, P> entity);
 
     /**
      *
@@ -143,9 +143,9 @@ public interface NodeEntityRepository<ID extends Serializable,T> {
      * @param propertyValue
      * @return
      */
-    List<NodeEntity<ID, T>> findByProperty(String category, String propertyName, String propertyValue);
+    List<AbstractNodeEntity<ID, P>> findByProperty(String category, String propertyName, String propertyValue);
 
 
-//    List<NodeEntity<ID, T>> findByProperties(QueryConditionWrapper<NodeEntity<ID, T>> wrapper);
+//    List<AbstractNodeEntity<ID, P>> findByProperties(QueryConditionWrapper<AbstractNodeEntity<ID, P>> wrapper);
 
 }
