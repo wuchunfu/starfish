@@ -36,7 +36,7 @@ public class RelationEntity extends AbstractRelationEntity<Long, RelationEntityP
     @Column(name = "category")
     private String category;
 
-    @OneToMany(targetEntity = RelationEntityProperty.class, fetch = FetchType.EAGER)
+    @OneToMany(targetEntity = RelationEntityProperty.class, mappedBy = "id", fetch = FetchType.EAGER)
     private Set<RelationEntityProperty> properties;
 
     @OneToOne(targetEntity = NodeEntity.class, fetch = FetchType.EAGER)

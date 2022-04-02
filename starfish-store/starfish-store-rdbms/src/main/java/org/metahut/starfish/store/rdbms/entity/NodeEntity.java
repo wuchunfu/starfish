@@ -39,7 +39,7 @@ public class NodeEntity extends AbstractNodeEntity<Long, NodeEntityProperty> {
     @Column(columnDefinition = "jsonb")
     private Set<String> categories;
 
-    @OneToMany(targetEntity = NodeEntityProperty.class, fetch = FetchType.EAGER)
+    @OneToMany(targetEntity = NodeEntityProperty.class, mappedBy = "id", fetch = FetchType.EAGER)
     private Set<NodeEntityProperty> properties;
 
     @Column(name = "operator")
