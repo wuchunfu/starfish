@@ -1,15 +1,19 @@
 package org.metahut.starfish.store.rdbms.repository;
 
+import com.fasterxml.jackson.core.JsonProcessingException;
+import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.ObjectMapper;
+import com.fasterxml.jackson.databind.SerializationConfig;
+import com.fasterxml.jackson.databind.SerializationFeature;
 import java.io.IOException;
-import java.util.Set;
+import java.util.HashMap;
+import java.util.ResourceBundle;
 import java.util.stream.Stream;
-import org.assertj.core.util.Sets;
+import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.params.ParameterizedTest;
 import org.junit.jupiter.params.provider.MethodSource;
 import org.metahut.starfish.store.rdbms.entity.NodeEntity;
-import org.metahut.starfish.store.rdbms.entity.NodeEntityProperty;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 
@@ -19,18 +23,12 @@ public class NodeEntityRepositoryTest {
     @Autowired
     private NodeEntityRepository repository;
 
-    public static final String name = "dwd.user_info";
-
-    public static final Set<String> categories = Sets.set("HiveTable", "Hive");
-
     public static final String jsonFilePath = "/json/node_entity.json";
 
+    public static final ObjectMapper objectMapper = new ObjectMapper();
 
-    static Stream<NodeEntity> nodeEntityProvider() {
-        NodeEntity entity = new NodeEntity();
-        entity.setName(name);
-        entity.setCategories(categories);
-        entity.setOperator(1);
+    static Stream<NodeEntity> nodeEntityWithPropertyProvider() throws IOException {
+        NodeEntity entity = objectMapper.readValue(NodeEntityRepositoryTest.class.getResourceAsStream(jsonFilePath), NodeEntity.class);
         return Stream.of(entity);
     }
 
@@ -39,28 +37,28 @@ public class NodeEntityRepositoryTest {
         repository.deleteAll();
     }
 
-    static Stream<NodeEntity> nodeEntityWithPropertyProvider() throws IOException {
-        ObjectMapper objectMapper = new ObjectMapper();
-        NodeEntity entity = objectMapper.readValue(NodeEntityRepositoryTest.class.getResourceAsStream(jsonFilePath), NodeEntity.class);
-        System.out.println(entity);
-        return Stream.of(entity);
-    }
-
-    public Set<NodeEntityProperty> initProperties() {
-        NodeEntityProperty property = new NodeEntityProperty();
-        return null;
-    }
-
     @ParameterizedTest
-    @MethodSource("nodeEntityProvider")
-    public void saveTest(NodeEntity entity) {
-        entity = repository.save(entity);
+    @MethodSource("nodeEntityWithPropertyProvider")
+    public void saveWithPropertiesTest(NodeEntity entity) {
+        NodeEntity savedEntity = repository.save(entity);
+        Assertions.assertNotNull(savedEntity.getId());
+        Assertions.assertNotNull(savedEntity.getCreateTime());
+        Assertions.assertNotNull(savedEntity.getUpdateTime());
     }
 
     @ParameterizedTest
     @MethodSource("nodeEntityWithPropertyProvider")
-    public void saveWithPropertiesTest(NodeEntity entity) {
-        repository.save(entity);
+    public void findWithPropertiesTest(NodeEntity entity) throws JsonProcessingException {
+        NodeEntity expected = repository.save(entity);
+
+        NodeEntity actual = repository.findById(expected.getId()).get();
+
+        JsonNode expectedJson = objectMapper.readTree(objectMapper.writeValueAsString(expected));
+
+        JsonNode actualJson = objectMapper.readTree(objectMapper.writeValueAsString(actual));
+
+        Assertions.assertEquals(expectedJson, actualJson);
+
     }
 
 }

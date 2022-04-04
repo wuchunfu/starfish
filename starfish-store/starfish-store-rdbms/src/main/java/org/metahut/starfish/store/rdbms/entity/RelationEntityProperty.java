@@ -13,6 +13,8 @@ import javax.persistence.ManyToOne;
 import javax.persistence.Table;
 import javax.persistence.Transient;
 import lombok.Data;
+import lombok.Getter;
+import lombok.Setter;
 import org.hibernate.annotations.Type;
 import org.hibernate.annotations.TypeDef;
 import org.metahut.starfish.store.model.AbstractEntityProperty;
@@ -20,7 +22,8 @@ import org.springframework.data.annotation.CreatedDate;
 import org.springframework.data.annotation.LastModifiedDate;
 import org.springframework.data.jpa.domain.support.AuditingEntityListener;
 
-@Data
+@Setter
+@Getter
 @Entity
 @Table(name = "t_sf_relation_entity_property")
 @EntityListeners(AuditingEntityListener.class)
