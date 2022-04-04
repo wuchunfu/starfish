@@ -3,12 +3,9 @@ package org.metahut.starfish.store.rdbms.repository;
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.ObjectMapper;
-import com.fasterxml.jackson.databind.SerializationConfig;
-import com.fasterxml.jackson.databind.SerializationFeature;
 import java.io.IOException;
-import java.util.HashMap;
-import java.util.ResourceBundle;
 import java.util.stream.Stream;
+import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.params.ParameterizedTest;
@@ -37,6 +34,11 @@ public class NodeEntityRepositoryTest {
         repository.deleteAll();
     }
 
+    @AfterEach
+    public void cleanUp() {
+        repository.deleteAll();
+    }
+
     @ParameterizedTest
     @MethodSource("nodeEntityWithPropertyProvider")
     public void saveWithPropertiesTest(NodeEntity entity) {
@@ -58,6 +60,18 @@ public class NodeEntityRepositoryTest {
         JsonNode actualJson = objectMapper.readTree(objectMapper.writeValueAsString(actual));
 
         Assertions.assertEquals(expectedJson, actualJson);
+    }
+
+    @ParameterizedTest
+    @MethodSource("nodeEntityWithPropertyProvider")
+    public void updateTest(NodeEntity entity) {
+        NodeEntity saveEntity = repository.save(entity);
+        String alteredName = "dwd.user_info_test";
+        saveEntity.setName(alteredName);
+
+        NodeEntity expected = repository.save(saveEntity);
+
+        Assertions.assertEquals(expected.getName(), alteredName);
 
     }
 

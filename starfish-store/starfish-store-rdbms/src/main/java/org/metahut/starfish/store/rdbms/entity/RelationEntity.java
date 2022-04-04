@@ -1,8 +1,10 @@
 package org.metahut.starfish.store.rdbms.entity;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import java.util.Date;
 import java.util.Map;
 import java.util.Set;
+import javax.persistence.CascadeType;
 import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.EntityListeners;
@@ -10,11 +12,11 @@ import javax.persistence.FetchType;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
-import javax.persistence.MappedSuperclass;
+import javax.persistence.JoinColumn;
+import javax.persistence.MapsId;
 import javax.persistence.OneToMany;
 import javax.persistence.OneToOne;
 import javax.persistence.Table;
-import lombok.Data;
 import lombok.Getter;
 import lombok.Setter;
 import org.metahut.starfish.store.model.AbstractRelationEntity;
@@ -39,13 +41,16 @@ public class RelationEntity extends AbstractRelationEntity<Long, RelationEntityP
     @Column(name = "category")
     private String category;
 
-    @OneToMany(targetEntity = RelationEntityProperty.class, mappedBy = "id", fetch = FetchType.EAGER)
+    @OneToMany(targetEntity = RelationEntityProperty.class, fetch = FetchType.EAGER, cascade = CascadeType.ALL)
+    @JoinColumn(name = "entity_id")
     private Set<RelationEntityProperty> properties;
 
-    @OneToOne(targetEntity = NodeEntity.class, fetch = FetchType.EAGER)
+    @OneToOne(targetEntity = NodeEntity.class, fetch = FetchType.EAGER, cascade = CascadeType.PERSIST)
+    @JoinColumn(name = "id")
     private NodeEntity startNodeEntity;
 
-    @OneToOne(targetEntity = NodeEntity.class, fetch = FetchType.EAGER)
+    @OneToOne(targetEntity = NodeEntity.class, fetch = FetchType.EAGER, cascade = CascadeType.PERSIST)
+    @JoinColumn(name = "id")
     private NodeEntity endNodeEntity;
 
     @Column(name = "operator")

@@ -1,18 +1,18 @@
 package org.metahut.starfish.store.rdbms.entity;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.vladmihalcea.hibernate.type.json.JsonBinaryType;
 import java.util.Date;
 import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.EntityListeners;
+import javax.persistence.FetchType;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
 import javax.persistence.JoinColumn;
 import javax.persistence.ManyToOne;
 import javax.persistence.Table;
-import javax.persistence.Transient;
-import lombok.Data;
 import lombok.Getter;
 import lombok.Setter;
 import org.hibernate.annotations.Type;
@@ -34,9 +34,9 @@ public class RelationEntityProperty extends AbstractEntityProperty<Long, Object,
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
-    @Transient
-    @ManyToOne(targetEntity = RelationEntity.class)
+    @ManyToOne(targetEntity = RelationEntity.class, fetch = FetchType.EAGER)
     @JoinColumn(name = "entity_id", referencedColumnName = "id")
+    @JsonIgnore
     private RelationEntity entity;
 
     @Column(name = "name", nullable = false)
