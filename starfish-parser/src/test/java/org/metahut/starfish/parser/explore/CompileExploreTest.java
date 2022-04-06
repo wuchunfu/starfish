@@ -29,6 +29,8 @@ public class CompileExploreTest {
 
     private static Map<String, JavaFileObject> fileObjects = new ConcurrentHashMap<>();
 
+    public static final Pattern CLASS_PATTERN = Pattern.compile("class\\s+([$_a-zA-Z][$_a-zA-Z0-9]*)\\s*");
+
     @Test
     public void compileTest() {
         String code = "public class HelloWorld {\n"
@@ -47,7 +49,6 @@ public class CompileExploreTest {
         options.add("-target");
         options.add("1.8");
 
-        Pattern CLASS_PATTERN = Pattern.compile("class\\s+([$_a-zA-Z][$_a-zA-Z0-9]*)\\s*");
         Matcher matcher = CLASS_PATTERN.matcher(code);
         String cls;
         if (matcher.find()) {

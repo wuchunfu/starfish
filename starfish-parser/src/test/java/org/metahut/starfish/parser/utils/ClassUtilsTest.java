@@ -11,11 +11,11 @@ public class ClassUtilsTest {
 
     @ParameterizedTest
     @ValueSource(strings = {
-            "Object",
-            "java.lang.String",
-            "int  [ ] ",
-            "String ",
-            "CharacterData02"
+        "Object",
+        "java.lang.String",
+        "int  [ ] ",
+        "String ",
+        "CharacterData02"
     })
     public void test(String className) {
         boolean flag = ClassUtils.isBasicClassType(className);

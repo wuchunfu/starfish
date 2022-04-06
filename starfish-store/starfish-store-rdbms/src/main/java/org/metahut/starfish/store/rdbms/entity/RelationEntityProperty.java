@@ -2,11 +2,14 @@ package org.metahut.starfish.store.rdbms.entity;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.vladmihalcea.hibernate.type.json.JsonBinaryType;
+import com.vladmihalcea.hibernate.type.json.JsonType;
 import java.util.Date;
 import javax.persistence.Column;
+import javax.persistence.ConstraintMode;
 import javax.persistence.Entity;
 import javax.persistence.EntityListeners;
 import javax.persistence.FetchType;
+import javax.persistence.ForeignKey;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
@@ -27,7 +30,7 @@ import org.springframework.data.jpa.domain.support.AuditingEntityListener;
 @Entity
 @Table(name = "t_sf_relation_entity_property")
 @EntityListeners(AuditingEntityListener.class)
-@TypeDef(name = "jsonb", typeClass = JsonBinaryType.class)
+@TypeDef(name = "json", typeClass = JsonType.class)
 public class RelationEntityProperty extends AbstractEntityProperty<Long, Object, RelationEntity> {
 
     @Id
@@ -35,14 +38,14 @@ public class RelationEntityProperty extends AbstractEntityProperty<Long, Object,
     private Long id;
 
     @ManyToOne(targetEntity = RelationEntity.class, fetch = FetchType.EAGER)
-    @JoinColumn(name = "entity_id", referencedColumnName = "id")
+    @JoinColumn(name = "entity_id", referencedColumnName = "id", foreignKey = @ForeignKey(ConstraintMode.NO_CONSTRAINT))
     private RelationEntity entity;
 
     @Column(name = "name", nullable = false)
     private String name;
 
-    @Type(type = "jsonb")
-    @Column(columnDefinition = "jsonb")
+    @Type(type = "json")
+    @Column(columnDefinition = "json")
     private Object value;
 
     @Column(name = "operator")

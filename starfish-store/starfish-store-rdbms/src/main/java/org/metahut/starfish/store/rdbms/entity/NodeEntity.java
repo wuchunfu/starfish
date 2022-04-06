@@ -1,14 +1,18 @@
 package org.metahut.starfish.store.rdbms.entity;
 
 import com.vladmihalcea.hibernate.type.json.JsonBinaryType;
+import com.vladmihalcea.hibernate.type.json.JsonStringType;
+import com.vladmihalcea.hibernate.type.json.JsonType;
 import java.util.Date;
 import java.util.Map;
 import java.util.Set;
 import javax.persistence.CascadeType;
 import javax.persistence.Column;
+import javax.persistence.ConstraintMode;
 import javax.persistence.Entity;
 import javax.persistence.EntityListeners;
 import javax.persistence.FetchType;
+import javax.persistence.ForeignKey;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
@@ -29,7 +33,7 @@ import org.springframework.data.jpa.domain.support.AuditingEntityListener;
 @Entity
 @Table(name = "t_sf_node_entity")
 @EntityListeners(AuditingEntityListener.class)
-@TypeDef(name = "jsonb", typeClass = JsonBinaryType.class)
+@TypeDef(name = "json", typeClass = JsonType.class)
 public class NodeEntity extends AbstractNodeEntity<Long, NodeEntityProperty> {
 
     @Id
@@ -39,12 +43,12 @@ public class NodeEntity extends AbstractNodeEntity<Long, NodeEntityProperty> {
     @Column(name = "name", nullable = false)
     private String name;
 
-    @Type(type = "jsonb")
-    @Column(columnDefinition = "jsonb")
+    @Type(type = "json")
+    @Column(columnDefinition = "json")
     private Set<String> categories;
 
     @OneToMany(targetEntity = NodeEntityProperty.class, fetch = FetchType.EAGER, cascade = CascadeType.ALL)
-    @JoinColumn(name = "entity_id")
+    @JoinColumn(name = "entity_id", foreignKey = @ForeignKey(ConstraintMode.NO_CONSTRAINT))
     private Set<NodeEntityProperty> properties;
 
     @Column(name = "operator")

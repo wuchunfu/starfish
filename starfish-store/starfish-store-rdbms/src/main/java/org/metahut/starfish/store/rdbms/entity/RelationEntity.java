@@ -5,9 +5,11 @@ import java.util.Map;
 import java.util.Set;
 import javax.persistence.CascadeType;
 import javax.persistence.Column;
+import javax.persistence.ConstraintMode;
 import javax.persistence.Entity;
 import javax.persistence.EntityListeners;
 import javax.persistence.FetchType;
+import javax.persistence.ForeignKey;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
@@ -40,15 +42,15 @@ public class RelationEntity extends AbstractRelationEntity<Long, RelationEntityP
     private String category;
 
     @OneToMany(targetEntity = RelationEntityProperty.class, fetch = FetchType.EAGER, cascade = CascadeType.ALL)
-    @JoinColumn(name = "entity_id")
+    @JoinColumn(name = "entity_id", foreignKey = @ForeignKey(ConstraintMode.NO_CONSTRAINT))
     private Set<RelationEntityProperty> properties;
 
     @OneToOne(targetEntity = NodeEntity.class, fetch = FetchType.EAGER, cascade = CascadeType.PERSIST)
-    @JoinColumn(name = "id")
+    @JoinColumn(name = "id", foreignKey = @ForeignKey(ConstraintMode.NO_CONSTRAINT))
     private NodeEntity startNodeEntity;
 
     @OneToOne(targetEntity = NodeEntity.class, fetch = FetchType.EAGER, cascade = CascadeType.PERSIST)
-    @JoinColumn(name = "id")
+    @JoinColumn(name = "id", foreignKey = @ForeignKey(ConstraintMode.NO_CONSTRAINT))
     private NodeEntity endNodeEntity;
 
     @Column(name = "operator")

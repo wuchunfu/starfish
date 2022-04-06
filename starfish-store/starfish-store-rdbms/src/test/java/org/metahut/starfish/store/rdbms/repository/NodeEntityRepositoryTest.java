@@ -35,7 +35,7 @@ public class NodeEntityRepositoryTest {
         repository.deleteAll();
     }
 
-    @AfterEach
+//    @AfterEach
     public void cleanUp() {
         repository.deleteAll();
     }
