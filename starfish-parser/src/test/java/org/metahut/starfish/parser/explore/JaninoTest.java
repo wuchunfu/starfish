@@ -42,14 +42,14 @@ public class JaninoTest {
 
         // Now compile two units from strings:
         compiler.compile(new Resource[] {
-                new StringResource(
-                        "pkg1/A.java",
-                        "package pkg1; public class A { public static int meth() { return pkg2.B.meth(); } }"
-                ),
-                new StringResource(
-                        "pkg2/B.java",
-                        "package pkg2; public class B { public static int meth() { return 77;            } }"
-                ),
+            new StringResource(
+                    "pkg1/A.java",
+                    "package pkg1; public class A { public static int meth() { return pkg2.B.meth(); } }"
+            ),
+            new StringResource(
+                    "pkg2/B.java",
+                    "package pkg2; public class B { public static int meth() { return 77;            } }"
+            ),
         });
 
         // Set up a class loader that uses the generated classes.

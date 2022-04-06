@@ -1,8 +1,8 @@
 package org.metahut.starfish.parser.function;
 
 import org.metahut.starfish.parser.domain.instance.Graph;
-import org.metahut.starfish.parser.domain.instance.Relation;
 import org.metahut.starfish.parser.domain.instance.Node;
+import org.metahut.starfish.parser.domain.instance.Relation;
 import org.metahut.starfish.parser.exception.StarFishMetaDataOperatingException;
 import org.metahut.starfish.parser.exception.StarFishMetaDataQueryException;
 

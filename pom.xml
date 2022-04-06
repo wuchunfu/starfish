@@ -58,11 +58,15 @@
         <commonsLang3.version>3.12.0</commonsLang3.version>
         <pulsar.version>2.9.1</pulsar.version>
         <knife4j.version>3.0.3</knife4j.version>
-        <h2.version>2.1.210</h2.version>
         <json-path.version>2.7.0</json-path.version>
         <antlr4.version>4.9.3</antlr4.version>
         <okhttp3.version>4.9.3</okhttp3.version>
         <snakeyaml.version>1.30</snakeyaml.version>
+
+        <spring.data.jpa.version>2.6.5</spring.data.jpa.version>
+        <mysql.connector.version>8.0.16</mysql.connector.version>
+        <h2.version>2.1.210</h2.version>
+        <postgresql.version>42.2.5</postgresql.version>
     </properties>
 
     <dependencies>
@@ -135,6 +139,14 @@
                 <type>pom</type>
                 <scope>import</scope>
             </dependency>
+
+            <dependency>
+                <groupId>org.springframework.boot</groupId>
+                <artifactId>spring-boot-starter-test</artifactId>
+                <version>${spring-boot.version}</version>
+                <scope>test</scope>
+            </dependency>
+
             <dependency>
                 <groupId>com.github.xiaoymin</groupId>
                 <artifactId>knife4j-spring-boot-starter</artifactId>
@@ -165,11 +177,44 @@
                 <artifactId>okhttp</artifactId>
                 <version>${okhttp3.version}</version>
             </dependency>
+
+            <dependency>
+                <groupId>org.projectlombok</groupId>
+                <artifactId>lombok</artifactId>
+                <version>${lombok.version}</version>
+            </dependency>
+
+            <!-- store -->
+            <dependency>
+                <groupId>org.springframework.boot</groupId>
+                <artifactId>spring-boot-starter-data-jpa</artifactId>
+                <version>${spring.data.jpa.version}</version>
+            </dependency>
+
+            <dependency>
+                <groupId>org.springframework.boot</groupId>
+                <artifactId>spring-boot-starter-data-neo4j</artifactId>
+                <version>${spring.data.jpa.version}</version>
+            </dependency>
+
+            <dependency>
+                <groupId>org.postgresql</groupId>
+                <artifactId>postgresql</artifactId>
+                <version>${postgresql.version}</version>
+            </dependency>
+            <dependency>
+                <groupId>mysql</groupId>
+                <artifactId>mysql-connector-java</artifactId>
+                <version>${mysql.connector.version}</version>
+                <scope>test</scope>
+            </dependency>
             <dependency>
                 <groupId>com.h2database</groupId>
                 <artifactId>h2</artifactId>
                 <version>${h2.version}</version>
+                <scope>test</scope>
             </dependency>
+
             <dependency>
                 <groupId>org.yaml</groupId>
                 <artifactId>snakeyaml</artifactId>

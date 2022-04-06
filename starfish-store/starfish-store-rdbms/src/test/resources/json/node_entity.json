@@ -1,0 +1,23 @@
+{
+  "name": "dwd.user_info",
+  "categories": ["HiveTable", "Hive"],
+  "operator": 1,
+  "properties": [
+    {
+      "name": "type",
+      "value": {"type":"HiveTable"},
+      "operator": 1
+    },
+    {
+      "name": "developer",
+      "value": {"developer":"root"},
+      "operator": 1
+    },
+    {
+      "name": "lastModifyTime",
+      "value": {"lastModifyTime":123343434234},
+      "operator": 1
+    }
+  ]
+}
+

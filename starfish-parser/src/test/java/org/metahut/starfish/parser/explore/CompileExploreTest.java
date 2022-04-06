@@ -2,7 +2,15 @@ package org.metahut.starfish.parser.explore;
 
 import org.junit.jupiter.api.Test;
 
-import javax.tools.*;
+import javax.tools.DiagnosticCollector;
+import javax.tools.FileObject;
+import javax.tools.ForwardingJavaFileManager;
+import javax.tools.JavaCompiler;
+import javax.tools.JavaFileManager;
+import javax.tools.JavaFileObject;
+import javax.tools.SimpleJavaFileObject;
+import javax.tools.ToolProvider;
+
 import java.io.ByteArrayOutputStream;
 import java.io.IOException;
 import java.io.OutputStream;
@@ -17,22 +25,17 @@ import java.util.concurrent.ConcurrentHashMap;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
-/**
- * @author XuYang
- * Create at 2022/2/17
- * @description
- */
 public class CompileExploreTest {
 
     private static Map<String, JavaFileObject> fileObjects = new ConcurrentHashMap<>();
 
     @Test
     public void compileTest() {
-        String code = "public class HelloWorld {\n" +
-                "\tpublic void hello(){\n" +
-                "\t\tSystem.out.println(\"hello world\");\n" +
-                "\t}\n" +
-                "}";
+        String code = "public class HelloWorld {\n"
+                + "\tpublic void hello(){\n"
+                + "\t\tSystem.out.println(\"hello world\");\n"
+                + "\t}\n"
+                + "}";
         //获取系统Java编译器
         JavaCompiler compiler = ToolProvider.getSystemJavaCompiler();
         // 初始化诊断收集器
@@ -47,9 +50,9 @@ public class CompileExploreTest {
         Pattern CLASS_PATTERN = Pattern.compile("class\\s+([$_a-zA-Z][$_a-zA-Z0-9]*)\\s*");
         Matcher matcher = CLASS_PATTERN.matcher(code);
         String cls;
-        if(matcher.find()){
+        if (matcher.find()) {
             cls = matcher.group(1);
-        } else{
+        } else {
             throw new IllegalArgumentException("No such class name in " + code);
         }
 
@@ -91,20 +94,19 @@ public class CompileExploreTest {
         private String source;
         private ByteArrayOutputStream outPutStream;
 
-
         public MyJavaFileObject(String name, String source) {
             super(URI.create("String:///" + name + Kind.SOURCE.extension), Kind.SOURCE);
             this.source = source;
         }
 
-        public MyJavaFileObject(String name, Kind kind){
+        public MyJavaFileObject(String name, Kind kind) {
             super(URI.create("String:///" + name + kind.extension), kind);
             source = null;
         }
 
         @Override
-        public CharSequence getCharContent(boolean ignoreEncodingErrors){
-            if(source == null){
+        public CharSequence getCharContent(boolean ignoreEncodingErrors) {
+            if (source == null) {
                 throw new IllegalArgumentException("source == null");
             }
             return source;
@@ -116,7 +118,7 @@ public class CompileExploreTest {
             return outPutStream;
         }
 
-        public byte[] getCompiledBytes(){
+        public byte[] getCompiledBytes() {
             return outPutStream.toByteArray();
         }
     }
@@ -129,7 +131,7 @@ public class CompileExploreTest {
         @Override
         public JavaFileObject getJavaFileForInput(Location location, String className, JavaFileObject.Kind kind) throws IOException {
             JavaFileObject javaFileObject = fileObjects.get(className);
-            if(javaFileObject == null){
+            if (javaFileObject == null) {
                 super.getJavaFileForInput(location, className, kind);
             }
             return javaFileObject;
@@ -148,13 +150,13 @@ public class CompileExploreTest {
         @Override
         protected Class<?> findClass(String name) throws ClassNotFoundException {
             JavaFileObject fileObject = fileObjects.get(name);
-            if(fileObject != null){
+            if (fileObject != null) {
                 byte[] bytes = ((MyJavaFileObject)fileObject).getCompiledBytes();
                 return defineClass(name, bytes, 0, bytes.length);
             }
-            try{
+            try {
                 return ClassLoader.getSystemClassLoader().loadClass(name);
-            } catch (Exception e){
+            } catch (Exception e) {
                 return super.findClass(name);
             }
         }

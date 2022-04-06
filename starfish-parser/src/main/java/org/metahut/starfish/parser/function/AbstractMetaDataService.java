@@ -47,7 +47,6 @@ public abstract class AbstractMetaDataService<V,K,T> implements IMetaDataApi<V,K
         graphApi().copy(toTypeName,fromTypeName,instanceIds);
     }
 
-
     @Override
     public void add(V typeName, Class... classes) throws AbstractMetaParserException {
         classApi().add(typeName,classes);
