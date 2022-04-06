@@ -1,11 +1,12 @@
 package org.metahut.starfish.scheduler.dolphinscheduler;
 
+import org.metahut.starfish.scheduler.api.SchedulerProperties;
+import org.metahut.starfish.scheduler.api.SchedulerType;
+
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Disabled;
 import org.junit.jupiter.api.Test;
-import org.metahut.starfish.scheduler.api.SchedulerProperties;
-import org.metahut.starfish.scheduler.api.SchedulerType;
 
 import java.io.IOException;
 

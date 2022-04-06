@@ -5,11 +5,11 @@ import java.util.Date;
 import java.util.Map;
 import java.util.Set;
 
-public abstract class AbstractNodeEntity<ID extends Serializable, P extends AbstractEntityProperty> implements Serializable {
+public abstract class AbstractNodeEntity<I extends Serializable, P extends AbstractEntityProperty> implements Serializable {
 
-    public abstract ID getId();
+    public abstract I getId();
 
-    public abstract void setId(ID id);
+    public abstract void setId(I id);
 
     public abstract String getName();
 

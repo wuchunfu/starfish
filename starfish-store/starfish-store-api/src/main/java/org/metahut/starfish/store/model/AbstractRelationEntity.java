@@ -4,11 +4,11 @@ import java.io.Serializable;
 import java.util.Date;
 import java.util.Map;
 
-public abstract class AbstractRelationEntity<ID extends Serializable, P extends AbstractEntityProperty, E extends AbstractNodeEntity> implements Serializable {
+public abstract class AbstractRelationEntity<I extends Serializable, P extends AbstractEntityProperty, E extends AbstractNodeEntity> implements Serializable {
 
-    public abstract ID getId();
+    public abstract I getId();
 
-    public abstract void setId(ID id);
+    public abstract void setId(I id);
 
     public abstract String getName();
 

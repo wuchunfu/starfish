@@ -73,7 +73,7 @@ public class ProcessTaskRelationParameter {
     /**
      * condition type
      */
-//    private ConditionType conditionType;
+    // private ConditionType conditionType;
 
     /**
      * condition parameters
@@ -101,7 +101,7 @@ public class ProcessTaskRelationParameter {
                                         int preTaskVersion,
                                         long postTaskCode,
                                         int postTaskVersion,
-//                                        ConditionType conditionType,
+                                        // ConditionType conditionType,
                                         String conditionParams,
                                         Date createTime,
                                         Date updateTime) {
@@ -113,7 +113,7 @@ public class ProcessTaskRelationParameter {
         this.preTaskVersion = preTaskVersion;
         this.postTaskCode = postTaskCode;
         this.postTaskVersion = postTaskVersion;
-//        this.conditionType = conditionType;
+        // this.conditionType = conditionType;
         this.conditionParams = conditionParams;
         this.createTime = createTime;
         this.updateTime = updateTime;
@@ -199,13 +199,13 @@ public class ProcessTaskRelationParameter {
         this.postTaskCode = postTaskCode;
     }
 
-//    public ConditionType getConditionType() {
-//        return conditionType;
-//    }
-//
-//    public void setConditionType(ConditionType conditionType) {
-//        this.conditionType = conditionType;
-//    }
+    // public ConditionType getConditionType() {
+    //   return conditionType;
+    // }
+    //
+    // public void setConditionType(ConditionType conditionType) {
+    //   this.conditionType = conditionType;
+    // }
 
     public int getPreTaskVersion() {
         return preTaskVersion;
@@ -259,7 +259,7 @@ public class ProcessTaskRelationParameter {
             + ", preTaskVersion=" + preTaskVersion
             + ", postTaskCode=" + postTaskCode
             + ", postTaskVersion=" + postTaskVersion
-//            + ", conditionType=" + conditionType
+            // + ", conditionType=" + conditionType
             + ", conditionParams='" + conditionParams + '\''
             + ", createTime=" + createTime
             + ", updateTime=" + updateTime

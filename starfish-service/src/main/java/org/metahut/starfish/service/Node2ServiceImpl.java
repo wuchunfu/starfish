@@ -15,7 +15,6 @@ public class Node2ServiceImpl<E,K,T>  extends AbstractNodeService<E,K,T> {
     @Resource
     private AbstractPropertyService<E,K, T> propertyService;
 
-
     @Override
     protected AbstractInstanceService<E, K, T> getInstanceService() {
         return null;
@@ -25,6 +24,4 @@ public class Node2ServiceImpl<E,K,T>  extends AbstractNodeService<E,K,T> {
     protected AbstractPropertyService<E,K, T> getPropertyService() {
         return null;
     }
-
-
 }

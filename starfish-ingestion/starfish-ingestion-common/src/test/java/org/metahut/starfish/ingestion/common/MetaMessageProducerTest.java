@@ -51,7 +51,5 @@ public class MetaMessageProducerTest {
             managerMap.put(type, manager);
 
         });
-
-
     }
 }
