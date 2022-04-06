@@ -59,19 +59,17 @@ public class JaninoTest {
     public void janinoAsScriptEvaluatorTest() throws CompileException, InvocationTargetException {
         ScriptEvaluator se = new ScriptEvaluator();
         se.cook(
-        ""
-                + "static void method1() {\n"
-                + "    System.out.println(1);\n"
+            "static void method1() {\n"
+                + " \n"
                 + "}\n"
                 + "\n"
                 + "method1();\n"
                 + "method2();\n"
                 + "\n"
                 + "static void method2() {\n"
-                + "    System.out.println(2);\n"
+                + " \n"
                 + "}\n"
         );
         Object evaluate = se.evaluate(new Object[0]);
-        System.out.println(evaluate);
     }
 }
