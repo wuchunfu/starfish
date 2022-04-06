@@ -1,0 +1,51 @@
+{
+  "name":"own",
+  "category": "own",
+  "properties": [
+    {
+      "name": "since",
+      "value": 12312312334,
+      "operator": 1
+    }
+  ],
+  "startNodeEntity": {
+    "name": "dwd",
+    "categories": ["HiveDatabase"],
+    "operator": 1,
+    "properties": [
+      {
+        "name": "creator",
+        "value": {"creator":"root"},
+        "operator": 1
+      },
+      {
+        "name": "lastModifyTime",
+        "value": {"lastModifyTime":123343434234},
+        "operator": 1
+      }
+    ]
+  },
+  "endNodeEntity": {
+    "name": "dwd.user_info",
+    "categories": ["HiveTable"],
+    "operator": 1,
+    "properties": [
+      {
+        "name": "type",
+        "value": {"type":"HiveTable"},
+        "operator": 1
+      },
+      {
+        "name": "developer",
+        "value": {"developer":"root"},
+        "operator": 1
+      },
+      {
+        "name": "lastModifyTime",
+        "value": {"lastModifyTime":123343434234},
+        "operator": 1
+      }
+    ]
+  },
+  "operator": 1
+}
