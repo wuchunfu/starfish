@@ -308,7 +308,7 @@
                         <sourceDirectories>
                             <sourceDirectory>${project.build.sourceDirectory}</sourceDirectory>
                         </sourceDirectories>
-                        <excludes>**\/generated-sources\/</excludes>
+                        <excludes>**\/generated-sources\/,**\/parser\/antlr4\/</excludes>
                     </configuration>
                     <executions>
                         <execution>
