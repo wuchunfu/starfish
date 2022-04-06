@@ -1,13 +1,14 @@
 package org.metahut.starfish.parser.function;
 
+import org.metahut.starfish.parser.domain.SymbolConstants;
+import org.metahut.starfish.parser.domain.enums.RelType;
+import org.metahut.starfish.parser.domain.instance.Class;
+
 import org.codehaus.commons.compiler.CompilerFactoryFactory;
 import org.codehaus.commons.compiler.ICompiler;
 import org.codehaus.commons.compiler.util.resource.MapResourceCreator;
 import org.codehaus.commons.compiler.util.resource.Resource;
 import org.codehaus.commons.compiler.util.resource.StringResource;
-import org.metahut.starfish.parser.domain.SymbolConstants;
-import org.metahut.starfish.parser.domain.enums.RelType;
-import org.metahut.starfish.parser.domain.instance.Class;
 
 import java.util.HashMap;
 import java.util.HashSet;
