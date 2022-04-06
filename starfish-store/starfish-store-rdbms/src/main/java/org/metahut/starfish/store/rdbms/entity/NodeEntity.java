@@ -1,6 +1,5 @@
 package org.metahut.starfish.store.rdbms.entity;
 
-import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.vladmihalcea.hibernate.type.json.JsonBinaryType;
 import java.util.Date;
 import java.util.Map;
@@ -46,7 +45,6 @@ public class NodeEntity extends AbstractNodeEntity<Long, NodeEntityProperty> {
 
     @OneToMany(targetEntity = NodeEntityProperty.class, fetch = FetchType.EAGER, cascade = CascadeType.ALL)
     @JoinColumn(name = "entity_id")
-    @JsonIgnore
     private Set<NodeEntityProperty> properties;
 
     @Column(name = "operator")

@@ -70,11 +70,12 @@ public class MessageProperties {
 
         @Override
         public String toString() {
-            return "Pulsar{" +
-                    "serviceUrl='" + serviceUrl + '\'' +
-                    ", producers=" + producers +
-                    ", consumers=" + consumers +
-                    '}';
+            return "Pulsar{"
+                    + "serviceUrl='" + serviceUrl
+                    + '\''
+                    + ", producers=" + producers
+                    + ", consumers=" + consumers
+                    + '}';
         }
     }
 
@@ -112,11 +113,16 @@ public class MessageProperties {
 
         @Override
         public String toString() {
-            return "PulsarProducer{" +
-                    "topicName='" + topicName + '\'' +
-                    ", schema='" + schema + '\'' +
-                    ", producerName='" + producerName + '\'' +
-                    '}';
+            return "PulsarProducer{"
+                    + "topicName='"
+                    + topicName
+                    + '\''
+                    + ", schema='"
+                    + schema + '\''
+                    + ", producerName='"
+                    + producerName
+                    + '\''
+                    + '}';
         }
     }
 
@@ -144,10 +150,14 @@ public class MessageProperties {
 
         @Override
         public String toString() {
-            return "PulsarConsumer{" +
-                    "topicName='" + topicName + '\'' +
-                    ", subscriptionName='" + subscriptionName + '\'' +
-                    '}';
+            return "PulsarConsumer{"
+                    + "topicName='"
+                    + topicName
+                    + '\''
+                    + ", subscriptionName='"
+                    + subscriptionName
+                    + '\''
+                    + '}';
         }
     }
 
@@ -169,10 +179,13 @@ public class MessageProperties {
 
     @Override
     public String toString() {
-        return "MessageProperties{" +
-                "type=" + type +
-                ", kafka=" + kafka +
-                ", pulsar=" + pulsar +
-                '}';
+        return "MessageProperties{"
+                + "type="
+                + type
+                + ", kafka="
+                + kafka
+                + ", pulsar="
+                + pulsar
+                + '}';
     }
 }

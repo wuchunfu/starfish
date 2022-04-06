@@ -1,8 +1,8 @@
 package org.metahut.starfish.parser.function;
 
 import org.metahut.starfish.parser.domain.SymbolConstants;
-import org.metahut.starfish.parser.domain.instance.Class;
 import org.metahut.starfish.parser.domain.instance.Attribute;
+import org.metahut.starfish.parser.domain.instance.Class;
 import org.metahut.starfish.parser.domain.struct.StructWorker;
 import org.metahut.starfish.parser.exception.AbstractMetaParserException;
 import org.metahut.starfish.parser.exception.DataValidException;

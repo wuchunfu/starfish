@@ -54,7 +54,7 @@ public class ClassUtils {
                 if (n.matches("java/lang/\\w+\\.class")) {
                     String fullName = n.substring(0,n.lastIndexOf(".")).replaceAll("/",".");
                     classSet.add(fullName);
-                    classSet.add(fullName.substring(fullName.lastIndexOf(".")+1));
+                    classSet.add(fullName.substring(fullName.lastIndexOf(".") + 1));
                 }
             }
         } catch (Exception e) {
