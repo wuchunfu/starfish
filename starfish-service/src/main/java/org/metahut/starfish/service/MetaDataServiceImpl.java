@@ -11,7 +11,6 @@ import org.metahut.starfish.parser.function.AbstractTypeService;
  */
 public class MetaDataServiceImpl extends AbstractMetaDataService<String,String,String> {
 
-
     @Override
     protected AbstractSqlGraphService<String, String, String> graphApi() {
         return null;

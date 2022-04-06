@@ -1,10 +1,10 @@
 package org.metahut.starfish.scheduler.dolphinscheduler;
 
-import okhttp3.ConnectionPool;
-import okhttp3.OkHttpClient;
 import org.metahut.starfish.scheduler.api.ISchedulerManager;
 import org.metahut.starfish.scheduler.api.SchedulerProperties;
 
+import okhttp3.ConnectionPool;
+import okhttp3.OkHttpClient;
 import org.springframework.boot.autoconfigure.condition.ConditionalOnProperty;
 import org.springframework.stereotype.Component;
 

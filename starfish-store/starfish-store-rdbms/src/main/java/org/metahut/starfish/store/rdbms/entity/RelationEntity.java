@@ -1,8 +1,13 @@
 package org.metahut.starfish.store.rdbms.entity;
 
-import java.util.Date;
-import java.util.Map;
-import java.util.Set;
+import org.metahut.starfish.store.model.AbstractRelationEntity;
+
+import lombok.Getter;
+import lombok.Setter;
+import org.springframework.data.annotation.CreatedDate;
+import org.springframework.data.annotation.LastModifiedDate;
+import org.springframework.data.jpa.domain.support.AuditingEntityListener;
+
 import javax.persistence.CascadeType;
 import javax.persistence.Column;
 import javax.persistence.ConstraintMode;
@@ -17,12 +22,10 @@ import javax.persistence.JoinColumn;
 import javax.persistence.OneToMany;
 import javax.persistence.OneToOne;
 import javax.persistence.Table;
-import lombok.Getter;
-import lombok.Setter;
-import org.metahut.starfish.store.model.AbstractRelationEntity;
-import org.springframework.data.annotation.CreatedDate;
-import org.springframework.data.annotation.LastModifiedDate;
-import org.springframework.data.jpa.domain.support.AuditingEntityListener;
+
+import java.util.Date;
+import java.util.Map;
+import java.util.Set;
 
 @Setter
 @Getter
