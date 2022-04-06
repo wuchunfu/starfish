@@ -17,7 +17,11 @@
 
 package org.metahut.starfish.ingestion.server.message;
 
-import org.metahut.starfish.message.api.*;
+import org.metahut.starfish.message.api.ConsumerResult;
+import org.metahut.starfish.message.api.MessageConsumer;
+import org.metahut.starfish.message.api.MessageException;
+import org.metahut.starfish.message.api.MessageManager;
+import org.metahut.starfish.message.api.MessageType;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -27,7 +31,6 @@ import org.springframework.stereotype.Component;
 import javax.annotation.PostConstruct;
 import javax.annotation.PreDestroy;
 
-import java.io.IOException;
 import java.util.List;
 import java.util.Objects;
 

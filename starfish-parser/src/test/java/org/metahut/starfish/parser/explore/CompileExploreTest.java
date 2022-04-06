@@ -1,5 +1,6 @@
 package org.metahut.starfish.parser.explore;
 
+import lombok.extern.slf4j.Slf4j;
 import org.junit.jupiter.api.Test;
 
 import javax.tools.DiagnosticCollector;
@@ -25,15 +26,18 @@ import java.util.concurrent.ConcurrentHashMap;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
+@Slf4j
 public class CompileExploreTest {
 
     private static Map<String, JavaFileObject> fileObjects = new ConcurrentHashMap<>();
+
+    public static final Pattern CLASS_PATTERN = Pattern.compile("class\\s+([$_a-zA-Z][$_a-zA-Z0-9]*)\\s*");
 
     @Test
     public void compileTest() {
         String code = "public class HelloWorld {\n"
                 + "\tpublic void hello(){\n"
-                + "\t\tSystem.out.println(\"hello world\");\n"
+                + "\t\t\n"
                 + "\t}\n"
                 + "}";
         //获取系统Java编译器
@@ -47,7 +51,6 @@ public class CompileExploreTest {
         options.add("-target");
         options.add("1.8");
 
-        Pattern CLASS_PATTERN = Pattern.compile("class\\s+([$_a-zA-Z][$_a-zA-Z0-9]*)\\s*");
         Matcher matcher = CLASS_PATTERN.matcher(code);
         String cls;
         if (matcher.find()) {
@@ -61,7 +64,7 @@ public class CompileExploreTest {
         Boolean result = task.call();
         if (result != null && !result) {
             // 编译完成之后，获取编译过程中的诊断信息
-            collector.getDiagnostics().forEach(item -> System.out.println(item.toString()));
+            collector.getDiagnostics().forEach(item -> log.info(item.toString()));
         }
         ClassLoader classloader = new MyClassLoader();
 

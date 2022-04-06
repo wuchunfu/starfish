@@ -1,15 +1,17 @@
 package org.metahut.starfish.store.rdbms.repository;
 
+import org.metahut.starfish.store.rdbms.entity.RelationEntity;
+
 import com.fasterxml.jackson.databind.ObjectMapper;
-import java.io.IOException;
-import java.util.stream.Stream;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.params.ParameterizedTest;
 import org.junit.jupiter.params.provider.MethodSource;
-import org.metahut.starfish.store.rdbms.entity.RelationEntity;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
+
+import java.io.IOException;
+import java.util.stream.Stream;
 
 @SpringBootTest
 public class RelationEntityRepositoryTest {
@@ -40,10 +42,10 @@ public class RelationEntityRepositoryTest {
     public void saveTest(RelationEntity entity) {
         RelationEntity savedRelationEntity = repository.save(entity);
         Assertions.assertAll(
-            ()-> Assertions.assertEquals(savedRelationEntity.getName(), entity.getName()),
-            ()-> Assertions.assertEquals(savedRelationEntity.getCategory(), entity.getCategory()),
-            ()-> Assertions.assertNotNull(savedRelationEntity.getCreateTime()),
-            ()-> Assertions.assertNotNull(savedRelationEntity.getUpdateTime())
+            () -> Assertions.assertEquals(savedRelationEntity.getName(), entity.getName()),
+            () -> Assertions.assertEquals(savedRelationEntity.getCategory(), entity.getCategory()),
+            () -> Assertions.assertNotNull(savedRelationEntity.getCreateTime()),
+            () -> Assertions.assertNotNull(savedRelationEntity.getUpdateTime())
         );
     }
 

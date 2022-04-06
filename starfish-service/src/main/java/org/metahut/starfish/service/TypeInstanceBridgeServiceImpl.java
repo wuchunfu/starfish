@@ -2,6 +2,7 @@ package org.metahut.starfish.service;
 
 import org.metahut.starfish.parser.domain.enums.Type;
 import org.metahut.starfish.parser.function.AbstractTypeInstanceBridgeService;
+
 import org.springframework.stereotype.Service;
 
 import java.util.Collection;

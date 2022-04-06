@@ -3,11 +3,11 @@ package org.metahut.starfish.store.model;
 import java.io.Serializable;
 import java.util.Date;
 
-public abstract class AbstractEntityProperty<ID extends Serializable, T, E> implements Serializable {
+public abstract class AbstractEntityProperty<I extends Serializable, T, E> implements Serializable {
 
-    public abstract ID getId();
+    public abstract I getId();
 
-    public abstract void setId(ID id);
+    public abstract void setId(I id);
 
     public abstract String getName();
 
@@ -32,6 +32,5 @@ public abstract class AbstractEntityProperty<ID extends Serializable, T, E> impl
     public abstract Date getUpdateTime();
 
     public abstract void setUpdateTime(Date updateTime);
-
 
 }

@@ -1,7 +1,8 @@
 package org.metahut.starfish.store.model;
 
-import java.util.List;
 import org.metahut.starfish.store.common.ConstraintType;
+
+import java.util.List;
 
 public class Constraint {
 
