@@ -4,12 +4,7 @@ spring:
     driver-class-name: org.postgresql.Driver
 #    driver-class-name: com.mysql.cj.jdbc.Driver
     url: jdbc:postgresql://127.0.0.1:5432/starfish?serverTimezone=CST
-<<<<<<< HEAD
 #    url: jdbc:mysql://127.0.0.1:3306/starfish?characterEncoding=utf8&useSSL=false&serverTimezone=UTC&rewriteBatchedStatements=true
-=======
-#    driver-class-name: com.mysql.cj.jdbc.Driver
-#    url: jdbc:mysql://127.0.0.1:3306/starfish?useUnicode=true&characterEncoding=UTF-8&serverTimezone=Asia/Shanghai
->>>>>>> 982773b0afb382129c8e387ba8bad76c23c73db9
     username: root
     password: root
   jpa:
@@ -18,3 +13,9 @@ spring:
         hbm2ddl:
           auto: update
     show-sql: true
+
+starfish:
+  scheduler:
+    type: dolphinscheduler
+    dolphinscheduler:
+      service-url: http://localhost:1234/dolphinscheduler

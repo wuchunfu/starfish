@@ -79,7 +79,7 @@ public class ModelGenerator {
         attributesBuilder.appendLine(SymbolConstants.INDENT,"private static final long ",String.valueOf(sfClass.getSerialVersionUID()),"L", SymbolConstants.LINE_TAIL);
         Set<String> imports = new HashSet<>();
         //attribute -> import how o（n）
-        sfClass.getAttributeModels()
+        sfClass.getAttributes()
                 .stream()
                 .filter(attributeModel -> attributeModel != null
                         && attributeModel.getClassName() != null)

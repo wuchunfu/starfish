@@ -28,7 +28,7 @@ public class Class extends TagLoader {
     /**
      * attribute model list
      */
-    private List<Attribute> sfAttributes;
+    private List<Attribute> attributes;
 
     public long getSerialVersionUID() {
         return serialVersionUID;
@@ -58,7 +58,11 @@ public class Class extends TagLoader {
         return packagePath + SymbolConstants.PACKAGE_SPLIT + name;
     }
 
-    public List<Attribute> getAttributeModels() {
-        return sfAttributes;
+    public List<Attribute> getAttributes() {
+        return attributes;
+    }
+
+    public void setAttributes(List<Attribute> attributes) {
+        this.attributes = attributes;
     }
 }
