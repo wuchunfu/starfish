@@ -36,7 +36,6 @@ public class RelationEntityProperty extends AbstractEntityProperty<Long, Object,
 
     @ManyToOne(targetEntity = RelationEntity.class, fetch = FetchType.EAGER)
     @JoinColumn(name = "entity_id", referencedColumnName = "id")
-    @JsonIgnore
     private RelationEntity entity;
 
     @Column(name = "name", nullable = false)

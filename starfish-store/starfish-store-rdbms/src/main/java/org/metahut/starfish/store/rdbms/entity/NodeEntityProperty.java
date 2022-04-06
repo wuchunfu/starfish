@@ -36,7 +36,6 @@ public class NodeEntityProperty extends AbstractEntityProperty<Long, Object, Nod
 
     @ManyToOne(targetEntity = NodeEntity.class, fetch = FetchType.EAGER)
     @JoinColumn(name = "entity_id", referencedColumnName = "id")
-    @JsonIgnore
     private NodeEntity entity;
 
     @Column(name = "name", nullable = false)

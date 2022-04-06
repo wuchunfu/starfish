@@ -10,6 +10,7 @@ import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.params.ParameterizedTest;
 import org.junit.jupiter.params.provider.MethodSource;
+import org.metahut.starfish.store.model.AbstractNodeEntity;
 import org.metahut.starfish.store.rdbms.entity.NodeEntity;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
@@ -30,7 +31,7 @@ public class NodeEntityRepositoryTest {
     }
 
     @BeforeEach
-    public void clear() {
+    public void clearEach() {
         repository.deleteAll();
     }
 
@@ -53,7 +54,7 @@ public class NodeEntityRepositoryTest {
     public void findWithPropertiesTest(NodeEntity entity) throws JsonProcessingException {
         NodeEntity expected = repository.save(entity);
 
-        NodeEntity actual = repository.findById(expected.getId()).get();
+        AbstractNodeEntity actual = repository.findById(expected.getId()).get();
 
         JsonNode expectedJson = objectMapper.readTree(objectMapper.writeValueAsString(expected));
 
