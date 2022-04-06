@@ -47,9 +47,12 @@ public class DolphinScheduler implements IScheduler {
 
     @Override
     public void createSingleHttpTask(HttpTaskParameter httpTaskParameter) {
+
         HttpParameter parameter = new HttpParameter();
 
         TaskDefinitionParameter taskDefinitionParameter = new TaskDefinitionParameter();
+
+
     }
 
     public String get(String url) throws IOException {
