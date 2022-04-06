@@ -9,14 +9,14 @@ import java.util.List;
 /**
  *
  */
-public interface IRelationApi<E,K,T> extends AbstractQueryService<T> {
+public interface IRelationApi<V,K,T> extends AbstractQueryService<T> {
     /**
      * pId cId properties
      * TODO line ？
      * @param env
      * @return
      */
-    List<Relation<K>> lines(E env) throws StarFishMetaDataQueryException;
+    List<Relation<K>> lines(V env) throws StarFishMetaDataQueryException;
 
     // link
     /**
@@ -27,7 +27,7 @@ public interface IRelationApi<E,K,T> extends AbstractQueryService<T> {
      * @param property
      * @throws StarFishMetaDataOperatingException
      */
-    void link(E env,K headId,K tailId,String property) throws StarFishMetaDataOperatingException;
+    void link(V env,K headId,K tailId,String property) throws StarFishMetaDataOperatingException;
 
     // crack
     /**
@@ -38,7 +38,7 @@ public interface IRelationApi<E,K,T> extends AbstractQueryService<T> {
      * @param property
      * @throws StarFishMetaDataOperatingException
      */
-    void crack(E env,K headId,K tailId,String property) throws StarFishMetaDataOperatingException;
+    void crack(V env,K headId,K tailId,String property) throws StarFishMetaDataOperatingException;
 
     // delete
     /**
@@ -46,7 +46,7 @@ public interface IRelationApi<E,K,T> extends AbstractQueryService<T> {
      * @param env
      * @throws StarFishMetaDataOperatingException
      */
-    void delete(E env) throws StarFishMetaDataOperatingException;
+    void delete(V env) throws StarFishMetaDataOperatingException;
 
     /**
      * delete all nodes direct rel to the appointed node
@@ -54,7 +54,7 @@ public interface IRelationApi<E,K,T> extends AbstractQueryService<T> {
      * @param instanceId
      * @throws StarFishMetaDataOperatingException
      */
-    void delete(E env,K instanceId) throws StarFishMetaDataOperatingException;
+    void delete(V env,K instanceId) throws StarFishMetaDataOperatingException;
 
     /**
      * batch delete instances
@@ -62,7 +62,7 @@ public interface IRelationApi<E,K,T> extends AbstractQueryService<T> {
      * @param instanceIds
      * @throws StarFishMetaDataOperatingException
      */
-    void delete(E env, K... instanceIds) throws StarFishMetaDataOperatingException;
+    void delete(V env, K... instanceIds) throws StarFishMetaDataOperatingException;
 
     // move
 
@@ -75,7 +75,7 @@ public interface IRelationApi<E,K,T> extends AbstractQueryService<T> {
      * @param property
      * @throws StarFishMetaDataOperatingException
      */
-    void move(E env,K oldHeadId,K newHeadId,K tailId,String property) throws StarFishMetaDataOperatingException;
+    void move(V env,K oldHeadId,K newHeadId,K tailId,String property) throws StarFishMetaDataOperatingException;
 
     //copy
 
@@ -86,5 +86,5 @@ public interface IRelationApi<E,K,T> extends AbstractQueryService<T> {
      * @param instanceIds
      * @throws StarFishMetaDataOperatingException
      */
-    void copy(E oldEnv,E newEnv,K... instanceIds) throws StarFishMetaDataOperatingException;
+    void copy(V oldEnv, V newEnv,K... instanceIds) throws StarFishMetaDataOperatingException;
 }

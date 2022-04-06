@@ -9,41 +9,41 @@ import java.util.Map;
 /**
  *
  */
-interface IGraphApi<E, K, T> extends AbstractQueryService<T> {
+interface IGraphApi<V, K, T> extends AbstractQueryService<T> {
 
-    Graph<K, T> graph(E env) throws StarFishMetaDataQueryException;
+    Graph<K, T> graph(V typeName) throws StarFishMetaDataQueryException;
 
-    K create(E env, String property,T obj) throws StarFishMetaDataOperatingException;
+    K create(V typeName, String property,T obj) throws StarFishMetaDataOperatingException;
 
-    K create(E env, Map<String, T> attributes) throws StarFishMetaDataOperatingException;
+    K create(V typeName, Map<String, T> attributes) throws StarFishMetaDataOperatingException;
 
-    K create(E env, K parentInstanceId, String property, Map<String, T> attributes) throws StarFishMetaDataOperatingException;
+    K create(V typeName, K parentInstanceId, String property, Map<String, T> attributes) throws StarFishMetaDataOperatingException;
 
-    void add(E env, K instanceId, String property, T obj) throws StarFishMetaDataOperatingException;
+    void add(V typeName, K instanceId, String property, T obj) throws StarFishMetaDataOperatingException;
 
-    void link(E env, K headId, K tailId, String property) throws StarFishMetaDataOperatingException;
+    void link(V typeName, K headId, K tailId, String property) throws StarFishMetaDataOperatingException;
 
-    void update(E env, K instanceId, String property, T obj) throws StarFishMetaDataOperatingException;
+    void update(V typeName, K instanceId, String property, T obj) throws StarFishMetaDataOperatingException;
 
-    void update(E env, K instanceId, Map<String, T> attributes) throws StarFishMetaDataOperatingException;
+    void update(V typeName, K instanceId, Map<String, T> attributes) throws StarFishMetaDataOperatingException;
 
-    void modify(E env, K instanceId, Map<String, T> attributes) throws StarFishMetaDataOperatingException;
+    void modify(V typeName, K instanceId, Map<String, T> attributes) throws StarFishMetaDataOperatingException;
 
-    void copy(E toEnv,E fromEnv,K... instanceIds) throws StarFishMetaDataOperatingException;
+    void copy(V totypeName, V fromtypeName,K... instanceIds) throws StarFishMetaDataOperatingException;
 
-    K copy(E env, K fromInstanceId, K toInstanceId, String property) throws StarFishMetaDataOperatingException;
+    K copy(V typeName, K fromInstanceId, K toInstanceId, String property) throws StarFishMetaDataOperatingException;
 
-    void move(E env, K oldInstanceId, K newInstanceId, String property) throws StarFishMetaDataOperatingException;
+    void move(V typeName, K oldInstanceId, K newInstanceId, String property) throws StarFishMetaDataOperatingException;
 
-    void move(E env, K oldHeadId, K newHeadId, K tailId, String property) throws StarFishMetaDataOperatingException;
+    void move(V typeName, K oldHeadId, K newHeadId, K tailId, String property) throws StarFishMetaDataOperatingException;
 
-    void delete(E env) throws StarFishMetaDataOperatingException;
+    void delete(V typeName) throws StarFishMetaDataOperatingException;
 
-    void delete(E env, K instanceId) throws StarFishMetaDataOperatingException;
+    void delete(V typeName, K instanceId) throws StarFishMetaDataOperatingException;
 
-    void delete(E env, K id, String property) throws StarFishMetaDataOperatingException;
+    void delete(V typeName, K id, String property) throws StarFishMetaDataOperatingException;
 
-    void crack(E env, K headId, K tailId, String property) throws StarFishMetaDataOperatingException;
+    void crack(V typeName, K headId, K tailId, String property) throws StarFishMetaDataOperatingException;
 
-    void delete(E env, K... instanceIds) throws StarFishMetaDataOperatingException;
+    void delete(V typeName, K... instanceIds) throws StarFishMetaDataOperatingException;
 }

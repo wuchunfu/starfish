@@ -7,31 +7,31 @@ import java.util.Set;
 import java.util.concurrent.Future;
 import java.util.function.Supplier;
 
-public abstract class AbstractInstanceService<E,K,T> implements IInstanceApi<E,K,T> {
+public abstract class AbstractInstanceService<V,K,T> implements IInstanceApi<V,K,T> {
 
     @Override
-    public abstract Set<K> instanceMap(E env) throws StarFishMetaDataQueryException;
+    public abstract Set<K> instanceMap(V typeName) throws StarFishMetaDataQueryException;
 
     @Override
-    public Future<Set<K>> instanceMap(Supplier<E> env) throws StarFishMetaDataQueryException {
-        return new FakeFuture<>(instanceMap(env.get()));
+    public Future<Set<K>> instanceMap(Supplier<V> typeName) throws StarFishMetaDataQueryException {
+        return new FakeFuture<>(instanceMap(typeName.get()));
     }
 
     @Override
-    public abstract void valid(E env, K... instanceIds) throws StarFishMetaDataOperatingException;
+    public abstract void valid(V typeName, K... instanceIds) throws StarFishMetaDataOperatingException;
 
     @Override
-    public abstract K create(E env) throws StarFishMetaDataOperatingException;
+    public abstract K create(V typeName) throws StarFishMetaDataOperatingException;
 
     @Override
-    public abstract void copy(E oldEnv,E newEnv,boolean deleteOld) throws StarFishMetaDataOperatingException;
+    public abstract void copy(V oldtypeName, V newtypeName,boolean deleteOld) throws StarFishMetaDataOperatingException;
 
     @Override
-    public abstract void delete(E env) throws StarFishMetaDataOperatingException;
+    public abstract void delete(V typeName) throws StarFishMetaDataOperatingException;
 
     @Override
-    public abstract void delete(E env,K instanceId) throws StarFishMetaDataOperatingException;
+    public abstract void delete(V typeName,K instanceId) throws StarFishMetaDataOperatingException;
 
     @Override
-    public abstract void delete(E env, K... instanceIds) throws StarFishMetaDataOperatingException;
+    public abstract void delete(V typeName, K... instanceIds) throws StarFishMetaDataOperatingException;
 }

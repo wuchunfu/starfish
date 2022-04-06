@@ -7,7 +7,8 @@ import okhttp3.RequestBody;
 import okhttp3.Response;
 import org.metahut.starfish.scheduler.api.IScheduler;
 import org.metahut.starfish.scheduler.api.SchedulerProperties;
-import org.metahut.starfish.scheduler.dolphinscheduler.parameter.HttpTaskParameter;
+import org.metahut.starfish.scheduler.api.parameters.HttpTaskParameter;
+import org.metahut.starfish.scheduler.dolphinscheduler.parameter.HttpParameter;
 import org.metahut.starfish.scheduler.dolphinscheduler.parameter.TaskDefinitionParameter;
 
 import java.io.IOException;
@@ -43,12 +44,12 @@ public class DolphinScheduler implements IScheduler {
     // 测试任务
 
     // 创建单个 Http 任务
-    public void createSingleHttpTask() {
 
-        HttpTaskParameter httpTaskParameter = new HttpTaskParameter();
+    @Override
+    public void createSingleHttpTask(HttpTaskParameter httpTaskParameter) {
+        HttpParameter parameter = new HttpParameter();
+
         TaskDefinitionParameter taskDefinitionParameter = new TaskDefinitionParameter();
-
-
     }
 
     public String get(String url) throws IOException {
@@ -78,4 +79,5 @@ public class DolphinScheduler implements IScheduler {
     public void close() {
 
     }
+
 }

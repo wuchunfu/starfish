@@ -46,3 +46,4 @@ starfish:
     type: dolphinscheduler
     dolphinscheduler:
       service-url: http://localhost:1234/dolphinscheduler
+

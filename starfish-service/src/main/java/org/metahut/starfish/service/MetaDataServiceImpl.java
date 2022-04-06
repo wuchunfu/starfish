@@ -1,7 +1,10 @@
 package org.metahut.starfish.service;
 
 import org.metahut.starfish.parser.exception.AbstractMetaParserException;
-import org.metahut.starfish.parser.function.*;
+import org.metahut.starfish.parser.function.AbstractMetaDataService;
+import org.metahut.starfish.parser.function.AbstractSqlGraphService;
+import org.metahut.starfish.parser.function.AbstractTypeInstanceBridgeService;
+import org.metahut.starfish.parser.function.AbstractTypeService;
 
 /**
  *
@@ -15,17 +18,12 @@ public class MetaDataServiceImpl extends AbstractMetaDataService<String,String,S
     }
 
     @Override
-    protected AbstractEnvironmentService<String, String> environmentApi() {
+    protected AbstractTypeService<String, String> classApi() {
         return null;
     }
 
     @Override
-    protected AbstractClassService<String, String> classApi() {
-        return null;
-    }
-
-    @Override
-    protected AbstractClassInstanceBridgeService<String, String> classInstanceBridgeApi() {
+    protected AbstractTypeInstanceBridgeService<String, String> classInstanceBridgeApi() {
         return null;
     }
 

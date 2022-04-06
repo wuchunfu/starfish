@@ -2,7 +2,6 @@ package org.metahut.starfish.parser.function;
 
 import org.metahut.starfish.parser.domain.enums.Type;
 import org.metahut.starfish.parser.domain.instance.Class;
-import org.metahut.starfish.parser.domain.instance.Environment;
 import org.metahut.starfish.parser.domain.instance.MetaResult;
 import org.metahut.starfish.parser.exception.AbstractMetaParserException;
 
@@ -11,7 +10,7 @@ import java.util.Set;
 
 /**
  * 拼接三大api
- * graph class environment
+ * graph class typeNameironment
  * TODO 最核心问题 valid
  * TODO 先校验：数据移动改写，但是意味着自己要进行数据维护，并且要保证数据格式一致性(难实现)
  * TODO 局部校验： ？
@@ -22,177 +21,127 @@ import java.util.Set;
  *  分开递归校验？
  *  如果只拷贝节点， 局部校验节点， 然后？
  */
-public abstract class AbstractMetaDataService<E,K,T> implements IMetaDataApi<E,K,T> {
+public abstract class AbstractMetaDataService<V,K,T> implements IMetaDataApi<V,K,T> {
 
-    protected abstract IGraphApi<E,K,T> graphApi();
+    protected abstract IGraphApi<V,K,T> graphApi();
 
-    protected abstract IEnvironmentApi<E,T> environmentApi();
+    protected abstract ITypeApi<V,T> classApi();
 
-    protected abstract IClassApi<E,T> classApi();
-
-    protected abstract IClassInstanceBridgeApi<E,K> classInstanceBridgeApi();
+    protected abstract ITypeInstanceBridgeApi<V,K> classInstanceBridgeApi();
 
     @Override
-    public void delete(E env) throws AbstractMetaParserException {
-        environmentApi().delete(env);
-        classApi().delete(env);
-        classInstanceBridgeApi().delete(env);
-        graphApi().delete(env);
+    public void delete(V typeName) throws AbstractMetaParserException {
+        classApi().delete(typeName);
+        classInstanceBridgeApi().delete(typeName);
+        graphApi().delete(typeName);
     }
 
     @Override
-    public Environment<E> copy(E env) throws AbstractMetaParserException {
-        Environment<E> copy = environmentApi().copy(env);
-        return copy;
+    public void copy(V toTypeName, V fromTypeName, long... classIds) throws AbstractMetaParserException {
+        classApi().copy(toTypeName,fromTypeName,classIds);
     }
 
     @Override
-    public void copy(E toEnv, E fromEnv, long... classIds) throws AbstractMetaParserException {
-        environmentApi().valid(toEnv,fromEnv);
-        environmentApi().testUnderDevelopment(toEnv,true);
-        classApi().copy(toEnv,fromEnv,classIds);
+    public void copy(V toTypeName, V fromTypeName, K... instanceIds) throws AbstractMetaParserException {
+        classInstanceBridgeApi().copy(toTypeName,fromTypeName,instanceIds);
+        graphApi().copy(toTypeName,fromTypeName,instanceIds);
+    }
+
+
+    @Override
+    public void add(V typeName, Class... classes) throws AbstractMetaParserException {
+        classApi().add(typeName,classes);
     }
 
     @Override
-    public void copy(E toEnv, E fromEnv, K... instanceIds) throws AbstractMetaParserException {
-        environmentApi().valid(toEnv,fromEnv);
-        environmentApi().testUnderDevelopment(toEnv,false);
-        classInstanceBridgeApi().copy(toEnv,fromEnv,instanceIds);
-        graphApi().copy(toEnv,fromEnv,instanceIds);
+    public void modify(V typeName, Class... sfClass) throws AbstractMetaParserException {
+        classApi().modify(typeName,sfClass);
     }
 
     @Override
-    public Environment<E> create() throws AbstractMetaParserException {
-        return environmentApi().create();
+    public void delete(V typeName, long... classIds) throws AbstractMetaParserException {
+        classApi().delete(typeName,classIds);
     }
 
     @Override
-    public void modify(Environment<E> env) throws AbstractMetaParserException {
-        environmentApi().valid(env.getEnv());
-        environmentApi().modify(env);
+    public V create() throws AbstractMetaParserException {
+        return classApi().create();
     }
 
     @Override
-    public Environment<E> merge(E env1, E env2) throws AbstractMetaParserException {
-        return environmentApi().merge(env1, env2);
-    }
-
-    @Override
-    public void add(E env, Class... classes) throws AbstractMetaParserException {
-        environmentApi().valid(env);
-        environmentApi().testUnderDevelopment(env,true);
-        classApi().add(env,classes);
-    }
-
-    @Override
-    public void modify(E env, Class... sfClass) throws AbstractMetaParserException {
-        environmentApi().valid(env);
-        environmentApi().testUnderDevelopment(env,true);
-        classApi().modify(env,sfClass);
-    }
-
-    @Override
-    public void delete(E env, long... classIds) throws AbstractMetaParserException {
-        environmentApi().valid(env);
-        environmentApi().testUnderDevelopment(env,true);
-        classApi().delete(env,classIds);
-    }
-
-    @Override
-    public MetaResult<E, K, T> all(E env) throws AbstractMetaParserException {
-        MetaResult<E,K,T> result = new MetaResult<>();
-        result.setEnvironment(environmentApi().env(env));
-        result.setGraph(graphApi().graph(env));
-        result.setClassInfos(classApi().classes(env));
-        result.setTypesInfos(classInstanceBridgeApi().query(env));
+    public MetaResult<V, K, T> all(V typeName) throws AbstractMetaParserException {
+        MetaResult<V,K,T> result = new MetaResult<>();
+        result.setGraph(graphApi().graph(typeName));
+        result.setClassInfos(classApi().classes(typeName));
+        result.setTypesInfos(classInstanceBridgeApi().query(typeName));
         return result;
     }
 
     @Override
-    public K create(E env, long classId, String property, T obj) throws AbstractMetaParserException {
-        environmentApi().valid(env);
-        environmentApi().testUnderDevelopment(env,false);
-        classApi().valid(env,classId);
-        return graphApi().create(env, property, obj);
+    public K create(V typeName, long classId, String property, T obj) throws AbstractMetaParserException {
+        classApi().valid(typeName,classId);
+        return graphApi().create(typeName, property, obj);
     }
 
     @Override
-    public K create(E env, long classId, Map<String, T> attributes) throws AbstractMetaParserException {
-        environmentApi().valid(env);
-        environmentApi().testUnderDevelopment(env,false);
-        classApi().valid(env,classId);
-        return graphApi().create(env, attributes);
+    public K create(V typeName, long classId, Map<String, T> attributes) throws AbstractMetaParserException {
+        classApi().valid(typeName,classId);
+        return graphApi().create(typeName, attributes);
     }
 
     @Override
-    public K create(E env, long classId, K parentInstanceId, String property, Map<String, T> attributes) throws AbstractMetaParserException {
-        environmentApi().valid(env);
-        environmentApi().testUnderDevelopment(env,false);
-        classApi().valid(env,classId);
-        return graphApi().create(env,parentInstanceId,property,attributes);
+    public K create(V typeName, long classId, K parentInstanceId, String property, Map<String, T> attributes) throws AbstractMetaParserException {
+        classApi().valid(typeName,classId);
+        return graphApi().create(typeName,parentInstanceId,property,attributes);
     }
 
     @Override
-    public void add(E env, K instanceId, String property, T obj) throws AbstractMetaParserException {
-        environmentApi().valid(env);
-        environmentApi().testUnderDevelopment(env,false);
-        Type<K> type = classInstanceBridgeApi().query(env, instanceId);
-        classApi().query(env,type.getSerialVersionId());
-        graphApi().add(env,instanceId,property,obj);
+    public void add(V typeName, K instanceId, String property, T obj) throws AbstractMetaParserException {
+        Type<K> type = classInstanceBridgeApi().query(typeName, instanceId);
+        classApi().query(typeName,type.getSerialVersionId());
+        graphApi().add(typeName,instanceId,property,obj);
 
     }
 
     @Override
-    public void link(E env, K headId, K tailId, String property) throws AbstractMetaParserException {
-        environmentApi().valid(env);
-        environmentApi().testUnderDevelopment(env,false);
-        Set<Type<K>> types = classInstanceBridgeApi().query(env, headId, tailId);
+    public void link(V typeName, K headId, K tailId, String property) throws AbstractMetaParserException {
+        Set<Type<K>> types = classInstanceBridgeApi().query(typeName, headId, tailId);
         long[] ids = types.stream().mapToLong(kSfType -> kSfType.getSerialVersionId()).toArray();
-        classApi().query(env,ids);
+        classApi().query(typeName,ids);
     }
 
     @Override
-    public void update(E env, K instanceId, Map<String, T> attributes) throws AbstractMetaParserException {
-        environmentApi().valid(env);
-        environmentApi().testUnderDevelopment(env,false);
-        Type<K> type = classInstanceBridgeApi().query(env, instanceId);
-        classApi().query(env,type.getSerialVersionId());
-        graphApi().update(env,instanceId,attributes);
+    public void update(V typeName, K instanceId, Map<String, T> attributes) throws AbstractMetaParserException {
+        Type<K> type = classInstanceBridgeApi().query(typeName, instanceId);
+        classApi().query(typeName,type.getSerialVersionId());
+        graphApi().update(typeName,instanceId,attributes);
     }
 
     @Override
-    public void modify(E env, K instanceId, Map<String, T> attributes) throws AbstractMetaParserException {
-        environmentApi().valid(env);
-        environmentApi().testUnderDevelopment(env,false);
-        Type<K> type = classInstanceBridgeApi().query(env, instanceId);
-        classApi().query(env,type.getSerialVersionId());
-        graphApi().modify(env,instanceId,attributes);
+    public void modify(V typeName, K instanceId, Map<String, T> attributes) throws AbstractMetaParserException {
+        Type<K> type = classInstanceBridgeApi().query(typeName, instanceId);
+        classApi().query(typeName,type.getSerialVersionId());
+        graphApi().modify(typeName,instanceId,attributes);
     }
 
     @Override
-    public void delete(E env, K instanceId, String property) throws AbstractMetaParserException {
-        environmentApi().valid(env);
-        environmentApi().testUnderDevelopment(env,false);
-        graphApi().delete(env,instanceId,property);
+    public void delete(V typeName, K instanceId, String property) throws AbstractMetaParserException {
+        graphApi().delete(typeName,instanceId,property);
     }
 
     @Override
-    public void crack(E env, K headId, K tailId, String property) throws AbstractMetaParserException {
-        environmentApi().valid(env);
-        environmentApi().testUnderDevelopment(env,false);
-        graphApi().crack(env,headId,tailId,property);
+    public void crack(V typeName, K headId, K tailId, String property) throws AbstractMetaParserException {
+        graphApi().crack(typeName,headId,tailId,property);
     }
 
     @Override
-    public void delete(E env, K... instanceIds) throws AbstractMetaParserException {
-        environmentApi().valid(env);
-        environmentApi().testUnderDevelopment(env,false);
-        classInstanceBridgeApi().delete(env,instanceIds);
-        graphApi().delete(env,instanceIds);
+    public void delete(V typeName, K... instanceIds) throws AbstractMetaParserException {
+        classInstanceBridgeApi().delete(typeName,instanceIds);
+        graphApi().delete(typeName,instanceIds);
     }
 
     //TODO 校验部分还是全部，是先处理还是后处理
-    private void valid(E env) throws AbstractMetaParserException {
+    private void valid(V typeName) throws AbstractMetaParserException {
 
     }
 }
