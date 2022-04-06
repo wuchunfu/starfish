@@ -37,7 +37,7 @@ public class NodeEntityMapperTest {
 
     @AfterEach
     public void cleanUp() {
-        mapper.removeAll();
+        // mapper.removeAll();
     }
 
     @ParameterizedTest
@@ -48,5 +48,4 @@ public class NodeEntityMapperTest {
         Assertions.assertNotNull(actual.getCreateTime());
         Assertions.assertNotNull(actual.getUpdateTime());
     }
-
 }
