@@ -5,7 +5,7 @@
 * hive_db
 ```
 database 
-db_name 
+db_name
 comment 
 location 
 owner_name 
