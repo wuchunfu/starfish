@@ -5,17 +5,17 @@
   "properties": [
     {
       "name": "type",
-      "value": {"type":"HiveTable"},
+      "value": "HiveTable",
       "operator": 1
     },
     {
       "name": "developer",
-      "value": {"developer":"root"},
+      "value": "root",
       "operator": 1
     },
     {
       "name": "lastModifyTime",
-      "value": {"lastModifyTime":123343434234},
+      "value": 123343434234,
       "operator": 1
     }
   ]

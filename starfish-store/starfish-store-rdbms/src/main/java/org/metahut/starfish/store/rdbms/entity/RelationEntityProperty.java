@@ -24,6 +24,7 @@ import javax.persistence.JoinColumn;
 import javax.persistence.ManyToOne;
 import javax.persistence.Table;
 
+import java.util.AbstractMap;
 import java.util.Date;
 
 @Setter
@@ -60,5 +61,9 @@ public class RelationEntityProperty extends AbstractEntityProperty<Long, Object,
     @Column(name = "update_time")
     private Date updateTime;
 
+    @Override
+    public void setValue(Object value) {
+        this.value = new AbstractMap.SimpleEntry(name, value);
+    }
 
 }
