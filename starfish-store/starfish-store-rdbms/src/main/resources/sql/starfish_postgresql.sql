@@ -4,7 +4,7 @@ DROP TABLE IF EXISTS t_sf_node_entity;
 CREATE TABLE t_sf_node_entity (
   id serial NOT NULL,
   name varchar(100) not NULL,
-  categories json,
+  category varchar(100) not null,
   operator int DEFAULT NULL,
   create_time timestamp DEFAULT NULL,
   update_time timestamp DEFAULT NULL,

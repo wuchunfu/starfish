@@ -12,7 +12,11 @@ import org.springframework.boot.test.context.SpringBootTest;
 
 import java.io.IOException;
 import java.util.stream.Stream;
+import org.springframework.test.annotation.Commit;
+import org.springframework.transaction.annotation.Transactional;
 
+@Commit
+@Transactional
 @SpringBootTest
 public class RelationEntityRepositoryTest {
 

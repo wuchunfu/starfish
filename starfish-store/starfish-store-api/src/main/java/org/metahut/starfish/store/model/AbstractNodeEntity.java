@@ -15,9 +15,9 @@ public abstract class AbstractNodeEntity<I extends Serializable, P extends Abstr
 
     public abstract void setName(String name);
 
-    public abstract Set<String> getCategories();
+    public abstract String getCategory();
 
-    public abstract void setCategories(Set<String> categories);
+    public abstract void setCategory(String category);
 
     public abstract Map<String, P> getKeyedProperties();
 

@@ -1,16 +1,8 @@
 package org.metahut.starfish.store.rdbms.entity;
 
-import org.metahut.starfish.store.model.AbstractNodeEntity;
-
-import com.vladmihalcea.hibernate.type.json.JsonType;
-import lombok.Getter;
-import lombok.Setter;
-import org.hibernate.annotations.Type;
-import org.hibernate.annotations.TypeDef;
-import org.springframework.data.annotation.CreatedDate;
-import org.springframework.data.annotation.LastModifiedDate;
-import org.springframework.data.jpa.domain.support.AuditingEntityListener;
-
+import java.util.Date;
+import java.util.Map;
+import java.util.Set;
 import javax.persistence.CascadeType;
 import javax.persistence.Column;
 import javax.persistence.ConstraintMode;
@@ -24,17 +16,18 @@ import javax.persistence.Id;
 import javax.persistence.JoinColumn;
 import javax.persistence.OneToMany;
 import javax.persistence.Table;
-
-import java.util.Date;
-import java.util.Map;
-import java.util.Set;
+import lombok.Getter;
+import lombok.Setter;
+import org.metahut.starfish.store.model.AbstractNodeEntity;
+import org.springframework.data.annotation.CreatedDate;
+import org.springframework.data.annotation.LastModifiedDate;
+import org.springframework.data.jpa.domain.support.AuditingEntityListener;
 
 @Setter
 @Getter
 @Entity
 @Table(name = "t_sf_node_entity")
 @EntityListeners(AuditingEntityListener.class)
-@TypeDef(name = "json", typeClass = JsonType.class)
 public class NodeEntity extends AbstractNodeEntity<Long, NodeEntityProperty> {
 
     @Id
@@ -44,9 +37,8 @@ public class NodeEntity extends AbstractNodeEntity<Long, NodeEntityProperty> {
     @Column(name = "name", nullable = false)
     private String name;
 
-    @Type(type = "json")
-    @Column(columnDefinition = "json")
-    private Set<String> categories;
+    @Column(name = "category", nullable = false)
+    private String category;
 
     @OneToMany(targetEntity = NodeEntityProperty.class, fetch = FetchType.EAGER, cascade = CascadeType.ALL)
     @JoinColumn(name = "entity_id", foreignKey = @ForeignKey(ConstraintMode.NO_CONSTRAINT))

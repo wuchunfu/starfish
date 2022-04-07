@@ -10,7 +10,7 @@
   ],
   "startNodeEntity": {
     "name": "dwd",
-    "categories": ["HiveDatabase"],
+    "category": "HiveDatabase",
     "operator": 1,
     "properties": [
       {
@@ -27,7 +27,7 @@
   },
   "endNodeEntity": {
     "name": "dwd.user_info",
-    "categories": ["HiveTable"],
+    "category": "HiveTable",
     "operator": 1,
     "properties": [
       {
@@ -42,7 +42,7 @@
       },
       {
         "name": "lastModifyTime",
-        "value": 123343434234
+        "value": 123343434234,
         "operator": 1
       }
     ]

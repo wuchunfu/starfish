@@ -1,6 +1,6 @@
 {
   "name": "dwd.user_info",
-  "categories": ["HiveTable", "Hive"],
+  "category": "HiveTable",
   "operator": 1,
   "properties": [
     {
