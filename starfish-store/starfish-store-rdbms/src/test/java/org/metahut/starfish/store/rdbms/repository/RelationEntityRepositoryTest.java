@@ -9,10 +9,14 @@ import org.junit.jupiter.params.ParameterizedTest;
 import org.junit.jupiter.params.provider.MethodSource;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
+import org.springframework.test.annotation.Commit;
+import org.springframework.transaction.annotation.Transactional;
 
 import java.io.IOException;
 import java.util.stream.Stream;
 
+@Commit
+@Transactional
 @SpringBootTest
 public class RelationEntityRepositoryTest {
 

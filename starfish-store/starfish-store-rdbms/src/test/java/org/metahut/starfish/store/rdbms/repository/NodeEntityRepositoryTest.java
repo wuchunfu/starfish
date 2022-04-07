@@ -13,10 +13,15 @@ import org.junit.jupiter.params.ParameterizedTest;
 import org.junit.jupiter.params.provider.MethodSource;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
+import org.springframework.test.annotation.Commit;
+import org.springframework.transaction.annotation.Transactional;
 
 import java.io.IOException;
+import java.util.List;
 import java.util.stream.Stream;
 
+@Commit
+@Transactional
 @SpringBootTest
 public class NodeEntityRepositoryTest {
 
@@ -68,14 +73,22 @@ public class NodeEntityRepositoryTest {
     @ParameterizedTest
     @MethodSource("nodeEntityWithPropertyProvider")
     public void updateTest(NodeEntity entity) {
-        NodeEntity saveEntity = repository.save(entity);
+        NodeEntity savedEntity = repository.save(entity);
         String alteredName = "dwd.user_info_test";
-        saveEntity.setName(alteredName);
+        savedEntity.setName(alteredName);
 
-        NodeEntity expected = repository.save(saveEntity);
+        NodeEntity expected = repository.save(savedEntity);
 
         Assertions.assertEquals(expected.getName(), alteredName);
-
     }
 
+    @ParameterizedTest
+    @MethodSource("nodeEntityWithPropertyProvider")
+    public void removeByNameTest(NodeEntity entity) {
+        NodeEntity savedEntity = repository.save(entity);
+
+        List<NodeEntity> list = repository.removeByName(entity.getName());
+
+        list.stream().forEach(System.out::println);
+    }
 }

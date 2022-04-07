@@ -6,38 +6,155 @@ import org.metahut.starfish.store.rdbms.entity.NodeEntityProperty;
 import org.metahut.starfish.store.rdbms.repository.NodeEntityRepository;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.Example;
+import org.springframework.data.domain.ExampleMatcher;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Repository;
 
 import java.util.Collection;
+import java.util.List;
 
 @Repository
-public class NodeEntityMapper implements INodeEntityMapper<NodeEntity, NodeEntityProperty> {
+public class NodeEntityMapper implements INodeEntityMapper<Long, NodeEntity, NodeEntityProperty> {
 
     @Autowired
-    private NodeEntityRepository nodeEntityRepository;
+    private NodeEntityRepository repository;
 
     @Override
     public NodeEntity create(NodeEntity entity) {
-        return nodeEntityRepository.save(entity);
+        return repository.save(entity);
     }
 
     @Override
     public Collection<NodeEntity> createBatch(Collection<NodeEntity> entities) {
-        return nodeEntityRepository.saveAll(entities);
+        return repository.saveAll(entities);
     }
 
     @Override
     public void remove(NodeEntity entity) {
-        nodeEntityRepository.delete(entity);
+        repository.delete(entity);
     }
 
     @Override
     public void removeBatch(Collection<NodeEntity> entities) {
-        nodeEntityRepository.deleteAll(entities);
+        repository.deleteAll(entities);
     }
 
     @Override
     public void removeAll() {
-        nodeEntityRepository.deleteAll();
+        repository.deleteAll();
+    }
+
+    @Override
+    public void removeBatchById(Collection<Long> ids) {
+        repository.deleteAllById(ids);
+    }
+
+    @Override
+    public void removeAllByName(String name) {
+        repository.removeByName(name);
+    }
+
+    @Override
+    public void removeAllByName(NodeEntity entity) {
+        removeAllByName(entity.getName());
+    }
+
+    @Override
+    public void removeAllByCategory(String category) {
+        repository.removeByCategory(category);
+    }
+
+    @Override
+    public void removeAllByCategory(NodeEntity entity) {
+        removeAllByCategory(entity.getCategory());
+    }
+
+    @Override
+    public NodeEntity update(NodeEntity entity) {
+        return repository.save(entity);
+    }
+
+    @Override
+    public Collection<NodeEntity> updateBatchById(Collection<NodeEntity> entities) {
+        return repository.saveAll(entities);
+    }
+
+    @Override
+    public NodeEntity findById(Long id) {
+        return repository.getById(id);
+    }
+
+    @Override
+    public NodeEntity findById(NodeEntity entity) {
+        return findById(entity.getId());
+    }
+
+    @Override
+    public List<NodeEntity> findAllById(Collection<Long> ids) {
+        return repository.findAllById(ids);
+    }
+
+    @Override
+    public List<NodeEntity> findByName(String name) {
+        NodeEntity nodeEntity = new NodeEntity();
+        nodeEntity.setName(name);
+        ExampleMatcher matcher = ExampleMatcher.matching()
+            .withIgnoreCase("name");
+        Example<NodeEntity> example = Example.of(nodeEntity, matcher);
+        return repository.findAll(example);
+    }
+
+    @Override
+    public List<NodeEntity> findByCategory(String category) {
+        NodeEntity nodeEntity = new NodeEntity();
+        nodeEntity.setCategory(category);
+        ExampleMatcher matcher = ExampleMatcher.matching()
+            .withIgnoreCase("category");
+        Example<NodeEntity> example = Example.of(nodeEntity, matcher);
+        return repository.findAll(example);
+    }
+
+    @Override
+    public List<NodeEntity> findByCategoryAndName(String category, String name) {
+        NodeEntity nodeEntity = new NodeEntity();
+        nodeEntity.setCategory(category);
+        nodeEntity.setName(name);
+        ExampleMatcher matcher = ExampleMatcher.matching()
+            .withIgnoreCase("category", "name");
+        Example<NodeEntity> example = Example.of(nodeEntity, matcher);
+        return repository.findAll(example);
+    }
+
+    @Override
+    public Page<NodeEntity> findByName(String name, Pageable pageable) {
+        NodeEntity nodeEntity = new NodeEntity();
+        nodeEntity.setName(name);
+        ExampleMatcher matcher = ExampleMatcher.matching()
+            .withIgnoreCase("name");
+        Example<NodeEntity> example = Example.of(nodeEntity, matcher);
+        return repository.findAll(example, pageable);
+    }
+
+    @Override
+    public Page<NodeEntity> findByCategory(String category, Pageable pageable) {
+        NodeEntity nodeEntity = new NodeEntity();
+        nodeEntity.setCategory(category);
+        ExampleMatcher matcher = ExampleMatcher.matching()
+            .withIgnoreCase("category");
+        Example<NodeEntity> example = Example.of(nodeEntity, matcher);
+        return repository.findAll(example, pageable);
+    }
+
+    @Override
+    public Page<NodeEntity> findByCategoryAndName(String category, String name, Pageable pageable) {
+        NodeEntity nodeEntity = new NodeEntity();
+        nodeEntity.setCategory(category);
+        nodeEntity.setName(name);
+        ExampleMatcher matcher = ExampleMatcher.matching()
+            .withIgnoreCase("category", "name");
+        Example<NodeEntity> example = Example.of(nodeEntity, matcher);
+        return repository.findAll(example, pageable);
     }
 }
