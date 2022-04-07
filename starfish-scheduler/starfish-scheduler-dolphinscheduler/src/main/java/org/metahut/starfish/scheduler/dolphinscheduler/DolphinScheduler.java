@@ -52,7 +52,6 @@ public class DolphinScheduler implements IScheduler {
 
         TaskDefinitionParameter taskDefinitionParameter = new TaskDefinitionParameter();
 
-
     }
 
     public String get(String url) throws IOException {

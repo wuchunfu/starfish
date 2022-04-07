@@ -1,8 +1,9 @@
 package org.metahut.starfish.parser.antlr4.json;
 
+import org.metahut.starfish.parser.domain.instance.Class;
+
 import org.antlr.v4.runtime.tree.ParseTree;
 import org.antlr.v4.runtime.tree.TerminalNode;
-import org.metahut.starfish.parser.domain.instance.Class;
 
 import java.util.ArrayList;
 import java.util.Collection;
