@@ -14,30 +14,30 @@ import java.util.Collection;
 public class NodeEntityMapper implements INodeEntityMapper<NodeEntity, NodeEntityProperty> {
 
     @Autowired
-    private NodeEntityRepository repository;
+    private NodeEntityRepository nodeEntityRepository;
 
     @Override
     public NodeEntity create(NodeEntity entity) {
-        return repository.save(entity);
+        return nodeEntityRepository.save(entity);
     }
 
     @Override
     public Collection<NodeEntity> createBatch(Collection<NodeEntity> entities) {
-        return repository.saveAll(entities);
+        return nodeEntityRepository.saveAll(entities);
     }
 
     @Override
     public void remove(NodeEntity entity) {
-        repository.delete(entity);
+        nodeEntityRepository.delete(entity);
     }
 
     @Override
     public void removeBatch(Collection<NodeEntity> entities) {
-        repository.deleteAll(entities);
+        nodeEntityRepository.deleteAll(entities);
     }
 
     @Override
     public void removeAll() {
-        repository.deleteAll();
+        nodeEntityRepository.deleteAll();
     }
 }

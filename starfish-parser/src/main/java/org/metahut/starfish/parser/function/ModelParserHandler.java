@@ -38,10 +38,10 @@ public class ModelParserHandler {
             }
             if (structModel instanceof Class) {
                 Class sfClass = (Class) structModel;
-                if (sfClass.getAttributeModels() == null || sfClass.getAttributeModels().size() == 0) {
+                if (sfClass.getAttributes() == null || sfClass.getAttributes().size() == 0) {
                     throw new ModelValidException();
                 }
-                for (Attribute sfAttribute : sfClass.getAttributeModels()) {
+                for (Attribute sfAttribute : sfClass.getAttributes()) {
                     if (sfAttribute.getClassName() == null || !sfAttribute.getClassName().matches(SymbolConstants.FULL_CLASS_REGEX)) {
                         throw new ModelValidException();
                     }

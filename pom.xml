@@ -37,6 +37,7 @@
         <module>starfish-service</module>
         <module>starfish-dist</module>
         <module>starfish-examples</module>
+        <module>starfish-autoconfigure</module>
     </modules>
 
     <properties>
@@ -49,7 +50,7 @@
         <maven-surefire-plugin.version>3.0.0-M5</maven-surefire-plugin.version>
         <maven-checkstyle-plugin.version>3.1.2</maven-checkstyle-plugin.version>
 
-        <spring-boot.version>2.6.3</spring-boot.version>
+        <spring-boot.version>2.6.6</spring-boot.version>
         <lombok.version>1.18.22</lombok.version>
         <mockito.version>3.9.0</mockito.version>
         <junit.version>5.8.2</junit.version>
@@ -128,6 +129,16 @@
             <dependency>
                 <groupId>org.metahut.starfish</groupId>
                 <artifactId>starfish-ingestion-collector-api</artifactId>
+                <version>${project.version}</version>
+            </dependency>
+            <dependency>
+                <groupId>org.metahut.starfish</groupId>
+                <artifactId>starfish-store-rdbms</artifactId>
+                <version>${project.version}</version>
+            </dependency>
+            <dependency>
+                <groupId>org.metahut.starfish</groupId>
+                <artifactId>starfish-autoconfigure</artifactId>
                 <version>${project.version}</version>
             </dependency>
 
@@ -308,7 +319,7 @@
                         <sourceDirectories>
                             <sourceDirectory>${project.build.sourceDirectory}</sourceDirectory>
                         </sourceDirectories>
-                        <excludes>**\/generated-sources\/</excludes>
+                        <excludes>**\/generated-sources\/,**\/parser\/antlr4\/</excludes>
                     </configuration>
                     <executions>
                         <execution>
