@@ -3,7 +3,6 @@ package org.metahut.starfish.store.model;
 import java.io.Serializable;
 import java.util.Date;
 import java.util.Map;
-import java.util.Set;
 
 public abstract class AbstractNodeEntity<I extends Serializable, P extends AbstractEntityProperty> implements Serializable {
 

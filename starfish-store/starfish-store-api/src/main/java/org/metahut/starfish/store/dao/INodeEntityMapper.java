@@ -1,12 +1,13 @@
 package org.metahut.starfish.store.dao;
 
-import java.io.Serializable;
-import java.util.Collection;
-import java.util.List;
 import org.metahut.starfish.store.model.AbstractEntityProperty;
 import org.metahut.starfish.store.model.AbstractNodeEntity;
+
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
+
+import java.io.Serializable;
+import java.util.Collection;
 
 public interface INodeEntityMapper<I extends Serializable, N extends AbstractNodeEntity, P extends AbstractEntityProperty> {
 
@@ -96,32 +97,57 @@ public interface INodeEntityMapper<I extends Serializable, N extends AbstractNod
      */
     N findById(N entity);
 
-
+    /**
+     *
+     * @param ids
+     * @return the collection of the instance of N
+     */
     Collection<N> findAllById(Collection<Long> ids);
 
-    public List<N> findByName(String name);
-
-    public List<N> findByCategory(String category);
-
-    public List<N> findByCategoryAndName(String category, String name);
-
-    public Page<N> findByName(String name, Pageable pageable);
-
-    public Page<N> findByCategory(String category, Pageable pageable);
-
-    public Page<N> findByCategoryAndName(String category, String name, Pageable pageable);
-
-
-//    List<N> findByProperties(QueryConditionWrapper<N> wrapper);
-
+    /**
+     *
+     * @param name
+     * @return the collection of the instance of N
+     */
+    Collection<N> findByName(String name);
 
     /**
      *
      * @param category
-     * @param propertyName
-     * @param propertyValue
-     * @return
+     * @return the collection of the instance of N
      */
-//    List<N> findByProperty(String category, String propertyName, String propertyValue);
+    Collection<N> findByCategory(String category);
 
+    /**
+     *
+     * @param category
+     * @param name
+     * @return the collection of the instance of N
+     */
+    Collection<N> findByCategoryAndName(String category, String name);
+
+    /**
+     *
+     * @param name
+     * @param pageable
+     * @return the page of the instance of N
+     */
+    Page<N> findByName(String name, Pageable pageable);
+
+    /**
+     *
+     * @param category
+     * @param pageable
+     * @return the page of the instance of N
+     */
+    Page<N> findByCategory(String category, Pageable pageable);
+
+    /**
+     *
+     * @param category
+     * @param name
+     * @param pageable
+     * @return the page of the instance of N
+     */
+    Page<N> findByCategoryAndName(String category, String name, Pageable pageable);
 }

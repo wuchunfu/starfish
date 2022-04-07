@@ -1,9 +1,10 @@
 package org.metahut.starfish.store.dao;
 
-import java.io.Serializable;
-import java.util.Collection;
 import org.metahut.starfish.store.model.AbstractEntityProperty;
 import org.metahut.starfish.store.model.AbstractNodeEntity;
+
+import java.io.Serializable;
+import java.util.Collection;
 
 public interface IEntityPropertyMapper<I extends Serializable, N extends AbstractNodeEntity, P extends AbstractEntityProperty> {
 

@@ -1,11 +1,10 @@
 package org.metahut.starfish.store.rdbms.dao;
 
-import java.util.List;
-import org.assertj.core.util.Lists;
 import org.metahut.starfish.store.rdbms.entity.NodeEntity;
 import org.metahut.starfish.store.rdbms.repository.NodeEntityRepositoryTest;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
+import org.assertj.core.util.Lists;
 import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.BeforeEach;
@@ -13,14 +12,15 @@ import org.junit.jupiter.params.ParameterizedTest;
 import org.junit.jupiter.params.provider.MethodSource;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
-
-import java.io.IOException;
-import java.util.stream.Stream;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Sort;
 import org.springframework.test.annotation.Commit;
 import org.springframework.transaction.annotation.Transactional;
+
+import java.io.IOException;
+import java.util.List;
+import java.util.stream.Stream;
 
 @Commit
 @Transactional
@@ -46,7 +46,7 @@ public class NodeEntityMapperTest {
 
     @AfterEach
     public void cleanUp() {
-         mapper.removeAll();
+        mapper.removeAll();
     }
 
     @ParameterizedTest
