@@ -1,6 +1,11 @@
 package org.metahut.starfish.message.pulsar;
 
-import org.metahut.starfish.message.api.*;
+import org.metahut.starfish.message.api.MessageConsumer;
+import org.metahut.starfish.message.api.MessageException;
+import org.metahut.starfish.message.api.MessageManager;
+import org.metahut.starfish.message.api.MessageProducer;
+import org.metahut.starfish.message.api.MessageProperties;
+import org.metahut.starfish.message.api.MessageType;
 
 import org.apache.pulsar.client.api.PulsarClient;
 import org.apache.pulsar.client.api.PulsarClientException;
@@ -10,7 +15,6 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.autoconfigure.condition.ConditionalOnProperty;
 import org.springframework.stereotype.Component;
 
-import java.io.IOException;
 import java.util.Map;
 import java.util.Objects;
 import java.util.concurrent.ConcurrentHashMap;
@@ -45,17 +49,17 @@ public class PulsarMessageManager implements MessageManager {
 
     @Override
     public void init(MessageProperties messageProperties) throws MessageException {
-//        pulsarProperties = messageProperties.getPulsar();
-//        try {
-//            client = PulsarClient.builder()
-//                    .serviceUrl(pulsarProperties.getServiceUrl())
-//                    .build();
-//            this.setProducers(pulsarProperties.getProducers());
-//            this.setConsumers(pulsarProperties.getConsumers());
-//
-//        } catch (PulsarClientException e) {
-//            throw new MessageException("Pulsar create client exception", e);
-//        }
+        pulsarProperties = messageProperties.getPulsar();
+        try {
+            client = PulsarClient.builder()
+                    .serviceUrl(pulsarProperties.getServiceUrl())
+                    .build();
+            this.setProducers(pulsarProperties.getProducers());
+            this.setConsumers(pulsarProperties.getConsumers());
+
+        } catch (PulsarClientException e) {
+            throw new MessageException("Pulsar create client exception", e);
+        }
     }
 
     public void setProducers(Map<String, MessageProperties.PulsarProducer> producerMap) {
@@ -108,11 +112,11 @@ public class PulsarMessageManager implements MessageManager {
     }
 
     @Override
-    public void close() throws IOException {
+    public void close() throws Exception {
         messageProducerMap.forEach((name, producer) -> {
             try {
                 producer.close();
-            } catch (IOException e) {
+            } catch (Exception e) {
                 logger.error(e.getMessage(), e);
             }
         });
@@ -120,7 +124,7 @@ public class PulsarMessageManager implements MessageManager {
         messageConsumerMap.forEach((name, consumer) -> {
             try {
                 consumer.close();
-            } catch (IOException e) {
+            } catch (Exception e) {
                 logger.error(e.getMessage(), e);
             }
         });

@@ -1,6 +1,6 @@
 package org.metahut.starfish.parser.function;
 
-import org.metahut.starfish.parser.domain.enums.SfTagCategory;
+import org.metahut.starfish.parser.domain.enums.TagCategory;
 
 import java.util.List;
 
@@ -48,7 +48,7 @@ interface MetaModelConsoleService<T> {
      * @param tag
      * @return
      */
-    List<T> getByTag(String env, SfTagCategory sfTagCategory,String tag);
+    List<T> getByTag(String env, TagCategory sfTagCategory,String tag);
 
     /**
      *

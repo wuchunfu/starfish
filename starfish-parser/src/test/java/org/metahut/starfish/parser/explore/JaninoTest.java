@@ -16,15 +16,6 @@ import java.lang.reflect.InvocationTargetException;
 import java.util.HashMap;
 import java.util.Map;
 
-/**
-<<<<<<< HEAD
- *
-=======
- * @author XuYang
- * Create at 2022/2/17
- * @description
->>>>>>> af6836df91ef821e50f66436bb12500fa3469eed
- */
 public class JaninoTest {
 
     /**
@@ -42,14 +33,14 @@ public class JaninoTest {
 
         // Now compile two units from strings:
         compiler.compile(new Resource[] {
-                new StringResource(
-                        "pkg1/A.java",
-                        "package pkg1; public class A { public static int meth() { return pkg2.B.meth(); } }"
-                ),
-                new StringResource(
-                        "pkg2/B.java",
-                        "package pkg2; public class B { public static int meth() { return 77;            } }"
-                ),
+            new StringResource(
+                    "pkg1/A.java",
+                    "package pkg1; public class A { public static int meth() { return pkg2.B.meth(); } }"
+            ),
+            new StringResource(
+                    "pkg2/B.java",
+                    "package pkg2; public class B { public static int meth() { return 77;            } }"
+            ),
         });
 
         // Set up a class loader that uses the generated classes.
@@ -68,19 +59,17 @@ public class JaninoTest {
     public void janinoAsScriptEvaluatorTest() throws CompileException, InvocationTargetException {
         ScriptEvaluator se = new ScriptEvaluator();
         se.cook(
-                ""
-                        + "static void method1() {\n"
-                        + "    System.out.println(1);\n"
-                        + "}\n"
-                        + "\n"
-                        + "method1();\n"
-                        + "method2();\n"
-                        + "\n"
-                        + "static void method2() {\n"
-                        + "    System.out.println(2);\n"
-                        + "}\n"
+            "static void method1() {\n"
+                + " \n"
+                + "}\n"
+                + "\n"
+                + "method1();\n"
+                + "method2();\n"
+                + "\n"
+                + "static void method2() {\n"
+                + " \n"
+                + "}\n"
         );
         Object evaluate = se.evaluate(new Object[0]);
-        System.out.println(evaluate);
     }
 }

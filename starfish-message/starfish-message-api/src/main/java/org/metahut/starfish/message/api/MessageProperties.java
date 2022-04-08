@@ -1,3 +1,20 @@
+/*
+ * Licensed to the Apache Software Foundation (ASF) under one or more
+ * contributor license agreements.  See the NOTICE file distributed with
+ * this work for additional information regarding copyright ownership.
+ * The ASF licenses this file to You under the Apache License, Version 2.0
+ * (the "License"); you may not use this file except in compliance with
+ * the License.  You may obtain a copy of the License at
+ *
+ *    http://www.apache.org/licenses/LICENSE-2.0
+ *
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
+ */
+
 package org.metahut.starfish.message.api;
 
 import org.springframework.boot.context.properties.ConfigurationProperties;
@@ -53,11 +70,12 @@ public class MessageProperties {
 
         @Override
         public String toString() {
-            return "Pulsar{" +
-                    "serviceUrl='" + serviceUrl + '\'' +
-                    ", producers=" + producers +
-                    ", consumers=" + consumers +
-                    '}';
+            return "Pulsar{"
+                    + "serviceUrl='" + serviceUrl
+                    + '\''
+                    + ", producers=" + producers
+                    + ", consumers=" + consumers
+                    + '}';
         }
     }
 
@@ -95,11 +113,16 @@ public class MessageProperties {
 
         @Override
         public String toString() {
-            return "PulsarProducer{" +
-                    "topicName='" + topicName + '\'' +
-                    ", schema='" + schema + '\'' +
-                    ", producerName='" + producerName + '\'' +
-                    '}';
+            return "PulsarProducer{"
+                    + "topicName='"
+                    + topicName
+                    + '\''
+                    + ", schema='"
+                    + schema + '\''
+                    + ", producerName='"
+                    + producerName
+                    + '\''
+                    + '}';
         }
     }
 
@@ -127,10 +150,14 @@ public class MessageProperties {
 
         @Override
         public String toString() {
-            return "PulsarConsumer{" +
-                    "topicName='" + topicName + '\'' +
-                    ", subscriptionName='" + subscriptionName + '\'' +
-                    '}';
+            return "PulsarConsumer{"
+                    + "topicName='"
+                    + topicName
+                    + '\''
+                    + ", subscriptionName='"
+                    + subscriptionName
+                    + '\''
+                    + '}';
         }
     }
 
@@ -152,10 +179,13 @@ public class MessageProperties {
 
     @Override
     public String toString() {
-        return "MessageProperties{" +
-                "type=" + type +
-                ", kafka=" + kafka +
-                ", pulsar=" + pulsar +
-                '}';
+        return "MessageProperties{"
+                + "type="
+                + type
+                + ", kafka="
+                + kafka
+                + ", pulsar="
+                + pulsar
+                + '}';
     }
 }

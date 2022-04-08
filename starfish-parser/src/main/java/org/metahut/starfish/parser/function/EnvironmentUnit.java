@@ -1,7 +1,7 @@
 package org.metahut.starfish.parser.function;
 
 import org.metahut.starfish.parser.domain.SymbolConstants;
-import org.metahut.starfish.parser.domain.instance.SfClass;
+import org.metahut.starfish.parser.domain.instance.Class;
 
 import java.util.List;
 import java.util.Map;
@@ -10,7 +10,7 @@ import java.util.concurrent.atomic.AtomicLong;
 
 /**
  * 必须单例 how
- * 解决多环境的问题？
+ * 解决多环境的问题
  */
 abstract class EnvironmentUnit<E> {
 
@@ -30,14 +30,14 @@ abstract class EnvironmentUnit<E> {
     /**
      * 环境装载 (包含更新和卸载 )
      */
-    public abstract void load(E env, List<SfClass> structModels);
+    public abstract void load(E env, List<Class> structModels);
 
     /**
      *
      * @param env
      * @return
      */
-    public abstract List<SfClass> search(E env);
+    public abstract List<Class> search(E env);
 
     /**
      *
@@ -45,7 +45,7 @@ abstract class EnvironmentUnit<E> {
      * @param versionId
      * @return
      */
-    abstract SfClass search(E env,long versionId);
+    abstract Class search(E env,long versionId);
 
     /**
      * 卸载环境

@@ -1,8 +1,8 @@
 package org.metahut.starfish.parser.function;
 
 import org.metahut.starfish.parser.domain.SymbolConstants;
-import org.metahut.starfish.parser.domain.instance.SfClass;
-import org.metahut.starfish.parser.domain.instance.SfAttribute;
+import org.metahut.starfish.parser.domain.instance.Attribute;
+import org.metahut.starfish.parser.domain.instance.Class;
 import org.metahut.starfish.parser.domain.struct.StructWorker;
 import org.metahut.starfish.parser.exception.AbstractMetaParserException;
 import org.metahut.starfish.parser.exception.DataValidException;
@@ -21,12 +21,12 @@ public class ModelParserHandler {
 
     private FinalStorage metaStorage;
 
-    public void valid(List<SfClass> structModels) throws AbstractMetaParserException {
+    public void valid(List<Class> structModels) throws AbstractMetaParserException {
         if (structModels == null || structModels.size() == 0) {
             throw new DataValidException("Non data in ,please check.");
         }
         Set<String> packages = new HashSet<>();
-        for (SfClass structModel : structModels) {
+        for (Class structModel : structModels) {
             if (structModel.getPackagePath() == null || !structModel.getPackagePath().matches(SymbolConstants.PACKAGE_REGEX)) {
                 throw new ModelValidException();
             }
@@ -36,12 +36,12 @@ public class ModelParserHandler {
             if (!packages.add(structModel.getPackagePath())) {
                 throw new ModelValidException("Repeat class");
             }
-            if (structModel instanceof SfClass) {
-                SfClass sfClass = (SfClass) structModel;
-                if (sfClass.getAttributeModels() == null || sfClass.getAttributeModels().size() == 0) {
+            if (structModel instanceof Class) {
+                Class sfClass = (Class) structModel;
+                if (sfClass.getAttributes() == null || sfClass.getAttributes().size() == 0) {
                     throw new ModelValidException();
                 }
-                for (SfAttribute sfAttribute : sfClass.getAttributeModels()) {
+                for (Attribute sfAttribute : sfClass.getAttributes()) {
                     if (sfAttribute.getClassName() == null || !sfAttribute.getClassName().matches(SymbolConstants.FULL_CLASS_REGEX)) {
                         throw new ModelValidException();
                     }
@@ -55,7 +55,7 @@ public class ModelParserHandler {
      * @param env
      * @param structModels
      */
-    public void loadModels(String env,List<SfClass> structModels) {
+    public void loadModels(String env,List<Class> structModels) {
         final String rewriteEnv = environmentUnit.rewrite(env);
         //1.version 没用 class按照类名来的
         //2.class

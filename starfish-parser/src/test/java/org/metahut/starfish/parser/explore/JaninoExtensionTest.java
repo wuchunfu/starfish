@@ -34,21 +34,21 @@ public class JaninoExtensionTest {
 
             // Now compile two units from strings:
             compiler.compile(new Resource[]{
-                    new StringResource(
-                            "octopus/model/HiveModel.java",
-                            "package octopus.model;\n"
-                                    + "import octopus.attribute.HiveAttribute;\n"
-                                    + "import lombok.Data;\n"
-                                    + "@Data\n"
-                                    + "public class HiveModel { private HiveAttribute hiveAttribute; }"
-                    ),
-                    new StringResource(
-                            "octopus/attribute/HiveAttribute.java",
-                            "package octopus.attribute;\n"
-                                    + "import lombok.Data;\n"
-                                    + "@Data\n"
-                                    + "public class HiveAttribute {private String tableName;}"
-                    ),
+                new StringResource(
+                        "octopus/model/HiveModel.java",
+                        "package octopus.model;\n"
+                                + "import octopus.attribute.HiveAttribute;\n"
+                                + "import lombok.Data;\n"
+                                + "@Data\n"
+                                + "public class HiveModel { private HiveAttribute hiveAttribute; }"
+                ),
+                new StringResource(
+                        "octopus/attribute/HiveAttribute.java",
+                        "package octopus.attribute;\n"
+                                + "import lombok.Data;\n"
+                                + "@Data\n"
+                                + "public class HiveAttribute {private String tableName;}"
+                ),
             });
 
             // Set up a class loader that uses the generated classes.
@@ -75,7 +75,7 @@ public class JaninoExtensionTest {
      * @throws Exception
      */
     @Test
-    public void dynamicCompileInitialClassInstanceTest() throws Exception{
+    public void dynamicCompileInitialClassInstanceTest() throws Exception {
         ICompiler compiler = CompilerFactoryFactory.getDefaultCompilerFactory(this.getClass().getClassLoader()).newCompiler();
 
         // Store generated .class files in a Map:
@@ -83,34 +83,34 @@ public class JaninoExtensionTest {
         compiler.setClassFileCreator(new MapResourceCreator(classes));
 
         // Now compile two units from strings:
-        compiler.compile(new Resource[]{
-                new StringResource(
-                        "octopus/model/HiveModel.java",
-                        "package octopus.model;\n"
-                                + "import octopus.attribute.HiveAttribute;\n"
-                                + "public class HiveModel {\n"
-                                + "\t\tprivate HiveAttribute hiveAttribute;\n"
-                                + "\t\tpublic void setHiveAttribute(HiveAttribute hiveAttribute) {\n"
-                                + "\t\t\t\tthis.hiveAttribute = hiveAttribute;\n"
-                                + "\t\t}\n"
-                                + "\t\tpublic HiveAttribute getHiveAttribute(){\n"
-                                + "\t\t\t\treturn this.hiveAttribute;\n"
-                                + "\t\t}\n"
-                                + "}\n"
-                ),
-                new StringResource(
-                        "octopus/attribute/HiveAttribute.java",
-                        "package octopus.attribute;\n"
-                                + "public class HiveAttribute {"
-                                + "\t\tprivate String tableName;\n"
-                                + "\t\tpublic void setTableName(String tableName) {\n"
-                                + "\t\t\t\tthis.tableName = tableName;\n"
-                                + "\t\t}\n"
-                                + "\t\tpublic String getTableName(){\n"
-                                + "\t\t\t\treturn this.tableName;\n"
-                                + "\t\t}\n"
-                                + "}\n"
-                ),
+        compiler.compile(new Resource[] {
+            new StringResource(
+                    "octopus/model/HiveModel.java",
+                    "package octopus.model;\n"
+                            + "import octopus.attribute.HiveAttribute;\n"
+                            + "public class HiveModel {\n"
+                            + "\t\tprivate HiveAttribute hiveAttribute;\n"
+                            + "\t\tpublic void setHiveAttribute(HiveAttribute hiveAttribute) {\n"
+                            + "\t\t\t\tthis.hiveAttribute = hiveAttribute;\n"
+                            + "\t\t}\n"
+                            + "\t\tpublic HiveAttribute getHiveAttribute(){\n"
+                            + "\t\t\t\treturn this.hiveAttribute;\n"
+                            + "\t\t}\n"
+                            + "}\n"
+            ),
+            new StringResource(
+                    "octopus/attribute/HiveAttribute.java",
+                    "package octopus.attribute;\n"
+                            + "public class HiveAttribute {"
+                            + "\t\tprivate String tableName;\n"
+                            + "\t\tpublic void setTableName(String tableName) {\n"
+                            + "\t\t\t\tthis.tableName = tableName;\n"
+                            + "\t\t}\n"
+                            + "\t\tpublic String getTableName(){\n"
+                            + "\t\t\t\treturn this.tableName;\n"
+                            + "\t\t}\n"
+                            + "}\n"
+            ),
         });
 
         // Set up a class loader that uses the generated classes.

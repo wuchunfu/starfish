@@ -1,13 +1,14 @@
 package org.metahut.starfish.parser.function;
 
+import org.metahut.starfish.parser.domain.SymbolConstants;
+import org.metahut.starfish.parser.domain.enums.RelType;
+import org.metahut.starfish.parser.domain.instance.Class;
+
 import org.codehaus.commons.compiler.CompilerFactoryFactory;
 import org.codehaus.commons.compiler.ICompiler;
 import org.codehaus.commons.compiler.util.resource.MapResourceCreator;
 import org.codehaus.commons.compiler.util.resource.Resource;
 import org.codehaus.commons.compiler.util.resource.StringResource;
-import org.metahut.starfish.parser.domain.SymbolConstants;
-import org.metahut.starfish.parser.domain.enums.SfRelType;
-import org.metahut.starfish.parser.domain.instance.SfClass;
 
 import java.util.HashMap;
 import java.util.HashSet;
@@ -68,7 +69,7 @@ public class ModelGenerator {
      * @param sfClass
      * @return
      */
-    public static final String toClassFile(String env, SfClass sfClass) {
+    public static final String toClassFile(String env, Class sfClass) {
         LineStringBuilder packageBuilder = new LineStringBuilder();
         packageBuilder.appendLine("package ",env,".", sfClass.getPackagePath(),";\n");
         LineStringBuilder importBuilder = new LineStringBuilder();
@@ -78,7 +79,7 @@ public class ModelGenerator {
         attributesBuilder.appendLine(SymbolConstants.INDENT,"private static final long ",String.valueOf(sfClass.getSerialVersionUID()),"L", SymbolConstants.LINE_TAIL);
         Set<String> imports = new HashSet<>();
         //attribute -> import how o（n）
-        sfClass.getAttributeModels()
+        sfClass.getAttributes()
                 .stream()
                 .filter(attributeModel -> attributeModel != null
                         && attributeModel.getClassName() != null)
@@ -91,7 +92,7 @@ public class ModelGenerator {
                     String simpleClassName;
                     if (index != -1) {
                         String preName = "";
-                        if (SfRelType.CUSTOM == attributeModel.getRelType()) {
+                        if (RelType.ENTITY == attributeModel.getRelType()) {
                             preName = env + SymbolConstants.PACKAGE_SPLIT;
                         }
                         importBuilder.appendLine(SymbolConstants.IMPORT,preName,attributeModel.getClassName(), SymbolConstants.LINE_TAIL);

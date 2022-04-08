@@ -5,7 +5,7 @@
 * hive_db
 ```
 database 
-db_name 
+db_name
 comment 
 location 
 owner_name 
@@ -53,7 +53,12 @@ decribe db01.tbl01 col01
 ```
 name
 description
+zookeeper-connect
+configuration-store
 service-url
+brokerService-url
+service-url-tls
+brokerService-url-tls
 token
 ```
 
@@ -63,4 +68,6 @@ token
 name
 description
 cluster
+persistentType
+namespace
 ```

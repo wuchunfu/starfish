@@ -1,7 +1,7 @@
 package org.metahut.starfish.parser.domain.struct;
 
-import org.metahut.starfish.parser.domain.enums.SfTagCategory;
-import org.metahut.starfish.parser.domain.enums.SfTagLife;
+import org.metahut.starfish.parser.domain.enums.TagCategory;
+import org.metahut.starfish.parser.domain.enums.TagLife;
 
 import java.util.Date;
 
@@ -15,7 +15,7 @@ public class TagModel {
     /**
      * Tag category
      */
-    private SfTagCategory sfTagCategory;
+    private TagCategory sfTagCategory;
     /**
      * Tag Name
      */
@@ -41,6 +41,6 @@ public class TagModel {
      */
     private Long tagOrder;
 
-    private SfTagLife sfTagLife;
+    private TagLife sfTagLife;
 
 }

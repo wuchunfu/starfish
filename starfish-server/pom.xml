@@ -19,11 +19,28 @@
         </dependency>
         <dependency>
             <groupId>org.metahut.starfish</groupId>
-            <artifactId>starfish-message-api</artifactId>
+            <artifactId>starfish-scheduler-api</artifactId>
         </dependency>
         <dependency>
             <groupId>org.metahut.starfish</groupId>
-            <artifactId>starfish-message-pulsar</artifactId>
+            <artifactId>starfish-ingestion-collector-api</artifactId>
+        </dependency>
+        <dependency>
+            <groupId>org.metahut.starfish</groupId>
+            <artifactId>starfish-service</artifactId>
+        </dependency>
+        <dependency>
+            <groupId>org.metahut.starfish</groupId>
+            <artifactId>starfish-store-rdbms</artifactId>
+        </dependency>
+        <dependency>
+            <groupId>org.metahut.starfish</groupId>
+            <artifactId>starfish-autoconfigure</artifactId>
+        </dependency>
+
+        <dependency>
+            <groupId>org.metahut.starfish</groupId>
+            <artifactId>starfish-scheduler-dolphinscheduler</artifactId>
             <version>${project.version}</version>
         </dependency>
 

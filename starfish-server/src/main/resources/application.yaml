@@ -42,21 +42,8 @@ spring:
 
 
 starfish:
-  message:
-    type: pulsar
-    pulsar:
-      service-url: pulsar://localhost:6650
-      producers:
-        metaProducer:
-          topic-name: my-topic
-          schema: STRING
-          producer-name: meta
-      consumers:
-        metaConsumer:
-          topic-name: my-topic
-          subscription-name: my-subscription
-          subscription-type: Key_Shared
   scheduler:
     type: dolphinscheduler
     dolphinscheduler:
       service-url: http://localhost:1234/dolphinscheduler
+

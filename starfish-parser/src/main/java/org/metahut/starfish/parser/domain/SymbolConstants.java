@@ -1,6 +1,7 @@
 package org.metahut.starfish.parser.domain;
 
 import org.metahut.starfish.parser.function.ModelGenerator;
+
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
