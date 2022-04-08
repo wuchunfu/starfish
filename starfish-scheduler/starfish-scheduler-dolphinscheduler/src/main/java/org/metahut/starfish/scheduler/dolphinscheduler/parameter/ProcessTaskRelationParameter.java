@@ -233,13 +233,13 @@ public class ProcessTaskRelationParameter {
         }
         ProcessTaskRelationParameter that = (ProcessTaskRelationParameter) o;
         return processDefinitionVersion == that.processDefinitionVersion
-            && projectCode == that.projectCode
-            && processDefinitionCode == that.processDefinitionCode
-            && preTaskCode == that.preTaskCode
-            && preTaskVersion == that.preTaskVersion
-            && postTaskCode == that.postTaskCode
-            && postTaskVersion == that.postTaskVersion
-            && Objects.equals(name, that.name);
+                && projectCode == that.projectCode
+                && processDefinitionCode == that.processDefinitionCode
+                && preTaskCode == that.preTaskCode
+                && preTaskVersion == that.preTaskVersion
+                && postTaskCode == that.postTaskCode
+                && postTaskVersion == that.postTaskVersion
+                && Objects.equals(name, that.name);
     }
 
     @Override

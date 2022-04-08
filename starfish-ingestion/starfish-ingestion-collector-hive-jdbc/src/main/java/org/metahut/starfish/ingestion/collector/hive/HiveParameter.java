@@ -1,10 +1,8 @@
 package org.metahut.starfish.ingestion.collector.hive;
 
-import org.metahut.starfish.ingestion.collector.api.AbstractCollectorParameter;
-
 import java.util.Objects;
 
-public class HiveParameter extends AbstractCollectorParameter {
+public class HiveParameter {
 
     private String driverName;
     private String url;

@@ -16,6 +16,7 @@
             <groupId>org.metahut.starfish</groupId>
             <artifactId>starfish-ingestion-common</artifactId>
          </dependency>
+
     </dependencies>
 
 </project>

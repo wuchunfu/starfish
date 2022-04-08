@@ -45,5 +45,6 @@ starfish:
   scheduler:
     type: dolphinscheduler
     dolphinscheduler:
-      service-url: http://localhost:1234/dolphinscheduler
+      service-url: http://dolphinscheduler.dev.zhaopin.com/dolphinscheduler
+      project-code: 4996418468000
 
