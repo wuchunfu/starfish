@@ -1,10 +1,12 @@
 package org.metahut.starfish.store.rdbms.dao;
 
+import java.util.Collection;
+import java.util.List;
 import org.metahut.starfish.store.dao.INodeEntityMapper;
 import org.metahut.starfish.store.rdbms.entity.NodeEntity;
 import org.metahut.starfish.store.rdbms.entity.NodeEntityProperty;
 import org.metahut.starfish.store.rdbms.repository.NodeEntityRepository;
-
+import org.metahut.starfish.store.rdbms.repository.RelationEntityRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Example;
 import org.springframework.data.domain.ExampleMatcher;
@@ -12,14 +14,14 @@ import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Repository;
 
-import java.util.Collection;
-import java.util.List;
-
 @Repository
 public class NodeEntityMapper implements INodeEntityMapper<Long, NodeEntity, NodeEntityProperty> {
 
     @Autowired
     private NodeEntityRepository repository;
+
+    @Autowired
+    private RelationEntityRepository relationEntityRepository;
 
     @Override
     public NodeEntity create(NodeEntity entity) {
@@ -34,26 +36,44 @@ public class NodeEntityMapper implements INodeEntityMapper<Long, NodeEntity, Nod
     @Override
     public void remove(NodeEntity entity) {
         repository.delete(entity);
+        relationEntityRepository.removeByStartNodeEntity(entity);
+        relationEntityRepository.removeByEndNodeEntity(entity);
     }
 
     @Override
     public void removeBatch(Collection<NodeEntity> entities) {
         repository.deleteAll(entities);
+        entities.stream().forEach(entity -> {
+            relationEntityRepository.removeByStartNodeEntity(entity);
+            relationEntityRepository.removeByEndNodeEntity(entity);
+        });
     }
 
     @Override
     public void removeAll() {
         repository.deleteAll();
+        relationEntityRepository.deleteAll();
     }
 
     @Override
     public void removeBatchById(Collection<Long> ids) {
         repository.deleteAllById(ids);
+        ids.stream().forEach(id -> {
+            NodeEntity entity = new NodeEntity();
+            entity.setId(id);
+            relationEntityRepository.removeByStartNodeEntity(entity);
+            relationEntityRepository.removeByEndNodeEntity(entity);
+        });
+
     }
 
     @Override
     public void removeAllByName(String name) {
-        repository.removeByName(name);
+        List<NodeEntity> entities = repository.removeByName(name);
+        entities.stream().forEach(entity -> {
+            relationEntityRepository.removeByStartNodeEntity(entity);
+            relationEntityRepository.removeByEndNodeEntity(entity);
+        });
     }
 
     @Override
@@ -63,7 +83,11 @@ public class NodeEntityMapper implements INodeEntityMapper<Long, NodeEntity, Nod
 
     @Override
     public void removeAllByCategory(String category) {
-        repository.removeByCategory(category);
+        List<NodeEntity> entities = repository.removeByCategory(category);
+        entities.stream().forEach(entity -> {
+            relationEntityRepository.removeByStartNodeEntity(entity);
+            relationEntityRepository.removeByEndNodeEntity(entity);
+        });
     }
 
     @Override

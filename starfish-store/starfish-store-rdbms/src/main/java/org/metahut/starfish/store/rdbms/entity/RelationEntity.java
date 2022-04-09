@@ -44,23 +44,23 @@ public class RelationEntity extends AbstractRelationEntity<Long, RelationEntityP
     @Column(name = "category")
     private String category;
 
-    @OneToMany(targetEntity = RelationEntityProperty.class, fetch = FetchType.EAGER, cascade = CascadeType.ALL)
+    @OneToMany(targetEntity = RelationEntityProperty.class, fetch = FetchType.EAGER, cascade = CascadeType.ALL, orphanRemoval = true)
     @JoinColumn(name = "entity_id", foreignKey = @ForeignKey(ConstraintMode.NO_CONSTRAINT))
     private Set<RelationEntityProperty> properties;
 
-    @OneToOne(targetEntity = NodeEntity.class, fetch = FetchType.EAGER, cascade = CascadeType.PERSIST)
-    @JoinColumn(name = "id", foreignKey = @ForeignKey(ConstraintMode.NO_CONSTRAINT))
+    @OneToOne(targetEntity = NodeEntity.class, fetch = FetchType.EAGER, cascade = {})
+    @JoinColumn(name = "start_node_entity_id", foreignKey = @ForeignKey(ConstraintMode.NO_CONSTRAINT))
     private NodeEntity startNodeEntity;
 
-    @OneToOne(targetEntity = NodeEntity.class, fetch = FetchType.EAGER, cascade = CascadeType.PERSIST)
-    @JoinColumn(name = "id", foreignKey = @ForeignKey(ConstraintMode.NO_CONSTRAINT))
+    @OneToOne(targetEntity = NodeEntity.class, fetch = FetchType.EAGER, cascade = {})
+    @JoinColumn(name = "end_node_entity_id", foreignKey = @ForeignKey(ConstraintMode.NO_CONSTRAINT))
     private NodeEntity endNodeEntity;
 
     @Column(name = "operator")
     private Integer operator;
 
     @CreatedDate
-    @Column(name = "create_time")
+    @Column(name = "create_time", nullable = false, updatable = false)
     private Date createTime;
 
     @LastModifiedDate
