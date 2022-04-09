@@ -1,5 +1,6 @@
 package org.metahut.starfish.store.rdbms.entity;
 
+import org.hibernate.annotations.DynamicUpdate;
 import org.metahut.starfish.store.model.AbstractEntityProperty;
 
 import com.vladmihalcea.hibernate.type.json.JsonType;
@@ -54,7 +55,7 @@ public class NodeEntityProperty extends AbstractEntityProperty<Long, Object, Nod
     private Integer operator;
 
     @CreatedDate
-    @Column(name = "create_time")
+    @Column(name = "create_time", nullable = false, updatable = false)
     private Date createTime;
 
     @LastModifiedDate

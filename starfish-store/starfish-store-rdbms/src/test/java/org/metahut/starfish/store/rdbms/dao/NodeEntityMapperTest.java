@@ -1,6 +1,8 @@
 package org.metahut.starfish.store.rdbms.dao;
 
 import org.metahut.starfish.store.rdbms.entity.NodeEntity;
+import org.metahut.starfish.store.rdbms.entity.NodeEntityProperty;
+import org.metahut.starfish.store.rdbms.repository.NodeEntityRepository;
 import org.metahut.starfish.store.rdbms.repository.NodeEntityRepositoryTest;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
@@ -10,6 +12,7 @@ import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.params.ParameterizedTest;
 import org.junit.jupiter.params.provider.MethodSource;
+import org.mockito.internal.util.collections.Sets;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.data.domain.Page;
@@ -46,7 +49,7 @@ public class NodeEntityMapperTest {
 
     @AfterEach
     public void cleanUp() {
-        mapper.removeAll();
+//        mapper.removeAll();
     }
 
     @ParameterizedTest
@@ -104,6 +107,27 @@ public class NodeEntityMapperTest {
         NodeEntity actual = mapper.create(entity);
         Page<NodeEntity> list = mapper.findByCategoryAndName(entity.getCategory(), entity.getName(), request);
         Assertions.assertEquals(1L, list.getTotalElements());
+    }
+
+    @ParameterizedTest
+    @MethodSource("nodeEntityWithPropertyProvider")
+    public void updateTest(NodeEntity entity) {
+        NodeEntity savedEntity = mapper.create(entity);
+
+        NodeEntity updateEntity = new NodeEntity();
+        updateEntity.setId(savedEntity.getId());
+        updateEntity.setName(savedEntity.getName());
+        updateEntity.setCategory(savedEntity.getCategory());
+        updateEntity.setOperator(savedEntity.getOperator());
+
+        NodeEntityProperty property = new NodeEntityProperty();
+        property.setName("url");
+        property.setValue("http://localhost:1234");
+
+        updateEntity.setProperties(Sets.newSet(property));
+        NodeEntity actual = mapper.update(updateEntity);
+
+
     }
 
 }

@@ -54,7 +54,7 @@ public class RelationEntityProperty extends AbstractEntityProperty<Long, Object,
     private Integer operator;
 
     @CreatedDate
-    @Column(name = "create_time")
+    @Column(name = "create_time", nullable = false, updatable = false)
     private Date createTime;
 
     @LastModifiedDate
