@@ -17,9 +17,9 @@
 
 starfish:
   message:
-    type: pulsar
+    type: PULSAR
     pulsar:
-      service-url: pulsar://localhost:6650
+      service-url: http://pulsar-idc-qa.zpidc.com:8080
       producers:
         metaProducer:
           topic-name: my-topic

@@ -25,6 +25,16 @@ public class DolphinResult<T> {
 
     private T data;
 
+    public DolphinResult(Integer code, String msg, T data) {
+        this.code = code;
+        this.msg = msg;
+        this.data = data;
+    }
+
+    public DolphinResult() {
+
+    }
+
     public Integer getCode() {
         return code;
     }

@@ -30,32 +30,32 @@ public class ModelGenerator {
         // Now compile two units from strings:
         compiler.compile(new Resource[]{
             new StringResource(
-                    "octopus/model/HiveModel.java",
-                    "package octopus.model;\n"
-                            + "import octopus.attribute.HiveAttribute;\n"
-                            + "public class HiveModel {\n"
-                            + "\t\tprivate HiveAttribute hiveAttribute;\n"
-                            + "\t\tpublic void setHiveAttribute(HiveAttribute hiveAttribute) {\n"
-                            + "\t\t\t\tthis.hiveAttribute = hiveAttribute;\n"
-                            + "\t\t}\n"
-                            + "\t\tpublic HiveAttribute getHiveAttribute(){\n"
-                            + "\t\t\t\treturn this.hiveAttribute;\n"
-                            + "\t\t}\n"
-                            + "}\n"
-            ),
+                        "octopus/model/HiveModel.java",
+                        "package octopus.model;\n"
+                                + "import octopus.attribute.HiveAttribute;\n"
+                                + "public class HiveModel {\n"
+                                + "\t\tprivate HiveAttribute hiveAttribute;\n"
+                                + "\t\tpublic void setHiveAttribute(HiveAttribute hiveAttribute) {\n"
+                                + "\t\t\t\tthis.hiveAttribute = hiveAttribute;\n"
+                                + "\t\t}\n"
+                                + "\t\tpublic HiveAttribute getHiveAttribute(){\n"
+                                + "\t\t\t\treturn this.hiveAttribute;\n"
+                                + "\t\t}\n"
+                                + "}\n"
+                ),
             new StringResource(
-                    "octopus/attribute/HiveAttribute.java",
-                    "package octopus.attribute;\n"
-                            + "public class HiveAttribute {"
-                            + "\t\tprivate String tableName;\n"
-                            + "\t\tpublic void setTableName(String tableName) {\n"
-                            + "\t\t\t\tthis.tableName = tableName;\n"
-                            + "\t\t}\n"
-                            + "\t\tpublic String getTableName(){\n"
-                            + "\t\t\t\treturn this.tableName;\n"
-                            + "\t\t}\n"
-                            + "}\n"
-            ),
+                        "octopus/attribute/HiveAttribute.java",
+                        "package octopus.attribute;\n"
+                                + "public class HiveAttribute {"
+                                + "\t\tprivate String tableName;\n"
+                                + "\t\tpublic void setTableName(String tableName) {\n"
+                                + "\t\t\t\tthis.tableName = tableName;\n"
+                                + "\t\t}\n"
+                                + "\t\tpublic String getTableName(){\n"
+                                + "\t\t\t\treturn this.tableName;\n"
+                                + "\t\t}\n"
+                                + "}\n"
+                ),
         });
     }
 
@@ -65,18 +65,19 @@ public class ModelGenerator {
      * 3.list (complete)
      * 4.graph ?  需要个解决依赖的方式
      * 5.封装 ？ 定义 rel ? 图 ？
+     *
      * @param env
      * @param sfClass
      * @return
      */
     public static final String toClassFile(String env, Class sfClass) {
         LineStringBuilder packageBuilder = new LineStringBuilder();
-        packageBuilder.appendLine("package ",env,".", sfClass.getPackagePath(),";\n");
+        packageBuilder.appendLine("package ", env, ".", sfClass.getPackagePath(), ";\n");
         LineStringBuilder importBuilder = new LineStringBuilder();
         LineStringBuilder classNameBuilder = new LineStringBuilder()
-                .appendLine("public class ", sfClass.getName()," {\n");
+                .appendLine("public class ", sfClass.getName(), " {\n");
         LineStringBuilder attributesBuilder = new LineStringBuilder();
-        attributesBuilder.appendLine(SymbolConstants.INDENT,"private static final long ",String.valueOf(sfClass.getSerialVersionUID()),"L", SymbolConstants.LINE_TAIL);
+        attributesBuilder.appendLine(SymbolConstants.INDENT, "private static final long ", String.valueOf(sfClass.getSerialVersionUID()), "L", SymbolConstants.LINE_TAIL);
         Set<String> imports = new HashSet<>();
         //attribute -> import how o（n）
         sfClass.getAttributes()
@@ -95,16 +96,16 @@ public class ModelGenerator {
                         if (RelType.ENTITY == attributeModel.getRelType()) {
                             preName = env + SymbolConstants.PACKAGE_SPLIT;
                         }
-                        importBuilder.appendLine(SymbolConstants.IMPORT,preName,attributeModel.getClassName(), SymbolConstants.LINE_TAIL);
+                        importBuilder.appendLine(SymbolConstants.IMPORT, preName, attributeModel.getClassName(), SymbolConstants.LINE_TAIL);
                         simpleClassName = attributeModel.getClassName().substring(index + 1);
                     } else {
                         simpleClassName = attributeModel.getClassName();
                     }
                     // addAttribute
                     if (attributeModel.isArray()) {
-                        attributesBuilder.appendLine(SymbolConstants.INDENT,"List<",simpleClassName,">",attributeModel.getName(), SymbolConstants.LINE_TAIL);
+                        attributesBuilder.appendLine(SymbolConstants.INDENT, "List<", simpleClassName, ">", attributeModel.getName(), SymbolConstants.LINE_TAIL);
                     } else {
-                        attributesBuilder.appendLine(SymbolConstants.INDENT,simpleClassName,attributeModel.getName(), SymbolConstants.LINE_TAIL);
+                        attributesBuilder.appendLine(SymbolConstants.INDENT, simpleClassName, attributeModel.getName(), SymbolConstants.LINE_TAIL);
                     }
                 });
         return new LineStringBuilder()
