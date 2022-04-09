@@ -45,8 +45,8 @@ public class RelationEntityRepositoryTest {
     @ParameterizedTest
     @MethodSource("relationEntityProvider")
     public void saveTest(RelationEntity entity) {
-//        nodeEntityRepository.save(entity.getStartNodeEntity());
-//        nodeEntityRepository.save(entity.getEndNodeEntity());
+        nodeEntityRepository.save(entity.getStartNodeEntity());
+        nodeEntityRepository.save(entity.getEndNodeEntity());
 
         RelationEntity savedRelationEntity = repository.save(entity);
         Assertions.assertAll(
