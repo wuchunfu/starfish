@@ -46,6 +46,8 @@ public class RelationEntityMapperTest {
     @ParameterizedTest
     @MethodSource("relationEntityProvider")
     public void saveTest(RelationEntity entity) {
+        nodeEntityMapper.create(entity.getStartNodeEntity());
+        nodeEntityMapper.create(entity.getEndNodeEntity());
 
         AbstractRelationEntity  savedRelationEntity = mapper.create(entity);
         Assertions.assertAll(
