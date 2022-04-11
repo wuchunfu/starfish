@@ -1,6 +1,5 @@
 package org.metahut.starfish.store.rdbms.entity;
 
-import org.hibernate.annotations.DynamicUpdate;
 import org.metahut.starfish.store.model.AbstractEntityProperty;
 
 import com.vladmihalcea.hibernate.type.json.JsonType;

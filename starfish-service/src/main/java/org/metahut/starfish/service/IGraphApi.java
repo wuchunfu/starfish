@@ -4,6 +4,7 @@ import org.metahut.starfish.parser.domain.instance.Graph;
 import org.metahut.starfish.parser.exception.StarFishMetaDataOperatingException;
 import org.metahut.starfish.parser.exception.StarFishMetaDataQueryException;
 
+import java.util.Collection;
 import java.util.Map;
 
 /**
@@ -29,7 +30,7 @@ interface IGraphApi<V, K, T> extends AbstractQueryService<T> {
 
     void modify(V typeName, K instanceId, Map<String, T> attributes) throws StarFishMetaDataOperatingException;
 
-    void copy(V totypeName, V fromtypeName,K... instanceIds) throws StarFishMetaDataOperatingException;
+    void copy(V totypeName, V fromtypeName, Collection<K> instanceIds) throws StarFishMetaDataOperatingException;
 
     K copy(V typeName, K fromInstanceId, K toInstanceId, String property) throws StarFishMetaDataOperatingException;
 
@@ -45,5 +46,5 @@ interface IGraphApi<V, K, T> extends AbstractQueryService<T> {
 
     void crack(V typeName, K headId, K tailId, String property) throws StarFishMetaDataOperatingException;
 
-    void delete(V typeName, K... instanceIds) throws StarFishMetaDataOperatingException;
+    void delete(V typeName, Collection<K> instanceIds) throws StarFishMetaDataOperatingException;
 }

@@ -1,7 +1,5 @@
 package org.metahut.starfish.store.rdbms.entity;
 
-import org.hibernate.annotations.DynamicUpdate;
-import org.hibernate.annotations.Immutable;
 import org.metahut.starfish.store.model.AbstractNodeEntity;
 
 import lombok.Getter;

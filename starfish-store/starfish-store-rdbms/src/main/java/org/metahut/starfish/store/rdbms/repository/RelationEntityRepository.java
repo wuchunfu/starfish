@@ -1,10 +1,12 @@
 package org.metahut.starfish.store.rdbms.repository;
 
-import java.util.List;
 import org.metahut.starfish.store.rdbms.entity.NodeEntity;
 import org.metahut.starfish.store.rdbms.entity.RelationEntity;
+
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.JpaSpecificationExecutor;
+
+import java.util.List;
 
 public interface RelationEntityRepository extends JpaRepository<RelationEntity, Long>,
     JpaSpecificationExecutor<RelationEntity> {

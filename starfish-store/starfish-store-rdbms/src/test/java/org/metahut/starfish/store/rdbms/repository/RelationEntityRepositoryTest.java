@@ -1,6 +1,5 @@
 package org.metahut.starfish.store.rdbms.repository;
 
-import java.util.List;
 import org.metahut.starfish.store.rdbms.entity.RelationEntity;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
@@ -14,6 +13,7 @@ import org.springframework.test.annotation.Commit;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.io.IOException;
+import java.util.List;
 import java.util.stream.Stream;
 
 @Commit
@@ -99,6 +99,5 @@ public class RelationEntityRepositoryTest {
 
         Assertions.assertEquals(list.size(), 1L);
     }
-
 
 }

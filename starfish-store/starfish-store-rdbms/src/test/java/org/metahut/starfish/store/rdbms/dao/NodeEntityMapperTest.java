@@ -2,7 +2,6 @@ package org.metahut.starfish.store.rdbms.dao;
 
 import org.metahut.starfish.store.rdbms.entity.NodeEntity;
 import org.metahut.starfish.store.rdbms.entity.NodeEntityProperty;
-import org.metahut.starfish.store.rdbms.repository.NodeEntityRepository;
 import org.metahut.starfish.store.rdbms.repository.NodeEntityRepositoryTest;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
@@ -49,7 +48,7 @@ public class NodeEntityMapperTest {
 
     @AfterEach
     public void cleanUp() {
-//        mapper.removeAll();
+        mapper.removeAll();
     }
 
     @ParameterizedTest
@@ -126,8 +125,6 @@ public class NodeEntityMapperTest {
 
         updateEntity.setProperties(Sets.newSet(property));
         NodeEntity actual = mapper.update(updateEntity);
-
-
     }
 
 }

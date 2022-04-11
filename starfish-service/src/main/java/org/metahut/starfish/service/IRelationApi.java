@@ -4,6 +4,7 @@ import org.metahut.starfish.parser.domain.instance.Relation;
 import org.metahut.starfish.parser.exception.StarFishMetaDataOperatingException;
 import org.metahut.starfish.parser.exception.StarFishMetaDataQueryException;
 
+import java.util.Collection;
 import java.util.List;
 
 /**
@@ -62,7 +63,7 @@ public interface IRelationApi<V,K,T> extends AbstractQueryService<T> {
      * @param instanceIds
      * @throws StarFishMetaDataOperatingException
      */
-    void delete(V env, K... instanceIds) throws StarFishMetaDataOperatingException;
+    void delete(V env, Collection<K> instanceIds) throws StarFishMetaDataOperatingException;
 
     // move
 
@@ -86,5 +87,5 @@ public interface IRelationApi<V,K,T> extends AbstractQueryService<T> {
      * @param instanceIds
      * @throws StarFishMetaDataOperatingException
      */
-    void copy(V oldEnv, V newEnv,K... instanceIds) throws StarFishMetaDataOperatingException;
+    void copy(V oldEnv, V newEnv, Collection<K> instanceIds) throws StarFishMetaDataOperatingException;
 }
