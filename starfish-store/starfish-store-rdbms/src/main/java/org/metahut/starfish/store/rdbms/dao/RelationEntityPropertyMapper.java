@@ -13,6 +13,7 @@ import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Repository;
 
 import java.util.Collection;
+import org.springframework.util.CollectionUtils;
 
 @Repository
 public class RelationEntityPropertyMapper implements
@@ -29,10 +30,13 @@ public class RelationEntityPropertyMapper implements
 
     @Override
     public Collection<RelationEntityProperty> createBatch(Collection<RelationEntityProperty> properties) {
-        properties.stream().forEach(property -> {
-            property.setId(null);
-        });
-        return repository.saveAll(properties);
+        if (!CollectionUtils.isEmpty(properties)) {
+            properties.stream().forEach(property -> {
+                property.setId(null);
+            });
+            return repository.saveAll(properties);
+        }
+        return properties;
     }
 
     @Override

@@ -14,6 +14,7 @@ import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Repository;
 
 import java.util.Collection;
+import org.springframework.util.CollectionUtils;
 
 @Repository
 public class RelationEntityMapper implements IRelationEntityMapper<Long, RelationEntity, RelationEntityProperty, NodeEntity> {
@@ -24,21 +25,28 @@ public class RelationEntityMapper implements IRelationEntityMapper<Long, Relatio
     @Override
     public RelationEntity create(RelationEntity entity) {
         entity.setId(null);
-        entity.getProperties().stream().forEach(property -> {
-            property.setEntity(entity);
-        });
+        if (!CollectionUtils.isEmpty(entity.getProperties())) {
+            entity.getProperties().stream().forEach(property -> {
+                property.setEntity(entity);
+            });
+        }
         return repository.save(entity);
     }
 
     @Override
     public Collection<RelationEntity> createBatch(Collection<RelationEntity> entities) {
-        entities.stream().forEach(entity -> {
-            entity.setId(null);
-            entity.getProperties().stream().forEach(property -> {
-                property.setEntity(entity);
+        if (!CollectionUtils.isEmpty(entities)) {
+            entities.stream().forEach(entity -> {
+                entity.setId(null);
+                if (!CollectionUtils.isEmpty(entity.getProperties())) {
+                    entity.getProperties().stream().forEach(property -> {
+                        property.setEntity(entity);
+                    });
+                }
             });
-        });
-        return repository.saveAll(entities);
+            return repository.saveAll(entities);
+        }
+        return entities;
     }
 
     @Override

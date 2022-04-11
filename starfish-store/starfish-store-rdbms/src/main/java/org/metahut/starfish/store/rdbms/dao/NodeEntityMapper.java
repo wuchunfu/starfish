@@ -1,5 +1,6 @@
 package org.metahut.starfish.store.rdbms.dao;
 
+import java.util.Collections;
 import org.metahut.starfish.store.dao.INodeEntityMapper;
 import org.metahut.starfish.store.rdbms.entity.NodeEntity;
 import org.metahut.starfish.store.rdbms.entity.NodeEntityProperty;
@@ -15,6 +16,7 @@ import org.springframework.stereotype.Repository;
 
 import java.util.Collection;
 import java.util.List;
+import org.springframework.util.CollectionUtils;
 
 @Repository
 public class NodeEntityMapper implements INodeEntityMapper<Long, NodeEntity, NodeEntityProperty> {
@@ -28,21 +30,28 @@ public class NodeEntityMapper implements INodeEntityMapper<Long, NodeEntity, Nod
     @Override
     public NodeEntity create(NodeEntity entity) {
         entity.setId(null);
-        entity.getProperties().stream().forEach(property -> {
-            property.setEntity(entity);
-        });
+        if (!CollectionUtils.isEmpty(entity.getProperties())) {
+            entity.getProperties().stream().forEach(property -> {
+                property.setEntity(entity);
+            });
+        }
         return repository.saveAndFlush(entity);
     }
 
     @Override
     public Collection<NodeEntity> createBatch(Collection<NodeEntity> entities) {
-        entities.stream().forEach(entity -> {
-            entity.setId(null);
-            entity.getProperties().stream().forEach(property -> {
-                property.setEntity(entity);
+        if (!CollectionUtils.isEmpty(entities)) {
+            entities.stream().forEach(entity -> {
+                entity.setId(null);
+                if (!CollectionUtils.isEmpty(entity.getProperties())) {
+                    entity.getProperties().stream().forEach(property -> {
+                        property.setEntity(entity);
+                    });
+                }
             });
-        });
-        return repository.saveAll(entities);
+            return repository.saveAll(entities);
+        }
+        return entities;
     }
 
     @Override
