@@ -12,11 +12,9 @@ import org.springframework.data.annotation.LastModifiedDate;
 import org.springframework.data.jpa.domain.support.AuditingEntityListener;
 
 import javax.persistence.Column;
-import javax.persistence.ConstraintMode;
 import javax.persistence.Entity;
 import javax.persistence.EntityListeners;
 import javax.persistence.FetchType;
-import javax.persistence.ForeignKey;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
@@ -40,7 +38,7 @@ public class RelationEntityProperty extends AbstractEntityProperty<Long, Object,
     private Long id;
 
     @ManyToOne(targetEntity = RelationEntity.class, fetch = FetchType.EAGER)
-    @JoinColumn(name = "entity_id", referencedColumnName = "id", foreignKey = @ForeignKey(ConstraintMode.NO_CONSTRAINT))
+    @JoinColumn(name = "entity_id", referencedColumnName = "id")
     private RelationEntity entity;
 
     @Column(name = "name", nullable = false)
@@ -66,4 +64,16 @@ public class RelationEntityProperty extends AbstractEntityProperty<Long, Object,
         this.value = new AbstractMap.SimpleEntry(name, value);
     }
 
+    @Override
+    public String toString() {
+        return "RelationEntityProperty("
+            + "id=" + id
+            + ",name=" + name
+            + ",entityId=" + entity.getId()
+            + ",value=" + value
+            + ",operator=" + operator
+            + ",createTime=" + createTime
+            + ",updateTime=" + updateTime
+            + ")";
+    }
 }

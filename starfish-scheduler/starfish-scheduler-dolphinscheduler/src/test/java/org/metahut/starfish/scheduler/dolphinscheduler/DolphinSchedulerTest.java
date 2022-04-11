@@ -11,7 +11,6 @@ import org.junit.jupiter.api.Test;
 
 import java.io.IOException;
 
-
 @Disabled
 public class DolphinSchedulerTest {
 
@@ -57,12 +56,10 @@ public class DolphinSchedulerTest {
         scheduler.createSingleHttpTask(httpParameter);
     }
 
-
     @Test
     public void testHttpUpdateTask() throws IOException {
          scheduler.updateTaskDefinition();
     }
-
 
     @Test
     public void testHttpgetTasks() throws IOException {

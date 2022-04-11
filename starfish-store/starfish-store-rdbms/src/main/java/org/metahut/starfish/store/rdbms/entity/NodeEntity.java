@@ -2,6 +2,7 @@ package org.metahut.starfish.store.rdbms.entity;
 
 import org.metahut.starfish.store.model.AbstractNodeEntity;
 
+import com.google.common.base.Joiner;
 import lombok.Getter;
 import lombok.Setter;
 import org.springframework.data.annotation.CreatedDate;
@@ -51,7 +52,7 @@ public class NodeEntity extends AbstractNodeEntity<Long, NodeEntityProperty> {
     private Integer operator;
 
     @CreatedDate
-    @Column(name = "create_time", nullable = false, updatable = false)
+    @Column(name = "create_time")
     private Date createTime;
 
     @LastModifiedDate
@@ -66,5 +67,18 @@ public class NodeEntity extends AbstractNodeEntity<Long, NodeEntityProperty> {
     @Override
     public void setKeyedProperties(Map<String, NodeEntityProperty> properties) {
 
+    }
+
+    @Override
+    public String toString() {
+        return "NodeEntity("
+            + "id=" + id
+            + ",name=" + name
+            + ",category=" + category
+            + ",properties=" + Joiner.on(",").join(properties)
+            + ",operator=" + operator
+            + ",createTime=" + createTime
+            + ",updateTime=" + updateTime
+            + ")";
     }
 }

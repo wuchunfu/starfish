@@ -3,8 +3,6 @@ package org.metahut.starfish.store.rdbms.repository;
 import org.metahut.starfish.store.model.AbstractNodeEntity;
 import org.metahut.starfish.store.rdbms.entity.NodeEntity;
 
-import com.fasterxml.jackson.core.JsonProcessingException;
-import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.Assertions;
@@ -34,6 +32,9 @@ public class NodeEntityRepositoryTest {
 
     static Stream<NodeEntity> nodeEntityWithPropertyProvider() throws IOException {
         NodeEntity entity = objectMapper.readValue(NodeEntityRepositoryTest.class.getResourceAsStream(jsonFilePath), NodeEntity.class);
+        entity.getProperties().stream().forEach(property -> {
+            property.setEntity(entity);
+        });
         return Stream.of(entity);
     }
 
@@ -58,22 +59,19 @@ public class NodeEntityRepositoryTest {
 
     @ParameterizedTest
     @MethodSource("nodeEntityWithPropertyProvider")
-    public void findWithPropertiesTest(NodeEntity entity) throws JsonProcessingException {
+    public void findWithPropertiesTest(NodeEntity entity) {
         NodeEntity expected = repository.save(entity);
 
         AbstractNodeEntity actual = repository.findById(expected.getId()).get();
 
-        JsonNode expectedJson = objectMapper.readTree(objectMapper.writeValueAsString(expected));
-
-        JsonNode actualJson = objectMapper.readTree(objectMapper.writeValueAsString(actual));
-
-        Assertions.assertEquals(expectedJson, actualJson);
+        Assertions.assertEquals(expected.toString(), actual.toString());
     }
 
     @ParameterizedTest
     @MethodSource("nodeEntityWithPropertyProvider")
     public void updateTest(NodeEntity entity) {
         NodeEntity savedEntity = repository.save(entity);
+
         String alteredName = "dwd.user_info_test";
         savedEntity.setName(alteredName);
 
@@ -89,6 +87,6 @@ public class NodeEntityRepositoryTest {
 
         List<NodeEntity> list = repository.removeByName(entity.getName());
 
-        list.stream().forEach(System.out::println);
+        Assertions.assertEquals(1L, list.size());
     }
 }
