@@ -5,58 +5,104 @@ import org.metahut.starfish.store.model.AbstractNodeEntity;
 
 import java.io.Serializable;
 import java.util.Collection;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
 
 public interface IEntityPropertyMapper<I extends Serializable, N extends AbstractNodeEntity, P extends AbstractEntityProperty> {
 
     /**
      *
-     * @param entityId
      * @param property
-     * @return the instance of a node entity with all properties
+     * @return the instance of affected records
      */
-    N updatePropertyByEntityId(I entityId, P property);
+    P create(P property);
 
     /**
      *
-     * @param entity
-     * @param property
-     * @return the instance of a node entity with all properties
+     * @param properties
+     * @return the instance of affected records
      */
-    N updatePropertyByEntityId(N entity, P property);
+    Collection<P> createBatch(Collection<P> properties);
+
+
+    /**
+     * @param property
+     */
+    void remove(P property);
+
+    /**
+     * @param properties
+     */
+    void removeBatch(Collection<P> properties);
 
     /**
      *
-     * @param entity
-     * @param property
-     * @return the instance of a node entity with all properties
      */
-    N updatePropertiesByEntityId(N entity, Collection<P> property);
+    void removeAll();
+
+    /**
+     * @param ids
+     */
+    void removeBatchById(Collection<I> ids);
 
     /**
      *
-     * @param entity
-     * @param property
+     * @param name
      */
-    void removePropertyByEntityId(N entity, Collection<P> property);
+    void removeAllByName(String name);
 
     /**
      *
-     * @param entityId
      * @param property
      */
-    void removePropertyByEntityId(I entityId, Collection<P> property);
+    void removeAllByName(P property);
+
+    /**
+     * @param property
+     * @return the instance of updated property
+     */
+    P update(P property);
+
+    /**
+     * @param properties
+     * @return the list of the instance of updated property
+     */
+    Collection<P> updateBatchById(Collection<P> properties);
 
     /**
      *
-     * @param entityId
-     * @param property
+     * @param id
+     * @return the instance of a property
      */
-    void removeAllPropertiesByEntityId(I entityId, Collection<P> property);
+    P findById(I id);
 
     /**
      *
-     * @param entity
      * @param property
+     * @return the instance of a property
      */
-    void removeAllPropertiesByEntityId(N entity, Collection<P> property);
+    P findById(P property);
+
+    /**
+     *
+     * @param ids
+     * @return the collection of properties
+     */
+    Collection<P> findAllById(Collection<Long> ids);
+
+    /**
+     *
+     * @param name
+     * @return the collection of the instance of P
+     */
+    Collection<P> findByName(String name);
+
+    /**
+     *
+     * @param name
+     * @param pageable
+     * @return the page of the instance of N
+     */
+    Page<P> findByName(String name, Pageable pageable);
+    
 }

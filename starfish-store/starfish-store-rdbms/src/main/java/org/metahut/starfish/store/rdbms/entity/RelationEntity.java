@@ -1,5 +1,6 @@
 package org.metahut.starfish.store.rdbms.entity;
 
+import com.google.common.base.Joiner;
 import org.metahut.starfish.store.model.AbstractRelationEntity;
 
 import lombok.Getter;
@@ -75,5 +76,20 @@ public class RelationEntity extends AbstractRelationEntity<Long, RelationEntityP
     @Override
     public void setKeyedProperties(Map<String, RelationEntityProperty> properties) {
 
+    }
+
+    @Override
+    public String toString() {
+        return "RelationEntity("
+            + "id=" + id
+            + ",name=" + name
+            + ",category=" + category
+            + ",properties=" + Joiner.on(",").join(properties)
+            + ",startNodeEntity=" + startNodeEntity.toString()
+            + ",endNodeEntity=" + startNodeEntity.toString()
+            + ",operator=" + operator
+            + ",createTime=" + createTime
+            + ",updateTime=" + updateTime
+            + ")";
     }
 }

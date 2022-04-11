@@ -1,16 +1,8 @@
 package org.metahut.starfish.store.rdbms.entity;
 
-import org.metahut.starfish.store.model.AbstractEntityProperty;
-
 import com.vladmihalcea.hibernate.type.json.JsonType;
-import lombok.Getter;
-import lombok.Setter;
-import org.hibernate.annotations.Type;
-import org.hibernate.annotations.TypeDef;
-import org.springframework.data.annotation.CreatedDate;
-import org.springframework.data.annotation.LastModifiedDate;
-import org.springframework.data.jpa.domain.support.AuditingEntityListener;
-
+import java.util.AbstractMap;
+import java.util.Date;
 import javax.persistence.Column;
 import javax.persistence.ConstraintMode;
 import javax.persistence.Entity;
@@ -23,9 +15,14 @@ import javax.persistence.Id;
 import javax.persistence.JoinColumn;
 import javax.persistence.ManyToOne;
 import javax.persistence.Table;
-
-import java.util.AbstractMap;
-import java.util.Date;
+import lombok.Getter;
+import lombok.Setter;
+import org.hibernate.annotations.Type;
+import org.hibernate.annotations.TypeDef;
+import org.metahut.starfish.store.model.AbstractEntityProperty;
+import org.springframework.data.annotation.CreatedDate;
+import org.springframework.data.annotation.LastModifiedDate;
+import org.springframework.data.jpa.domain.support.AuditingEntityListener;
 
 @Setter
 @Getter
@@ -40,7 +37,7 @@ public class RelationEntityProperty extends AbstractEntityProperty<Long, Object,
     private Long id;
 
     @ManyToOne(targetEntity = RelationEntity.class, fetch = FetchType.EAGER)
-    @JoinColumn(name = "entity_id", referencedColumnName = "id", foreignKey = @ForeignKey(ConstraintMode.NO_CONSTRAINT))
+    @JoinColumn(name = "entity_id", referencedColumnName = "id")
     private RelationEntity entity;
 
     @Column(name = "name", nullable = false)
@@ -66,4 +63,16 @@ public class RelationEntityProperty extends AbstractEntityProperty<Long, Object,
         this.value = new AbstractMap.SimpleEntry(name, value);
     }
 
+    @Override
+    public String toString() {
+        return "RelationEntityProperty("
+            + "id=" + id
+            + ",name=" + name
+            + ",entityId=" + entity.getId()
+            + ",value=" + value
+            + ",operator=" + operator
+            + ",createTime=" + createTime
+            + ",updateTime=" + updateTime
+            + ")";
+    }
 }

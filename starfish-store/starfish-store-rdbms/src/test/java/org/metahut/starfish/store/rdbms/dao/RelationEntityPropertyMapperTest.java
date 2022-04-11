@@ -9,8 +9,12 @@ import org.junit.jupiter.params.ParameterizedTest;
 import org.junit.jupiter.params.provider.MethodSource;
 import org.metahut.starfish.store.dao.INodeEntityMapper;
 import org.metahut.starfish.store.dao.IRelationEntityMapper;
-import org.metahut.starfish.store.model.AbstractRelationEntity;
+import org.metahut.starfish.store.model.AbstractEntityProperty;
+import org.metahut.starfish.store.rdbms.entity.NodeEntity;
+import org.metahut.starfish.store.rdbms.entity.NodeEntityProperty;
 import org.metahut.starfish.store.rdbms.entity.RelationEntity;
+import org.metahut.starfish.store.rdbms.entity.RelationEntityProperty;
+import org.metahut.starfish.store.rdbms.repository.NodeEntityRepositoryTest;
 import org.metahut.starfish.store.rdbms.repository.RelationEntityRepositoryTest;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
@@ -20,27 +24,31 @@ import org.springframework.transaction.annotation.Transactional;
 @Commit
 @Transactional
 @SpringBootTest
-public class RelationEntityMapperTest {
+public class RelationEntityPropertyMapperTest {
 
     @Autowired
-    private IRelationEntityMapper mapper;
+    private RelationEntityPropertyMapper mapper;
+
+    @Autowired
+    private IRelationEntityMapper relationEntityMapper;
 
     @Autowired
     private INodeEntityMapper nodeEntityMapper;
 
-    public static final ObjectMapper objectMapper = new ObjectMapper();
-
     public static final String jsonFilePath = "/json/relation_entity.json";
+
+    public static final ObjectMapper objectMapper = new ObjectMapper();
 
     static Stream<RelationEntity> relationEntityProvider() throws IOException {
         RelationEntity entity = objectMapper.readValue(RelationEntityRepositoryTest.class.getResourceAsStream(jsonFilePath), RelationEntity.class);
         return Stream.of(entity);
     }
 
+
     @BeforeEach
-    public void clear() {
-        nodeEntityMapper.removeAll();
+    public void clearEach() {
         mapper.removeAll();
+        relationEntityMapper.removeAll();
     }
 
     @ParameterizedTest
@@ -49,35 +57,37 @@ public class RelationEntityMapperTest {
         nodeEntityMapper.create(relation.getStartNodeEntity());
         nodeEntityMapper.create(relation.getEndNodeEntity());
 
-        AbstractRelationEntity  savedRelationEntity = mapper.create(relation);
+        relationEntityMapper.create(relation);
+
+        RelationEntityProperty property = new RelationEntityProperty();
+        property.setEntity(relation);
+        property.setName("path");
+        property.setValue("hdfs://");
+        property.setOperator(property.getOperator());
+
+        mapper.create(property);
+
         Assertions.assertAll(
-            () -> Assertions.assertEquals(savedRelationEntity.getName(), relation.getName()),
-            () -> Assertions.assertEquals(savedRelationEntity.getCategory(), relation.getCategory()),
-            () -> Assertions.assertNotNull(savedRelationEntity.getCreateTime()),
-            () -> Assertions.assertNotNull(savedRelationEntity.getUpdateTime())
+            () -> Assertions.assertNotNull(property.getId()),
+            () -> Assertions.assertNotNull(property.getCreateTime()),
+            () -> Assertions.assertNotNull(property.getUpdateTime())
         );
     }
 
     @ParameterizedTest
     @MethodSource("relationEntityProvider")
-    public void removeAllByNameTest(RelationEntity relation) {
+    public void updateTest(RelationEntity relation) {
         nodeEntityMapper.create(relation.getStartNodeEntity());
         nodeEntityMapper.create(relation.getEndNodeEntity());
 
-        mapper.create(relation);
+        relationEntityMapper.create(relation);
 
-        Assertions.assertDoesNotThrow(() -> mapper.removeAllByName(relation.getName()));
+        RelationEntityProperty expect = relation.getProperties().stream().findFirst().get();
+        expect.setName("path");
+        expect.setValue("hdfs://");
+
+        AbstractEntityProperty actual = mapper.update(expect);
+
+        Assertions.assertEquals(expect.toString(), actual.toString());
     }
-
-    @ParameterizedTest
-    @MethodSource("relationEntityProvider")
-    public void removeAllByCategoryTest(RelationEntity relation) {
-        nodeEntityMapper.create(relation.getStartNodeEntity());
-        nodeEntityMapper.create(relation.getEndNodeEntity());
-
-        mapper.create(relation);
-
-        Assertions.assertDoesNotThrow(() -> mapper.removeAllByCategory(relation.getCategory()));
-    }
-
 }

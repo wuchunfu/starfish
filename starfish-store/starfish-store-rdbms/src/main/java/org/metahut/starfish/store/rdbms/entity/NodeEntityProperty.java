@@ -1,6 +1,5 @@
 package org.metahut.starfish.store.rdbms.entity;
 
-import org.hibernate.annotations.DynamicUpdate;
 import org.metahut.starfish.store.model.AbstractEntityProperty;
 
 import com.vladmihalcea.hibernate.type.json.JsonType;
@@ -41,7 +40,7 @@ public class NodeEntityProperty extends AbstractEntityProperty<Long, Object, Nod
     private Long id;
 
     @ManyToOne(targetEntity = NodeEntity.class, fetch = FetchType.EAGER)
-    @JoinColumn(name = "entity_id", referencedColumnName = "id", foreignKey = @ForeignKey(ConstraintMode.NO_CONSTRAINT))
+    @JoinColumn(name = "entity_id", referencedColumnName = "id")
     private NodeEntity entity;
 
     @Column(name = "name", nullable = false)
@@ -65,5 +64,18 @@ public class NodeEntityProperty extends AbstractEntityProperty<Long, Object, Nod
     @Override
     public void setValue(Object value) {
         this.value = new AbstractMap.SimpleEntry(name, value);
+    }
+
+    @Override
+    public String toString() {
+        return "NodeEntityProperty("
+            + "id=" + id
+            + ",name=" + name
+            + ",entityId=" + entity.getId()
+            + ",value=" + value
+            + ",operator=" + operator
+            + ",createTime=" + createTime
+            + ",updateTime=" + updateTime
+            + ")";
     }
 }

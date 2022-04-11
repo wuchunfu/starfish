@@ -21,11 +21,21 @@ public class RelationEntityMapper implements IRelationEntityMapper<Long, Relatio
 
     @Override
     public RelationEntity create(RelationEntity entity) {
+        entity.setId(null);
+        entity.getProperties().stream().forEach(property -> {
+            property.setEntity(entity);
+        });
         return repository.save(entity);
     }
 
     @Override
     public Collection<RelationEntity> createBatch(Collection<RelationEntity> entities) {
+        entities.stream().forEach(entity -> {
+            entity.setId(null);
+            entity.getProperties().stream().forEach(property -> {
+                property.setEntity(entity);
+            });
+        });
         return repository.saveAll(entities);
     }
 
