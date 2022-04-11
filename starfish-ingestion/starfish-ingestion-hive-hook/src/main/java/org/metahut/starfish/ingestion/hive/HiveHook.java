@@ -15,9 +15,6 @@ import org.mortbay.log.Log;
 import java.util.HashSet;
 import java.util.Set;
 
-
-
-
 public class HiveHook implements ExecuteWithHookContext {
 
     // 存储Hive的SQL操作类型
@@ -56,8 +53,5 @@ public class HiveHook implements ExecuteWithHookContext {
         } else {
             Log.info("not exists in monitor's scope ,please ignore this hook!");
         }
-
     }
-
-
 }

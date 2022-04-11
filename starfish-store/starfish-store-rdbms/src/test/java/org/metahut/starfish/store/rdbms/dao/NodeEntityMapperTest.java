@@ -126,5 +126,4 @@ public class NodeEntityMapperTest {
         updateEntity.setProperties(Sets.newSet(property));
         NodeEntity actual = mapper.update(updateEntity);
     }
-
 }

@@ -27,11 +27,21 @@ public class NodeEntityMapper implements INodeEntityMapper<Long, NodeEntity, Nod
 
     @Override
     public NodeEntity create(NodeEntity entity) {
-        return repository.save(entity);
+        entity.setId(null);
+        entity.getProperties().stream().forEach(property -> {
+            property.setEntity(entity);
+        });
+        return repository.saveAndFlush(entity);
     }
 
     @Override
     public Collection<NodeEntity> createBatch(Collection<NodeEntity> entities) {
+        entities.stream().forEach(entity -> {
+            entity.setId(null);
+            entity.getProperties().stream().forEach(property -> {
+                property.setEntity(entity);
+            });
+        });
         return repository.saveAll(entities);
     }
 

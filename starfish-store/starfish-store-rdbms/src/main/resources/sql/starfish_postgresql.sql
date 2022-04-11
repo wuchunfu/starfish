@@ -31,7 +31,7 @@ CREATE TABLE t_sf_node_entity_property (
   id serial NOT NULL,
   name varchar(100) not NULL,
   value json,
-  entity_id bigint,
+  entity_id bigint not null,
   operator int DEFAULT NULL,
   create_time timestamp DEFAULT NULL,
   update_time timestamp DEFAULT NULL,
