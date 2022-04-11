@@ -11,9 +11,9 @@ import org.springframework.data.domain.ExampleMatcher;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Repository;
+import org.springframework.util.CollectionUtils;
 
 import java.util.Collection;
-import org.springframework.util.CollectionUtils;
 
 @Repository
 public class RelationEntityPropertyMapper implements

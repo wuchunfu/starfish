@@ -1,6 +1,5 @@
 package org.metahut.starfish.store.rdbms.dao;
 
-import java.util.Collections;
 import org.metahut.starfish.store.dao.INodeEntityMapper;
 import org.metahut.starfish.store.rdbms.entity.NodeEntity;
 import org.metahut.starfish.store.rdbms.entity.NodeEntityProperty;
@@ -13,10 +12,10 @@ import org.springframework.data.domain.ExampleMatcher;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Repository;
+import org.springframework.util.CollectionUtils;
 
 import java.util.Collection;
 import java.util.List;
-import org.springframework.util.CollectionUtils;
 
 @Repository
 public class NodeEntityMapper implements INodeEntityMapper<Long, NodeEntity, NodeEntityProperty> {
