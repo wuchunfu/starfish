@@ -12,6 +12,7 @@ import org.springframework.data.domain.ExampleMatcher;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Repository;
+import org.springframework.util.CollectionUtils;
 
 import java.util.Collection;
 import java.util.List;
@@ -28,21 +29,28 @@ public class NodeEntityMapper implements INodeEntityMapper<Long, NodeEntity, Nod
     @Override
     public NodeEntity create(NodeEntity entity) {
         entity.setId(null);
-        entity.getProperties().stream().forEach(property -> {
-            property.setEntity(entity);
-        });
+        if (!CollectionUtils.isEmpty(entity.getProperties())) {
+            entity.getProperties().stream().forEach(property -> {
+                property.setEntity(entity);
+            });
+        }
         return repository.saveAndFlush(entity);
     }
 
     @Override
     public Collection<NodeEntity> createBatch(Collection<NodeEntity> entities) {
-        entities.stream().forEach(entity -> {
-            entity.setId(null);
-            entity.getProperties().stream().forEach(property -> {
-                property.setEntity(entity);
+        if (!CollectionUtils.isEmpty(entities)) {
+            entities.stream().forEach(entity -> {
+                entity.setId(null);
+                if (!CollectionUtils.isEmpty(entity.getProperties())) {
+                    entity.getProperties().stream().forEach(property -> {
+                        property.setEntity(entity);
+                    });
+                }
             });
-        });
-        return repository.saveAll(entities);
+            return repository.saveAll(entities);
+        }
+        return entities;
     }
 
     @Override
