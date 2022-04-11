@@ -58,7 +58,7 @@ public class DolphinSchedulerTest {
 
     @Test
     public void testHttpUpdateTask() throws IOException {
-         scheduler.updateTaskDefinition();
+        scheduler.updateTaskDefinition();
     }
 
     @Test
