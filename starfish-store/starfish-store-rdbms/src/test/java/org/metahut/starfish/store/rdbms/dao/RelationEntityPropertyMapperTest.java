@@ -44,7 +44,6 @@ public class RelationEntityPropertyMapperTest {
         return Stream.of(entity);
     }
 
-
     @BeforeEach
     public void clearEach() {
         mapper.removeAll();
