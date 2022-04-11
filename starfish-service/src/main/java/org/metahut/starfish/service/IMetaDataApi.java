@@ -4,6 +4,7 @@ import org.metahut.starfish.parser.domain.instance.Class;
 import org.metahut.starfish.parser.domain.instance.MetaResult;
 import org.metahut.starfish.parser.exception.AbstractMetaParserException;
 
+import java.util.Collection;
 import java.util.Map;
 
 /**
@@ -37,7 +38,7 @@ interface IMetaDataApi<V,K,T> {
      * @param instanceIds
      * @throws AbstractMetaParserException
      */
-    void copy(V toTypeName, V fromTypeName,K... instanceIds) throws AbstractMetaParserException;
+    void copy(V toTypeName, V fromTypeName, Collection<K> instanceIds) throws AbstractMetaParserException;
 
     /**
      * TODO core
@@ -194,6 +195,6 @@ interface IMetaDataApi<V,K,T> {
      * @param typeName
      * @param instanceIds
      */
-    void delete(V typeName, K... instanceIds) throws AbstractMetaParserException;
+    void delete(V typeName, Collection<K> instanceIds) throws AbstractMetaParserException;
 
 }

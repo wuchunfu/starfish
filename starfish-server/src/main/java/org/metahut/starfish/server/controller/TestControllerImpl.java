@@ -14,9 +14,9 @@ public class TestControllerImpl implements TestController {
         return ResultEntity.success();
     }
 
-//    @Override
-//    public ResultEntity create(TestDto testDto) {
-//
-//        return ResultEntity.success(testDto);
-//    }
+    // @Override
+    public ResultEntity create(TestDto testDto) {
+
+        return ResultEntity.success(testDto);
+    }
 }

@@ -1,8 +1,8 @@
 package org.metahut.starfish.store.rdbms.entity;
 
-import com.google.common.base.Joiner;
 import org.metahut.starfish.store.model.AbstractRelationEntity;
 
+import com.google.common.base.Joiner;
 import lombok.Getter;
 import lombok.Setter;
 import org.springframework.data.annotation.CreatedDate;

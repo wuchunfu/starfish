@@ -4,6 +4,7 @@ import org.metahut.starfish.parser.domain.instance.Node;
 import org.metahut.starfish.parser.exception.StarFishMetaDataOperatingException;
 import org.metahut.starfish.parser.exception.StarFishMetaDataQueryException;
 
+import java.util.Collection;
 import java.util.Map;
 
 /**
@@ -78,7 +79,7 @@ public interface INodeApi<V,K,T> extends AbstractQueryService<T> {
      * @param instanceIds
      * @throws StarFishMetaDataOperatingException
      */
-    void copy(V totypeName, V fromtypeName, K... instanceIds) throws StarFishMetaDataOperatingException;
+    void copy(V totypeName, V fromtypeName, Collection<K> instanceIds) throws StarFishMetaDataOperatingException;
 
     // move
     /**
@@ -122,5 +123,5 @@ public interface INodeApi<V,K,T> extends AbstractQueryService<T> {
      * @param instanceIds
      * @throws StarFishMetaDataOperatingException
      */
-    void delete(V typeName, K... instanceIds) throws StarFishMetaDataOperatingException;
+    void delete(V typeName, Collection<K> instanceIds) throws StarFishMetaDataOperatingException;
 }

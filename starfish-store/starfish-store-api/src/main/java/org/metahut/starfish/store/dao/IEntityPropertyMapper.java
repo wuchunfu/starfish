@@ -3,10 +3,11 @@ package org.metahut.starfish.store.dao;
 import org.metahut.starfish.store.model.AbstractEntityProperty;
 import org.metahut.starfish.store.model.AbstractNodeEntity;
 
-import java.io.Serializable;
-import java.util.Collection;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
+
+import java.io.Serializable;
+import java.util.Collection;
 
 public interface IEntityPropertyMapper<I extends Serializable, N extends AbstractNodeEntity, P extends AbstractEntityProperty> {
 

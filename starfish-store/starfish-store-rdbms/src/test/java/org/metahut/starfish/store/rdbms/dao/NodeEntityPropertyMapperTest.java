@@ -1,21 +1,23 @@
 package org.metahut.starfish.store.rdbms.dao;
 
-import com.fasterxml.jackson.databind.ObjectMapper;
-import java.io.IOException;
-import java.util.stream.Stream;
-import org.junit.jupiter.api.Assertions;
-import org.junit.jupiter.api.BeforeEach;
-import org.junit.jupiter.params.ParameterizedTest;
-import org.junit.jupiter.params.provider.MethodSource;
 import org.metahut.starfish.store.dao.INodeEntityMapper;
 import org.metahut.starfish.store.model.AbstractEntityProperty;
 import org.metahut.starfish.store.rdbms.entity.NodeEntity;
 import org.metahut.starfish.store.rdbms.entity.NodeEntityProperty;
 import org.metahut.starfish.store.rdbms.repository.NodeEntityRepositoryTest;
+
+import com.fasterxml.jackson.databind.ObjectMapper;
+import org.junit.jupiter.api.Assertions;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.params.ParameterizedTest;
+import org.junit.jupiter.params.provider.MethodSource;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.test.annotation.Commit;
 import org.springframework.transaction.annotation.Transactional;
+
+import java.io.IOException;
+import java.util.stream.Stream;
 
 @Commit
 @Transactional
@@ -73,6 +75,6 @@ public class NodeEntityPropertyMapperTest {
 
         AbstractEntityProperty actual = mapper.update(expect);
 
-       Assertions.assertEquals(expect.toString(), actual.toString());
+        Assertions.assertEquals(expect.toString(), actual.toString());
     }
 }

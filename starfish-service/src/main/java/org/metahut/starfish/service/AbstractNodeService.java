@@ -4,6 +4,7 @@ import org.metahut.starfish.parser.domain.instance.Node;
 import org.metahut.starfish.parser.exception.StarFishMetaDataOperatingException;
 import org.metahut.starfish.parser.exception.StarFishMetaDataQueryException;
 
+import java.util.Arrays;
 import java.util.Collection;
 import java.util.Map;
 import java.util.Set;
@@ -56,20 +57,20 @@ public abstract class AbstractNodeService<V,K,T> implements INodeApi<V,K,T> {
     // update
     @Override
     public void update(V typeName,K entityId,String property,T obj) throws StarFishMetaDataOperatingException {
-        getInstanceService().valid(typeName,entityId);
+        getInstanceService().valid(typeName, Arrays.asList(entityId));
         getPropertyService().update(typeName,entityId,property,obj);
     }
 
     @Override
     public void update(V typeName,K entityId,Map<String,T> attributes) throws StarFishMetaDataOperatingException {
-        getInstanceService().valid(typeName, entityId);
+        getInstanceService().valid(typeName, Arrays.asList(entityId));
         getPropertyService().update(typeName,entityId,attributes);
     }
 
     // modify
     @Override
     public void modify(V typeName, K entityId, Map<String, T> attributes) throws StarFishMetaDataOperatingException {
-        getInstanceService().valid(typeName, entityId);
+        getInstanceService().valid(typeName, Arrays.asList(entityId));
         getPropertyService().modify(typeName,entityId,attributes);
     }
 
@@ -82,13 +83,13 @@ public abstract class AbstractNodeService<V,K,T> implements INodeApi<V,K,T> {
     }
 
     @Override
-    public void copy(V totypeName, V fromtypeName, K... entityIds) throws StarFishMetaDataOperatingException {
+    public void copy(V totypeName, V fromtypeName, Collection<K> entityIds) throws StarFishMetaDataOperatingException {
     }
 
     // move
     @Override
     public void move(V typeName, K oldentityId, K newentityId, String property) throws StarFishMetaDataOperatingException {
-        getInstanceService().valid(typeName,oldentityId,newentityId);
+        getInstanceService().valid(typeName,Arrays.asList(oldentityId,newentityId));
         getPropertyService().move(typeName,oldentityId,newentityId,property);
     }
 
@@ -107,12 +108,12 @@ public abstract class AbstractNodeService<V,K,T> implements INodeApi<V,K,T> {
 
     @Override
     public void delete(V typeName, K entityId, String property) throws StarFishMetaDataOperatingException {
-        getInstanceService().valid(typeName,entityId);
+        getInstanceService().valid(typeName,Arrays.asList(entityId));
         getPropertyService().delete(typeName,entityId,property);
     }
 
     @Override
-    public void delete(V typeName, K... entityIds) throws StarFishMetaDataOperatingException {
+    public void delete(V typeName, Collection<K> entityIds) throws StarFishMetaDataOperatingException {
         getInstanceService().delete(typeName,entityIds);
         getPropertyService().delete(typeName,entityIds);
     }

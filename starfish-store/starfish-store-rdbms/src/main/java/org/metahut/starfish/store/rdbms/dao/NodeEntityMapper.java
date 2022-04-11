@@ -1,18 +1,20 @@
 package org.metahut.starfish.store.rdbms.dao;
 
-import java.util.Collection;
-import java.util.List;
 import org.metahut.starfish.store.dao.INodeEntityMapper;
 import org.metahut.starfish.store.rdbms.entity.NodeEntity;
 import org.metahut.starfish.store.rdbms.entity.NodeEntityProperty;
 import org.metahut.starfish.store.rdbms.repository.NodeEntityRepository;
 import org.metahut.starfish.store.rdbms.repository.RelationEntityRepository;
+
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Example;
 import org.springframework.data.domain.ExampleMatcher;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Repository;
+
+import java.util.Collection;
+import java.util.List;
 
 @Repository
 public class NodeEntityMapper implements INodeEntityMapper<Long, NodeEntity, NodeEntityProperty> {
@@ -107,8 +109,6 @@ public class NodeEntityMapper implements INodeEntityMapper<Long, NodeEntity, Nod
 
     @Override
     public NodeEntity update(NodeEntity entity) {
-
-
         return repository.save(entity);
     }
 

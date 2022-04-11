@@ -3,6 +3,7 @@ package org.metahut.starfish.service;
 import org.metahut.starfish.parser.exception.StarFishMetaDataOperatingException;
 import org.metahut.starfish.parser.exception.StarFishMetaDataQueryException;
 
+import java.util.Collection;
 import java.util.Map;
 
 /**
@@ -131,5 +132,5 @@ interface IPropertyApi<V, K, T> extends AbstractQueryService<T> {
      * @param instanceIds
      * @throws StarFishMetaDataOperatingException
      */
-    void delete(V typeName, K... instanceIds) throws StarFishMetaDataOperatingException;
+    void delete(V typeName, Collection<K> instanceIds) throws StarFishMetaDataOperatingException;
 }

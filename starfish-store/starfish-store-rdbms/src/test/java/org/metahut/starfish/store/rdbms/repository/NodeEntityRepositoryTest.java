@@ -3,8 +3,6 @@ package org.metahut.starfish.store.rdbms.repository;
 import org.metahut.starfish.store.model.AbstractNodeEntity;
 import org.metahut.starfish.store.rdbms.entity.NodeEntity;
 
-import com.fasterxml.jackson.core.JsonProcessingException;
-import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.Assertions;

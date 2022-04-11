@@ -31,7 +31,7 @@ public abstract class AbstractTypeInstanceBridgeService<E,K> implements ITypeIns
     }
 
     @Override
-    public Collection<Long> copy(E toEnv, E fromEnv, K... instanceIds) {
+    public Collection<Long> copy(E toEnv, E fromEnv, Collection<K> instanceIds) {
         return null;
     }
 
@@ -41,7 +41,7 @@ public abstract class AbstractTypeInstanceBridgeService<E,K> implements ITypeIns
     }
 
     @Override
-    public void delete(E env, K... instanceIds) {
+    public void delete(E env, Collection<K> instanceIds) {
 
     }
 

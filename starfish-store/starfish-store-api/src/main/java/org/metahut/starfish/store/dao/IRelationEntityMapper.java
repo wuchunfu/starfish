@@ -1,12 +1,14 @@
 package org.metahut.starfish.store.dao;
 
-import java.io.Serializable;
-import java.util.Collection;
 import org.metahut.starfish.store.model.AbstractEntityProperty;
 import org.metahut.starfish.store.model.AbstractNodeEntity;
 import org.metahut.starfish.store.model.AbstractRelationEntity;
+
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
+
+import java.io.Serializable;
+import java.util.Collection;
 
 public interface IRelationEntityMapper<I extends Serializable, R extends AbstractRelationEntity, P extends AbstractEntityProperty,  N extends AbstractNodeEntity>  {
 

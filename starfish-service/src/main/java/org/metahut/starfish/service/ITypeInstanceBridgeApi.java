@@ -24,11 +24,11 @@ interface ITypeInstanceBridgeApi<E,K> {
      * @param instanceIds
      * @return
      */
-    Collection<Long> copy(E toEnv,E fromEnv,K... instanceIds);
+    Collection<Long> copy(E toEnv,E fromEnv, Collection<K> instanceIds);
 
     void delete(E env);
 
-    void delete(E env,K... instanceIds);
+    void delete(E env, Collection<K> instanceIds);
 
     void delete(E env, Type<K> rel);
 }

@@ -3,6 +3,7 @@ package org.metahut.starfish.service;
 import org.metahut.starfish.parser.exception.StarFishMetaDataOperatingException;
 import org.metahut.starfish.parser.exception.StarFishMetaDataQueryException;
 
+import java.util.Collection;
 import java.util.Set;
 import java.util.concurrent.Future;
 import java.util.function.Supplier;
@@ -18,7 +19,7 @@ public abstract class AbstractInstanceService<V,K,T> implements IInstanceApi<V,K
     }
 
     @Override
-    public abstract void valid(V typeName, K... instanceIds) throws StarFishMetaDataOperatingException;
+    public abstract void valid(V typeName, Collection<K> instanceIds) throws StarFishMetaDataOperatingException;
 
     @Override
     public abstract K create(V typeName) throws StarFishMetaDataOperatingException;
@@ -33,5 +34,5 @@ public abstract class AbstractInstanceService<V,K,T> implements IInstanceApi<V,K
     public abstract void delete(V typeName,K instanceId) throws StarFishMetaDataOperatingException;
 
     @Override
-    public abstract void delete(V typeName, K... instanceIds) throws StarFishMetaDataOperatingException;
+    public abstract void delete(V typeName, Collection<K> instanceIds) throws StarFishMetaDataOperatingException;
 }

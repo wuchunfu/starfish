@@ -26,17 +26,15 @@ import org.metahut.starfish.message.api.MessageType;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import java.util.Objects;
 import java.util.ServiceLoader;
 
 import static org.metahut.starfish.ingestion.common.Constants.INGESTION_CONFIG_FILE;
 import static org.metahut.starfish.message.api.Constants.MESSAGE_CONFIG_PREFIX;
-import static org.metahut.starfish.message.api.Constants.MESSAGE_META_EVENT;
 import static org.metahut.starfish.message.api.Constants.MESSAGE_PRODUCER;
 
 public class MetaMessageProducer {
 
-    private final static Logger logger = LoggerFactory.getLogger(MetaMessageProducer.class);
+    private static final Logger logger = LoggerFactory.getLogger(MetaMessageProducer.class);
 
     private MetaMessageProducer() {
 

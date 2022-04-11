@@ -1,17 +1,19 @@
 package org.metahut.starfish.store.rdbms.dao;
 
-import java.util.Collection;
 import org.metahut.starfish.store.dao.IRelationEntityMapper;
 import org.metahut.starfish.store.rdbms.entity.NodeEntity;
 import org.metahut.starfish.store.rdbms.entity.RelationEntity;
 import org.metahut.starfish.store.rdbms.entity.RelationEntityProperty;
 import org.metahut.starfish.store.rdbms.repository.RelationEntityRepository;
+
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Example;
 import org.springframework.data.domain.ExampleMatcher;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Repository;
+
+import java.util.Collection;
 
 @Repository
 public class RelationEntityMapper implements IRelationEntityMapper<Long, RelationEntity, RelationEntityProperty, NodeEntity> {
