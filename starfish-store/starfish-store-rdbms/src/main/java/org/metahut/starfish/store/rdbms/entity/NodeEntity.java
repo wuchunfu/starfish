@@ -43,7 +43,7 @@ public class NodeEntity extends AbstractNodeEntity<Long, NodeEntityProperty> {
     @Column(name = "category", nullable = false)
     private String category;
 
-    @OneToMany(targetEntity = NodeEntityProperty.class, fetch = FetchType.EAGER, cascade = CascadeType.ALL)
+    @OneToMany(targetEntity = NodeEntityProperty.class, fetch = FetchType.EAGER, cascade = CascadeType.ALL, orphanRemoval = true)
     @JoinColumn(name = "entity_id", foreignKey = @ForeignKey(ConstraintMode.NO_CONSTRAINT))
     private Set<NodeEntityProperty> properties;
 
@@ -51,7 +51,7 @@ public class NodeEntity extends AbstractNodeEntity<Long, NodeEntityProperty> {
     private Integer operator;
 
     @CreatedDate
-    @Column(name = "create_time")
+    @Column(name = "create_time", nullable = false, updatable = false)
     private Date createTime;
 
     @LastModifiedDate

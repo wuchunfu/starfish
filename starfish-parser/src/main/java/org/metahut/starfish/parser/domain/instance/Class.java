@@ -10,6 +10,7 @@ import java.util.concurrent.ThreadLocalRandom;
  *
  */
 public class Class extends TagLoader {
+
     /**
      * Serial Version UID
      */

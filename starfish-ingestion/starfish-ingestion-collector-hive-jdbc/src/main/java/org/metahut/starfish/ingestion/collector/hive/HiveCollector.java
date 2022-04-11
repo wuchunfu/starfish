@@ -1,15 +1,14 @@
 package org.metahut.starfish.ingestion.collector.hive;
 
+import org.metahut.starfish.ingestion.collector.api.CollectorResult;
 import org.metahut.starfish.ingestion.collector.api.ICollector;
 import org.metahut.starfish.ingestion.collector.api.IngestionException;
-
-import org.mortbay.log.Log;
+import org.metahut.starfish.ingestion.common.MetaMessageProducer;
+import org.metahut.starfish.message.api.MessageProducer;
 
 import java.sql.Connection;
 import java.sql.DatabaseMetaData;
 import java.sql.DriverManager;
-import java.sql.ResultSet;
-import java.sql.ResultSetMetaData;
 import java.sql.SQLException;
 import java.sql.Statement;
 import java.util.Objects;
@@ -18,64 +17,44 @@ public class HiveCollector implements ICollector {
 
     private final HiveParameter hiveParameter;
 
-    //private final MessageProducer producer;
+    private final MessageProducer producer;
 
     public HiveCollector(HiveParameter hiveParameter) {
         this.hiveParameter = hiveParameter;
-        //producer = MetaMessageProducer.getInstance();
+        producer = MetaMessageProducer.getInstance();
     }
 
     public void pull() {
-        HiveMetaDataSource hiveMetaDataSource = new HiveMetaDataSource();
-        //get hive metaData
-        DatabaseMetaData databaseMetaData = hiveMetaDataSource.getDatabaseMetaData();
-        ResultSet tablesResultSet = null;
-        Connection conn = hiveMetaDataSource.getConnection();
-        try {
-            //get hive table’s meta
-            tablesResultSet = databaseMetaData
-                .getTables(conn.getCatalog(), null, null, new String[]{"TABLE"});
-            while (tablesResultSet.next()) {
-                String tableName = tablesResultSet.getString("TABLE_NAME");
-                String tableType = tablesResultSet.getString("TABLE_TYPE");
-                String remarks = tablesResultSet.getString("REMARKS");
-                Log.info("TABLE_NAME：" + tableName + "   TABLE_TYPE： " + tableType + "   REMARKS："
-                    + remarks);
-                ResultSetMetaData resultSetMetaData = tablesResultSet.getMetaData();
-                for (int i = 1; i <= resultSetMetaData.getColumnCount(); i++) {
-                    Log.info(
-                        tablesResultSet.getString(i) + "-==-" + resultSetMetaData.getColumnName(i));
-                }
-                ResultSet resultSet = databaseMetaData
-                    .getColumns(conn.getCatalog(), null, tableName,
-                        null);
-                while (resultSet.next()) {
-                    for (int i = 0; i < resultSet.getMetaData().getColumnCount(); i++) {
-                        Log.info(resultSet.getMetaData().getColumnName(i + 1) + ":" + resultSet
-                            .getString(i + 1) + ":" + resultSet.getString("column_name"));
-                    }
-                    Log.info(resultSet.getString("TABLE_NAME")
-                        + "-" + resultSet.getString("column_name")
-                        + "-" + resultSet.getString("TYPE_NAME")
-                        + "-" + resultSet.getString("DATA_TYPE")
-                        + "-" + resultSet.getString("COLUMN_SIZE")
-                        + "-" + resultSet.getString("DECIMAL_DIGITS")
-                        + "-" + resultSet.getString("COLUMN_DEF")
-                        + "-" + resultSet.getString("REMARKS")
-                        + "-" + resultSet.getString("ORDINAL_POSITION"));
-                }
-            }
-        } catch (SQLException throwables) {
-            throw new IngestionException("hive DataMetaData is wrong:", throwables);
 
-        }
-
-        hiveMetaDataSource.close();
     }
 
     @Override
     public void close() throws Exception {
-        //producer.close();
+        producer.close();
+    }
+
+    @Override
+    public CollectorResult testConnection() {
+        HiveMetaDataSource hiveMetaDataSource = new HiveMetaDataSource();
+        Connection conn = hiveMetaDataSource.getConnection();
+        CollectorResult collectorResult = new CollectorResult();
+        try {
+            if (conn.isValid(1)) {
+                collectorResult.setState(true);
+                collectorResult.setMessage("连接成功！");
+                return collectorResult;
+            }
+        } catch (SQLException throwables) {
+            throwables.printStackTrace();
+        }
+        collectorResult.setState(false);
+        collectorResult.setMessage("连接失败！");
+        return collectorResult;
+    }
+
+    @Override
+    public CollectorResult execute() {
+        return null;
     }
 
     //hive datasource Object
@@ -87,7 +66,7 @@ public class HiveCollector implements ICollector {
 
         HiveMetaDataSource() {
             try {
-                Class.forName(hiveParameter.getDriverName());
+                java.lang.Class.forName(hiveParameter.getDriverName());
             } catch (ClassNotFoundException e) {
                 e.printStackTrace();
             }

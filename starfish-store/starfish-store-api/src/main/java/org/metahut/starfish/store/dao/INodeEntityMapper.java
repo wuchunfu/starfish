@@ -46,7 +46,6 @@ public interface INodeEntityMapper<I extends Serializable, N extends AbstractNod
      */
     void removeBatchById(Collection<I> ids);
 
-
     /**
      *
      * @param name

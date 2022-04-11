@@ -6,6 +6,7 @@ import org.metahut.starfish.parser.domain.instance.Relation;
 import org.metahut.starfish.parser.exception.StarFishMetaDataOperatingException;
 import org.metahut.starfish.parser.exception.StarFishMetaDataQueryException;
 
+import java.util.Arrays;
 import java.util.Collection;
 import java.util.HashMap;
 import java.util.List;
@@ -73,7 +74,7 @@ public abstract class AbstractGraphService<V,K,T> implements IGraphApi<V, K, T> 
     @Override
     public K create(V typeName, K parentInstanceId, String property, Map<String, T> attributes) throws StarFishMetaDataOperatingException {
         K key = getNodeService().create(typeName, attributes);
-        getNodeService().getInstanceService().valid(typeName,parentInstanceId);
+        getNodeService().getInstanceService().valid(typeName, Arrays.asList(parentInstanceId));
         getRelationService().link(typeName,parentInstanceId,key,property);
         return key;
     }
@@ -103,7 +104,7 @@ public abstract class AbstractGraphService<V,K,T> implements IGraphApi<V, K, T> 
      */
     @Override
     public void link(V typeName, K headId, K tailId, String property) throws StarFishMetaDataOperatingException {
-        getNodeService().getInstanceService().valid(typeName,headId,tailId);
+        getNodeService().getInstanceService().valid(typeName,Arrays.asList(headId,tailId));
         getRelationService().link(typeName,headId,tailId,property);
     }
 
@@ -156,7 +157,7 @@ public abstract class AbstractGraphService<V,K,T> implements IGraphApi<V, K, T> 
      * @throws StarFishMetaDataOperatingException
      */
     @Override
-    public void copy(V totypeName, V fromtypeName,K... instanceIds) throws StarFishMetaDataOperatingException {
+    public void copy(V totypeName, V fromtypeName, Collection<K> instanceIds) throws StarFishMetaDataOperatingException {
 
         getNodeService().copy(totypeName,fromtypeName,instanceIds);
         getRelationService().copy(totypeName,fromtypeName,instanceIds);
@@ -174,7 +175,7 @@ public abstract class AbstractGraphService<V,K,T> implements IGraphApi<V, K, T> 
      */
     @Override
     public K copy(V typeName, K fromInstanceId, K toInstanceId, String property) throws StarFishMetaDataOperatingException {
-        getNodeService().getInstanceService().valid(typeName,toInstanceId);
+        getNodeService().getInstanceService().valid(typeName,Arrays.asList(toInstanceId));
         K newInstanceId = getNodeService().copy(typeName, fromInstanceId);
         getRelationService().link(typeName,newInstanceId,toInstanceId,property);
         return newInstanceId;
@@ -205,7 +206,7 @@ public abstract class AbstractGraphService<V,K,T> implements IGraphApi<V, K, T> 
      */
     @Override
     public void move(V typeName, K oldHeadId, K newHeadId, K tailId, String property) throws StarFishMetaDataOperatingException {
-        getNodeService().getInstanceService().valid(typeName,oldHeadId,newHeadId,tailId);
+        getNodeService().getInstanceService().valid(typeName,Arrays.asList(oldHeadId,newHeadId,tailId));
         getRelationService().move(typeName,oldHeadId,newHeadId,tailId,property);
     }
 
@@ -256,7 +257,7 @@ public abstract class AbstractGraphService<V,K,T> implements IGraphApi<V, K, T> 
      */
     @Override
     public void crack(V typeName, K headId, K tailId, String property) throws StarFishMetaDataOperatingException {
-        getNodeService().getInstanceService().valid(typeName,headId,tailId);
+        getNodeService().getInstanceService().valid(typeName,Arrays.asList(headId,tailId));
         getRelationService().crack(typeName,headId,tailId,property);
     }
 
@@ -267,7 +268,7 @@ public abstract class AbstractGraphService<V,K,T> implements IGraphApi<V, K, T> 
      * @throws StarFishMetaDataOperatingException
      */
     @Override
-    public void delete(V typeName, K... instanceIds) throws StarFishMetaDataOperatingException {
+    public void delete(V typeName, Collection<K> instanceIds) throws StarFishMetaDataOperatingException {
         getNodeService().delete(typeName,instanceIds);
         getRelationService().delete(typeName,instanceIds);
     }

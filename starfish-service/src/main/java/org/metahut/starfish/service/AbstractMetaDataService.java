@@ -5,6 +5,7 @@ import org.metahut.starfish.parser.domain.instance.Class;
 import org.metahut.starfish.parser.domain.instance.MetaResult;
 import org.metahut.starfish.parser.exception.AbstractMetaParserException;
 
+import java.util.Collection;
 import java.util.Map;
 import java.util.Set;
 
@@ -42,7 +43,7 @@ public abstract class AbstractMetaDataService<V,K,T> implements IMetaDataApi<V,K
     }
 
     @Override
-    public void copy(V toTypeName, V fromTypeName, K... instanceIds) throws AbstractMetaParserException {
+    public void copy(V toTypeName, V fromTypeName, Collection<K> instanceIds) throws AbstractMetaParserException {
         classInstanceBridgeApi().copy(toTypeName,fromTypeName,instanceIds);
         graphApi().copy(toTypeName,fromTypeName,instanceIds);
     }
@@ -99,7 +100,6 @@ public abstract class AbstractMetaDataService<V,K,T> implements IMetaDataApi<V,K
         Type<K> type = classInstanceBridgeApi().query(typeName, instanceId);
         classApi().query(typeName,type.getSerialVersionId());
         graphApi().add(typeName,instanceId,property,obj);
-
     }
 
     @Override
@@ -107,6 +107,7 @@ public abstract class AbstractMetaDataService<V,K,T> implements IMetaDataApi<V,K
         Set<Type<K>> types = classInstanceBridgeApi().query(typeName, headId, tailId);
         long[] ids = types.stream().mapToLong(kSfType -> kSfType.getSerialVersionId()).toArray();
         classApi().query(typeName,ids);
+        graphApi().link(typeName,headId,tailId,property);
     }
 
     @Override
@@ -134,7 +135,7 @@ public abstract class AbstractMetaDataService<V,K,T> implements IMetaDataApi<V,K
     }
 
     @Override
-    public void delete(V typeName, K... instanceIds) throws AbstractMetaParserException {
+    public void delete(V typeName, Collection<K> instanceIds) throws AbstractMetaParserException {
         classInstanceBridgeApi().delete(typeName,instanceIds);
         graphApi().delete(typeName,instanceIds);
     }

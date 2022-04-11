@@ -53,7 +53,7 @@ public abstract class AbstractPropertyService<V,K,T> implements IPropertyApi<V, 
     public abstract void delete(V typeName, K instanceId) throws StarFishMetaDataOperatingException;
 
     @Override
-    public abstract void delete(V typeName, K... instanceIds) throws StarFishMetaDataOperatingException;
+    public abstract void delete(V typeName, Collection<K> instanceIds) throws StarFishMetaDataOperatingException;
 
     @Override
     public abstract Collection<T> query(AbstractQueryCondition condition);
