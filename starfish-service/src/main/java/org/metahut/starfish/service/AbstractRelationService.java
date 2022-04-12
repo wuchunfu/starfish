@@ -1,10 +1,8 @@
 package org.metahut.starfish.service;
 
 import org.metahut.starfish.parser.domain.instance.Relation;
-import org.metahut.starfish.parser.exception.StarFishMetaDataOperatingException;
 import org.metahut.starfish.parser.exception.StarFishMetaDataQueryException;
 
-import java.util.Collection;
 import java.util.List;
 
 /**

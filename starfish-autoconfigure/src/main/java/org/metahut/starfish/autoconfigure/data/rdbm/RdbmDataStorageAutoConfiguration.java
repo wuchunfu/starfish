@@ -1,7 +1,6 @@
 package org.metahut.starfish.autoconfigure.data.rdbm;
 
 import org.metahut.starfish.parser.domain.enums.Type;
-import org.metahut.starfish.parser.domain.instance.Node;
 import org.metahut.starfish.parser.exception.AbstractMetaParserException;
 import org.metahut.starfish.parser.exception.StarFishMetaDataOperatingException;
 import org.metahut.starfish.parser.exception.StarFishMetaDataQueryException;

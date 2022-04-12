@@ -69,7 +69,6 @@ public class MetaDataControllerTest {
     }
 
     @Test
-//    @Transactional
     public void deleteRelation() throws AbstractMetaParserException {
         String typeName1 = "HiveTable";
         Map<String,Object> properties1 = new HashMap<>();
