@@ -6,6 +6,7 @@ import org.metahut.starfish.store.model.AbstractRelationEntity;
 import org.metahut.starfish.store.rdbms.entity.RelationEntity;
 import org.metahut.starfish.store.rdbms.repository.RelationEntityRepositoryTest;
 
+import com.fasterxml.jackson.core.type.TypeReference;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.BeforeEach;
@@ -17,6 +18,8 @@ import org.springframework.test.annotation.Commit;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.io.IOException;
+import java.util.Collection;
+import java.util.List;
 import java.util.stream.Stream;
 
 @Commit
@@ -34,9 +37,16 @@ public class RelationEntityMapperTest {
 
     public static final String jsonFilePath = "/json/relation_entity.json";
 
+    public static final String jsonFilePathTestData = "/json/multi_relation_entity.json";
+
     static Stream<RelationEntity> relationEntityProvider() throws IOException {
         RelationEntity entity = objectMapper.readValue(RelationEntityRepositoryTest.class.getResourceAsStream(jsonFilePath), RelationEntity.class);
         return Stream.of(entity);
+    }
+
+    static Stream<List<RelationEntity>> multiRelationEntityProvider() throws IOException {
+        List<RelationEntity> entities = objectMapper.readValue(RelationEntityRepositoryTest.class.getResourceAsStream(jsonFilePathTestData), new TypeReference<List<RelationEntity>>() {});
+        return Stream.of(entities);
     }
 
     @BeforeEach
@@ -80,6 +90,91 @@ public class RelationEntityMapperTest {
         mapper.create(relation);
 
         Assertions.assertDoesNotThrow(() -> mapper.removeAllByCategory(relation.getCategory()));
+    }
+
+    @ParameterizedTest
+    @MethodSource("relationEntityProvider")
+    public void removeAllByStartNodeEntityAndEndNodeEntityTest(RelationEntity relation) {
+        nodeEntityMapper.create(relation.getStartNodeEntity());
+        nodeEntityMapper.create(relation.getEndNodeEntity());
+
+        mapper.create(relation);
+
+        Assertions.assertDoesNotThrow(() ->
+            mapper.removeAllByStartNodeEntityAndEndNodeEntity(
+                relation.getStartNodeEntity(),
+                relation.getEndNodeEntity()
+        ));
+    }
+
+    @ParameterizedTest
+    @MethodSource("relationEntityProvider")
+    public void removeAllByStartNodeEntityAndEndNodeEntityAndCategoryTest(RelationEntity relation) {
+        nodeEntityMapper.create(relation.getStartNodeEntity());
+        nodeEntityMapper.create(relation.getEndNodeEntity());
+
+        mapper.create(relation);
+
+        Assertions.assertDoesNotThrow(() ->
+            mapper.removeAllByStartNodeEntityAndEndNodeEntityAndCategory(
+                relation.getStartNodeEntity(),
+                relation.getEndNodeEntity(),
+                relation.getCategory()
+            ));
+    }
+
+    @ParameterizedTest
+    @MethodSource("multiRelationEntityProvider")
+    public void findByStartNodeEntityTest(List<RelationEntity> relations) {
+        relations.stream().forEach(relation -> {
+            nodeEntityMapper.create(relation.getStartNodeEntity());
+            nodeEntityMapper.create(relation.getEndNodeEntity());
+            mapper.create(relation);
+        });
+
+        RelationEntity expect = relations.stream().findFirst().get();
+
+        Collection<RelationEntity> collection = mapper.findByStartNodeEntity(expect.getStartNodeEntity());
+
+        RelationEntity actual = collection.stream().findFirst().get();
+
+        Assertions.assertEquals(expect.toString(), actual.toString());
+    }
+
+    @ParameterizedTest
+    @MethodSource("multiRelationEntityProvider")
+    public void findByStartNodeEntityAndEndNodeEntityTest(List<RelationEntity> relations) {
+        relations.stream().forEach(relation -> {
+            nodeEntityMapper.create(relation.getStartNodeEntity());
+            nodeEntityMapper.create(relation.getEndNodeEntity());
+            mapper.create(relation);
+        });
+
+        RelationEntity expect = relations.stream().findFirst().get();
+
+        Collection<RelationEntity> collection = mapper.findByStartNodeEntityAndEndNodeEntity(expect.getStartNodeEntity(), expect.getEndNodeEntity());
+
+        RelationEntity actual = collection.stream().findFirst().get();
+
+        Assertions.assertEquals(expect.toString(), actual.toString());
+    }
+
+    @ParameterizedTest
+    @MethodSource("multiRelationEntityProvider")
+    public void findByStartNodeEntityAndEndNodeEntityAndCategoryTest(List<RelationEntity> relations) {
+        relations.stream().forEach(relation -> {
+            nodeEntityMapper.create(relation.getStartNodeEntity());
+            nodeEntityMapper.create(relation.getEndNodeEntity());
+            mapper.create(relation);
+        });
+
+        RelationEntity expect = relations.stream().findFirst().get();
+
+        Collection<RelationEntity> collection = mapper.findByStartNodeEntityAndEndNodeEntityAndCategory(expect.getStartNodeEntity(), expect.getEndNodeEntity(), expect.getCategory());
+
+        RelationEntity actual = collection.stream().findFirst().get();
+
+        Assertions.assertEquals(expect.toString(), actual.toString());
     }
 
 }

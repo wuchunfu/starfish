@@ -126,4 +126,14 @@ public class NodeEntityMapperTest {
         updateEntity.setProperties(Sets.newSet(property));
         NodeEntity actual = mapper.update(updateEntity);
     }
+
+    @ParameterizedTest
+    @MethodSource("nodeEntityWithPropertyProvider")
+    public void removeBatchByIdTest(NodeEntity entity) {
+        NodeEntity savedEntity = mapper.create(entity);
+
+        Assertions.assertDoesNotThrow(() -> mapper.removeBatchById(Sets.newSet(savedEntity.getId())));
+
+    }
+
 }

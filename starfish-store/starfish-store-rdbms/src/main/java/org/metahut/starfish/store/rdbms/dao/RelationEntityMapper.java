@@ -96,9 +96,25 @@ public class RelationEntityMapper implements IRelationEntityMapper<Long, Relatio
     }
 
     @Override
+    public void removeAllByStartNodeEntity(NodeEntity startNodeEntity) {
+        repository.removeByStartNodeEntity(startNodeEntity);
+    }
+
+    @Override
+    public void removeAllByEndNodeEntity(NodeEntity endNodeEntity) {
+        repository.removeByEndNodeEntity(endNodeEntity);
+    }
+
+    @Override
     public void removeAllByStartNodeEntityAndEndNodeEntity(NodeEntity startNodeEntity,
         NodeEntity endNodeEntity) {
         repository.removeByStartNodeEntityAndEndNodeEntity(startNodeEntity, endNodeEntity);
+    }
+
+    @Override
+    public void removeAllByStartNodeEntityAndEndNodeEntityAndCategory(NodeEntity startNodeEntity,
+        NodeEntity endNodeEntity, String category) {
+        repository.removeByStartNodeEntityAndEndNodeEntityAndCategory(startNodeEntity, endNodeEntity , category);
     }
 
     @Override
@@ -151,6 +167,50 @@ public class RelationEntityMapper implements IRelationEntityMapper<Long, Relatio
         entity.setName(name);
         ExampleMatcher matcher = ExampleMatcher.matching()
             .withIgnoreCase("category", "name");
+        return repository.findAll(Example.of(entity, matcher));
+    }
+
+    @Override
+    public Collection<RelationEntity> findByStartNodeEntity(NodeEntity startNodeEntity) {
+        RelationEntity entity = new RelationEntity();
+        entity.setStartNodeEntity(startNodeEntity);
+        ExampleMatcher matcher = ExampleMatcher.matching()
+            .withMatcher("start_node_entity_id", ExampleMatcher.GenericPropertyMatcher::exact);
+        return repository.findAll(Example.of(entity, matcher));
+    }
+
+    @Override
+    public Collection<RelationEntity> findByEndNodeEntity(NodeEntity endNodeEntity) {
+        RelationEntity entity = new RelationEntity();
+        entity.setEndNodeEntity(endNodeEntity);
+        ExampleMatcher matcher = ExampleMatcher.matching()
+            .withMatcher("end_node_entity_id", ExampleMatcher.GenericPropertyMatcher::exact);
+        return repository.findAll(Example.of(entity, matcher));
+    }
+
+    @Override
+    public Collection<RelationEntity> findByStartNodeEntityAndEndNodeEntity(
+        NodeEntity startNodeEntity, NodeEntity endNodeEntity) {
+        RelationEntity entity = new RelationEntity();
+        entity.setStartNodeEntity(startNodeEntity);
+        entity.setEndNodeEntity(endNodeEntity);
+        ExampleMatcher matcher = ExampleMatcher.matching()
+            .withMatcher("start_node_entity_id", ExampleMatcher.GenericPropertyMatcher::exact)
+            .withMatcher("end_node_entity_id", ExampleMatcher.GenericPropertyMatcher::exact);
+        return repository.findAll(Example.of(entity, matcher));
+    }
+
+    @Override
+    public Collection<RelationEntity> findByStartNodeEntityAndEndNodeEntityAndCategory(
+        NodeEntity startNodeEntity, NodeEntity endNodeEntity, String category) {
+        RelationEntity entity = new RelationEntity();
+        entity.setStartNodeEntity(startNodeEntity);
+        entity.setEndNodeEntity(endNodeEntity);
+        entity.setCategory(category);
+        ExampleMatcher matcher = ExampleMatcher.matching()
+            .withMatcher("start_node_entity_id", ExampleMatcher.GenericPropertyMatcher::exact)
+            .withMatcher("end_node_entity_id", ExampleMatcher.GenericPropertyMatcher::exact)
+            .withIgnoreCase("category");
         return repository.findAll(Example.of(entity, matcher));
     }
 
