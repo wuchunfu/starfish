@@ -1,0 +1,155 @@
+[
+  {
+    "name":"own",
+    "category": "own",
+    "properties": [
+      {
+        "name": "since",
+        "value": 123,
+        "operator": 1
+      }
+    ],
+    "startNodeEntity": {
+      "name": "dwd",
+      "category": "HiveDatabase",
+      "operator": 1,
+      "properties": [
+        {
+          "name": "creator",
+          "value": "root",
+          "operator": 1
+        },
+        {
+          "name": "lastModifyTime",
+          "value": 123,
+          "operator": 1
+        }
+      ]
+    },
+    "endNodeEntity": {
+      "name": "dwd.user_info",
+      "category": "HiveTable",
+      "operator": 1,
+      "properties": [
+        {
+          "name": "type",
+          "value": "HiveTable",
+          "operator": 1
+        },
+        {
+          "name": "developer",
+          "value": "root",
+          "operator": 1
+        },
+        {
+          "name": "lastModifyTime",
+          "value": 123,
+          "operator": 1
+        }
+      ]
+    },
+    "operator": 1
+  },
+  {
+    "name":"own",
+    "category": "own",
+    "properties": [
+      {
+        "name": "since",
+        "value": 234,
+        "operator": 1
+      }
+    ],
+    "startNodeEntity": {
+      "name": "dwd",
+      "category": "HiveDatabase",
+      "operator": 1,
+      "properties": [
+        {
+          "name": "creator",
+          "value": "root",
+          "operator": 1
+        },
+        {
+          "name": "lastModifyTime",
+          "value": 234,
+          "operator": 1
+        }
+      ]
+    },
+    "endNodeEntity": {
+      "name": "dwd.user_roles",
+      "category": "HiveTable",
+      "operator": 1,
+      "properties": [
+        {
+          "name": "type",
+          "value": "HiveTable",
+          "operator": 1
+        },
+        {
+          "name": "developer",
+          "value": "root",
+          "operator": 1
+        },
+        {
+          "name": "lastModifyTime",
+          "value": 234,
+          "operator": 1
+        }
+      ]
+    },
+    "operator": 1
+  },
+  {
+    "name":"own",
+    "category": "own",
+    "properties": [
+      {
+        "name": "since",
+        "value": 345,
+        "operator": 1
+      }
+    ],
+    "startNodeEntity": {
+      "name": "dwd",
+      "category": "HiveDatabase",
+      "operator": 1,
+      "properties": [
+        {
+          "name": "creator",
+          "value": "root",
+          "operator": 1
+        },
+        {
+          "name": "lastModifyTime",
+          "value": 345,
+          "operator": 1
+        }
+      ]
+    },
+    "endNodeEntity": {
+      "name": "dwd.user_accounts",
+      "category": "HiveTable",
+      "operator": 1,
+      "properties": [
+        {
+          "name": "type",
+          "value": "HiveTable",
+          "operator": 1
+        },
+        {
+          "name": "developer",
+          "value": "root",
+          "operator": 1
+        },
+        {
+          "name": "lastModifyTime",
+          "value": 345,
+          "operator": 1
+        }
+      ]
+    },
+    "operator": 1
+  }
+]
