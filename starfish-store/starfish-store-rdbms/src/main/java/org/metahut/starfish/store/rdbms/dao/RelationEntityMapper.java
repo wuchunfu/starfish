@@ -114,7 +114,7 @@ public class RelationEntityMapper implements IRelationEntityMapper<Long, Relatio
     @Override
     public void removeAllByStartNodeEntityAndEndNodeEntityAndCategory(NodeEntity startNodeEntity,
         NodeEntity endNodeEntity, String category) {
-        repository.removeByStartNodeEntityAndEndNodeEntityAndCategory(startNodeEntity, endNodeEntity , category);
+        repository.removeByStartNodeEntityAndEndNodeEntityAndCategory(startNodeEntity, endNodeEntity, category);
     }
 
     @Override
