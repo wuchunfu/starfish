@@ -6,8 +6,8 @@ CREATE TABLE t_sf_node_entity (
     name varchar(100) not NULL,
     category varchar(100) not null,
     operator int DEFAULT NULL,
-    create_time datetime NOT NULL,
-    update_time datetime NOT NULL,
+    create_time datetime NULL,
+    update_time datetime NULL,
     PRIMARY KEY (id)
 ) ENGINE=InnoDB AUTO_INCREMENT=1 DEFAULT CHARSET=utf8;
 
@@ -20,8 +20,8 @@ CREATE TABLE t_sf_relation_entity (
     start_node_entity_id bigint,
     end_node_entity_id bigint,
     operator int DEFAULT NULL,
-    create_time datetime NOT NULL,
-    update_time datetime NOT NULL,
+    create_time datetime NULL,
+    update_time datetime NULL,
     PRIMARY KEY (id)
 ) ENGINE=InnoDB AUTO_INCREMENT=1 DEFAULT CHARSET=utf8;
 
@@ -33,8 +33,8 @@ CREATE TABLE t_sf_node_entity_property (
     value json,
     entity_id bigint,
     operator int DEFAULT NULL,
-    create_time datetime NOT NULL,
-    update_time datetime NOT NULL,
+    create_time datetime NULL,
+    update_time datetime NULL,
     PRIMARY KEY (id)
 ) ENGINE=InnoDB AUTO_INCREMENT=1 DEFAULT CHARSET=utf8;
 
@@ -45,7 +45,7 @@ CREATE TABLE t_sf_relation_entity_property (
     value json,
     entity_id bigint,
     operator int DEFAULT NULL,
-    create_time datetime NOT NULL,
-    update_time datetime NOT NULL,
+    create_time datetime NULL,
+    update_time datetime NULL,
     PRIMARY KEY (id)
 ) ENGINE=InnoDB AUTO_INCREMENT=1 DEFAULT CHARSET=utf8;

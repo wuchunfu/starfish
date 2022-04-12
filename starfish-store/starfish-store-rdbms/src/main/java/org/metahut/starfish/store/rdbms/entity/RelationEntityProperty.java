@@ -1,5 +1,7 @@
 package org.metahut.starfish.store.rdbms.entity;
 
+import javax.persistence.ConstraintMode;
+import javax.persistence.ForeignKey;
 import org.metahut.starfish.store.model.AbstractEntityProperty;
 
 import com.vladmihalcea.hibernate.type.json.JsonType;
@@ -38,7 +40,7 @@ public class RelationEntityProperty extends AbstractEntityProperty<Long, Object,
     private Long id;
 
     @ManyToOne(targetEntity = RelationEntity.class, fetch = FetchType.EAGER)
-    @JoinColumn(name = "entity_id", referencedColumnName = "id")
+    @JoinColumn(name = "entity_id", referencedColumnName = "id", foreignKey = @ForeignKey(ConstraintMode.NO_CONSTRAINT))
     private RelationEntity entity;
 
     @Column(name = "name", nullable = false)
