@@ -59,6 +59,16 @@ public class MetaDataControllerTest {
     }
 
     @Test
+    public void testUpdateProperty() throws AbstractMetaParserException {
+        String typeName1 = "HiveTable";
+        Map<String,Object> properties1 = new HashMap<>();
+        properties1.put("name","dwd.user_info");
+        Long headId = metaDataService.create(typeName1,0L,properties1);
+        properties1.put("userName","root");
+        metaDataService.update(typeName1,headId,properties1);
+    }
+
+    @Test
 //    @Transactional
     public void deleteRelation() throws AbstractMetaParserException {
         String typeName1 = "HiveTable";
