@@ -1,6 +1,7 @@
 package org.metahut.starfish.autoconfigure.data.rdbm;
 
 import org.metahut.starfish.parser.domain.enums.Type;
+import org.metahut.starfish.parser.domain.instance.Node;
 import org.metahut.starfish.parser.exception.AbstractMetaParserException;
 import org.metahut.starfish.parser.exception.StarFishMetaDataOperatingException;
 import org.metahut.starfish.parser.exception.StarFishMetaDataQueryException;
@@ -119,6 +120,35 @@ public class RdbmDataStorageAutoConfiguration {
             public void delete(String typeName, Collection<Long> instanceIds) throws StarFishMetaDataOperatingException {
                 relationEntityMapper.removeBatchById(instanceIds);
             }
+
+            @Override
+            public void move(String typeName, Long oldHeadId, Long newHeadId, Long tailId, String property) throws StarFishMetaDataOperatingException {
+
+            }
+
+            @Override
+            public void copy(String oldTypeName, String newTypeName, Collection<Long> instanceIds) throws StarFishMetaDataOperatingException {
+
+            }
+
+            @Override
+            public void crack(String typeName, Long headId, Long tailId, String property) throws StarFishMetaDataOperatingException {
+                RelationEntity relationEntity = new RelationEntity();
+                relationEntity.setName(property);
+                relationEntity.setCategory(typeName);
+                NodeEntity head = new NodeEntity();
+                head.setId(headId);
+                relationEntity.setStartNodeEntity(head);
+                NodeEntity tail = new NodeEntity();
+                tail.setId(tailId);
+                relationEntity.setEndNodeEntity(tail);
+                relationEntityMapper.remove(relationEntity);
+            }
+
+            @Override
+            public void delete(String typeName) throws StarFishMetaDataOperatingException {
+
+            }
         };
     }
 
@@ -217,7 +247,7 @@ public class RdbmDataStorageAutoConfiguration {
     @Bean
     @ConditionalOnMissingBean(AbstractGraphService.class)
     public AbstractGraphService<String,Long,Object> graphService(AbstractNodeService<String,Long,Object> nodeService,AbstractRelationService<String,Long,Object> relationService) {
-        return new AbstractGraphService() {
+        return new AbstractGraphService<String,Long,Object>() {
             @Override
             protected AbstractNodeService<String,Long,Object> getNodeService() {
                 return nodeService;
@@ -227,6 +257,27 @@ public class RdbmDataStorageAutoConfiguration {
             protected AbstractRelationService<String,Long,Object> getRelationService() {
                 return relationService;
             }
+
+            @Override
+            public void delete(String typeName, Collection<Long> instanceIds) throws StarFishMetaDataOperatingException {
+                getNodeService().delete(typeName,instanceIds);
+            }
+
+            @Override
+            public void delete(String typeName) throws StarFishMetaDataOperatingException {
+                getNodeService().delete(typeName);
+            }
+
+            @Override
+            public void delete(String typeName, Long instanceId) throws StarFishMetaDataOperatingException {
+                getNodeService().delete(typeName,instanceId);
+            }
+
+            @Override
+            public void delete(String typeName, Long id, String property) throws StarFishMetaDataOperatingException {
+                getNodeService().delete(typeName,id,property);
+            }
+
         };
     }
 

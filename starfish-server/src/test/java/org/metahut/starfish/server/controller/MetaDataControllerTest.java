@@ -55,4 +55,27 @@ public class MetaDataControllerTest {
         metaDataService.delete(typeName1,Arrays.asList(headId,tailId1,tailId2));
     }
 
+    @Test
+//    @Transactional
+    public void deleteRelation() throws AbstractMetaParserException {
+        String typeName1 = "HiveTable";
+        Map<String,Object> properties1 = new HashMap<>();
+        properties1.put("name","dwd.user_info");
+        Long headId = metaDataService.create(typeName1,0L,properties1);
+        String typeName2 = "HiveColumn";
+        Map<String,Object> properties2 = new HashMap<>();
+        properties2.put("name","username");
+        Long tailId1 = metaDataService.create(typeName2,0L,properties2);
+        String typeName3 = "HiveColumn";
+        Map<String,Object> properties3 = new HashMap<>();
+        properties3.put("name","username");
+        String property = "columns";
+        String typeName = "rel";
+        Long tailId2 = metaDataService.create(typeName3,0L,properties3);
+        metaDataService.link(typeName,headId,tailId1,property);
+        metaDataService.link(typeName,headId,tailId2,property);
+        metaDataService.crack(typeName,headId,tailId1,property);
+        metaDataService.crack(typeName,headId,tailId1,property);
+    }
+
 }
