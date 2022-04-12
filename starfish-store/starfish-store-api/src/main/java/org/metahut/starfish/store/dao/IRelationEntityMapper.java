@@ -81,9 +81,29 @@ public interface IRelationEntityMapper<I extends Serializable, R extends Abstrac
     /**
      *
      * @param startNodeEntity
+     */
+    void removeAllByStartNodeEntity(N startNodeEntity);
+
+    /**
+     *
+     * @param endNodeEntity
+     */
+    void removeAllByEndNodeEntity(N endNodeEntity);
+
+    /**
+     *
+     * @param startNodeEntity
      * @param endNodeEntity
      */
     void removeAllByStartNodeEntityAndEndNodeEntity(N startNodeEntity, N endNodeEntity);
+
+    /**
+     *
+     * @param startNodeEntity
+     * @param endNodeEntity
+     * @param category
+     */
+    void removeAllByStartNodeEntityAndEndNodeEntityAndCategory(N startNodeEntity, N endNodeEntity, String category);
 
     /**
      * @param relation

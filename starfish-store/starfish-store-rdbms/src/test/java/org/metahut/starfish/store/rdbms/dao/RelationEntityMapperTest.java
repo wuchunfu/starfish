@@ -93,6 +93,37 @@ public class RelationEntityMapperTest {
     }
 
     @ParameterizedTest
+    @MethodSource("relationEntityProvider")
+    public void removeAllByStartNodeEntityAndEndNodeEntityTest(RelationEntity relation) {
+        nodeEntityMapper.create(relation.getStartNodeEntity());
+        nodeEntityMapper.create(relation.getEndNodeEntity());
+
+        mapper.create(relation);
+
+        Assertions.assertDoesNotThrow(() ->
+            mapper.removeAllByStartNodeEntityAndEndNodeEntity(
+                relation.getStartNodeEntity(),
+                relation.getEndNodeEntity()
+        ));
+    }
+
+    @ParameterizedTest
+    @MethodSource("relationEntityProvider")
+    public void removeAllByStartNodeEntityAndEndNodeEntityAndCategoryTest(RelationEntity relation) {
+        nodeEntityMapper.create(relation.getStartNodeEntity());
+        nodeEntityMapper.create(relation.getEndNodeEntity());
+
+        mapper.create(relation);
+
+        Assertions.assertDoesNotThrow(() ->
+            mapper.removeAllByStartNodeEntityAndEndNodeEntityAndCategory(
+                relation.getStartNodeEntity(),
+                relation.getEndNodeEntity(),
+                relation.getCategory()
+            ));
+    }
+
+    @ParameterizedTest
     @MethodSource("multiRelationEntityProvider")
     public void findByStartNodeEntityTest(List<RelationEntity> relations) {
         relations.stream().forEach(relation -> {

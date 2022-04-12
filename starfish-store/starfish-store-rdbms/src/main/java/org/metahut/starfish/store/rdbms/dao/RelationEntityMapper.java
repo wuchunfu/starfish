@@ -96,9 +96,25 @@ public class RelationEntityMapper implements IRelationEntityMapper<Long, Relatio
     }
 
     @Override
+    public void removeAllByStartNodeEntity(NodeEntity startNodeEntity) {
+        repository.removeByStartNodeEntity(startNodeEntity);
+    }
+
+    @Override
+    public void removeAllByEndNodeEntity(NodeEntity endNodeEntity) {
+        repository.removeByEndNodeEntity(endNodeEntity);
+    }
+
+    @Override
     public void removeAllByStartNodeEntityAndEndNodeEntity(NodeEntity startNodeEntity,
         NodeEntity endNodeEntity) {
         repository.removeByStartNodeEntityAndEndNodeEntity(startNodeEntity, endNodeEntity);
+    }
+
+    @Override
+    public void removeAllByStartNodeEntityAndEndNodeEntityAndCategory(NodeEntity startNodeEntity,
+        NodeEntity endNodeEntity, String category) {
+        repository.removeByStartNodeEntityAndEndNodeEntityAndCategory(startNodeEntity, endNodeEntity , category);
     }
 
     @Override
