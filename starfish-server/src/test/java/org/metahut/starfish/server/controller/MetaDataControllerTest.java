@@ -7,6 +7,7 @@ import org.metahut.starfish.service.AbstractMetaDataService;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
+import org.springframework.test.annotation.Commit;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.util.Arrays;
@@ -16,6 +17,8 @@ import java.util.Map;
 /**
  *
  */
+@Commit
+@Transactional
 @SpringBootTest
 public class MetaDataControllerTest {
 
@@ -26,7 +29,6 @@ public class MetaDataControllerTest {
     private AbstractInstanceService<String,Long,Object> instanceService;
 
     @Test
-    @Transactional
     public void testSave() throws AbstractMetaParserException {
         String typeName = "HiveTable";
         Map<String,Object> properties = new HashMap<>();
@@ -36,7 +38,6 @@ public class MetaDataControllerTest {
     }
 
     @Test
-    @Transactional
     public void testSaveRelation() throws AbstractMetaParserException {
         String typeName1 = "HiveTable";
         Map<String,Object> properties1 = new HashMap<>();
@@ -50,8 +51,10 @@ public class MetaDataControllerTest {
         Map<String,Object> properties3 = new HashMap<>();
         properties3.put("name","username");
         Long tailId2 = metaDataService.create(typeName3,0L,properties3);
+
         metaDataService.link("rel",headId,tailId1,"columns");
         metaDataService.link("rel",headId,tailId2,"columns");
+
         metaDataService.delete(typeName1,Arrays.asList(headId,tailId1,tailId2));
     }
 

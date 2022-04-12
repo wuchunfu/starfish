@@ -155,6 +155,50 @@ public class RelationEntityMapper implements IRelationEntityMapper<Long, Relatio
     }
 
     @Override
+    public Collection<RelationEntity> findByStartNodeEntity(NodeEntity startNodeEntity) {
+        RelationEntity entity = new RelationEntity();
+        entity.setStartNodeEntity(startNodeEntity);
+        ExampleMatcher matcher = ExampleMatcher.matching()
+            .withMatcher("start_node_entity_id", ExampleMatcher.GenericPropertyMatcher::exact);
+        return repository.findAll(Example.of(entity, matcher));
+    }
+
+    @Override
+    public Collection<RelationEntity> findByEndNodeEntity(NodeEntity endNodeEntity) {
+        RelationEntity entity = new RelationEntity();
+        entity.setEndNodeEntity(endNodeEntity);
+        ExampleMatcher matcher = ExampleMatcher.matching()
+            .withMatcher("end_node_entity_id", ExampleMatcher.GenericPropertyMatcher::exact);
+        return repository.findAll(Example.of(entity, matcher));
+    }
+
+    @Override
+    public Collection<RelationEntity> findByStartNodeEntityAndEndNodeEntity(
+        NodeEntity startNodeEntity, NodeEntity endNodeEntity) {
+        RelationEntity entity = new RelationEntity();
+        entity.setStartNodeEntity(startNodeEntity);
+        entity.setEndNodeEntity(endNodeEntity);
+        ExampleMatcher matcher = ExampleMatcher.matching()
+            .withMatcher("start_node_entity_id", ExampleMatcher.GenericPropertyMatcher::exact)
+            .withMatcher("end_node_entity_id", ExampleMatcher.GenericPropertyMatcher::exact);
+        return repository.findAll(Example.of(entity, matcher));
+    }
+
+    @Override
+    public Collection<RelationEntity> findByStartNodeEntityAndEndNodeEntityAndCategory(
+        NodeEntity startNodeEntity, NodeEntity endNodeEntity, String category) {
+        RelationEntity entity = new RelationEntity();
+        entity.setStartNodeEntity(startNodeEntity);
+        entity.setEndNodeEntity(endNodeEntity);
+        entity.setCategory(category);
+        ExampleMatcher matcher = ExampleMatcher.matching()
+            .withMatcher("start_node_entity_id", ExampleMatcher.GenericPropertyMatcher::exact)
+            .withMatcher("end_node_entity_id", ExampleMatcher.GenericPropertyMatcher::exact)
+            .withIgnoreCase("category");
+        return repository.findAll(Example.of(entity, matcher));
+    }
+
+    @Override
     public Page<RelationEntity> findByName(String name, Pageable pageable) {
         RelationEntity entity = new RelationEntity();
         entity.setName(name);
