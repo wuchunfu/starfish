@@ -30,7 +30,7 @@ DROP TABLE IF EXISTS t_sf_node_entity_property;
 CREATE TABLE t_sf_node_entity_property (
     id int(11) NOT NULL AUTO_INCREMENT,
     name varchar(100) not NULL,
-    value json,
+    property_value json,
     entity_id bigint,
     operator int DEFAULT NULL,
     create_time datetime NULL,
@@ -42,7 +42,7 @@ DROP TABLE IF EXISTS t_sf_relation_entity_property;
 CREATE TABLE t_sf_relation_entity_property (
     id int(11) NOT NULL AUTO_INCREMENT,
     name varchar(100) not NULL,
-    value json,
+    property_value json,
     entity_id bigint,
     operator int DEFAULT NULL,
     create_time datetime NULL,
