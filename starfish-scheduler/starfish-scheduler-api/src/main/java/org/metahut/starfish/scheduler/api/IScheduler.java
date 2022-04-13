@@ -8,14 +8,19 @@ public interface IScheduler extends AutoCloseable {
 
     //查看任务定义（分页）
     Object queryTaskDefinitionPageList();
+
     //查看任务定义详情
     Object queryTaskDefinitionByCode();
+
     //查看任务日志（分页）
     Object queryTaskInstanceLogs();
+
     //查看任务日志（详情）
     Object queryTaskDetailLogs();
+
     //删除任务定义
     Object deleteTaskDefinitionByCode();
+
     //修改任务定义
     Object updateTaskDefinition();
     // 生成任务

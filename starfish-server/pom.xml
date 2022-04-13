@@ -29,10 +29,17 @@
             <groupId>org.metahut.starfish</groupId>
             <artifactId>starfish-service</artifactId>
         </dependency>
+
         <dependency>
             <groupId>org.metahut.starfish</groupId>
             <artifactId>starfish-store-rdbms</artifactId>
         </dependency>
+
+        <dependency>
+            <groupId>com.h2database</groupId>
+            <artifactId>h2</artifactId>
+        </dependency>
+
         <dependency>
             <groupId>org.metahut.starfish</groupId>
             <artifactId>starfish-autoconfigure</artifactId>
