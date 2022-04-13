@@ -5,6 +5,8 @@ import org.metahut.starfish.store.model.AbstractEntityProperty;
 import com.vladmihalcea.hibernate.type.json.JsonType;
 import lombok.Getter;
 import lombok.Setter;
+import org.hibernate.annotations.NotFound;
+import org.hibernate.annotations.NotFoundAction;
 import org.hibernate.annotations.Type;
 import org.hibernate.annotations.TypeDef;
 import org.springframework.data.annotation.CreatedDate;
@@ -12,9 +14,11 @@ import org.springframework.data.annotation.LastModifiedDate;
 import org.springframework.data.jpa.domain.support.AuditingEntityListener;
 
 import javax.persistence.Column;
+import javax.persistence.ConstraintMode;
 import javax.persistence.Entity;
 import javax.persistence.EntityListeners;
 import javax.persistence.FetchType;
+import javax.persistence.ForeignKey;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
@@ -37,15 +41,16 @@ public class NodeEntityProperty extends AbstractEntityProperty<Long, Object, Nod
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
+    @NotFound(action = NotFoundAction.IGNORE)
     @ManyToOne(targetEntity = NodeEntity.class, fetch = FetchType.EAGER)
-    @JoinColumn(name = "entity_id", referencedColumnName = "id")
+    @JoinColumn(name = "entity_id", referencedColumnName = "id", foreignKey = @ForeignKey(ConstraintMode.NO_CONSTRAINT))
     private NodeEntity entity;
 
     @Column(name = "name", nullable = false)
     private String name;
 
     @Type(type = "json")
-    @Column(columnDefinition = "json")
+    @Column(name = "property_value", columnDefinition = "json")
     private Object value;
 
     @Column(name = "operator")

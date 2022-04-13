@@ -13,4 +13,5 @@ public interface RelationEntityPropertyRepository extends JpaRepository<Relation
     JpaSpecificationExecutor<RelationEntityProperty> {
 
     List<RelationEntityProperty> removeByName(String name);
+
 }

@@ -45,8 +45,8 @@ public class RelationEntityPropertyMapperTest {
 
     @BeforeEach
     public void clearEach() {
-        mapper.removeAll();
         relationEntityMapper.removeAll();
+        mapper.removeAll();
     }
 
     @ParameterizedTest
