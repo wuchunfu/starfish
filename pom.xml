@@ -38,6 +38,7 @@
         <module>starfish-dist</module>
         <module>starfish-examples</module>
         <module>starfish-autoconfigure</module>
+        <module>starfish-datasource</module>
     </modules>
 
     <properties>
