@@ -30,8 +30,8 @@ DROP TABLE IF EXISTS t_sf_node_entity_property;
 CREATE TABLE t_sf_node_entity_property (
   id serial NOT NULL,
   name varchar(100) not NULL,
-  value json,
-  entity_id bigint not null,
+  property_value json,
+  entity_id bigint,
   operator int DEFAULT NULL,
   create_time timestamp DEFAULT NULL,
   update_time timestamp DEFAULT NULL,
@@ -42,7 +42,7 @@ DROP TABLE IF EXISTS t_sf_relation_entity_property;
 CREATE TABLE t_sf_relation_entity_property (
    id serial NOT NULL,
    name varchar(100) not NULL,
-   value json,
+   property_value json,
    entity_id bigint,
    operator int DEFAULT NULL,
    create_time timestamp DEFAULT NULL,

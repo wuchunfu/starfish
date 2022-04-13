@@ -5,6 +5,8 @@ import org.metahut.starfish.store.model.AbstractRelationEntity;
 import com.google.common.base.Joiner;
 import lombok.Getter;
 import lombok.Setter;
+import org.hibernate.annotations.NotFound;
+import org.hibernate.annotations.NotFoundAction;
 import org.springframework.data.annotation.CreatedDate;
 import org.springframework.data.annotation.LastModifiedDate;
 import org.springframework.data.jpa.domain.support.AuditingEntityListener;
@@ -49,10 +51,12 @@ public class RelationEntity extends AbstractRelationEntity<Long, RelationEntityP
     @JoinColumn(name = "entity_id", foreignKey = @ForeignKey(ConstraintMode.NO_CONSTRAINT))
     private Set<RelationEntityProperty> properties;
 
+    @NotFound(action = NotFoundAction.IGNORE)
     @OneToOne(targetEntity = NodeEntity.class, fetch = FetchType.EAGER, cascade = {})
     @JoinColumn(name = "start_node_entity_id", foreignKey = @ForeignKey(ConstraintMode.NO_CONSTRAINT))
     private NodeEntity startNodeEntity;
 
+    @NotFound(action = NotFoundAction.IGNORE)
     @OneToOne(targetEntity = NodeEntity.class, fetch = FetchType.EAGER, cascade = {})
     @JoinColumn(name = "end_node_entity_id", foreignKey = @ForeignKey(ConstraintMode.NO_CONSTRAINT))
     private NodeEntity endNodeEntity;
