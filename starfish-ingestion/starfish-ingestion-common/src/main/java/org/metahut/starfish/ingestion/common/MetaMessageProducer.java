@@ -53,13 +53,13 @@ public class MetaMessageProducer {
 
         private Singleton() {
             init();
-//            if(Objects.nonNull(messageManager)) {
-//                throw new RuntimeException("meta message manager create exception");
-//            }
+            // if(Objects.nonNull(messageManager)) {
+            //     throw new RuntimeException("meta message manager create exception");
+            // }
             producer = messageManager.getProducer(MESSAGE_PRODUCER);
-//            if(Objects.nonNull(producer)) {
-//                throw new RuntimeException("meta message producer create exception");
-//            }
+            // if(Objects.nonNull(producer)) {
+            //     throw new RuntimeException("meta message producer create exception");
+            // }
         }
 
         public MessageProducer getInstance() {
