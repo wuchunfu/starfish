@@ -18,6 +18,8 @@ public class DolphinSchedulerTest {
 
     private String serviceUrl = "http://dolphinscheduler.dev.zhaopin.com/dolphinscheduler";
 
+    public static final String jsonFilePath = "/json/dolphin_httptask.json";
+
     private String projectCode = "4996418468000";
 
     @BeforeEach
@@ -52,7 +54,7 @@ public class DolphinSchedulerTest {
         httpParameter.setUrl(url);
         httpParameter.setMethod("post");
         httpParameter.setBody(
-            "[{\"code\":1111,\"name\":\"testhttp\",\"description\":\"\",\"taskType\":\"HTTP\",\"taskParams\":{\"localParams\":[],\"httpParams\":[],\"url\":\"111\",\"httpMethod\":\"GET\",\"httpCheckCondition\":\"STATUS_CODE_DEFAULT\",\"condition\":\"\",\"connectTimeout\":60000,\"socketTimeout\":60000,\"dependence\":{},\"conditionResult\":{\"successNode\":[],\"failedNode\":[]},\"waitStartTimeout\":{},\"switchResult\":{}},\"flag\":\"YES\",\"taskPriority\":\"MEDIUM\",\"workerGroup\":\"default\",\"failRetryTimes\":\"0\",\"failRetryInterval\":\"1\",\"timeoutFlag\":\"CLOSE\",\"timeoutNotifyStrategy\":\"\",\"timeout\":0,\"delayTime\":\"0\",\"environmentCode\":-1},{\"code\":222,\"name\":\"111\",\"description\":\"\",\"taskType\":\"HTTP\",\"taskParams\":{\"localParams\":[],\"httpParams\":[],\"url\":\"122\",\"httpMethod\":\"GET\",\"httpCheckCondition\":\"STATUS_CODE_DEFAULT\",\"condition\":\"\",\"connectTimeout\":60000,\"socketTimeout\":60000,\"dependence\":{},\"conditionResult\":{\"successNode\":[],\"failedNode\":[]},\"waitStartTimeout\":{},\"switchResult\":{}},\"flag\":\"YES\",\"taskPriority\":\"MEDIUM\",\"workerGroup\":\"default\",\"failRetryTimes\":\"0\",\"failRetryInterval\":\"1\",\"timeoutFlag\":\"CLOSE\",\"timeoutNotifyStrategy\":\"\",\"timeout\":0,\"delayTime\":\"0\",\"environmentCode\":-1},{\"code\":333,\"name\":\"333\",\"description\":\"\",\"taskType\":\"HTTP\",\"taskParams\":{\"localParams\":[],\"httpParams\":[],\"url\":\"333\",\"httpMethod\":\"GET\",\"httpCheckCondition\":\"STATUS_CODE_DEFAULT\",\"condition\":\"\",\"connectTimeout\":60000,\"socketTimeout\":60000,\"dependence\":{},\"conditionResult\":{\"successNode\":[],\"failedNode\":[]},\"waitStartTimeout\":{},\"switchResult\":{}},\"flag\":\"YES\",\"taskPriority\":\"MEDIUM\",\"workerGroup\":\"default\",\"failRetryTimes\":\"0\",\"failRetryInterval\":\"1\",\"timeoutFlag\":\"CLOSE\",\"timeoutNotifyStrategy\":\"\",\"timeout\":0,\"delayTime\":\"0\",\"environmentCode\":-1}]");
+                DolphinSchedulerTest.class.getResourceAsStream(jsonFilePath).toString());
         scheduler.createSingleHttpTask(httpParameter);
     }
 

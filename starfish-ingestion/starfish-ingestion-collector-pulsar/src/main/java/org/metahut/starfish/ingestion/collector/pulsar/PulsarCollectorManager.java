@@ -1,25 +1,26 @@
-package org.metahut.starfish.ingestion.collector.hive;
+package org.metahut.starfish.ingestion.collector.pulsar;
 
 import org.metahut.starfish.ingestion.collector.api.ICollector;
 import org.metahut.starfish.ingestion.collector.api.ICollectorManager;
 import org.metahut.starfish.ingestion.collector.api.IngestionException;
-import org.metahut.starfish.ingestion.utils.JSONUtils;
+
+import org.apache.pulsar.client.admin.PulsarAdmin;
+import org.apache.pulsar.client.api.PulsarClient;
 
 import java.util.Objects;
 
-public class HiveCollectorManager implements ICollectorManager {
+public class PulsarCollectorManager implements ICollectorManager {
 
     @Override
     public String getType() {
-        return "hive-metadata";
+        return "pulsar";
     }
 
     @Override
     public ICollector generateInstance(String parameter) {
-        HiveParameter param = JSONUtils.parseObject(parameter, HiveParameter.class);
-        if (Objects.isNull(param) || !param.checkParam()) {
+        if (Objects.isNull(parameter)) {
             throw new IngestionException("hive paramter is error");
         }
-        return new HiveCollector(param);
+        return new PulsarCollector(parameter);
     }
 }

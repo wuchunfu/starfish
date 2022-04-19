@@ -9,7 +9,7 @@
   </parent>
   <modelVersion>4.0.0</modelVersion>
 
-  <artifactId>starfish-ingestion-collector-hive-jdbc</artifactId>
+  <artifactId>starfish-ingestion-collector-pulsar</artifactId>
 
   <dependencies>
     <dependency>
@@ -17,19 +17,10 @@
       <artifactId>starfish-ingestion-collector-api</artifactId>
       <scope>provided</scope>
     </dependency>
-    <dependency>
-      <groupId>org.apache.hive</groupId>
-      <artifactId>hive-standalone-metastore</artifactId>
-      <version>3.1.2</version>
-    </dependency>
-    <dependency>
-      <groupId>org.metahut.starfish</groupId>
-      <artifactId>starfish-ingestion-common</artifactId>
-    </dependency>
 
     <dependency>
       <groupId>org.metahut.starfish</groupId>
-      <artifactId>starfish-parser</artifactId>
+      <artifactId>starfish-ingestion-common</artifactId>
     </dependency>
   </dependencies>
 

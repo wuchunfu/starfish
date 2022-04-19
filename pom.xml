@@ -69,7 +69,7 @@
         <mysql.connector.version>8.0.16</mysql.connector.version>
         <h2.version>2.1.212</h2.version>
         <postgresql.version>42.2.5</postgresql.version>
-
+        <hive.version>3.1.2</hive.version>
         <guava.version>31.1-jre</guava.version>
     </properties>
 
@@ -108,6 +108,21 @@
             <dependency>
                 <groupId>org.metahut.starfish</groupId>
                 <artifactId>starfish-api</artifactId>
+                <version>${project.version}</version>
+            </dependency>
+            <dependency>
+                <groupId>org.metahut.starfish</groupId>
+                <artifactId>starfish-datasource-api</artifactId>
+                <version>${project.version}</version>
+            </dependency>
+            <dependency>
+                <groupId>org.metahut.starfish</groupId>
+                <artifactId>starfish-datasource-hive</artifactId>
+                <version>${project.version}</version>
+            </dependency>
+            <dependency>
+                <groupId>org.metahut.starfish</groupId>
+                <artifactId>starfish-datasource-pulsar</artifactId>
                 <version>${project.version}</version>
             </dependency>
             <dependency>
@@ -174,6 +189,17 @@
             </dependency>
 
             <dependency>
+                <groupId>org.apache.hive</groupId>
+                <artifactId>hive-standalone-metastore</artifactId>
+                <version>${hive.version}</version>
+            </dependency>
+            <dependency>
+                <groupId>org.apache.hive</groupId>
+                <artifactId>hive-jdbc</artifactId>
+                <version>${hive.version}</version>
+            </dependency>
+
+            <dependency>
                 <groupId>org.slf4j</groupId>
                 <artifactId>slf4j-api</artifactId>
                 <version>${slf4j.version}</version>
@@ -182,6 +208,11 @@
             <dependency>
                 <groupId>org.apache.pulsar</groupId>
                 <artifactId>pulsar-client</artifactId>
+                <version>${pulsar.version}</version>
+            </dependency>
+            <dependency>
+                <groupId>org.apache.pulsar</groupId>
+                <artifactId>pulsar-client-admin</artifactId>
                 <version>${pulsar.version}</version>
             </dependency>
 

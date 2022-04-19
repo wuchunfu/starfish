@@ -39,13 +39,13 @@ import java.util.stream.Collectors;
  *
  */
 @Configuration
-@ConditionalOnClass({ DataSource.class})
-@AutoConfigureAfter({ DataSourceAutoConfiguration.class })
+@ConditionalOnClass({DataSource.class})
+@AutoConfigureAfter({DataSourceAutoConfiguration.class})
 public class RdbmDataStorageAutoConfiguration {
 
     @Bean
     @ConditionalOnMissingBean(AbstractInstanceService.class)
-    public AbstractInstanceService<String,Long,Object> instanceService() {
+    public AbstractInstanceService<String, Long, Object> instanceService() {
         return new AbstractInstanceService<String, Long, Object>() {
             @Override
             public Set<Long> instanceMap(String typeName) throws StarFishMetaDataQueryException {
@@ -91,8 +91,8 @@ public class RdbmDataStorageAutoConfiguration {
 
     @Bean
     @ConditionalOnMissingBean(AbstractRelationService.class)
-    public AbstractRelationService<String,Long,Object> relationService(NodeEntityMapper nodeEntityMapper, RelationEntityMapper relationEntityMapper) {
-        return new AbstractRelationService<String,Long,Object>() {
+    public AbstractRelationService<String, Long, Object> relationService(NodeEntityMapper nodeEntityMapper, RelationEntityMapper relationEntityMapper) {
+        return new AbstractRelationService<String, Long, Object>() {
             @Override
             public Collection query(AbstractQueryCondition condition) {
                 return null;
@@ -154,7 +154,8 @@ public class RdbmDataStorageAutoConfiguration {
     @Bean
     @ConditionalOnMissingBean(AbstractTypeService.class)
     public AbstractTypeService typeService() {
-        return new AbstractTypeService() {};
+        return new AbstractTypeService() {
+        };
     }
 
     @Bean
@@ -180,10 +181,10 @@ public class RdbmDataStorageAutoConfiguration {
 
     @Bean
     @ConditionalOnMissingBean(AbstractNodeService.class)
-    public AbstractNodeService<String,Long,Object> nodeService(NodeEntityMapper nodeEntityMapper,AbstractInstanceService<String,Long,Object> instanceService) {
-        return new AbstractNodeService<String,Long,Object>() {
+    public AbstractNodeService<String, Long, Object> nodeService(NodeEntityMapper nodeEntityMapper, AbstractInstanceService<String, Long, Object> instanceService) {
+        return new AbstractNodeService<String, Long, Object>() {
             @Override
-            protected AbstractInstanceService<String,Long,Object> getInstanceService() {
+            protected AbstractInstanceService<String, Long, Object> getInstanceService() {
                 return instanceService;
             }
 
@@ -248,12 +249,12 @@ public class RdbmDataStorageAutoConfiguration {
     public AbstractGraphService<String,Long,Object> graphService(AbstractNodeService<String,Long,Object> nodeService,AbstractRelationService<String,Long,Object> relationService) {
         return new AbstractGraphService<String,Long,Object>() {
             @Override
-            protected AbstractNodeService<String,Long,Object> getNodeService() {
+            protected AbstractNodeService<String, Long, Object> getNodeService() {
                 return nodeService;
             }
 
             @Override
-            protected AbstractRelationService<String,Long,Object> getRelationService() {
+            protected AbstractRelationService<String, Long, Object> getRelationService() {
                 return relationService;
             }
 
@@ -282,13 +283,13 @@ public class RdbmDataStorageAutoConfiguration {
 
     @Bean
     @ConditionalOnMissingBean(AbstractMetaDataService.class)
-    public AbstractMetaDataService<String,Long,Object> metaDataService(
-            AbstractGraphService<String,Long,Object> abstractGraphService,
+    public AbstractMetaDataService<String, Long, Object> metaDataService(
+            AbstractGraphService<String, Long, Object> abstractGraphService,
             AbstractTypeService abstractTypeServce,
             AbstractTypeInstanceBridgeService abstractTypeInstanceBridgeService) {
         return new AbstractMetaDataService() {
             @Override
-            protected AbstractGraphService<String,Long,Object> graphApi() {
+            protected AbstractGraphService<String, Long, Object> graphApi() {
                 return abstractGraphService;
             }
 

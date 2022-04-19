@@ -1,100 +1,173 @@
 # MetaDef
 
 ## hive
-
 * hive_db
 
 ```
-userName
-dataBaseUrl
-isReadOnly
-databaseProductName
-databaseProductVersion
-driverName
-driverVersion
-db_name (schema)
-comment (remark)
-location *
-owner_name *
-owner_type *
-paramters *
-tables
-
+String databaseName 数据库名称
+String description 数据库描述
+String locationUrl 数据库HDFS路径
+String ownerName  数据库所有者用户名
+String catalogName 目录名称
+PrincipalType ownerType 数据库所有者角色(
+    USER(1),
+    ROLE(2),
+    GROUP(3))
+List<String> tables  数据库下的所有表名称
+Map parameters:{ 存储数据库的相关参数 
+String param_key 例如：createBy
+String param_value 例如：创建者名称
+PrincipalPrivilegeSet privileges 数据库权限 
+（
+PrincipalPrivilegeSet：
+     Map<String, List<PrivilegeGrantInfo>> userPrivileges;//用户权限
+     Map<String, List<PrivilegeGrantInfo>> groupPrivileges;//组权限
+    Map<String, List<PrivilegeGrantInfo>> rolePrivileges;//角色权限）
+}
 ```
 
 * hive_table
 
 ```
-table name
-table type
-table catagory
-table schema(命名空间？)
-remark
-partitioned by *
-row format serde *
-stored as inputformat *
-outputformat *
-location *
-tblproperties *
-columns 
-partitions *
-
+String tableName 数据库表名称
+String tableType 数据库表类型（四种类型：MANAGED_TABLE,EXTERNAL_TABLE,INDEX_TABLE,VIRTUAL_VIEW）
+String dbName 数据库名称
+String owner 所有者
+timestamp creatime 创建时间
+timestamp lastAccessTime 上次访问时间
+String retention 保留字段
+StorageDescriptor sd( 序列化配置信息（包括Hive文件存储信息元数据，）
+StorageDescriptor :   Hive文件存储信息元数据
+     FieldSchema[] cols: 表字段相关元数据信息
+       (FieldSchema:
+            String name, 字段名
+            String type , 字段类型
+            String comment 字段注释
+            ) 
+     String location HDFS存储路径
+     String inputFormat 文件输入格式
+     String outputFormat 文件输出格式
+     Boolean compressed 是否压缩
+     int numBuckets 分桶数量
+     Object parameters:{ 存储Hive存储的属性信息，在创建表时候使用
+       String param_key
+       String param_value 
+    })
+     SerdeInfo serdeInfo: 序列化使用的类信息
+      (
+      String name, 序列化类别名
+      String serializationLib, 序列化类
+      Object parameters:{ 存储序列化的一些属性、格式信息,比如：行、列分隔符
+       String param_key 例如:field.delim(字段分隔符)
+       String param_value 例如：, ;
+    })
+    List<String> bucketCols;
+    List<Order> sortCols;
+      map<String,String> parameters:{ 存储序列化的一些属性、格式信息,比如：行、列分隔符
+       String param_key 例如:field.delim(字段分隔符)
+       String param_value 例如：, ;
+    })
+    SkewedInfo skewedInfo;
+    （
+    List<String> skewedColNames;
+    List<List<String>> skewedColValues;
+    Map<List<String>, String> skewedColValueLocationMaps;）
+    boolean storedAsSubDirectories; 
+    ）
+     PartitionKeys partitionKeys:{
+         String pkeyComment  分区字段说明
+         String pkeyName 分区字段名
+         String pkeyType 分区字段类型
+         int integerIndex 分区字段顺序
+}     
+    map<String,String> parameters:{ 存储序列化的一些属性、格式信息,比如：行、列分隔符
+       String param_key 例如:field.delim(字段分隔符)
+       String param_value 例如：, ;
+    })
+   String viewOriginalText, 视图的原始HQL语句
+   String viewExpandedText, 视图的详细HQL语句
+   Boolean rewriteEnabled, 是否可重写
+   String ownerType 所有者类型
+   boolean temporary 是否临时表
+   CreationMetadata creationMetadata
+   {
+    private String catName; 目录名称
+    private String dbName; 数据库名称
+    private String tblName; 表名
+    private Set<String> tablesUsed; 
+    private String validTxnList;
+    private long materializationTime;
+   PrincipalPrivilegeSet privileges 数据表权限 
+（
+PrincipalPrivilegeSet：
+     Map<String, List<PrivilegeGrantInfo>> userPrivileges;//用户权限
+     Map<String, List<PrivilegeGrantInfo>> groupPrivileges;//组权限
+    Map<String, List<PrivilegeGrantInfo>> rolePrivileges;//角色权限）
+}
+   }
+     
+)
 ```
 
-* hive_column
+* hive_partition
 
 ```
-TABLE_CAT String // 表类别（可为 null）
-TABLE_SCHEM String // 表模式（可为 null）
-TABLE_NAME String // 表名称
-COLUMN_NAME String // 列名称
-DATA_TYPE int // 来自 java.sql.Types 的 SQL 类型
-TYPE_NAME String // 数据源依赖的类型名称，对于 UDT，该类型名称是完全限定的
-COLUMN_SIZE int // 列的大小。
-BUFFER_LENGTH 未被使用。
-DECIMAL_DIGITS int // 小数部分的位数。对于 DECIMAL_DIGITS 不适用的数据类型，则返回 Null。
-NUM_PREC_RADIX int // 基数（通常为 10 或 2）
-NULLABLE int // 是否允许使用 NULL。
-columnNoNulls - 可能不允许使用 NULL 值
-columnNullable - 明确允许使用 NULL 值
-columnNullableUnknown - 不知道是否可使用 null
-REMARKS String // 描述列的注释（可为 null）
-COLUMN_DEF String // 该列的默认值，当值在单引号内时应被解释为一个字符串（可为 null）
-SQL_DATA_TYPE int // 未使用
-SQL_DATETIME_SUB int // 未使用
-CHAR_OCTET_LENGTH int // 对于 char 类型，该长度是列中的最大字节数
-ORDINAL_POSITION int // 表中的列的索引（从 1 开始）
-IS_NULLABLE String // ISO 规则用于确定列是否包括 null。
-SCOPE_CATLOG String // 表的类别，它是引用属性的作用域（如果 DATA_TYPE 不是 REF，则为 null）
-SCOPE_SCHEMA String // 表的模式，它是引用属性的作用域（如果 DATA_TYPE 不是 REF，则为 null）
-SCOPE_TABLE String // 表名称，它是引用属性的作用域（如果 DATA_TYPE 不是 REF，则为 null）
-SOURCE_DATA_TYPE short // 不同类型或用户生成 Ref 类型、来自 java.sql.Types 的 SQL 类型的源类型（如果 DATA_TYPE 不是 DISTINCT 或用户生成的 REF，则为 null）
-IS_AUTOINCREMENT String // 指示此列是否自动增加
-```
+    List<String> values; 分区字段
+    String dbName; 数据库
+    String tableName; 数据表
+    int createTime; 分区创建时间
+    int lastAccessTime; 分区最近修改时间
+    StorageDescriptor sd; 序列化配置信息
+    （
+     List<FieldSchema> cols;
+      (FieldSchema:  字段描述信息
+            String name, 字段名
+            String type , 字段类型
+            String comment 字段注释
+            ）
+     String location HDFS存储路径
+     String inputFormat 文件输入格式
+     String outputFormat 文件输出格式
+     Boolean compressed 是否压缩
+     int numBuckets 分桶数量
+     map<String,String> parameters:{ 存储Hive存储的属性信息，在创建表时候使用
+       String param_key
+       String param_value 
+    })
+     SerdeInfo serdeInfo: 序列化使用的类信息
+      (
+      String name, 序列化类别名
+      String serializationLib, 序列化类
+      map<String,String> parameters:{ 存储序列化的一些属性、格式信息,比如：行、列分隔符
+       String param_key 例如:field.delim(字段分隔符)
+       String param_value 例如：, ;
+    })
+    List<String> bucketCols;
+    List<Order> sortCols;
+      map<String,String> parameters:{ 存储序列化的一些属性、格式信息,比如：行、列分隔符
+       String param_key 例如:field.delim(字段分隔符)
+       String param_value 例如：, ;
+    })
+    SkewedInfo skewedInfo;
+    （
+    List<String> skewedColNames;
+    List<List<String>> skewedColValues;
+    Map<List<String>, String> skewedColValueLocationMaps;）
+    boolean storedAsSubDirectories; 
+    ）
+    map<String,String> parameters:{ 存储分区属性
+       String param_key 例如：numFiles、numRows、rawDataSize、totalSize、transient_lastDdlTime
+       String param_value 例如：15、502195
+    })
+    PrincipalPrivilegeSet privileges 数据表分区权限 
+（
+PrincipalPrivilegeSet：
+     Map<String, List<PrivilegeGrantInfo>> userPrivileges;//用户权限
+     Map<String, List<PrivilegeGrantInfo>> groupPrivileges;//组权限
+    Map<String, List<PrivilegeGrantInfo>> rolePrivileges;//角色权限）
+}
 
-* hive index
 
-```
-TYPE //索引类型;
-NON_UNIQUE// 索引值是否可以不唯一,TYPE为 tableIndexStatistic时索引值为 false;
-INDEX_QUALIFIER//索引类别（可能为空）,TYPE为 tableIndexStatistic 时索引类别为 null; 
-INDEX_NAME//索引的名称 ;TYPE为 tableIndexStatistic 时索引名称为 null;
-ORDINAL_POSITION//在索引列顺序号;TYPE为 tableIndexStatistic 时该序列号为零;
-COLUMN_NAME//列名;TYPE为 tableIndexStatistic时列名称为 null;
-ASC_OR_DESC//列排序顺序:升序还是降序[A:升序; B:降序];如果排序序列不受支持,可能为 null;TYPE为 tableIndexStatistic时排序序列为 null;
-CARDINALITY//基数;TYPE为 tableIndexStatistic 时,它是表中的行数;否则,它是索引中唯一值的数量。   
-PAGES//TYPE为 tableIndexStatisic时,它是用于表的页数,否则它是用于当前索引的页数。
-FILTER_CONDITION //过滤器条件,如果有的话(可能为 null)。
-```sql
-```
-
-* hive primaryKey
-
-```
-COLUMN_NAME//列名  
-KEY_SEQ//序列号(主键内值1表示第一列的主键，值2代表主键内的第二列)  
-PK_NAME//主键名称   
-```
 
 decribe database db01 show create table tbl01 decribe db01.tbl01 col01
 
@@ -108,7 +181,7 @@ name
 description 
 zookeeper-connect 
 configuration-store s
-ervice-url 
+service-url 
 brokerService-url 
 service-url-tls
 brokerService-url-tls 
@@ -119,7 +192,6 @@ token
 * pulsar_topic
 
 ```
-
 name
 description
 cluster

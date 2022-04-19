@@ -1,5 +1,7 @@
 package org.metahut.starfish.ingestion.collector.hive;
 
+import org.apache.hadoop.hive.metastore.HiveMetaStoreClient;
+
 import java.util.Objects;
 
 public class HiveParameter {

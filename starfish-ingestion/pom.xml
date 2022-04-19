@@ -33,6 +33,7 @@
         <module>starfish-ingestion-server</module>
         <module>starfish-ingestion-collector-api</module>
         <module>starfish-ingestion-collector-hive-jdbc</module>
+        <module>starfish-ingestion-collector-pulsar</module>
     </modules>
 
     <dependencyManagement>

@@ -2,16 +2,19 @@ package org.metahut.starfish.ingestion.collector.hive;
 
 import org.metahut.starfish.ingestion.collector.api.CollectorResult;
 import org.metahut.starfish.ingestion.collector.api.ICollector;
-import org.metahut.starfish.ingestion.collector.api.IngestionException;
 import org.metahut.starfish.ingestion.common.MetaMessageProducer;
 import org.metahut.starfish.message.api.MessageProducer;
 
-import java.sql.Connection;
-import java.sql.DatabaseMetaData;
-import java.sql.DriverManager;
-import java.sql.SQLException;
-import java.sql.Statement;
-import java.util.Objects;
+import org.apache.hadoop.conf.Configuration;
+import org.apache.hadoop.hive.metastore.IMetaStoreClient;
+import org.apache.hadoop.hive.metastore.RetryingMetaStoreClient;
+import org.apache.hadoop.hive.metastore.api.Database;
+import org.apache.hadoop.hive.metastore.api.MetaException;
+import org.apache.hadoop.hive.metastore.api.Partition;
+import org.apache.hadoop.hive.metastore.api.Table;
+import org.apache.thrift.TException;
+
+import java.util.List;
 
 public class HiveCollector implements ICollector {
 
@@ -36,16 +39,12 @@ public class HiveCollector implements ICollector {
     @Override
     public CollectorResult testConnection() {
         HiveMetaDataSource hiveMetaDataSource = new HiveMetaDataSource();
-        Connection conn = hiveMetaDataSource.getConnection();
+        boolean connectStatus = hiveMetaDataSource.getConnection();
         CollectorResult collectorResult = new CollectorResult();
-        try {
-            if (conn.isValid(1)) {
-                collectorResult.setState(true);
-                collectorResult.setMessage("连接成功！");
-                return collectorResult;
-            }
-        } catch (SQLException throwables) {
-            throwables.printStackTrace();
+        if (connectStatus) {
+            collectorResult.setState(true);
+            collectorResult.setMessage("连接成功！");
+            return collectorResult;
         }
         collectorResult.setState(false);
         collectorResult.setMessage("连接失败！");
@@ -60,76 +59,91 @@ public class HiveCollector implements ICollector {
     //hive datasource Object
     class HiveMetaDataSource {
 
-        private DatabaseMetaData databaseMetaData = null;
-        private Connection connection = null;
-        private Statement stmt = null;
+        private boolean connectedStatus = false;
+
+        Configuration conf = null;
+
+        IMetaStoreClient hmsClient = null;
 
         HiveMetaDataSource() {
             try {
-                java.lang.Class.forName(hiveParameter.getDriverName());
-            } catch (ClassNotFoundException e) {
+                conf = new Configuration();
+                conf.set("hive.metastore.uris", hiveParameter.getUrl());
+            } catch (Exception e) {
                 e.printStackTrace();
             }
         }
 
-        public Connection getConnection() {
+        public boolean getConnection() {
+            init();
+            return connectedStatus;
+        }
+
+        public IMetaStoreClient init() {
             try {
-                connection =
-                    hiveParameter.getOnSecure() ? DriverManager
-                        .getConnection(hiveParameter.getUrl(), hiveParameter.getUser(),
-                            hiveParameter.getPassword())
-                        : DriverManager
-                            .getConnection(hiveParameter.getUrl());
-                stmt = connection.createStatement();
-            } catch (SQLException throwables) {
-                throw new IngestionException("get hive connection is error:", throwables);
+                hmsClient = RetryingMetaStoreClient.getProxy(conf, false);
+                connectedStatus = true;
+            } catch (MetaException e) {
+                e.printStackTrace();
             }
-            return connection;
+            return hmsClient;
         }
 
-        public DatabaseMetaData getDatabaseMetaData() {
+        //database metadata
+        public List<String> getDataBaseList() {
             try {
-                if (Objects.isNull(connection)) {
-                    getConnection();
-                }
-                databaseMetaData = connection.getMetaData();
-            } catch (SQLException throwables) {
-                throw new IngestionException("get hive DataMetaData is error:", throwables);
+                return hmsClient.getAllDatabases();
+            } catch (TException e) {
+                e.printStackTrace();
             }
-            return databaseMetaData;
+            return null;
         }
 
-        public void createDatabase() throws Exception {
-            getConnection();
-            String sql = "create database hive_jdbc_test";
-            stmt.execute(sql);
-        }
-
-        public void createTable() throws Exception {
-            getConnection();
-            String sql = "create table emp(\n"
-                + "empno int,\n"
-                + "ename string,\n"
-                + "job string,\n"
-                + "mgr int,\n"
-                + "hiredate string,\n"
-                + "sal double,\n"
-                + "comm double,\n"
-                + "deptno int\n"
-                + ")\n"
-                + "row format delimited fields terminated by '\\t'";
-            stmt.execute(sql);
-        }
-
-        public boolean close() {
-            Boolean closeCon = false;
+        public Database getDataBase(String database) {
             try {
-                connection.close();
-                closeCon = connection.isClosed() ? true : false;
-            } catch (SQLException throwables) {
-                throwables.printStackTrace();
+                return hmsClient.getDatabase(database);
+            } catch (TException e) {
+                e.printStackTrace();
             }
-            return closeCon;
+            return null;
+        }
+
+        //table metaData
+        public List<String> getTableList(String database) {
+            try {
+                return hmsClient.getTables(database,"*");
+            } catch (TException e) {
+                e.printStackTrace();
+            }
+            return null;
+        }
+
+        public Table getTable(String database,String table) {
+            try {
+                return  hmsClient.getTable(database,table);
+            } catch (TException e) {
+                e.printStackTrace();
+            }
+            return null;
+        }
+
+        //partition metaData
+        public List<Partition> getPartitionList(String dataBase, String tableName, List<String> partNames) {
+            try {
+                return  hmsClient.getPartitionsByNames(dataBase,tableName,partNames);
+            } catch (TException e) {
+                e.printStackTrace();
+            }
+            return null;
+        }
+
+        public Partition getPartition(String dataBase, String table, List<String> partNames) {
+            try {
+                return  hmsClient.getPartition(dataBase, table, partNames);
+            } catch (TException e) {
+                e.printStackTrace();
+            }
+            return null;
         }
     }
 }

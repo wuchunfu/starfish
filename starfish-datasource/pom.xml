@@ -14,11 +14,11 @@
     <modules>
         <module>starfish-datasource-api</module>
         <module>starfish-datasource-hive</module>
+        <module>starfish-datasource-pulsar</module>
     </modules>
 
     <properties>
         <maven.compiler.source>8</maven.compiler.source>
         <maven.compiler.target>8</maven.compiler.target>
     </properties>
-
 </project>
