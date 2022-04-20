@@ -181,6 +181,18 @@ public class RelationEntityMapper implements IRelationEntityMapper<Long, Relatio
     }
 
     @Override
+    public Collection<RelationEntity> findByStartNodeEntityAndCategory(NodeEntity startNodeEntity,
+        String category) {
+        return repository.findByStartNodeEntityIdAndCategory(startNodeEntity.getId(), category);
+    }
+
+    @Override
+    public Collection<RelationEntity> findByEndNodeEntityAndCategory(NodeEntity endNodeEntity,
+        String category) {
+        return repository.findByEndNodeEntityIdAndCategory(endNodeEntity.getId(), category);
+    }
+
+    @Override
     public Collection<RelationEntity> findByStartNodeEntityAndEndNodeEntity(
         NodeEntity startNodeEntity, NodeEntity endNodeEntity) {
         return repository.findByStartNodeEntityIdAndEndNodeEntityId(startNodeEntity.getId(), endNodeEntity.getId());
