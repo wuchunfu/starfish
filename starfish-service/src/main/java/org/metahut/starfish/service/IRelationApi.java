@@ -1,91 +1,78 @@
 package org.metahut.starfish.service;
 
-import org.metahut.starfish.parser.domain.instance.Relation;
 import org.metahut.starfish.parser.exception.StarFishMetaDataOperatingException;
-import org.metahut.starfish.parser.exception.StarFishMetaDataQueryException;
 
 import java.util.Collection;
-import java.util.List;
 
 /**
  *
  */
-public interface IRelationApi<V,K,T> extends AbstractQueryService<T> {
-    /**
-     * pId cId properties
-     * TODO line ？
-     * @param typeName
-     * @return
-     */
-    List<Relation<K>> lines(V typeName) throws StarFishMetaDataQueryException;
-
+public interface IRelationApi<K,T> extends AbstractQueryService<T> {
     // link
     /**
      *
-     * @param typeName
      * @param headId
      * @param tailId
      * @param property
      * @throws StarFishMetaDataOperatingException
      */
-    void link(V typeName,K headId,K tailId,String property) throws StarFishMetaDataOperatingException;
+    void link(K headId,K tailId,String property) throws StarFishMetaDataOperatingException;
 
     // crack
     /**
      * crack the relation between two nodes
-     * @param typeName
      * @param headId
      * @param tailId
      * @param property
      * @throws StarFishMetaDataOperatingException
      */
-    void crack(V typeName,K headId,K tailId,String property) throws StarFishMetaDataOperatingException;
+    void crack(K headId,K tailId,String property) throws StarFishMetaDataOperatingException;
 
     // delete
     /**
-     * delete all relation in typeName
-     * @param typeName
+     * delete by id
+     * @param id
      * @throws StarFishMetaDataOperatingException
      */
-    void delete(V typeName) throws StarFishMetaDataOperatingException;
+    void delete(K id) throws StarFishMetaDataOperatingException;
 
     /**
      * delete all nodes direct rel to the appointed node
-     * @param typeName
-     * @param instanceId
+     * @param ids
      * @throws StarFishMetaDataOperatingException
      */
-    void delete(V typeName,K instanceId) throws StarFishMetaDataOperatingException;
+    void delete(Collection<K> ids) throws StarFishMetaDataOperatingException;
 
     /**
-     * batch delete instances
-     * @param typeName
-     * @param instanceIds
+     * delete
+     * @param headId
      * @throws StarFishMetaDataOperatingException
      */
-    void delete(V typeName, Collection<K> instanceIds) throws StarFishMetaDataOperatingException;
+    void deleteByHeadId(K headId) throws StarFishMetaDataOperatingException;
+
+    /**
+     *
+     * @param tailId
+     * @throws StarFishMetaDataOperatingException
+     */
+    void deleteByTailId(K tailId) throws StarFishMetaDataOperatingException;
+
+    /**
+     * delete relations
+     * @param headOrTailIds
+     * @throws StarFishMetaDataOperatingException
+     */
+    void deleteRelationRelatedToIds(Collection<K> headOrTailIds) throws StarFishMetaDataOperatingException;
 
     // move
-
     /**
      * repoint the node to another node
-     * @param typeName
      * @param oldHeadId
      * @param newHeadId
      * @param tailId
      * @param property
      * @throws StarFishMetaDataOperatingException
      */
-    void move(V typeName,K oldHeadId,K newHeadId,K tailId,String property) throws StarFishMetaDataOperatingException;
+    void move(K oldHeadId,K newHeadId,K tailId,String property) throws StarFishMetaDataOperatingException;
 
-    //copy
-
-    /**
-     * copy relations from one typeName to another typeName
-     * @param oldTypeName
-     * @param newTypeName
-     * @param instanceIds
-     * @throws StarFishMetaDataOperatingException
-     */
-    void copy(V oldTypeName, V newTypeName, Collection<K> instanceIds) throws StarFishMetaDataOperatingException;
 }

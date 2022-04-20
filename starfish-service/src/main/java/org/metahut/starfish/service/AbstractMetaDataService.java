@@ -1,13 +1,14 @@
 package org.metahut.starfish.service;
 
-import org.metahut.starfish.parser.domain.enums.Type;
+import org.metahut.starfish.parser.domain.enums.LinkCategory;
 import org.metahut.starfish.parser.domain.instance.Class;
-import org.metahut.starfish.parser.domain.instance.MetaResult;
 import org.metahut.starfish.parser.exception.AbstractMetaParserException;
 
+import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.Collection;
+import java.util.List;
 import java.util.Map;
-import java.util.Set;
 
 /**
  * 拼接三大api
@@ -22,126 +23,144 @@ import java.util.Set;
  *  分开递归校验？
  *  如果只拷贝节点， 局部校验节点， 然后？
  */
-public abstract class AbstractMetaDataService<V,K,T> implements IMetaDataApi<V,K,T> {
+public abstract class AbstractMetaDataService<K,T> implements IMetaDataApi<K,T> {
 
-    protected abstract IGraphApi<V,K,T> graphApi();
+    protected abstract ISourceApi<K,T> sourceApi();
 
-    protected abstract ITypeApi<V,T> classApi();
+    protected abstract IGraphApi<K,T> graphApi();
 
-    protected abstract ITypeInstanceBridgeApi<V,K> classInstanceBridgeApi();
+    protected abstract ITypeApi<K,T> typeApi();
+
+    protected abstract ILinkApi<K> linkApi();
 
     @Override
-    public void delete(V typeName) throws AbstractMetaParserException {
-        classApi().delete(typeName);
-        classInstanceBridgeApi().delete(typeName);
-        graphApi().delete(typeName);
+    public K createSource(String name, Map<String, T> properties) throws AbstractMetaParserException {
+        return sourceApi().create(name,properties);
     }
 
     @Override
-    public void copy(V toTypeName, V fromTypeName, long... classIds) throws AbstractMetaParserException {
-        classApi().copy(toTypeName,fromTypeName,classIds);
+    public K createType(K sourceId, Class classInfo, Map<String, T> properties) throws AbstractMetaParserException {
+        //TODO valid 创建时候两个type 要不要建立连接？
+        K typeId = typeApi().create(sourceId,classInfo,properties);
+        linkApi().link(typeId,sourceId, LinkCategory.SOURCE_TYPE);
+        return typeId;
     }
 
     @Override
-    public void copy(V toTypeName, V fromTypeName, Collection<K> instanceIds) throws AbstractMetaParserException {
-        classInstanceBridgeApi().copy(toTypeName,fromTypeName,instanceIds);
-        graphApi().copy(toTypeName,fromTypeName,instanceIds);
+    public K createEntity(K typeId, String name, Map<String, T> properties) throws AbstractMetaParserException {
+        //TODO valid
+        K entityId = graphApi().createNode(name, properties);
+        K sourceId = linkApi().findParent(typeId,LinkCategory.SOURCE_TYPE);
+        linkApi().link(sourceId,entityId,LinkCategory.SOURCE_ENTITY);
+        linkApi().link(typeId,entityId,LinkCategory.TYPE_ENTITY);
+        return entityId;
     }
 
     @Override
-    public void add(V typeName, Class... classes) throws AbstractMetaParserException {
-        classApi().add(typeName,classes);
+    public void updateSource(K id, String name, Map<String, T> properties) throws AbstractMetaParserException {
+        //TODO valid
+        sourceApi().update(id,name,properties);
     }
 
     @Override
-    public void modify(V typeName, Class... sfClass) throws AbstractMetaParserException {
-        classApi().modify(typeName,sfClass);
+    public void updateType(K id, Class classInfo, Map<String, T> properties) throws AbstractMetaParserException {
+        //TODO valid
+        //1. valid all entity implements this type
+        //2.
+        typeApi().update(id,classInfo,properties);
     }
 
     @Override
-    public void delete(V typeName, long... classIds) throws AbstractMetaParserException {
-        classApi().delete(typeName,classIds);
+    public void updateEntity(K id, String name, Map<String, T> properties) throws AbstractMetaParserException {
+        //TODO valid
+        graphApi().updateNode(id,name,properties);
     }
 
     @Override
-    public V create() throws AbstractMetaParserException {
-        return classApi().create();
+    public void deleteSource(K id) throws AbstractMetaParserException {
+        Map<LinkCategory, Collection<K>> children = linkApi().findChildren(id);
+        List<K> ids = new ArrayList<>();
+        if (children != null) {
+            for (Map.Entry<LinkCategory, Collection<K>> entry : children.entrySet()) {
+                LinkCategory linkCategory = entry.getKey();
+                Collection<K> childrenIds = entry.getValue();
+                if (linkCategory != null && childrenIds != null && childrenIds.size() > 0) {
+                    ids.addAll(childrenIds);
+                    switch (linkCategory) {
+                        case SOURCE_TYPE:
+                            deleteType(ids);
+                            break;
+                        case SOURCE_ENTITY:
+                            deleteEntity(childrenIds);
+                            break;
+                        default:
+                    }
+                }
+            }
+        }
+        sourceApi().delete(id);
+        linkApi().deleteLinkRelatedToIds(ids);
     }
 
     @Override
-    public MetaResult<V, K, T> all(V typeName) throws AbstractMetaParserException {
-        MetaResult<V,K,T> result = new MetaResult<>();
-        result.setGraph(graphApi().graph(typeName));
-        result.setClassInfos(classApi().classes(typeName));
-        result.setTypesInfos(classInstanceBridgeApi().query(typeName));
-        return result;
+    public void deleteType(K id) throws AbstractMetaParserException {
+        //TODO valid  find other type whether import this type
+        //TODO delete all entity implements this type
+        Map<LinkCategory, Collection<K>> children = linkApi().findChildren(id);
+        List<K> ids = new ArrayList<>();
+        if (children != null) {
+            for (Map.Entry<LinkCategory, Collection<K>> entry : children.entrySet()) {
+                LinkCategory linkCategory = entry.getKey();
+                Collection<K> childrenIds = entry.getValue();
+                if (linkCategory != null && childrenIds != null && childrenIds.size() > 0) {
+                    ids.addAll(childrenIds);
+                    switch (linkCategory) {
+                        case TYPE_ENTITY:
+                            deleteEntity(ids);
+                            break;
+                        default:
+                    }
+                }
+            }
+        }
+        typeApi().delete(id);
+        linkApi().deleteLinkRelatedToIds(ids);
     }
 
     @Override
-    public K create(V typeName, long classId, String property, T obj) throws AbstractMetaParserException {
-        classApi().valid(typeName,classId);
-        return graphApi().create(typeName, property, obj);
+    public void deleteType(Collection<K> ids) throws AbstractMetaParserException {
+        typeApi().delete(ids);
     }
 
     @Override
-    public K create(V typeName, long classId, Map<String, T> attributes) throws AbstractMetaParserException {
-        classApi().valid(typeName,classId);
-        return graphApi().create(typeName, attributes);
+    public void deleteEntity(K id) throws AbstractMetaParserException {
+        graphApi().deleteNode(id);
+        linkApi().deleteLinkRelatedToIds(Arrays.asList(id));
     }
 
     @Override
-    public K create(V typeName, long classId, K parentInstanceId, String property, Map<String, T> attributes) throws AbstractMetaParserException {
-        classApi().valid(typeName,classId);
-        return graphApi().create(typeName,parentInstanceId,property,attributes);
+    public void deleteEntity(Collection<K> ids) throws AbstractMetaParserException {
+        graphApi().deleteNodes(ids);
+        linkApi().deleteLinkRelatedToIds(ids);
     }
 
     @Override
-    public void add(V typeName, K instanceId, String property, T obj) throws AbstractMetaParserException {
-        Type<K> type = classInstanceBridgeApi().query(typeName, instanceId);
-        classApi().query(typeName,type.getSerialVersionId());
-        graphApi().add(typeName,instanceId,property,obj);
+    public void copy(String toSourceName, String fromSourceName, Collection<K> ids) throws AbstractMetaParserException {
+
     }
 
     @Override
-    public void link(V typeName, K headId, K tailId, String property) throws AbstractMetaParserException {
-        Set<Type<K>> types = classInstanceBridgeApi().query(typeName, headId, tailId);
-        long[] ids = types.stream().mapToLong(kSfType -> kSfType.getSerialVersionId()).toArray();
-        classApi().query(typeName,ids);
-        graphApi().link(typeName,headId,tailId,property);
+    public void move(String toSourceName, String fromSourceName, Collection<K> ids) throws AbstractMetaParserException {
+
     }
 
     @Override
-    public void update(V typeName, K instanceId, Map<String, T> attributes) throws AbstractMetaParserException {
-        Type<K> type = classInstanceBridgeApi().query(typeName, instanceId);
-        classApi().query(typeName,type.getSerialVersionId());
-        graphApi().update(typeName,instanceId,attributes);
+    public void link(K headId, K tailId, String property) throws AbstractMetaParserException {
+
     }
 
     @Override
-    public void modify(V typeName, K instanceId, Map<String, T> attributes) throws AbstractMetaParserException {
-        Type<K> type = classInstanceBridgeApi().query(typeName, instanceId);
-        classApi().query(typeName,type.getSerialVersionId());
-        graphApi().modify(typeName,instanceId,attributes);
-    }
-
-    @Override
-    public void delete(V typeName, K instanceId, String property) throws AbstractMetaParserException {
-        graphApi().delete(typeName,instanceId,property);
-    }
-
-    @Override
-    public void crack(V typeName, K headId, K tailId, String property) throws AbstractMetaParserException {
-        graphApi().crack(typeName,headId,tailId,property);
-    }
-
-    @Override
-    public void delete(V typeName, Collection<K> instanceIds) throws AbstractMetaParserException {
-        classInstanceBridgeApi().delete(typeName,instanceIds);
-        graphApi().delete(typeName,instanceIds);
-    }
-
-    //TODO 校验部分还是全部，是先处理还是后处理
-    private void valid(V typeName) throws AbstractMetaParserException {
+    public void crack(K headId, K tailId, String property) throws AbstractMetaParserException {
 
     }
 }

@@ -1,17 +1,18 @@
 package org.metahut.starfish.autoconfigure.data.rdbm;
 
-import org.metahut.starfish.parser.domain.enums.Type;
+import org.metahut.starfish.parser.domain.enums.LinkCategory;
+import org.metahut.starfish.parser.domain.enums.TypeCategory;
+import org.metahut.starfish.parser.domain.instance.Class;
 import org.metahut.starfish.parser.exception.AbstractMetaParserException;
 import org.metahut.starfish.parser.exception.StarFishMetaDataOperatingException;
 import org.metahut.starfish.parser.exception.StarFishMetaDataQueryException;
 import org.metahut.starfish.service.AbstractGraphService;
-import org.metahut.starfish.service.AbstractInstanceService;
+import org.metahut.starfish.service.AbstractLinkService;
 import org.metahut.starfish.service.AbstractMetaDataService;
 import org.metahut.starfish.service.AbstractNodeService;
-import org.metahut.starfish.service.AbstractPropertyService;
 import org.metahut.starfish.service.AbstractQueryCondition;
 import org.metahut.starfish.service.AbstractRelationService;
-import org.metahut.starfish.service.AbstractTypeInstanceBridgeService;
+import org.metahut.starfish.service.AbstractSourceService;
 import org.metahut.starfish.service.AbstractTypeService;
 import org.metahut.starfish.store.rdbms.dao.NodeEntityMapper;
 import org.metahut.starfish.store.rdbms.dao.RelationEntityMapper;
@@ -43,43 +44,163 @@ import java.util.stream.Collectors;
 @AutoConfigureAfter({DataSourceAutoConfiguration.class})
 public class RdbmDataStorageAutoConfiguration {
 
+    private NodeEntity convert(Long id,TypeCategory category,String name,Map<String,Object> properties) {
+        final NodeEntity nodeEntity = new NodeEntity();
+        nodeEntity.setId(id);
+        nodeEntity.setCategory(category.name());
+        nodeEntity.setName(name);
+        if (properties != null) {
+            nodeEntity.setProperties(properties
+                    .entrySet()
+                    .stream()
+                    .map(entry -> {
+                        NodeEntityProperty entityProperty = new NodeEntityProperty();
+                        entityProperty.setName(entry.getKey());
+                        entityProperty.setEntity(nodeEntity);
+                        entityProperty.setValue(entry.getValue());
+                        return entityProperty;
+                    })
+                    .collect(Collectors.toSet()));
+        }
+        return nodeEntity;
+    }
+
+    private NodeEntity convert(TypeCategory category,String name,Map<String,Object> properties) {
+        return convert(null,category,name,properties);
+    }
+
+    private RelationEntity convert(Long id,LinkCategory category,Long headId,Long tailId,String property) {
+        RelationEntity relationEntity = new RelationEntity();
+        relationEntity.setId(id);
+        relationEntity.setCategory(category.name());
+        relationEntity.setName(property);
+        return relationEntity;
+    }
+
+    private RelationEntity convert(LinkCategory category,Long headId,Long tailId,String property) {
+        return convert(null,category,headId,tailId,property);
+    }
+
     @Bean
-    @ConditionalOnMissingBean(AbstractInstanceService.class)
-    public AbstractInstanceService<String, Long, Object> instanceService() {
-        return new AbstractInstanceService<String, Long, Object>() {
+    @ConditionalOnMissingBean(AbstractLinkService.class)
+    public AbstractLinkService<Long> linkService(RelationEntityMapper relationEntityMapper) {
+        return new AbstractLinkService<Long>() {
             @Override
-            public Set<Long> instanceMap(String typeName) throws StarFishMetaDataQueryException {
+            public void link(Long parentId, Long childId, LinkCategory linkCategory) throws AbstractMetaParserException {
+                relationEntityMapper.create(convert(linkCategory,parentId,childId,linkCategory.name()));
+            }
+
+            @Override
+            public void deleteLinkRelatedToIds(Collection<Long> headOrTailIds) throws AbstractMetaParserException {
+                if (headOrTailIds != null) {
+                    headOrTailIds.stream().forEach(id -> {
+                        NodeEntity nodeEntity = new NodeEntity();
+                        nodeEntity.setId(id);
+                        relationEntityMapper.removeAllByEndNodeEntity(nodeEntity);
+                        relationEntityMapper.removeAllByEndNodeEntity(nodeEntity);
+                    });
+                }
+            }
+
+            @Override
+            public Long findParent(Long childId, LinkCategory linkCategory) throws AbstractMetaParserException {
+                //TODO
                 return null;
             }
 
             @Override
-            public void valid(String typeName, Collection<Long> instanceIds) throws StarFishMetaDataOperatingException {
-                return;
-            }
-
-            @Override
-            public Long create(String typeName) throws StarFishMetaDataOperatingException {
+            public Map<LinkCategory, Long> findParents(Long childId) throws AbstractMetaParserException {
+                //TODO
                 return null;
             }
 
             @Override
-            public void copy(String oldtypeName, String newtypeName, boolean deleteOld) throws StarFishMetaDataOperatingException {
+            public Map<LinkCategory, Collection<Long>> findChildren(Long parentId) throws AbstractMetaParserException {
+                //TODO
+                return null;
+            }
+        };
+    }
+
+    @Bean
+    @ConditionalOnMissingBean(AbstractRelationService.class)
+    public AbstractRelationService<Long,Object> relationService(NodeEntityMapper nodeEntityMapper, RelationEntityMapper relationEntityMapper) {
+        return new AbstractRelationService<Long,Object>() {
+            @Override
+            public Collection query(AbstractQueryCondition condition) {
+                return null;
+            }
+
+            @Override
+            public void link(Long headId, Long tailId, String property) {
+                //TODO typeName
+                NodeEntity head = nodeEntityMapper.findById(headId);
+                NodeEntity tail = nodeEntityMapper.findById(tailId);
+                RelationEntity relationEntity = new RelationEntity();
+                relationEntity.setCategory(TypeCategory.RELATIONSHIP.name());
+                relationEntity.setStartNodeEntity(head);
+                relationEntity.setEndNodeEntity(tail);
+                relationEntity.setName(property);
+                relationEntityMapper.create(relationEntity);
+            }
+
+            @Override
+            public void crack(Long headId, Long tailId, String property) throws StarFishMetaDataOperatingException {
 
             }
 
             @Override
-            public void delete(String typeName) throws StarFishMetaDataOperatingException {
+            public void delete(Long instanceId) throws StarFishMetaDataOperatingException {
+                relationEntityMapper.removeBatchById(Arrays.asList(instanceId));
+            }
+
+            @Override
+            public void delete(Collection<Long> instanceIds) throws StarFishMetaDataOperatingException {
+                relationEntityMapper.removeBatchById(instanceIds);
+            }
+
+            @Override
+            public void deleteByHeadId(Long headId) throws StarFishMetaDataOperatingException {
 
             }
 
             @Override
-            public void delete(String typeName, Long instanceId) throws StarFishMetaDataOperatingException {
+            public void deleteByTailId(Long tailId) throws StarFishMetaDataOperatingException {
 
             }
 
             @Override
-            public void delete(String typeName, Collection<Long> instanceIds) throws StarFishMetaDataOperatingException {
+            public void deleteRelationRelatedToIds(Collection<Long> headOrTailIds) throws StarFishMetaDataOperatingException {
 
+            }
+
+            @Override
+            public void move(Long oldHeadId, Long newHeadId, Long tailId, String property) throws StarFishMetaDataOperatingException {
+
+            }
+
+        };
+    }
+
+    @Bean
+    @ConditionalOnMissingBean(AbstractSourceService.class)
+    public AbstractSourceService<Long,Object> typeInstanceBridgeService(final NodeEntityMapper nodeEntityMapper) {
+        return new AbstractSourceService<Long,Object>() {
+            @Override
+            public Long create(String name, Map<String,Object> properties) {
+                final NodeEntity nodeEntity = convert(TypeCategory.SOURCE,name,properties);
+                return nodeEntityMapper.create(nodeEntity).getId();
+            }
+
+            @Override
+            public void update(Long id, String name, Map<String, Object> properties) throws AbstractMetaParserException {
+                final NodeEntity nodeEntity = convert(id,TypeCategory.SOURCE,name,properties);
+                nodeEntityMapper.update(nodeEntity);
+            }
+
+            @Override
+            public void delete(Long id) {
+                nodeEntityMapper.removeBatchById(Arrays.asList(id));
             }
 
             @Override
@@ -90,227 +211,135 @@ public class RdbmDataStorageAutoConfiguration {
     }
 
     @Bean
-    @ConditionalOnMissingBean(AbstractRelationService.class)
-    public AbstractRelationService<String, Long, Object> relationService(NodeEntityMapper nodeEntityMapper, RelationEntityMapper relationEntityMapper) {
-        return new AbstractRelationService<String, Long, Object>() {
+    @ConditionalOnMissingBean(AbstractTypeService.class)
+    public AbstractTypeService<Long,Object> typeService(final NodeEntityMapper nodeEntityMapper) {
+        return new AbstractTypeService<Long,Object>() {
+
+            private void addClassInfo(NodeEntity nodeEntity,Class classInfo) {
+                if (nodeEntity.getProperties() == null) {
+                    nodeEntity.setProperties(new HashSet<>());
+                }
+                NodeEntityProperty classProperty = new NodeEntityProperty();
+                classProperty.setName("_class");
+                classProperty.setValue(classInfo);
+                classProperty.setEntity(nodeEntity);
+                nodeEntity.getProperties().add(classProperty);
+            }
+
             @Override
-            public Collection query(AbstractQueryCondition condition) {
+            public Collection<Object> query(AbstractQueryCondition condition) {
                 return null;
             }
 
             @Override
-            public void link(String typeName, Long headId, Long tailId, String property) throws StarFishMetaDataOperatingException {
-                NodeEntity head = nodeEntityMapper.findById(headId);
-                NodeEntity tail = nodeEntityMapper.findById(tailId);
-                RelationEntity relationEntity = new RelationEntity();
-                relationEntity.setCategory(typeName);
-                relationEntity.setStartNodeEntity(head);
-                relationEntity.setEndNodeEntity(tail);
-                relationEntity.setName(property);
-                relationEntityMapper.create(relationEntity);
+            public Long create(Long sourceId, Class classInfo, Map<String, Object> properties) throws AbstractMetaParserException {
+                final NodeEntity nodeEntity = convert(TypeCategory.CLASSIFICATION,classInfo.getFullClassName(),properties);
+                addClassInfo(nodeEntity,classInfo);
+                return nodeEntityMapper.create(nodeEntity).getId();
             }
 
             @Override
-            public void delete(String typeName, Long instanceId) throws StarFishMetaDataOperatingException {
-                relationEntityMapper.removeBatchById(Arrays.asList(instanceId));
+            public void update(Long id, Class classInfo, Map<String, Object> properties) throws AbstractMetaParserException {
+                final NodeEntity nodeEntity = convert(id,TypeCategory.CLASSIFICATION,classInfo.getFullClassName(),properties);
+                addClassInfo(nodeEntity,classInfo);
+                nodeEntityMapper.update(nodeEntity);
             }
 
             @Override
-            public void delete(String typeName, Collection<Long> instanceIds) throws StarFishMetaDataOperatingException {
-                relationEntityMapper.removeBatchById(instanceIds);
+            public void delete(Long id) throws AbstractMetaParserException {
+                delete(Arrays.asList(id));
             }
 
             @Override
-            public void move(String typeName, Long oldHeadId, Long newHeadId, Long tailId, String property) throws StarFishMetaDataOperatingException {
-
-            }
-
-            @Override
-            public void copy(String oldTypeName, String newTypeName, Collection<Long> instanceIds) throws StarFishMetaDataOperatingException {
-
-            }
-
-            @Override
-            public void crack(String typeName, Long headId, Long tailId, String property) throws StarFishMetaDataOperatingException {
-                RelationEntity relationEntity = new RelationEntity();
-                relationEntity.setName(property);
-                relationEntity.setCategory(typeName);
-                NodeEntity head = new NodeEntity();
-                head.setId(headId);
-                relationEntity.setStartNodeEntity(head);
-                NodeEntity tail = new NodeEntity();
-                tail.setId(tailId);
-                relationEntity.setEndNodeEntity(tail);
-                relationEntityMapper.remove(relationEntity);
-            }
-
-            @Override
-            public void delete(String typeName) throws StarFishMetaDataOperatingException {
-
-            }
-        };
-    }
-
-    @Bean
-    @ConditionalOnMissingBean(AbstractTypeService.class)
-    public AbstractTypeService typeService() {
-        return new AbstractTypeService() {
-        };
-    }
-
-    @Bean
-    @ConditionalOnMissingBean(AbstractTypeInstanceBridgeService.class)
-    public AbstractTypeInstanceBridgeService typeInstanceBridgeService() {
-        return new AbstractTypeInstanceBridgeService() {
-            @Override
-            public Set<Type> query(Object env) {
-                return new HashSet<>();
-            }
-
-            @Override
-            public Type query(Object env, Object instanceId) {
-                return new Type();
-            }
-
-            @Override
-            public Set<Type> query(Object env, Object[] instanceId) {
-                return new HashSet<>();
+            public void delete(Collection<Long> ids) throws AbstractMetaParserException {
+                nodeEntityMapper.removeBatchById(ids);
             }
         };
     }
 
     @Bean
     @ConditionalOnMissingBean(AbstractNodeService.class)
-    public AbstractNodeService<String, Long, Object> nodeService(NodeEntityMapper nodeEntityMapper, AbstractInstanceService<String, Long, Object> instanceService) {
-        return new AbstractNodeService<String, Long, Object>() {
+    public AbstractNodeService<Long,Object> nodeService(final NodeEntityMapper nodeEntityMapper) {
+        return new AbstractNodeService<Long, Object>() {
             @Override
-            protected AbstractInstanceService<String, Long, Object> getInstanceService() {
-                return instanceService;
+            public Long create(String name, Map<String, Object> properties) throws AbstractMetaParserException {
+                return nodeEntityMapper.create(convert(TypeCategory.ENTITY,name,properties)).getId();
             }
 
             @Override
-            protected AbstractPropertyService getPropertyService() {
+            public void update(Long id, String name, Map<String, Object> properties) throws AbstractMetaParserException {
+                nodeEntityMapper.update(convert(id,TypeCategory.ENTITY,name,properties));
+            }
+
+            @Override
+            public void delete(Long id) throws AbstractMetaParserException {
+                delete(Arrays.asList(id));
+            }
+
+            @Override
+            public void delete(Collection<Long> ids) throws AbstractMetaParserException {
+                nodeEntityMapper.removeBatchById(ids);
+            }
+
+            @Override
+            public Collection<Object> query(AbstractQueryCondition condition) {
                 return null;
-            }
-
-            @Override
-            public Long create(String typeName, Map<String, Object> attributes) throws StarFishMetaDataOperatingException {
-                final NodeEntity nodeEntity = new NodeEntity();
-                nodeEntity.setCategory(typeName);
-                nodeEntity.setName(String.valueOf(attributes.get("name")));
-                nodeEntity.setProperties(attributes
-                        .entrySet()
-                        .stream()
-                        .map(entry -> {
-                            NodeEntityProperty entityProperty = new NodeEntityProperty();
-                            entityProperty.setName(entry.getKey());
-                            entityProperty.setEntity(nodeEntity);
-                            entityProperty.setValue(entry.getValue());
-                            return entityProperty;
-                        })
-                        .collect(Collectors.toSet()));
-                return nodeEntityMapper.create(nodeEntity).getId();
-            }
-
-            @Override
-            public void update(String typeName, Long entityId, Map<String, Object> attributes) throws StarFishMetaDataOperatingException {
-                final NodeEntity nodeEntity = new NodeEntity();
-                nodeEntity.setId(entityId);
-                nodeEntity.setCategory(typeName);
-                nodeEntity.setName(String.valueOf(attributes.get("name")));
-                nodeEntity.setProperties(attributes
-                        .entrySet()
-                        .stream()
-                        .map(entry -> {
-                            NodeEntityProperty entityProperty = new NodeEntityProperty();
-                            entityProperty.setName(entry.getKey());
-                            entityProperty.setEntity(nodeEntity);
-                            entityProperty.setValue(entry.getValue());
-                            return entityProperty;
-                        })
-                        .collect(Collectors.toSet()));
-                nodeEntityMapper.update(nodeEntity);
-            }
-
-            @Override
-            public void delete(String typeName, Long entityId) throws StarFishMetaDataOperatingException {
-                nodeEntityMapper.removeBatchById(Arrays.asList(entityId));
-            }
-
-            @Override
-            public void delete(String typeName, Collection<Long> entityIds) throws StarFishMetaDataOperatingException {
-                nodeEntityMapper.removeBatchById(entityIds);
             }
         };
     }
 
     @Bean
     @ConditionalOnMissingBean(AbstractGraphService.class)
-    public AbstractGraphService<String,Long,Object> graphService(AbstractNodeService<String,Long,Object> nodeService,AbstractRelationService<String,Long,Object> relationService) {
-        return new AbstractGraphService<String,Long,Object>() {
+    public AbstractGraphService<Long,Object> nodeService(NodeEntityMapper nodeEntityMapper, AbstractNodeService<Long,Object> nodeService, AbstractRelationService<Long,Object> relationService) {
+        return new AbstractGraphService<Long, Object>() {
             @Override
-            protected AbstractNodeService<String, Long, Object> getNodeService() {
+            protected AbstractNodeService<Long, Object> nodeService() {
                 return nodeService;
             }
 
             @Override
-            protected AbstractRelationService<String, Long, Object> getRelationService() {
+            protected AbstractRelationService<Long, Object> relationService() {
                 return relationService;
             }
 
             @Override
-            public void delete(String typeName, Collection<Long> instanceIds) throws StarFishMetaDataOperatingException {
-                getNodeService().delete(typeName,instanceIds);
+            public void deleteNode(Long id) throws AbstractMetaParserException {
+                this.deleteNodes(Arrays.asList(id));
             }
 
             @Override
-            public void delete(String typeName) throws StarFishMetaDataOperatingException {
-                getNodeService().delete(typeName);
+            public void deleteNodes(Collection<Long> ids) throws AbstractMetaParserException {
+                nodeEntityMapper.removeBatchById(ids);
             }
-
-            @Override
-            public void delete(String typeName, Long instanceId) throws StarFishMetaDataOperatingException {
-                getNodeService().delete(typeName,instanceId);
-            }
-
-            @Override
-            public void delete(String typeName, Long id, String property) throws StarFishMetaDataOperatingException {
-                getNodeService().delete(typeName,id,property);
-            }
-
         };
     }
 
     @Bean
     @ConditionalOnMissingBean(AbstractMetaDataService.class)
-    public AbstractMetaDataService<String, Long, Object> metaDataService(
-            AbstractGraphService<String, Long, Object> abstractGraphService,
-            AbstractTypeService abstractTypeServce,
-            AbstractTypeInstanceBridgeService abstractTypeInstanceBridgeService) {
-        return new AbstractMetaDataService() {
+    public AbstractMetaDataService<Long,Object> graphService(
+            AbstractSourceService<Long,Object> sourceService,
+            AbstractGraphService<Long,Object> graphService,
+            AbstractTypeService<Long,Object> typeService,
+            AbstractLinkService<Long> linkService) {
+        return new AbstractMetaDataService<Long,Object>() {
             @Override
-            protected AbstractGraphService<String, Long, Object> graphApi() {
-                return abstractGraphService;
+            protected AbstractSourceService<Long, Object> sourceApi() {
+                return sourceService;
             }
 
             @Override
-            protected AbstractTypeService classApi() {
-                return abstractTypeServce;
+            protected AbstractGraphService<Long, Object> graphApi() {
+                return graphService;
             }
 
             @Override
-            protected AbstractTypeInstanceBridgeService classInstanceBridgeApi() {
-                return abstractTypeInstanceBridgeService;
+            protected AbstractTypeService<Long, Object> typeApi() {
+                return typeService;
             }
 
             @Override
-            public void move(Object toTypeName, Object fromTypeName, long... classIds) throws AbstractMetaParserException {
-
-            }
-
-            @Override
-            public void move(Object toTypeName, Object fromTypeName, Object[] instanceIds) throws AbstractMetaParserException {
-
+            protected AbstractLinkService<Long> linkApi() {
+                return linkService;
             }
         };
     }

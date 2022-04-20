@@ -1,17 +1,8 @@
 package org.metahut.starfish.service;
 
-import org.metahut.starfish.parser.domain.instance.Relation;
-import org.metahut.starfish.parser.exception.StarFishMetaDataQueryException;
-
-import java.util.List;
-
 /**
  *
  */
-public abstract class AbstractRelationService<V,K,T> implements IRelationApi<V,K,T> {
+public abstract class AbstractRelationService<K,T> implements IRelationApi<K,T> {
 
-    @Override
-    public List<Relation<K>> lines(V env) throws StarFishMetaDataQueryException {
-        return null;
-    }
 }
