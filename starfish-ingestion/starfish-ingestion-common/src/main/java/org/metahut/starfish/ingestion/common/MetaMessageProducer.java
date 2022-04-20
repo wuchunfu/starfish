@@ -17,9 +17,9 @@
 
 package org.metahut.starfish.ingestion.common;
 
+import org.metahut.starfish.message.api.IMessageManager;
+import org.metahut.starfish.message.api.IMessageProducer;
 import org.metahut.starfish.message.api.MessageException;
-import org.metahut.starfish.message.api.MessageManager;
-import org.metahut.starfish.message.api.MessageProducer;
 import org.metahut.starfish.message.api.MessageProperties;
 import org.metahut.starfish.message.api.MessageType;
 
@@ -40,16 +40,16 @@ public class MetaMessageProducer {
 
     }
 
-    public static MessageProducer getInstance() {
+    public static IMessageProducer getInstance() {
         return Singleton.INSTANCE.getInstance();
     }
 
     private static enum Singleton {
         INSTANCE;
 
-        private MessageProducer producer;
+        private IMessageProducer producer;
 
-        private MessageManager messageManager;
+        private IMessageManager messageManager;
 
         private Singleton() {
             init();
@@ -62,13 +62,13 @@ public class MetaMessageProducer {
             // }
         }
 
-        public MessageProducer getInstance() {
+        public IMessageProducer getInstance() {
             return producer;
         }
 
         private void init() {
             MessageProperties messageProperties = YamlFactory.parseObject(MESSAGE_CONFIG_PREFIX, INGESTION_CONFIG_FILE, new MessageProperties());
-            ServiceLoader.load(MessageManager.class).forEach(manager -> {
+            ServiceLoader.load(IMessageManager.class).forEach(manager -> {
                 MessageType type = manager.getType();
                 if (messageProperties.getType() == type) {
                     messageManager = manager;

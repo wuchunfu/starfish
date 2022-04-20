@@ -5,7 +5,7 @@ import org.metahut.starfish.datasource.hive.HiveDatasourceManager;
 import org.metahut.starfish.ingestion.collector.api.CollectorResult;
 import org.metahut.starfish.ingestion.collector.api.ICollector;
 import org.metahut.starfish.ingestion.common.MetaMessageProducer;
-import org.metahut.starfish.message.api.MessageProducer;
+import org.metahut.starfish.message.api.IMessageProducer;
 
 import org.apache.hadoop.hive.metastore.IMetaStoreClient;
 import org.apache.hadoop.hive.metastore.api.Database;
@@ -19,7 +19,7 @@ import java.util.Objects;
 public class HiveCollector implements ICollector {
 
     private final HiveCollectorParameter hiveParameter;
-    private final MessageProducer producer;
+    private final IMessageProducer producer;
     private final HiveDatasource hiveDatasource;
     private final IMetaStoreClient metaClient;
 

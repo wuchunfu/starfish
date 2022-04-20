@@ -17,9 +17,13 @@
 
 package org.metahut.starfish.message.api;
 
-import java.util.List;
+public interface IMessageManager extends AutoCloseable {
 
-public interface MessageConsumer extends AutoCloseable {
+    MessageType getType();
 
-    List<ConsumerResult> batchReceive() throws MessageException;
+    void init(MessageProperties messageProperties) throws MessageException;
+
+    IMessageProducer getProducer(String name);
+
+    IMessageConsumer getConsumer(String name);
 }

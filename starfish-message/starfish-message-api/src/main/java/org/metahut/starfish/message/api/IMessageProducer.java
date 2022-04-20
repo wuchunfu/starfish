@@ -17,7 +17,7 @@
 
 package org.metahut.starfish.message.api;
 
-public interface MessageProducer extends AutoCloseable {
+public interface IMessageProducer extends AutoCloseable {
 
     MessageResult send(String key, String value) throws MessageException;
 }

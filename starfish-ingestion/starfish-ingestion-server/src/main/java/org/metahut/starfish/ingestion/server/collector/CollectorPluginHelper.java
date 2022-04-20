@@ -32,7 +32,7 @@ import java.util.Objects;
 import java.util.ServiceLoader;
 
 @Component
-public class CollectorHelper {
+public class CollectorPluginHelper {
 
     private static final Map<String, ICollectorManager> collectorMap = new HashMap<>();
 
@@ -57,7 +57,7 @@ public class CollectorHelper {
         return collectorMap.get(type);
     }
 
-    public ICollector generateInstance(String type, AbstractCollectorParameter parameter) {
-        return getCollector(type).generateInstance(parameter);
+    public ICollector generateInstance(AbstractCollectorParameter parameter) {
+        return getCollector(parameter.getType()).generateInstance(parameter);
     }
 }

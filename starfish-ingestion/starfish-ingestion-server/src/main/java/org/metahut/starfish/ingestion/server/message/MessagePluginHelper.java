@@ -18,9 +18,9 @@
 package org.metahut.starfish.ingestion.server.message;
 
 import org.metahut.starfish.message.api.ConsumerResult;
-import org.metahut.starfish.message.api.MessageConsumer;
+import org.metahut.starfish.message.api.IMessageConsumer;
+import org.metahut.starfish.message.api.IMessageManager;
 import org.metahut.starfish.message.api.MessageException;
-import org.metahut.starfish.message.api.MessageManager;
 import org.metahut.starfish.message.api.MessageType;
 
 import org.slf4j.Logger;
@@ -37,17 +37,17 @@ import java.util.Objects;
 import static org.metahut.starfish.message.api.Constants.MESSAGE_META_EVENT;
 
 @Component
-public class MessageHelper {
+public class MessagePluginHelper {
 
-    private static final Logger logger = LoggerFactory.getLogger(MessageHelper.class);
+    private static final Logger logger = LoggerFactory.getLogger(MessagePluginHelper.class);
 
-    private final MessageManager messageManager;
+    private final IMessageManager messageManager;
 
-    public MessageHelper(MessageManager messageManager) {
+    public MessagePluginHelper(IMessageManager messageManager) {
         this.messageManager = messageManager;
     }
 
-    public MessageManager getMessageManager() {
+    public IMessageManager getMessageManager() {
         return messageManager;
     }
 
@@ -61,7 +61,7 @@ public class MessageHelper {
         if (MessageType.none == messageManager.getType()) {
             return;
         }
-        MessageConsumer consumer = messageManager.getConsumer(MESSAGE_META_EVENT);
+        IMessageConsumer consumer = messageManager.getConsumer(MESSAGE_META_EVENT);
         if (Objects.isNull(consumer)) {
             throw new NullPointerException("meta event consumer is null");
         }

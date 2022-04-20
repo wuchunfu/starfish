@@ -18,7 +18,7 @@
 package org.metahut.starfish.message.pulsar;
 
 import org.metahut.starfish.message.api.ConsumerResult;
-import org.metahut.starfish.message.api.MessageConsumer;
+import org.metahut.starfish.message.api.IMessageConsumer;
 import org.metahut.starfish.message.api.MessageException;
 
 import org.apache.pulsar.client.api.Consumer;
@@ -31,7 +31,7 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Objects;
 
-public class PulsarMessageConsumer implements MessageConsumer {
+public class PulsarMessageConsumer implements IMessageConsumer {
 
     private final Consumer consumer;
 

@@ -1,9 +1,26 @@
+/*
+ * Licensed to the Apache Software Foundation (ASF) under one or more
+ * contributor license agreements.  See the NOTICE file distributed with
+ * this work for additional information regarding copyright ownership.
+ * The ASF licenses this file to You under the Apache License, Version 2.0
+ * (the "License"); you may not use this file except in compliance with
+ * the License.  You may obtain a copy of the License at
+ *
+ *    http://www.apache.org/licenses/LICENSE-2.0
+ *
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
+ */
+
 package org.metahut.starfish.message.pulsar;
 
-import org.metahut.starfish.message.api.MessageConsumer;
+import org.metahut.starfish.message.api.IMessageConsumer;
+import org.metahut.starfish.message.api.IMessageManager;
+import org.metahut.starfish.message.api.IMessageProducer;
 import org.metahut.starfish.message.api.MessageException;
-import org.metahut.starfish.message.api.MessageManager;
-import org.metahut.starfish.message.api.MessageProducer;
 import org.metahut.starfish.message.api.MessageProperties;
 import org.metahut.starfish.message.api.MessageType;
 
@@ -27,7 +44,7 @@ import static org.metahut.starfish.message.api.MessageType.pulsar;
  */
 @Component
 @ConditionalOnProperty(prefix = MESSAGE_CONFIG_PREFIX, name = "type", havingValue = "pulsar")
-public class PulsarMessageManager implements MessageManager {
+public class PulsarMessageManager implements IMessageManager {
 
     private static final Logger logger = LoggerFactory.getLogger(PulsarMessageManager.class);
 
@@ -35,8 +52,8 @@ public class PulsarMessageManager implements MessageManager {
 
     private MessageProperties.Pulsar pulsarProperties;
 
-    private final Map<String, MessageProducer> messageProducerMap = new ConcurrentHashMap(16);
-    private final Map<String, MessageConsumer> messageConsumerMap = new ConcurrentHashMap(16);
+    private final Map<String, IMessageProducer> messageProducerMap = new ConcurrentHashMap(16);
+    private final Map<String, IMessageConsumer> messageConsumerMap = new ConcurrentHashMap(16);
 
     @Autowired
     public PulsarMessageManager(MessageProperties messageProperties) throws MessageException {
@@ -66,7 +83,7 @@ public class PulsarMessageManager implements MessageManager {
         producerMap.forEach((name, properties) -> messageProducerMap.put(name, this.createProducer(properties)));
     }
 
-    protected MessageProducer createProducer(MessageProperties.PulsarProducer properties) {
+    protected IMessageProducer createProducer(MessageProperties.PulsarProducer properties) {
         try {
             return new PulsarMessageProducer(client.newProducer()
                     .topic(properties.getTopicName())
@@ -83,7 +100,7 @@ public class PulsarMessageManager implements MessageManager {
         consumerMap.forEach((name, properties) -> messageConsumerMap.put(name, this.createConsumer(properties)));
     }
 
-    protected MessageConsumer createConsumer(MessageProperties.PulsarConsumer properties) {
+    protected IMessageConsumer createConsumer(MessageProperties.PulsarConsumer properties) {
         try {
             return new PulsarMessageConsumer(client.newConsumer()
                     .topic(properties.getTopicName())
@@ -102,12 +119,12 @@ public class PulsarMessageManager implements MessageManager {
     }
 
     @Override
-    public MessageProducer getProducer(String name) {
+    public IMessageProducer getProducer(String name) {
         return messageProducerMap.get(name);
     }
 
     @Override
-    public MessageConsumer getConsumer(String name) {
+    public IMessageConsumer getConsumer(String name) {
         return messageConsumerMap.get(name);
     }
 

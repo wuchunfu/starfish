@@ -17,10 +17,10 @@
 
 package org.metahut.starfish.message.none;
 
-import org.metahut.starfish.message.api.MessageConsumer;
+import org.metahut.starfish.message.api.IMessageConsumer;
+import org.metahut.starfish.message.api.IMessageManager;
+import org.metahut.starfish.message.api.IMessageProducer;
 import org.metahut.starfish.message.api.MessageException;
-import org.metahut.starfish.message.api.MessageManager;
-import org.metahut.starfish.message.api.MessageProducer;
 import org.metahut.starfish.message.api.MessageProperties;
 import org.metahut.starfish.message.api.MessageType;
 
@@ -35,7 +35,7 @@ import static org.metahut.starfish.message.api.MessageType.none;
  */
 @Component
 @ConditionalOnProperty(prefix = MESSAGE_CONFIG_PREFIX, name = "type", havingValue = "none")
-public class NoneMessageManager implements MessageManager {
+public class NoneMessageManager implements IMessageManager {
 
     @Override
     public MessageType getType() {
@@ -48,12 +48,12 @@ public class NoneMessageManager implements MessageManager {
     }
 
     @Override
-    public MessageProducer getProducer(String name) {
+    public IMessageProducer getProducer(String name) {
         return null;
     }
 
     @Override
-    public MessageConsumer getConsumer(String name) {
+    public IMessageConsumer getConsumer(String name) {
         return null;
     }
 

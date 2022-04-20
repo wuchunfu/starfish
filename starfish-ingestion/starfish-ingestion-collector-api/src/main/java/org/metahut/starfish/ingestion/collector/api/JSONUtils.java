@@ -15,15 +15,18 @@
  * limitations under the License.
  */
 
-package org.metahut.starfish.ingestion.common;
+package org.metahut.starfish.ingestion.collector.api;
 
+import com.fasterxml.jackson.annotation.JsonTypeName;
 import com.fasterxml.jackson.core.type.TypeReference;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import org.apache.commons.lang3.StringUtils;
+import org.reflections.Reflections;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import java.util.Objects;
+import java.util.Set;
 
 import static com.fasterxml.jackson.databind.DeserializationFeature.ACCEPT_EMPTY_ARRAY_AS_NULL_OBJECT;
 import static com.fasterxml.jackson.databind.DeserializationFeature.FAIL_ON_UNKNOWN_PROPERTIES;
@@ -40,6 +43,10 @@ public class JSONUtils {
             .configure(FAIL_ON_UNKNOWN_PROPERTIES, false)
             .configure(ACCEPT_EMPTY_ARRAY_AS_NULL_OBJECT, true)
             .configure(READ_UNKNOWN_ENUM_VALUES_AS_NULL, true);
+
+    static {
+        registerJsonSubtypes("org.metahut.starfish.ingestion.collector");
+    }
 
     public static <T> T parseObject(String json, Class<T> clazz) {
         if (StringUtils.isEmpty(json) || Objects.isNull(clazz)) {
@@ -73,6 +80,12 @@ public class JSONUtils {
         } catch (Exception e) {
             throw new RuntimeException("Object json deserialization exception.", e);
         }
+    }
+
+    private static void registerJsonSubtypes(Object... reflectionArgs) {
+        Reflections reflections = new Reflections(reflectionArgs);
+        Set<Class<?>> classSet = reflections.getTypesAnnotatedWith(JsonTypeName.class);
+        OBJECT_MAPPER.registerSubtypes(classSet);
     }
 
 }

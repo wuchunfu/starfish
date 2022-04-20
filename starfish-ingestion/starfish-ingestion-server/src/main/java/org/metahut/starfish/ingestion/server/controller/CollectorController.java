@@ -20,8 +20,8 @@ package org.metahut.starfish.ingestion.server.controller;
 import org.metahut.starfish.ingestion.collector.api.AbstractCollectorParameter;
 import org.metahut.starfish.ingestion.collector.api.ICollector;
 import org.metahut.starfish.ingestion.collector.api.IngestionException;
-import org.metahut.starfish.ingestion.common.JSONUtils;
-import org.metahut.starfish.ingestion.server.collector.CollectorHelper;
+import org.metahut.starfish.ingestion.collector.api.JSONUtils;
+import org.metahut.starfish.ingestion.server.collector.CollectorPluginHelper;
 import org.metahut.starfish.ingestion.server.dto.CollectorExecuteDto;
 import org.metahut.starfish.ingestion.server.dto.ResultEntity;
 
@@ -36,10 +36,10 @@ import java.util.Objects;
 @RequestMapping("collector")
 public class CollectorController {
 
-    private CollectorHelper collectorHelper;
+    private CollectorPluginHelper collectorPluginHelper;
 
-    public CollectorController(CollectorHelper collectorHelper) {
-        this.collectorHelper = collectorHelper;
+    public CollectorController(CollectorPluginHelper collectorHelper) {
+        this.collectorPluginHelper = collectorHelper;
     }
 
     @PostMapping("execute")
@@ -47,14 +47,15 @@ public class CollectorController {
 
         AbstractCollectorParameter parameter = JSONUtils.parseObject(collectorExecuteDto.getParameter(), AbstractCollectorParameter.class);
         if (Objects.isNull(parameter) || !parameter.checkParameter()) {
-            throw new IngestionException("parameter is error");
+            throw new IngestionException("collector parameter check exception");
         }
 
+        // TODO
         String datasourceParameter = null;
 
         parameter.setDatasourceParameter(datasourceParameter);
 
-        ICollector collector = collectorHelper.generateInstance(collectorExecuteDto.getType(), parameter);
+        ICollector collector = collectorPluginHelper.generateInstance(parameter);
         return ResultEntity.success(collector.execute());
     }
 }

@@ -17,22 +17,24 @@
 
 package org.metahut.starfish.message.pulsar;
 
-import org.metahut.starfish.message.api.MessageException;
-import org.metahut.starfish.message.api.MessageProducer;
-import org.metahut.starfish.message.api.MessageProperties;
-import org.metahut.starfish.message.api.MessageType;
+import org.metahut.starfish.message.api.*;
 
 import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Disabled;
 import org.junit.jupiter.api.Test;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 import java.util.Objects;
 
 @Disabled
 class PulsarMetaMessageManagerTest {
+
+    private static final Logger logger = LoggerFactory.getLogger(PulsarMetaMessageManagerTest.class);
 
     private PulsarMessageManager pulsarMessageManager;
 
@@ -71,8 +73,24 @@ class PulsarMetaMessageManagerTest {
 
     @Test
     public void testProducer() throws MessageException {
-        MessageProducer producer = pulsarMessageManager.getProducer(PULSAR_PRODUCER_1_NAME);
+        IMessageProducer producer = pulsarMessageManager.getProducer(PULSAR_PRODUCER_1_NAME);
         producer.send("k1", "v1");
+    }
+
+    @Test
+    public void testConsumer() throws MessageException {
+        IMessageConsumer consumer = pulsarMessageManager.getConsumer(PULSAR_PRODUCER_1_NAME);
+
+        while (true) {
+            try {
+                List<ConsumerResult> result = consumer.batchReceive();
+
+
+            } catch (MessageException e) {
+                logger.error(e.getMessage(), e);
+            }
+        }
+
     }
 
 }

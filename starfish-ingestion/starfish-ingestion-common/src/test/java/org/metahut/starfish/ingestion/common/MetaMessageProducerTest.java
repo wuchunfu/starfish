@@ -17,7 +17,7 @@
 
 package org.metahut.starfish.ingestion.common;
 
-import org.metahut.starfish.message.api.MessageManager;
+import org.metahut.starfish.message.api.IMessageManager;
 import org.metahut.starfish.message.api.MessageType;
 
 import org.junit.jupiter.api.Test;
@@ -37,12 +37,12 @@ public class MetaMessageProducerTest {
     @Test
     public void testServiceLoader() {
 
-        Map<MessageType, MessageManager> managerMap = new HashMap<>();
-        ServiceLoader.load(MessageManager.class).forEach(manager -> {
+        Map<MessageType, IMessageManager> managerMap = new HashMap<>();
+        ServiceLoader.load(IMessageManager.class).forEach(manager -> {
 
             MessageType type = manager.getType();
 
-            MessageManager messageManager = managerMap.get(type);
+            IMessageManager messageManager = managerMap.get(type);
 
             if (Objects.nonNull(messageManager)) {
                 throw new IllegalArgumentException(MessageFormat.format("Duplicate message type exists: {0}", type));

@@ -64,6 +64,7 @@
         <antlr4.version>4.9.3</antlr4.version>
         <okhttp3.version>4.9.3</okhttp3.version>
         <snakeyaml.version>1.30</snakeyaml.version>
+        <reflections.version>0.10.2</reflections.version>
 
         <spring.data.jpa.version>2.6.5</spring.data.jpa.version>
         <mysql.connector.version>8.0.16</mysql.connector.version>
@@ -270,6 +271,12 @@
                 <groupId>org.yaml</groupId>
                 <artifactId>snakeyaml</artifactId>
                 <version>${snakeyaml.version}</version>
+            </dependency>
+
+            <dependency>
+                <groupId>org.reflections</groupId>
+                <artifactId>reflections</artifactId>
+                <version>${reflections.version}</version>
             </dependency>
 
             <!-- junit5 test -->

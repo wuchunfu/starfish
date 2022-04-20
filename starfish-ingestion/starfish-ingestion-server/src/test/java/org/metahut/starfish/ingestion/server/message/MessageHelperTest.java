@@ -27,7 +27,7 @@ import org.springframework.boot.test.context.SpringBootTest;
 public class MessageHelperTest {
 
     @Autowired
-    private MessageHelper messageHelper;
+    private MessagePluginHelper messageHelper;
 
     @Test
     public void test() {

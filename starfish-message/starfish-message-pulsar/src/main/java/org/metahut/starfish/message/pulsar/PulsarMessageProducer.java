@@ -17,8 +17,8 @@
 
 package org.metahut.starfish.message.pulsar;
 
+import org.metahut.starfish.message.api.IMessageProducer;
 import org.metahut.starfish.message.api.MessageException;
-import org.metahut.starfish.message.api.MessageProducer;
 import org.metahut.starfish.message.api.MessageResult;
 
 import org.apache.pulsar.client.api.MessageId;
@@ -28,7 +28,7 @@ import org.apache.pulsar.client.api.PulsarClientException;
 import java.text.MessageFormat;
 import java.util.Objects;
 
-public class PulsarMessageProducer implements MessageProducer {
+public class PulsarMessageProducer implements IMessageProducer {
 
     private final Producer producer;
 
