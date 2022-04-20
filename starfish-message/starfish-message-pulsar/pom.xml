@@ -38,12 +38,6 @@
             <groupId>org.apache.pulsar</groupId>
             <artifactId>pulsar-client</artifactId>
         </dependency>
-        <!-- https://mvnrepository.com/artifact/org.apache.pulsar/pulsar-client-admin -->
-        <dependency>
-            <groupId>org.apache.pulsar</groupId>
-            <artifactId>pulsar-client-admin</artifactId>
-        </dependency>
-
 
     </dependencies>
 

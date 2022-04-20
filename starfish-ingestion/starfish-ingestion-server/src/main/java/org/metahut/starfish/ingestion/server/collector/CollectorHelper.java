@@ -17,6 +17,7 @@
 
 package org.metahut.starfish.ingestion.server.collector;
 
+import org.metahut.starfish.ingestion.collector.api.AbstractCollectorParameter;
 import org.metahut.starfish.ingestion.collector.api.ICollector;
 import org.metahut.starfish.ingestion.collector.api.ICollectorManager;
 
@@ -56,7 +57,7 @@ public class CollectorHelper {
         return collectorMap.get(type);
     }
 
-    public ICollector generateInstance(String type, String parameter) {
+    public ICollector generateInstance(String type, AbstractCollectorParameter parameter) {
         return getCollector(type).generateInstance(parameter);
     }
 }

@@ -4,5 +4,5 @@ public interface ICollectorManager {
 
     String getType();
 
-    ICollector generateInstance(String parameter);
+    ICollector generateInstance(AbstractCollectorParameter parameter);
 }

@@ -4,24 +4,24 @@ import org.metahut.starfish.api.controller.SchedulerController;
 import org.metahut.starfish.api.dto.HttpTaskParameterDto;
 import org.metahut.starfish.api.dto.ResultEntity;
 import org.metahut.starfish.scheduler.api.parameters.HttpTaskParameter;
-import org.metahut.starfish.server.scheduler.SchedulerHelper;
+import org.metahut.starfish.server.scheduler.SchedulerPluginHelper;
 
 import org.springframework.web.bind.annotation.RestController;
 
 @RestController
 public class SchedulerControllerImpl implements SchedulerController {
 
-    private SchedulerHelper schedulerHelper;
+    private SchedulerPluginHelper schedulerPluginHelper;
 
-    public SchedulerControllerImpl(SchedulerHelper schedulerHelper) {
-        this.schedulerHelper = schedulerHelper;
+    public SchedulerControllerImpl(SchedulerPluginHelper schedulerHelper) {
+        this.schedulerPluginHelper = schedulerHelper;
     }
 
     @Override
     public ResultEntity createSingleHttpTask(HttpTaskParameterDto httpTaskParameterDto) {
         HttpTaskParameter parameter = new HttpTaskParameter();
 
-        schedulerHelper.getScheduler().createSingleHttpTask(parameter);
+        schedulerPluginHelper.getScheduler().createSingleHttpTask(parameter);
         return null;
     }
 

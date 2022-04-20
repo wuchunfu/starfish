@@ -1,14 +1,15 @@
 package org.metahut.starfish.ingestion.collector.pulsar;
 
+import org.metahut.starfish.datasource.pulsar.PulsarDatasource;
+import org.metahut.starfish.datasource.pulsar.PulsarDatasourceManager;
 import org.metahut.starfish.ingestion.collector.api.CollectorResult;
 import org.metahut.starfish.ingestion.collector.api.ICollector;
 import org.metahut.starfish.ingestion.collector.api.IngestionException;
 
 import org.apache.pulsar.client.admin.PulsarAdmin;
 import org.apache.pulsar.client.admin.PulsarAdminException;
-import org.apache.pulsar.client.api.PulsarClient;
-import org.apache.pulsar.client.api.PulsarClientException;
-import org.mortbay.log.Log;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -17,44 +18,27 @@ import java.util.Map;
 
 public class PulsarCollector implements ICollector {
 
-    private String serverUrl;
+    private static final Logger logger = LoggerFactory.getLogger(PulsarCollector.class);
 
-    PulsarClient client = null;
-    PulsarAdmin admin = null;
+    private final PulsarCollectorParameter parameter;
+    private final PulsarDatasource pulsarDatasource;
+    private final PulsarAdmin admin;
 
-    public PulsarCollector(String serverUrl) {
-        this.serverUrl = serverUrl;
-    }
-
-    @Override
-    public CollectorResult testConnection() {
-        CollectorResult collectorResult = new CollectorResult();
-        try {
-            client = PulsarClient.builder()
-                    .serviceUrl(serverUrl)
-                    .build();
-        } catch (PulsarClientException e) {
-            throw new IngestionException("get pulsar connection is error:", e);
-        }
-        if (client.isClosed()) {
-            collectorResult.setState(false);
-            collectorResult.setMessage("connect is fail");
-        } else {
-            collectorResult.setState(true);
-            collectorResult.setMessage("connect is success");
-        }
-        return collectorResult;
+    public PulsarCollector(PulsarCollectorParameter parameter) {
+        this.parameter = parameter;
+        pulsarDatasource = new PulsarDatasourceManager().generateInstance(parameter.getDatasourceParameter());
+        admin = pulsarDatasource.getMetaClient();
     }
 
     @Override
     public CollectorResult execute() {
         CollectorResult collectorResult = new CollectorResult();
         try {
-            admin = PulsarAdmin.builder().serviceHttpUrl(serverUrl).build();
+
             getClusterMetaData();
             getTenant();
             getTopicMetaData();
-        } catch (PulsarClientException | PulsarAdminException e) {
+        } catch (PulsarAdminException e) {
             throw new IngestionException("get pulsar metaData is error:", e);
         }
         collectorResult.setMessage("get metaData is sucess");
@@ -75,7 +59,7 @@ public class PulsarCollector implements ICollector {
                 throw new IngestionException("get cluster metaData is error:", e);
             }
         });
-        Log.info(cluster.toString());
+        logger.info(cluster.toString());
     }
 
     public void getTenant() throws PulsarAdminException {
@@ -91,7 +75,7 @@ public class PulsarCollector implements ICollector {
                 throw new IngestionException("get tenant metaData is error:", e);
             }
         });
-        Log.info(tenants.toString());
+        logger.info(tenants.toString());
     }
 
     public void getTopicMetaData() throws PulsarAdminException {
@@ -113,7 +97,7 @@ public class PulsarCollector implements ICollector {
             }
         });
         getTopicMetaInfo(topics, topicMetaList, "z/imsync");
-        Log.info(topicMetaList.toString());
+        logger.info(topicMetaList.toString());
     }
 
     private void getTopicMetaInfo(Map<String, List<String>> topics, List<Map<String, String>> topicMetaList, String namespace) {
@@ -144,7 +128,6 @@ public class PulsarCollector implements ICollector {
 
     @Override
     public void close() throws Exception {
-        client.close();
-        admin.close();
+        pulsarDatasource.close();
     }
 }
