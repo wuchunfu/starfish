@@ -6,6 +6,7 @@ public class CollectorResult {
 
     private String message;
 
+
     public boolean isState() {
         return state;
     }

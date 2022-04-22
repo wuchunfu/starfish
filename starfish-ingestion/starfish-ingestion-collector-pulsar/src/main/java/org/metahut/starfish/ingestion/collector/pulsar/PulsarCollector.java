@@ -5,6 +5,10 @@ import org.metahut.starfish.datasource.pulsar.PulsarDatasourceManager;
 import org.metahut.starfish.ingestion.collector.api.CollectorResult;
 import org.metahut.starfish.ingestion.collector.api.ICollector;
 import org.metahut.starfish.ingestion.collector.api.IngestionException;
+import org.metahut.starfish.ingestion.collector.api.JSONUtils;
+import org.metahut.starfish.ingestion.common.MetaMessageProducer;
+import org.metahut.starfish.ingestion.common.ThreadUtils;
+import org.metahut.starfish.message.api.IMessageProducer;
 
 import org.apache.pulsar.client.admin.PulsarAdmin;
 import org.apache.pulsar.client.admin.PulsarAdminException;
@@ -12,21 +16,30 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import java.util.ArrayList;
+import java.util.Collection;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.concurrent.ConcurrentHashMap;
+import java.util.concurrent.CopyOnWriteArrayList;
+import java.util.concurrent.CountDownLatch;
+import java.util.concurrent.ExecutorService;
+import java.util.stream.Collectors;
 
 public class PulsarCollector implements ICollector {
 
     private static final Logger logger = LoggerFactory.getLogger(PulsarCollector.class);
 
     private final PulsarCollectorParameter parameter;
+    private final IMessageProducer producer;
     private final PulsarDatasource pulsarDatasource;
     private final PulsarAdmin admin;
 
     public PulsarCollector(PulsarCollectorParameter parameter) {
         this.parameter = parameter;
-        pulsarDatasource = new PulsarDatasourceManager().generateInstance(parameter.getDatasourceParameter());
+        producer = MetaMessageProducer.getInstance();
+        pulsarDatasource = new PulsarDatasourceManager()
+            .generateInstance(parameter.getDatasourceParameter());
         admin = pulsarDatasource.getMetaClient();
     }
 
@@ -34,10 +47,9 @@ public class PulsarCollector implements ICollector {
     public CollectorResult execute() {
         CollectorResult collectorResult = new CollectorResult();
         try {
+            List<ConcurrentHashMap<String, String>> topicMetaDataList = getTopicMetaData();
+            producer.send(parameter.getDatasourceId(), JSONUtils.toJSONString(topicMetaDataList));
 
-            getClusterMetaData();
-            getTenant();
-            getTopicMetaData();
         } catch (PulsarAdminException e) {
             throw new IngestionException("get pulsar metaData is error:", e);
         }
@@ -46,88 +58,79 @@ public class PulsarCollector implements ICollector {
         return collectorResult;
     }
 
-    public void getClusterMetaData() throws PulsarAdminException {
-        List<Map> cluster = new ArrayList<>();
-        admin.clusters().getClusters().stream().forEach(clusterName -> {
-            try {
-                Map<String, Object> map = new HashMap<>();
-                map.put("cluster", clusterName);
-                map.put("clusterInfo", admin.clusters().getCluster(clusterName));
-                map.put("brokerInfo", admin.brokers().getActiveBrokers(clusterName));
-                cluster.add(map);
-            } catch (PulsarAdminException e) {
-                throw new IngestionException("get cluster metaData is error:", e);
-            }
-        });
-        logger.info(cluster.toString());
-    }
-
-    public void getTenant() throws PulsarAdminException {
-        List<Map> tenants = new ArrayList<>();
-        admin.tenants().getTenants().stream().forEach(name -> {
-            try {
-                Map<String, Object> map = new HashMap<>();
-                map.put("tenantName", name);
-                map.put("tenentInfo", admin.tenants().getTenantInfo(name));
-                map.put("namespace", admin.namespaces().getNamespaces(name));
-                tenants.add(map);
-            } catch (Exception e) {
-                throw new IngestionException("get tenant metaData is error:", e);
-            }
-        });
-        logger.info(tenants.toString());
-    }
-
-    public void getTopicMetaData() throws PulsarAdminException {
+    public List<ConcurrentHashMap<String, String>> getTopicMetaData() throws PulsarAdminException {
         Map<String, List<String>> topics = new HashMap<>();
-        List<Map<String, String>> topicMetaList = new ArrayList<>();
-        admin.tenants().getTenants().stream().forEach(name -> {
+        CopyOnWriteArrayList<ConcurrentHashMap<String, String>> topicMetaList = new CopyOnWriteArrayList();
+        List<String> namespaceList = new ArrayList<>();
+        namespaceList = admin.tenants().getTenants().stream().map(name -> {
             try {
-                admin.namespaces().getNamespaces(name).stream().forEach(
-                        namespace -> {
-                            try {
-                                topics.put(namespace, admin.topics().getList(namespace));
-                            } catch (PulsarAdminException e) {
-                                throw new IngestionException("get topic metaData is error:", e);
-                            }
-                        }
-                );
+                return admin.namespaces().getNamespaces(name);
             } catch (PulsarAdminException e) {
                 throw new IngestionException("get pulsar metaData is error:", e);
             }
+        }).flatMap(Collection::stream).collect(Collectors.toList());
+        namespaceList.stream().forEach(namespace -> {
+            try {
+                topics.put(namespace, admin.topics().getList(namespace));
+            } catch (PulsarAdminException e) {
+                throw new IngestionException("get topic metaData is error:", e);
+            }
         });
-        getTopicMetaInfo(topics, topicMetaList, "z/imsync");
-        logger.info(topicMetaList.toString());
+        getTopicMetaInfo(topics, topicMetaList);
+        return topicMetaList;
     }
 
-    private void getTopicMetaInfo(Map<String, List<String>> topics, List<Map<String, String>> topicMetaList, String namespace) {
+    private void getTopicMetaInfo(Map<String, List<String>> topics,
+        CopyOnWriteArrayList<ConcurrentHashMap<String, String>> topicMetaList) {
+        ExecutorService threadPool = ThreadUtils.getThreadPoolExecutor();
+        CountDownLatch latch = new CountDownLatch(topics.size());
         topics.entrySet().forEach(entry -> {
-            if (namespace.equals(entry.getKey())) {
-                entry.getValue().stream().forEach(
+            threadPool.submit(
+                () -> {
+                    entry.getValue().stream().forEach(
                         topic -> {
-                            HashMap map = new HashMap();
+                            ConcurrentHashMap map = new ConcurrentHashMap();
                             map.put("topic", topic);
                             String perType = topic.split("://")[0];
                             if ("persistent".equals(perType)) {
-                                map.put("persistent", "true");
+                                map.put("persistent", true);
                             } else {
-                                map.put("persistent", "false");
+                                map.put("persistent", false);
                             }
                             map.put("namespace", entry.getKey());
                             try {
-                                map.put("clusters", admin.namespaces().getNamespaceReplicationClusters(entry.getKey()));
+                                map.put("clusters",
+                                    admin.namespaces()
+                                        .getNamespaceReplicationClusters(entry.getKey()));
                             } catch (PulsarAdminException e) {
-                                throw new IngestionException("get tenant detail information is error:", e);
+                                throw new IngestionException(
+                                    "get tenant detail information is error:",
+                                    e);
+                            }
+                            try {
+                                map.put("subscribe", admin.topics().getSubscriptions(topic));
+                                map.put("schema", admin.schemas()
+                                    .getAllSchemas(topic));
+                            } catch (PulsarAdminException e) {
+                                e.printStackTrace();
                             }
                             topicMetaList.add(map);
+                            latch.countDown();
                         }
-                );
-            }
+                    );
+                }
+            );
         });
+        try {
+            latch.await();
+        } catch (InterruptedException e) {
+            e.printStackTrace();
+        }
     }
 
     @Override
     public void close() throws Exception {
         pulsarDatasource.close();
+        producer.close();
     }
 }

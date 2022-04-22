@@ -38,7 +38,6 @@
             <groupId>org.apache.pulsar</groupId>
             <artifactId>pulsar-client</artifactId>
         </dependency>
-
     </dependencies>
 
 </project>
