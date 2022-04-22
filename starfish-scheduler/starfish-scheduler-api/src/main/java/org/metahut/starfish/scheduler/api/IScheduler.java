@@ -1,8 +1,13 @@
 package org.metahut.starfish.scheduler.api;
 
 import org.metahut.starfish.scheduler.api.parameters.HttpTaskParameter;
+import org.metahut.starfish.scheduler.api.parameters.ScheduleParameter;
+
+import java.util.List;
 
 public interface IScheduler extends AutoCloseable {
+
+    List<String> previewSchedule(ScheduleParameter scheduleParameter);
 
     Object createSingleHttpTask(HttpTaskParameter httpTaskParameter);
 

@@ -1,5 +1,6 @@
 package org.metahut.starfish.server.datasource;
 
+import org.metahut.starfish.datasource.api.AbstractDatasourceParameter;
 import org.metahut.starfish.datasource.api.IDatasource;
 import org.metahut.starfish.datasource.api.IDatasourceManager;
 
@@ -12,6 +13,7 @@ import java.util.HashMap;
 import java.util.Map;
 import java.util.Objects;
 import java.util.ServiceLoader;
+import java.util.Set;
 
 @Component
 public class DatasourcePluginHelper {
@@ -38,5 +40,13 @@ public class DatasourcePluginHelper {
 
     public IDatasource generateInstance(String type, String parameter) {
         return getDatasourceManager(type).generateInstance(parameter);
+    }
+
+    public Set<String> getTypes() {
+        return datasourceMap.keySet();
+    }
+
+    public AbstractDatasourceParameter getDefaultParameter(String type) {
+        return getDatasourceManager(type).getDefaultParameter();
     }
 }

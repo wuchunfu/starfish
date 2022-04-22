@@ -15,6 +15,14 @@ public class DatasourceControllerImpl implements DatasourceController {
         this.datasourcePluginHelper = datasourcePluginHelper;
     }
 
+    public ResultEntity getTypes() {
+        return ResultEntity.success(datasourcePluginHelper.getTypes());
+    }
+
+    public ResultEntity getDefaultParameter(String type) {
+        return ResultEntity.success(datasourcePluginHelper.getDefaultParameter(type));
+    }
+
     // insert
 
     // update

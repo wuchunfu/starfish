@@ -17,7 +17,12 @@
 
 package org.metahut.starfish.message.pulsar;
 
-import org.metahut.starfish.message.api.*;
+import org.metahut.starfish.message.api.ConsumerResult;
+import org.metahut.starfish.message.api.IMessageConsumer;
+import org.metahut.starfish.message.api.IMessageProducer;
+import org.metahut.starfish.message.api.MessageException;
+import org.metahut.starfish.message.api.MessageProperties;
+import org.metahut.starfish.message.api.MessageType;
 
 import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.BeforeEach;
@@ -38,7 +43,7 @@ class PulsarMetaMessageManagerTest {
 
     private PulsarMessageManager pulsarMessageManager;
 
-    private static final String PULSAR_SERVICE_URL = "";
+    private static final String PULSAR_SERVICE_URL = "http://pulsar-idc-qa.zpidc.com:8080";
     private static final String PULSAR_PRODUCER_1_NAME = "metaProducer";
 
     @BeforeEach
@@ -46,7 +51,7 @@ class PulsarMetaMessageManagerTest {
 
         MessageProperties messageProperties = new MessageProperties();
         messageProperties.setType(MessageType.pulsar);
-        MessageProperties.Pulsar pulsar = new MessageProperties.Pulsar();
+        MessageProperties.Pulsar pulsar = messageProperties.getPulsar();
         pulsar.setServiceUrl(PULSAR_SERVICE_URL);
 
         // set pulsar producer
@@ -84,7 +89,6 @@ class PulsarMetaMessageManagerTest {
         while (true) {
             try {
                 List<ConsumerResult> result = consumer.batchReceive();
-
 
             } catch (MessageException e) {
                 logger.error(e.getMessage(), e);

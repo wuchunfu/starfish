@@ -3,6 +3,7 @@ package org.metahut.starfish.scheduler.dolphinscheduler;
 import org.metahut.starfish.scheduler.api.SchedulerProperties;
 import org.metahut.starfish.scheduler.api.SchedulerType;
 import org.metahut.starfish.scheduler.api.parameters.HttpTaskParameter;
+import org.metahut.starfish.scheduler.api.parameters.ScheduleParameter;
 
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.BeforeEach;
@@ -10,29 +11,31 @@ import org.junit.jupiter.api.Disabled;
 import org.junit.jupiter.api.Test;
 
 import java.io.IOException;
+import java.time.LocalDateTime;
+import java.time.ZoneId;
+import java.util.Date;
+import java.util.List;
 
 @Disabled
 public class DolphinSchedulerTest {
 
     private DolphinScheduler scheduler;
 
-    private String serviceUrl = "http://dolphinscheduler.dev.zhaopin.com/dolphinscheduler";
+    private static final String SERVICE_URL = "http://dolphinscheduler.dev.zhaopin.com/dolphinscheduler";
+    private static final String TOKEN = "c6258d4a509df0f1b89f77fb552d8ddf";
+    private static final String PROJECT_CODE = "4996418468000";
 
     public static final String jsonFilePath = "/json/dolphin_httptask.json";
 
-    private String projectCode = "4996418468000";
-
     @BeforeEach
     public void before() {
-
-        String token = "c6258d4a509df0f1b89f77fb552d8ddf";
-
         SchedulerProperties schedulerProperties = new SchedulerProperties();
         schedulerProperties.setType(SchedulerType.dolphinscheduler);
 
         SchedulerProperties.DolphinScheduler dolphinProperties = new SchedulerProperties.DolphinScheduler();
-        dolphinProperties.setServiceUrl(serviceUrl);
-        dolphinProperties.setToken(token);
+        dolphinProperties.setServiceUrl(SERVICE_URL);
+        dolphinProperties.setToken(TOKEN);
+        dolphinProperties.setProjectCode(PROJECT_CODE);
         schedulerProperties.setDolphinScheduler(dolphinProperties);
 
         scheduler = new DolphinSchedulerManager(schedulerProperties).getScheduler();
@@ -40,11 +43,22 @@ public class DolphinSchedulerTest {
     }
 
     @Test
+    public void testPreviewSchedule() {
+        ScheduleParameter parameter = new ScheduleParameter();
+        parameter.setCrontab("0 30 * * * ?");
+        parameter.setStartTime(new Date());
+        parameter.setEndTime(Date.from(LocalDateTime.now().plusDays(2).atZone(ZoneId.systemDefault()).toInstant()));
+        List<String> strings = scheduler.previewSchedule(parameter);
+        Assertions.assertNotNull(strings);
+    }
+
+    @Test
     public void testQueryProjectCreatedAndAuthorizedByUser() throws IOException {
-        String url = serviceUrl + "/projects/created-and-authed";
+        String url = "/projects/created-and-authed";
         String json = scheduler.get(url);
         DolphinResult result = JSONUtils.parseObject(json, DolphinResult.class);
         Assertions.assertNotNull(result);
+        Assertions.assertEquals(0, result.getCode());
     }
 
     @Test

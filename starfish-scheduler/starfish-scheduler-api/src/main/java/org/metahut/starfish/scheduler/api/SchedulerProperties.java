@@ -13,7 +13,7 @@ public class SchedulerProperties {
     public static class DolphinScheduler {
         private String serviceUrl;
         private String token;
-        private Long projectCode;
+        private String projectCode;
         private HttpClient httpClient;
 
         public String getServiceUrl() {
@@ -30,6 +30,14 @@ public class SchedulerProperties {
 
         public void setToken(String token) {
             this.token = token;
+        }
+
+        public String getProjectCode() {
+            return projectCode;
+        }
+
+        public void setProjectCode(String projectCode) {
+            this.projectCode = projectCode;
         }
     }
 

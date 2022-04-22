@@ -5,7 +5,10 @@ import org.metahut.starfish.scheduler.api.SchedulerException;
 import org.metahut.starfish.scheduler.api.SchedulerProperties;
 import org.metahut.starfish.scheduler.api.SchedulerResult;
 import org.metahut.starfish.scheduler.api.parameters.HttpTaskParameter;
+import org.metahut.starfish.scheduler.api.parameters.ScheduleParameter;
 
+import com.fasterxml.jackson.core.type.TypeReference;
+import okhttp3.FormBody;
 import okhttp3.FormBody.Builder;
 import okhttp3.MediaType;
 import okhttp3.OkHttpClient;
@@ -15,14 +18,15 @@ import okhttp3.Response;
 import org.apache.commons.lang3.StringUtils;
 
 import java.io.IOException;
+import java.text.MessageFormat;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 import java.util.Objects;
 
 public class DolphinScheduler implements IScheduler {
 
-    private static final MediaType MEDIA_TYPE_JSON = MediaType
-            .get("application/json; charset=utf-8");
+    private static final MediaType MEDIA_TYPE_JSON = MediaType.get("application/json; charset=utf-8");
     private static final String HEADER_TOKEN_NAME = "token";
     private static final String METHOD_TYPE = "post";
     private static final int HTTP_SUCCESS = 0;
@@ -95,26 +99,33 @@ public class DolphinScheduler implements IScheduler {
 
     }
 
-    public void createTask() {
-
-        // 入参不一样
-
+    @Override
+    public List<String> previewSchedule(ScheduleParameter scheduleParameter) {
+        String url = MessageFormat.format("/projects/{0}/schedules/preview", properties.getProjectCode());
+        FormBody body = new Builder().add("schedule", JSONUtils.toJSONString(scheduleParameter)).build();
+        try {
+            String resultJson = post(url, body);
+            DolphinResult<List<String>> result = JSONUtils.parseObject(resultJson, new TypeReference<DolphinResult<List<String>>>() {});
+            checkResult(result, "previewSchedule");
+            return result.getData();
+        } catch (IOException e) {
+            throw new SchedulerException("dolphin scheduler call previewSchedule method exception", e);
+        }
     }
 
-    public void createSchedule(String cron) {
-
+    private void checkResult(DolphinResult result, String method) {
+        if (Objects.isNull(result) || HTTP_SUCCESS != result.getCode()) {
+            throw new SchedulerException(MessageFormat.format("dolphin scheduler call {0} method exception, {1}", method, Objects.isNull(result) ? "result is empty" : result.getMsg()));
+        }
     }
-
-    // 创建任务
-
-    // 设置定时
-
-    // 测试任务
-
-    // 创建单个 Http 任务
 
     @Override
     public SchedulerResult createSingleHttpTask(HttpTaskParameter httpTaskParameter) {
+        return null;
+
+    }
+
+    public SchedulerResult createSingleHttpTask1(HttpTaskParameter httpTaskParameter) {
         String processJson = null;
         DolphinResult processResult = null;
         String releaseJson = null;
@@ -278,6 +289,7 @@ public class DolphinScheduler implements IScheduler {
     }
 
     public String get(String url) throws IOException {
+        url = properties.getServiceUrl() + url;
         Request request = new Request.Builder()
                 .url(url)
                 .addHeader(HEADER_TOKEN_NAME, properties.getToken())
@@ -304,7 +316,27 @@ public class DolphinScheduler implements IScheduler {
         }
     }
 
+    /**
+     * Form post request
+     * @param url url
+     * @param body form body
+     * @return json response
+     * @throws IOException
+     */
+    public String post(String url, FormBody body) throws IOException {
+        url = properties.getServiceUrl() + url;
+        Request request = new Request.Builder()
+                .url(url)
+                .post(body)
+                .addHeader(HEADER_TOKEN_NAME, properties.getToken())
+                .build();
+        try (Response response = client.newCall(request).execute()) {
+            return response.body().string();
+        }
+    }
+
     public String post(String url, String json) throws IOException {
+        url = properties.getServiceUrl() + url;
         RequestBody body = RequestBody.create(json, MEDIA_TYPE_JSON);
         Request request = new Request.Builder()
                 .url(url)
