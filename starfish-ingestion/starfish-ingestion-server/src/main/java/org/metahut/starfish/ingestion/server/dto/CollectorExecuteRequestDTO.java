@@ -1,6 +1,6 @@
 package org.metahut.starfish.ingestion.server.dto;
 
-public class CollectorExecuteDto {
+public class CollectorExecuteRequestDTO {
 
     private String parameter;
 

@@ -8,6 +8,12 @@ import org.springframework.web.bind.annotation.RequestMapping;
 @RequestMapping("datasource")
 public interface DatasourceController {
 
+    /**
+     * datasource test connection
+     * @param type
+     * @param parameter
+     * @return
+     */
     @GetMapping("testConnection")
     ResultEntity testConnection(String type, String parameter);
 }

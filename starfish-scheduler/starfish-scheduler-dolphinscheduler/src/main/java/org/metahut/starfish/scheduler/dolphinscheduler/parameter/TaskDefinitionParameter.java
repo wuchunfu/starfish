@@ -68,13 +68,11 @@ public class TaskDefinitionParameter {
      * user defined parameters
      */
     private String taskParams;
-
-
+    
     /**
      * task is valid: yes/no
      */
     private String flag = "YES";
-
 
     /**
      * user name

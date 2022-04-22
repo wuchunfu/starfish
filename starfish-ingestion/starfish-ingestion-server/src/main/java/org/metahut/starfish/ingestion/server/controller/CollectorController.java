@@ -22,7 +22,7 @@ import org.metahut.starfish.ingestion.collector.api.ICollector;
 import org.metahut.starfish.ingestion.collector.api.IngestionException;
 import org.metahut.starfish.ingestion.collector.api.JSONUtils;
 import org.metahut.starfish.ingestion.server.collector.CollectorPluginHelper;
-import org.metahut.starfish.ingestion.server.dto.CollectorExecuteDto;
+import org.metahut.starfish.ingestion.server.dto.CollectorExecuteRequestDTO;
 import org.metahut.starfish.ingestion.server.dto.ResultEntity;
 
 import org.springframework.web.bind.annotation.PostMapping;
@@ -43,9 +43,9 @@ public class CollectorController {
     }
 
     @PostMapping("execute")
-    public ResultEntity execute(@RequestBody CollectorExecuteDto collectorExecuteDto) {
+    public ResultEntity execute(@RequestBody CollectorExecuteRequestDTO collectorExecuteRequestDTO) {
 
-        AbstractCollectorParameter parameter = JSONUtils.parseObject(collectorExecuteDto.getParameter(), AbstractCollectorParameter.class);
+        AbstractCollectorParameter parameter = JSONUtils.parseObject(collectorExecuteRequestDTO.getParameter(), AbstractCollectorParameter.class);
         if (Objects.isNull(parameter) || !parameter.checkParameter()) {
             throw new IngestionException("collector parameter check exception");
         }

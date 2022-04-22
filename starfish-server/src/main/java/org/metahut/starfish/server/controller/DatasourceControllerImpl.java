@@ -2,25 +2,25 @@ package org.metahut.starfish.server.controller;
 
 import org.metahut.starfish.api.controller.DatasourceController;
 import org.metahut.starfish.api.dto.ResultEntity;
-import org.metahut.starfish.server.datasource.DatasourcePluginHelper;
+import org.metahut.starfish.server.service.DatasourceService;
 
 import org.springframework.web.bind.annotation.RestController;
 
 @RestController
 public class DatasourceControllerImpl implements DatasourceController {
 
-    private DatasourcePluginHelper datasourcePluginHelper;
+    private DatasourceService datasourceService;
 
-    public DatasourceControllerImpl(DatasourcePluginHelper datasourcePluginHelper) {
-        this.datasourcePluginHelper = datasourcePluginHelper;
+    public DatasourceControllerImpl(DatasourceService datasourceService) {
+        this.datasourceService = datasourceService;
     }
 
     public ResultEntity getTypes() {
-        return ResultEntity.success(datasourcePluginHelper.getTypes());
+        return ResultEntity.success(datasourceService.getTypes());
     }
 
     public ResultEntity getDefaultParameter(String type) {
-        return ResultEntity.success(datasourcePluginHelper.getDefaultParameter(type));
+        return ResultEntity.success(datasourceService.getDefaultParameter(type));
     }
 
     // insert
@@ -39,6 +39,6 @@ public class DatasourceControllerImpl implements DatasourceController {
      */
     @Override
     public ResultEntity testConnection(String type, String parameter) {
-        return ResultEntity.success(datasourcePluginHelper.generateInstance(type, parameter).testConnection());
+        return ResultEntity.success(datasourceService.testConnection(type, parameter));
     }
 }
