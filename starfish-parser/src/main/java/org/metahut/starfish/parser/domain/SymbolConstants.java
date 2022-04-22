@@ -6,9 +6,7 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 /**
- * @author XuYang
- * Create at 2022/2/23
- * @description
+ *
  */
 public class SymbolConstants {
     public static final Logger LOG = LoggerFactory.getLogger(ModelGenerator.class);

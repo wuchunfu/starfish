@@ -28,10 +28,14 @@ import org.springframework.context.annotation.Configuration;
 
 import javax.sql.DataSource;
 
+import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collection;
+import java.util.HashMap;
 import java.util.HashSet;
+import java.util.List;
 import java.util.Map;
+import java.util.Optional;
 import java.util.stream.Collectors;
 
 /**
@@ -102,20 +106,51 @@ public class RdbmDataStorageAutoConfiguration {
 
             @Override
             public Long findParent(Long childId, LinkCategory linkCategory) throws AbstractMetaParserException {
-                //TODO
-                return null;
+                NodeEntity entity = new NodeEntity();
+                entity.setId(childId);
+                Optional<RelationEntity> optionalRelationEntity = relationEntityMapper.findByEndNodeEntityAndCategory(entity, linkCategory.name()).stream().findFirst();
+                return optionalRelationEntity.isPresent() ? optionalRelationEntity.get().getStartNodeEntity().getId() : null;
             }
 
             @Override
             public Map<LinkCategory, Long> findParents(Long childId) throws AbstractMetaParserException {
-                //TODO
-                return null;
+                List<String> names = Arrays.stream(LinkCategory.values()).map(LinkCategory::name).collect(Collectors.toList());
+                NodeEntity entity = new NodeEntity();
+                entity.setId(childId);
+                Collection<RelationEntity> relationEntities = relationEntityMapper.findByEndNodeEntity(entity);
+                Map<LinkCategory, Long> result = new HashMap<>();
+                if (relationEntities != null) {
+                    for (RelationEntity relationEntity : relationEntities) {
+                        if (names.contains(relationEntity.getCategory())) {
+                            LinkCategory linkCategory = LinkCategory.valueOf(relationEntity.getCategory());
+                            result.put(linkCategory, relationEntity.getStartNodeEntity().getId());
+                        }
+                    }
+                }
+                return result;
             }
 
             @Override
             public Map<LinkCategory, Collection<Long>> findChildren(Long parentId) throws AbstractMetaParserException {
-                //TODO
-                return null;
+                List<String> names = Arrays.stream(LinkCategory.values()).map(LinkCategory::name).collect(Collectors.toList());
+                NodeEntity entity = new NodeEntity();
+                entity.setId(parentId);
+                Collection<RelationEntity> relationEntities = relationEntityMapper.findByStartNodeEntity(entity);
+                Map<LinkCategory, Collection<Long>> result = new HashMap<>();
+                if (relationEntities != null) {
+                    for (RelationEntity relationEntity : relationEntities) {
+                        if (names.contains(relationEntity.getCategory())) {
+                            LinkCategory linkCategory = LinkCategory.valueOf(relationEntity.getCategory());
+                            Collection<Long> ids = result.get(linkCategory);
+                            if (ids == null) {
+                                ids = new ArrayList<>();
+                                result.put(linkCategory,ids);
+                            }
+                            ids.add(relationEntity.getEndNodeEntity().getId());
+                        }
+                    }
+                }
+                return result;
             }
         };
     }
@@ -159,17 +194,27 @@ public class RdbmDataStorageAutoConfiguration {
 
             @Override
             public void deleteByHeadId(Long headId) throws StarFishMetaDataOperatingException {
-
+                NodeEntity nodeEntity = new NodeEntity();
+                nodeEntity.setId(headId);
+                relationEntityMapper.removeAllByStartNodeEntity(nodeEntity);
             }
 
             @Override
             public void deleteByTailId(Long tailId) throws StarFishMetaDataOperatingException {
-
+                NodeEntity nodeEntity = new NodeEntity();
+                nodeEntity.setId(tailId);
+                relationEntityMapper.removeAllByEndNodeEntity(nodeEntity);
             }
 
             @Override
             public void deleteRelationRelatedToIds(Collection<Long> headOrTailIds) throws StarFishMetaDataOperatingException {
-
+                if (headOrTailIds != null) {
+                    headOrTailIds.stream().forEach(id -> {
+                        NodeEntity temp = new NodeEntity();
+                        temp.setId(id);
+                        relationEntityMapper.removeAllByNodeEntity(temp);
+                    });
+                }
             }
 
             @Override
@@ -288,7 +333,7 @@ public class RdbmDataStorageAutoConfiguration {
 
     @Bean
     @ConditionalOnMissingBean(AbstractGraphService.class)
-    public AbstractGraphService<Long,Object> nodeService(NodeEntityMapper nodeEntityMapper, AbstractNodeService<Long,Object> nodeService, AbstractRelationService<Long,Object> relationService) {
+    public AbstractGraphService<Long,Object> graphService(NodeEntityMapper nodeEntityMapper, AbstractNodeService<Long,Object> nodeService, AbstractRelationService<Long,Object> relationService) {
         return new AbstractGraphService<Long, Object>() {
             @Override
             protected AbstractNodeService<Long, Object> nodeService() {
@@ -314,7 +359,7 @@ public class RdbmDataStorageAutoConfiguration {
 
     @Bean
     @ConditionalOnMissingBean(AbstractMetaDataService.class)
-    public AbstractMetaDataService<Long,Object> graphService(
+    public AbstractMetaDataService<Long,Object> metaDataService(
             AbstractSourceService<Long,Object> sourceService,
             AbstractGraphService<Long,Object> graphService,
             AbstractTypeService<Long,Object> typeService,
