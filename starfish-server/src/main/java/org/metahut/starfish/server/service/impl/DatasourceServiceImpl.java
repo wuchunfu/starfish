@@ -12,7 +12,7 @@ import java.util.Collection;
 @Service
 public class DatasourceServiceImpl implements DatasourceService {
 
-    private DatasourcePluginHelper datasourcePluginHelper;
+    private final DatasourcePluginHelper datasourcePluginHelper;
 
     public DatasourceServiceImpl(DatasourcePluginHelper datasourcePluginHelper) {
         this.datasourcePluginHelper = datasourcePluginHelper;

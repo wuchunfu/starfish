@@ -91,9 +91,9 @@ public class HiveCollectorTest {
     public void execute() {
         HiveCollectorParameter hiveCollectorParameter = new HiveCollectorParameter();
         HiveDatasourceParameter hiveDatasourceParameter = new HiveDatasourceParameter();
-        hiveCollectorParameter.setDatasourceId("XXX");
-        hiveDatasourceParameter.setDriverClassName("XXX");
-        hiveDatasourceParameter.setJdbcUrl("XXX");
+        // hiveCollectorParameter.setDatasourceId("XXX");
+        hiveDatasourceParameter.setDriverClassName("XXXX");
+        hiveDatasourceParameter.setJdbcUrl("XXXX");
         hiveCollectorParameter
             .setDatasourceParameter(JSONUtils.toJSONString(hiveDatasourceParameter));
         CollectorResult result = new HiveCollectorManager().generateInstance(hiveCollectorParameter)

@@ -1,19 +1,24 @@
 package org.metahut.starfish.server.controller;
 
 import org.metahut.starfish.api.controller.IngestionController;
+import org.metahut.starfish.api.dto.IngestionCollectorRequestDTO;
 import org.metahut.starfish.api.dto.ResultEntity;
+import org.metahut.starfish.server.service.IngestionService;
 
 import org.springframework.web.bind.annotation.RestController;
 
 @RestController
 public class IngestionControllerImpl implements IngestionController {
 
-    //collector_name, description, datasourceId, collector_params, crontab, scheduler_code
+    private final IngestionService ingestionService;
 
-    public ResultEntity create() {
+    public IngestionControllerImpl(IngestionService ingestionService) {
+        this.ingestionService = ingestionService;
+    }
 
-        // 创建
-        return null;
+    @Override
+    public ResultEntity createCollector(IngestionCollectorRequestDTO ingestionCollectorRequestDTO) {
+        return ResultEntity.success(ingestionService.createCollector(ingestionCollectorRequestDTO));
     }
 
 }

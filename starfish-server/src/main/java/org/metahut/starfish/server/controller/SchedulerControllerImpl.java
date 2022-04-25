@@ -1,34 +1,24 @@
 package org.metahut.starfish.server.controller;
 
 import org.metahut.starfish.api.controller.SchedulerController;
-import org.metahut.starfish.api.dto.HttpTaskParameterDto;
 import org.metahut.starfish.api.dto.ResultEntity;
-import org.metahut.starfish.scheduler.api.parameters.HttpTaskParameter;
-import org.metahut.starfish.scheduler.api.parameters.ScheduleParameter;
-import org.metahut.starfish.server.scheduler.SchedulerPluginHelper;
+import org.metahut.starfish.api.dto.ScheduleCronRequestDTO;
+import org.metahut.starfish.server.service.SchedulerService;
 
 import org.springframework.web.bind.annotation.RestController;
 
 @RestController
 public class SchedulerControllerImpl implements SchedulerController {
 
-    private SchedulerPluginHelper schedulerPluginHelper;
+    private SchedulerService schedulerService;
 
-    public SchedulerControllerImpl(SchedulerPluginHelper schedulerHelper) {
-        this.schedulerPluginHelper = schedulerHelper;
-    }
-
-    public ResultEntity prepareSchedule() {
-        ScheduleParameter parameter = new ScheduleParameter();
-        return ResultEntity.success(schedulerPluginHelper.getScheduler().previewSchedule(parameter));
+    public SchedulerControllerImpl(SchedulerService schedulerService) {
+        this.schedulerService = schedulerService;
     }
 
     @Override
-    public ResultEntity createSingleHttpTask(HttpTaskParameterDto httpTaskParameterDto) {
-        HttpTaskParameter parameter = new HttpTaskParameter();
-
-        schedulerPluginHelper.getScheduler().createSingleHttpTask(parameter);
-        return null;
+    public ResultEntity previewSchedule(ScheduleCronRequestDTO scheduleCronRequestDTO) {
+        return ResultEntity.success(schedulerService.previewSchedule(scheduleCronRequestDTO));
     }
 
     // 创建单个Http任务

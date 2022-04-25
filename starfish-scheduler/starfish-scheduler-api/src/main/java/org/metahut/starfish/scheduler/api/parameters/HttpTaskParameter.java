@@ -17,6 +17,10 @@
 
 package org.metahut.starfish.scheduler.api.parameters;
 
+import java.util.HashMap;
+import java.util.Map;
+import java.util.Objects;
+
 public class HttpTaskParameter {
 
     private String url;
@@ -24,6 +28,22 @@ public class HttpTaskParameter {
     private String method;
 
     private String body;
+
+    private Map<String, String> params = new HashMap<>();
+
+    private Map<String, String> headers = new HashMap<>();
+
+    /**
+     * Connect Timeout
+     * Unit: ms
+     */
+    private Integer connectTimeout;
+
+    /**
+     * Socket Timeout
+     * Unit: ms
+     */
+    private Integer socketTimeout;
 
     public String getUrl() {
         return url;
@@ -47,5 +67,37 @@ public class HttpTaskParameter {
 
     public void setBody(String body) {
         this.body = body;
+    }
+
+    public Map<String, String> getParams() {
+        return params;
+    }
+
+    public void setParams(Map<String, String> params) {
+        this.params = params;
+    }
+
+    public Map<String, String> getHeaders() {
+        return headers;
+    }
+
+    public void setHeaders(Map<String, String> headers) {
+        this.headers = headers;
+    }
+
+    public Integer getConnectTimeout() {
+        return Objects.isNull(connectTimeout) ? 60000 : connectTimeout;
+    }
+
+    public void setConnectTimeout(Integer connectTimeout) {
+        this.connectTimeout = connectTimeout;
+    }
+
+    public Integer getSocketTimeout() {
+        return Objects.isNull(socketTimeout) ? 60000 : socketTimeout;
+    }
+
+    public void setSocketTimeout(Integer socketTimeout) {
+        this.socketTimeout = socketTimeout;
     }
 }

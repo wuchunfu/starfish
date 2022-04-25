@@ -12,7 +12,6 @@ public class HiveCollectorParameterTest {
     public void testJsonDeserialize() {
         HiveCollectorParameter hiveCollectorParameter = new HiveCollectorParameter();
         hiveCollectorParameter.setType("Hive");
-        hiveCollectorParameter.setDatasourceId("x1");
         hiveCollectorParameter.setDatasourceParameter("hive datasource");
 
         String json = JSONUtils.toJSONString(hiveCollectorParameter);

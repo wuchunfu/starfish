@@ -7,8 +7,6 @@ public abstract class AbstractCollectorParameter {
 
     private String type;
 
-    private String datasourceId;
-
     private String datasourceParameter;
 
     public abstract boolean checkParameter();
@@ -19,14 +17,6 @@ public abstract class AbstractCollectorParameter {
 
     public void setType(String type) {
         this.type = type;
-    }
-
-    public String getDatasourceId() {
-        return datasourceId;
-    }
-
-    public void setDatasourceId(String datasourceId) {
-        this.datasourceId = datasourceId;
     }
 
     public String getDatasourceParameter() {

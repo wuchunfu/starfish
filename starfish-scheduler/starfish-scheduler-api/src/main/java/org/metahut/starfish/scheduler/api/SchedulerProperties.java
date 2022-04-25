@@ -20,6 +20,8 @@ package org.metahut.starfish.scheduler.api;
 import org.springframework.boot.context.properties.ConfigurationProperties;
 import org.springframework.context.annotation.Configuration;
 
+import java.util.Objects;
+
 @Configuration
 @ConfigurationProperties(prefix = "starfish.scheduler")
 public class SchedulerProperties {
@@ -31,6 +33,7 @@ public class SchedulerProperties {
         private String serviceUrl;
         private String token;
         private String projectCode;
+        private String tenantCode;
         private HttpClient httpClient;
 
         public String getServiceUrl() {
@@ -55,6 +58,22 @@ public class SchedulerProperties {
 
         public void setProjectCode(String projectCode) {
             this.projectCode = projectCode;
+        }
+
+        public String getTenantCode() {
+            return Objects.isNull(tenantCode) || "".equals(tenantCode.trim()) ? "default" : tenantCode;
+        }
+
+        public void setTenantCode(String tenantCode) {
+            this.tenantCode = tenantCode;
+        }
+
+        public HttpClient getHttpClient() {
+            return httpClient;
+        }
+
+        public void setHttpClient(HttpClient httpClient) {
+            this.httpClient = httpClient;
         }
     }
 

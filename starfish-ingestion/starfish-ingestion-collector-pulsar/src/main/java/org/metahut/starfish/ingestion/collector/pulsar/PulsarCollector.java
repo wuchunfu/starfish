@@ -48,7 +48,8 @@ public class PulsarCollector implements ICollector {
         CollectorResult collectorResult = new CollectorResult();
         try {
             List<ConcurrentHashMap<String, String>> topicMetaDataList = getTopicMetaData();
-            producer.send(parameter.getDatasourceId(), JSONUtils.toJSONString(topicMetaDataList));
+            // TODO what is the key?
+            producer.send("parameter.getDatasourceId()", JSONUtils.toJSONString(topicMetaDataList));
 
         } catch (PulsarAdminException e) {
             throw new IngestionException("get pulsar metaData is error:", e);

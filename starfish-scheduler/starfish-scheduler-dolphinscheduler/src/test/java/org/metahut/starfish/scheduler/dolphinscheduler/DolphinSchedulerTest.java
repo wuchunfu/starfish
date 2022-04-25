@@ -3,7 +3,8 @@ package org.metahut.starfish.scheduler.dolphinscheduler;
 import org.metahut.starfish.scheduler.api.SchedulerProperties;
 import org.metahut.starfish.scheduler.api.SchedulerType;
 import org.metahut.starfish.scheduler.api.parameters.HttpTaskParameter;
-import org.metahut.starfish.scheduler.api.parameters.ScheduleParameter;
+import org.metahut.starfish.scheduler.api.parameters.ScheduleCronParameter;
+import org.metahut.starfish.scheduler.api.parameters.TaskParameter;
 
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.BeforeEach;
@@ -14,7 +15,9 @@ import java.io.IOException;
 import java.time.LocalDateTime;
 import java.time.ZoneId;
 import java.util.Date;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 @Disabled
 public class DolphinSchedulerTest {
@@ -43,16 +46,6 @@ public class DolphinSchedulerTest {
     }
 
     @Test
-    public void testPreviewSchedule() {
-        ScheduleParameter parameter = new ScheduleParameter();
-        parameter.setCrontab("0 30 * * * ?");
-        parameter.setStartTime(new Date());
-        parameter.setEndTime(Date.from(LocalDateTime.now().plusDays(2).atZone(ZoneId.systemDefault()).toInstant()));
-        List<String> strings = scheduler.previewSchedule(parameter);
-        Assertions.assertNotNull(strings);
-    }
-
-    @Test
     public void testQueryProjectCreatedAndAuthorizedByUser() throws IOException {
         String url = "/projects/created-and-authed";
         String json = scheduler.get(url);
@@ -62,14 +55,37 @@ public class DolphinSchedulerTest {
     }
 
     @Test
-    public void testHttpCreateTask() throws IOException {
-        String url = "http://dolphinscheduler.dev.zhaopin.com/dolphinscheduler/projects/4996418468000/task-definition";
-        HttpTaskParameter httpParameter = new HttpTaskParameter();
-        httpParameter.setUrl(url);
-        httpParameter.setMethod("post");
-        httpParameter.setBody(
-                DolphinSchedulerTest.class.getResourceAsStream(jsonFilePath).toString());
-        scheduler.createSingleHttpTask(httpParameter);
+    public void testPreviewSchedule() {
+        ScheduleCronParameter parameter = new ScheduleCronParameter();
+        parameter.setCron("0 30 * * * ?");
+        parameter.setStartTime(new Date());
+        parameter.setEndTime(Date.from(LocalDateTime.now().plusDays(2).atZone(ZoneId.systemDefault()).toInstant()));
+        List<String> strings = scheduler.previewSchedule(parameter);
+        Assertions.assertNotNull(strings);
+    }
+
+    @Test
+    public void testCreateSingleHttpTask() {
+        TaskParameter taskParameter = new TaskParameter();
+
+        taskParameter.setName("http-test-1");
+        taskParameter.setDescription("http test");
+        taskParameter.setTaskType("HTTP");
+        HttpTaskParameter httpTaskParameter = new HttpTaskParameter();
+
+        httpTaskParameter.setUrl("http://localhost:8080");
+        httpTaskParameter.setMethod("POST");
+        // http body
+        Map<String, String> bodyMap = new HashMap<>();
+        bodyMap.put("type", "Hive");
+        bodyMap.put("datasourceId", "1");
+        httpTaskParameter.setBody(JSONUtils.toJSONString(bodyMap));
+
+        taskParameter.setTaskParams(JSONUtils.toJSONString(httpTaskParameter));
+
+        String flowCode = scheduler.createSingleHttpTask(taskParameter);
+
+        Assertions.assertNotNull(flowCode);
     }
 
     @Test
@@ -92,12 +108,6 @@ public class DolphinSchedulerTest {
     @Test
     public void testQueryTaskInstanceLogs() throws IOException {
         DolphinResult result = (DolphinResult) scheduler.queryTaskInstanceLogs();
-        Assertions.assertNotNull(result);
-    }
-
-    @Test
-    public void testQueryTaskDetailLogs() throws IOException {
-        DolphinResult result = (DolphinResult) scheduler.queryTaskDetailLogs();
         Assertions.assertNotNull(result);
     }
 

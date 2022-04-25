@@ -42,4 +42,8 @@ public class SchedulerResult {
         this.status = status;
         this.message = message;
     }
+
+    public static SchedulerResult of(boolean status, String message) {
+        return new SchedulerResult(status, message);
+    }
 }

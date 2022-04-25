@@ -9,7 +9,7 @@ import org.springframework.web.bind.annotation.RestController;
 @RestController
 public class DatasourceControllerImpl implements DatasourceController {
 
-    private DatasourceService datasourceService;
+    private final DatasourceService datasourceService;
 
     public DatasourceControllerImpl(DatasourceService datasourceService) {
         this.datasourceService = datasourceService;

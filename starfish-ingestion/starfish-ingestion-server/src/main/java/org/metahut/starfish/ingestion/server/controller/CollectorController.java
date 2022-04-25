@@ -17,45 +17,29 @@
 
 package org.metahut.starfish.ingestion.server.controller;
 
-import org.metahut.starfish.ingestion.collector.api.AbstractCollectorParameter;
-import org.metahut.starfish.ingestion.collector.api.ICollector;
-import org.metahut.starfish.ingestion.collector.api.IngestionException;
-import org.metahut.starfish.ingestion.collector.api.JSONUtils;
-import org.metahut.starfish.ingestion.server.collector.CollectorPluginHelper;
+import org.metahut.starfish.ingestion.collector.api.CollectorResult;
 import org.metahut.starfish.ingestion.server.dto.CollectorExecuteRequestDTO;
 import org.metahut.starfish.ingestion.server.dto.ResultEntity;
+import org.metahut.starfish.ingestion.server.service.CollectorService;
 
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
-import java.util.Objects;
-
 @RestController
 @RequestMapping("collector")
 public class CollectorController {
 
-    private CollectorPluginHelper collectorPluginHelper;
+    private CollectorService collectorService;
 
-    public CollectorController(CollectorPluginHelper collectorHelper) {
-        this.collectorPluginHelper = collectorHelper;
+    public CollectorController(CollectorService collectorService) {
+        this.collectorService = collectorService;
     }
 
     @PostMapping("execute")
     public ResultEntity execute(@RequestBody CollectorExecuteRequestDTO collectorExecuteRequestDTO) {
-
-        AbstractCollectorParameter parameter = JSONUtils.parseObject(collectorExecuteRequestDTO.getParameter(), AbstractCollectorParameter.class);
-        if (Objects.isNull(parameter) || !parameter.checkParameter()) {
-            throw new IngestionException("collector parameter check exception");
-        }
-
-        // TODO
-        String datasourceParameter = null;
-
-        parameter.setDatasourceParameter(datasourceParameter);
-
-        ICollector collector = collectorPluginHelper.generateInstance(parameter);
-        return ResultEntity.success(collector.execute());
+        CollectorResult result = collectorService.execute(collectorExecuteRequestDTO);
+        return result.isState() ? ResultEntity.success() : ResultEntity.of(10000, result.getMessage());
     }
 }

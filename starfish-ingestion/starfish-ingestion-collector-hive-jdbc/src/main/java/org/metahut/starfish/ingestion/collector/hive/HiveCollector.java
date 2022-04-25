@@ -75,8 +75,9 @@ public class HiveCollector implements ICollector {
         //transform the message
         List<Map<String, Object>> hiveMessages = getTables();
         try {
+            // TODO what is the key?
             producer
-                .send(this.hiveParameter.getDatasourceId(), JSONUtils.toJSONString(hiveMessages));
+                .send("this.hiveParameter.getDatasourceId()", JSONUtils.toJSONString(hiveMessages));
         } catch (Exception e) {
             collectorResult.setState(false);
             collectorResult.setMessage(e.getMessage());

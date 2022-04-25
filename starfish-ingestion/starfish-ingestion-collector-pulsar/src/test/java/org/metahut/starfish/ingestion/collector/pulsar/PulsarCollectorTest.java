@@ -174,7 +174,7 @@ public class PulsarCollectorTest {
         PulsarDatasourceParameter pulsarDatasourceParameter = new PulsarDatasourceParameter();
         pulsarDatasourceParameter.setServerUrl("http://pulsar-idc-qa.zpidc.com:8080");
         PulsarCollectorParameter parameter = new PulsarCollectorParameter();
-        parameter.setDatasourceId("my-topic");
+        // parameter.setDatasourceId("my-topic");
         parameter.setDatasourceParameter(JSONUtils.toJSONString(pulsarDatasourceParameter));
         CollectorResult collectorResult = new PulsarCollectorManager().generateInstance(parameter).execute();
         Assertions.assertNotNull(collectorResult);

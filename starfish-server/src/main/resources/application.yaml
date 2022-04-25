@@ -40,11 +40,13 @@ spring:
     basename: i18n/messages
     encoding: UTF-8
 
-
 starfish:
   scheduler:
     type: dolphinscheduler
     dolphinscheduler:
       service-url: http://dolphinscheduler.dev.zhaopin.com/dolphinscheduler
       project-code: 4996418468000
+  ingestion:
+    service-address: localhost:8802
+    collector-execute-rest: http://{0}/collector/execute
 

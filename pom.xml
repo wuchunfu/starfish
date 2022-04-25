@@ -39,6 +39,7 @@
         <module>starfish-examples</module>
         <module>starfish-autoconfigure</module>
         <module>starfish-datasource</module>
+        <module>starfish-standalone-server</module>
     </modules>
 
     <properties>

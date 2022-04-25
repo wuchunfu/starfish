@@ -17,7 +17,7 @@
 
 starfish:
   message:
-    type: PULSAR
+    type: pulsar
     pulsar:
       service-url: http://pulsar-idc-qa.zpidc.com:8080
       producers:
