@@ -9,6 +9,7 @@ import org.hibernate.annotations.NotFound;
 import org.hibernate.annotations.NotFoundAction;
 import org.hibernate.annotations.Type;
 import org.hibernate.annotations.TypeDef;
+import org.metahut.starfish.store.rdbms.common.PropertyValue;
 import org.springframework.data.annotation.CreatedDate;
 import org.springframework.data.annotation.LastModifiedDate;
 import org.springframework.data.jpa.domain.support.AuditingEntityListener;
@@ -66,7 +67,15 @@ public class RelationEntityProperty extends AbstractEntityProperty<Long, Object,
 
     @Override
     public void setValue(Object value) {
-        this.value = new AbstractMap.SimpleEntry(name, value);
+        this.value = new PropertyValue(name, value);
+    }
+
+    @Override
+    public Object getValue() {
+        if (this.value instanceof PropertyValue) {
+            return ((PropertyValue<?, ?>) this.value).getValue();
+        }
+        return this.value;
     }
 
     @Override

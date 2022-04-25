@@ -1,5 +1,7 @@
 package org.metahut.starfish.store.rdbms.entity;
 
+import java.util.Map;
+import java.util.Map.Entry;
 import org.metahut.starfish.store.model.AbstractEntityProperty;
 
 import com.vladmihalcea.hibernate.type.json.JsonType;
@@ -9,6 +11,7 @@ import org.hibernate.annotations.NotFound;
 import org.hibernate.annotations.NotFoundAction;
 import org.hibernate.annotations.Type;
 import org.hibernate.annotations.TypeDef;
+import org.metahut.starfish.store.rdbms.common.PropertyValue;
 import org.springframework.data.annotation.CreatedDate;
 import org.springframework.data.annotation.LastModifiedDate;
 import org.springframework.data.jpa.domain.support.AuditingEntityListener;
@@ -26,7 +29,6 @@ import javax.persistence.JoinColumn;
 import javax.persistence.ManyToOne;
 import javax.persistence.Table;
 
-import java.util.AbstractMap;
 import java.util.Date;
 
 @Setter
@@ -66,7 +68,15 @@ public class NodeEntityProperty extends AbstractEntityProperty<Long, Object, Nod
 
     @Override
     public void setValue(Object value) {
-        this.value = new AbstractMap.SimpleEntry(name, value);
+        this.value = new PropertyValue(name, value);
+    }
+
+    @Override
+    public Object getValue() {
+        if (this.value instanceof PropertyValue) {
+           return ((PropertyValue<?, ?>) this.value).getValue();
+        }
+        return this.value;
     }
 
     @Override

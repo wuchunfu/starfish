@@ -19,6 +19,7 @@ import org.metahut.starfish.store.rdbms.entity.NodeEntity;
 import org.metahut.starfish.store.rdbms.entity.NodeEntityProperty;
 import org.metahut.starfish.store.rdbms.entity.RelationEntity;
 
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.autoconfigure.AutoConfigureAfter;
 import org.springframework.boot.autoconfigure.condition.ConditionalOnClass;
 import org.springframework.boot.autoconfigure.condition.ConditionalOnMissingBean;

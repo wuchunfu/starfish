@@ -43,7 +43,7 @@ public class NodeEntityRepositoryTest {
         repository.deleteAll();
     }
 
-    @AfterEach
+    // @AfterEach
     public void cleanUp() {
         repository.deleteAll();
     }
@@ -55,6 +55,9 @@ public class NodeEntityRepositoryTest {
         Assertions.assertNotNull(savedEntity.getId());
         Assertions.assertNotNull(savedEntity.getCreateTime());
         Assertions.assertNotNull(savedEntity.getUpdateTime());
+        savedEntity.getProperties().stream().forEach(property -> {
+            System.out.println(property.getValue());
+        });
     }
 
     @ParameterizedTest
