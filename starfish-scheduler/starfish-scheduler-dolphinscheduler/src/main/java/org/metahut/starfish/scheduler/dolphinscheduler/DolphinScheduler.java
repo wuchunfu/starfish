@@ -51,6 +51,7 @@ public class DolphinScheduler implements IScheduler {
         this.properties = properties;
     }
 
+    // TODO  @Deprecated start
     static final HashMap<String, String> formTaskMap = new HashMap<>();
     static final HashMap<String, String> onLineMap = new HashMap<>();
     static HashMap<String, String> schedulerMap = new HashMap<>();
@@ -80,7 +81,6 @@ public class DolphinScheduler implements IScheduler {
         schedulerMap.put("schedule",
                 "{\"startTime\":\"2022-03-30 00:00:00\",\"endTime\":\"2122-03-30 00:00:00\",\"crontab\":\"0 0 * * * ? *\",\"timezoneId\":\"Asia/Shanghai\"}");
 
-
         putMap.put("name", "test_http3");
         putMap.put("locations",
                 "[{\"taskCode\":5028755940768,\"x\":120,\"y\":270},{\"taskCode\":5028755940768,\"x\":120,\"y\":416.0000305175781}]");
@@ -108,6 +108,7 @@ public class DolphinScheduler implements IScheduler {
         putScheduleMap.put("workerGroup", "default");
 
     }
+    // TODO  @Deprecated end
 
     @Override
     public List<String> previewSchedule(ScheduleCronParameter scheduleCronParameter) {
@@ -165,7 +166,7 @@ public class DolphinScheduler implements IScheduler {
     }
 
     @Override
-    public SchedulerResult updateSchedule(ScheduleParameter scheduleParameter) {
+    public void updateSchedule(ScheduleParameter scheduleParameter) {
         String url = MessageFormat.format("/projects/{0}/schedules/update/{1}", properties.getProjectCode(), scheduleParameter.getFlowCode());
         FormBody body = new FormBody.Builder()
                 .add("schedule", JSONUtils.toJSONString(scheduleParameter.getScheduleCronParameter()))
@@ -182,7 +183,6 @@ public class DolphinScheduler implements IScheduler {
 
             // Update schedule status to online
             updateScheduleToOnline(scheduleId);
-            return SchedulerResult.of(true, "success");
         } catch (IOException e) {
             throw new SchedulerException("dolphin scheduler call updateSchedule method exception", e);
         }
@@ -232,10 +232,8 @@ public class DolphinScheduler implements IScheduler {
 
     // -----------------------------------------------------------------------------------------------------------------
 
-    @Override
-    public String createSingleHttpTask(TaskParameter taskParameter) {
-
-        HttpTaskParameter httpTaskParameter = JSONUtils.parseObject(taskParameter.getTaskParams(), HttpTaskParameter.class);
+    private String generateDolphinHttpTaskParameter(String taskParams) {
+        HttpTaskParameter httpTaskParameter = JSONUtils.parseObject(taskParams, HttpTaskParameter.class);
 
         HttpParameter dolphinHttpParameter = new HttpParameter();
         dolphinHttpParameter.setUrl(httpTaskParameter.getUrl());
@@ -274,6 +272,13 @@ public class DolphinScheduler implements IScheduler {
         dolphinHttpParameter.setHttpParams(dolphinHttpProperties);
         dolphinHttpParameter.setConnectTimeout(httpTaskParameter.getConnectTimeout());
         dolphinHttpParameter.setSocketTimeout(httpTaskParameter.getSocketTimeout());
+        return JSONUtils.toJSONString(dolphinHttpParameter);
+    }
+
+    @Override
+    public String createSingleHttpTask(TaskParameter taskParameter) {
+
+        String dolphinHttpParameterJson = generateDolphinHttpTaskParameter(taskParameter.getTaskParams());
 
         Long taskCode;
         try {
@@ -285,7 +290,7 @@ public class DolphinScheduler implements IScheduler {
         // create task definition
         List<TaskDefinitionParameter> dolphinTaskDefinitionList = new ArrayList<>();
         TaskDefinitionParameter dolphinTaskDefinitionParameter = new TaskDefinitionParameter();
-        dolphinTaskDefinitionParameter.setTaskParams(JSONUtils.toJSONString(dolphinHttpParameter));
+        dolphinTaskDefinitionParameter.setTaskParams(dolphinHttpParameterJson);
         dolphinTaskDefinitionParameter.setCode(taskCode);
         dolphinTaskDefinitionParameter.setTaskType("HTTP");
         dolphinTaskDefinitionParameter.setName(taskParameter.getName());
@@ -333,6 +338,20 @@ public class DolphinScheduler implements IScheduler {
         }
     }
 
+    public void updateSingleHttpTask(TaskParameter taskParameter) {
+
+    }
+
+    private void queryFlowByCode(String flowCode) {
+        String url = MessageFormat.format("/projects/{0}/process-definition/{1}", properties.getProjectCode(), flowCode);
+        try {
+            String resultJson = get(url);
+
+        } catch (IOException e) {
+            throw new SchedulerException("dolphin scheduler call queryFlowByCode method exception", e);
+        }
+    }
+
     @Override
     public void deleteFlowByCode(String flowCode) {
         String url = MessageFormat.format("/projects/{0}/process-definition/{1}", properties.getProjectCode(), flowCode);
@@ -350,7 +369,7 @@ public class DolphinScheduler implements IScheduler {
 
     }
 
-    // TODO @Deprecated
+    // TODO @Deprecated start
     public Object queryTaskDefinitionPageList() {
         String url = "http://dolphinscheduler.dev.zhaopin.com/dolphinscheduler/projects/4996418468000/process-definition?pageNo=1&pageSize=10&&searchVal=";
         DolphinResult result = null;
@@ -419,34 +438,36 @@ public class DolphinScheduler implements IScheduler {
         return result;
     }
 
-//    public Object updateTaskDefinition() {
-//        String url = "http://dolphinscheduler.dev.zhaopin.com/dolphinscheduler/projects/4996418468000/process-definition/5028876785952";
-//        DolphinResult result = null;
-//        String cronJson = null;
-//        DolphinResult cronResult = null;
-//        try {
-//            String json = put(url, putMap);
-//            result = JSONUtils.parseObject(json, DolphinResult.class);
-//            if (Objects.isNull(result) || HTTP_SUCCESS != result.getCode()) {
-//                return new SchedulerResult(false, "delete processdefinition is error");
-//            }
-//            schedulerMap
-//                    .put("processDefinitionCode", "5017950541088");
-//            cronJson = put(
-//                    "http://dolphinscheduler.dev.zhaopin.com/dolphinscheduler/projects/4996418468000/schedules/28",
-//                    putScheduleMap);
-//            cronResult = JSONUtils.parseObject(cronJson, DolphinResult.class);
-//        } catch (IOException e) {
-//            e.printStackTrace();
-//        }
-//        return cronResult;
-//    }
+    public Object updateTaskDefinition() {
+        String url = "http://dolphinscheduler.dev.zhaopin.com/dolphinscheduler/projects/4996418468000/process-definition/5028876785952";
+        DolphinResult result = null;
+        String cronJson = null;
+        DolphinResult cronResult = null;
+        //try {
+            // String json = put(url, putMap);
+            // result = JSONUtils.parseObject(json, DolphinResult.class);
+            if (Objects.isNull(result) || HTTP_SUCCESS != result.getCode()) {
+                return new SchedulerResult(false, "delete processdefinition is error");
+            }
+            schedulerMap
+                    .put("processDefinitionCode", "5017950541088");
+            //cronJson = put(
+            //        "http://dolphinscheduler.dev.zhaopin.com/dolphinscheduler/projects/4996418468000/schedules/28",
+            //        putScheduleMap);
+            cronResult = JSONUtils.parseObject(cronJson, DolphinResult.class);
+        //} catch (IOException e) {
+        //    e.printStackTrace();
+        //}
+        return cronResult;
+    }
+
+    // TODO @Deprecated end
 
     // -----------------------------------------------------------------------------------------------------------------
 
     /**
      * get http request
-     * @param url
+     * @param url url
      * @return json response
      * @throws IOException
      */

@@ -26,7 +26,7 @@ public class IngestionServiceImpl implements IngestionService {
         this.ingestionConfiguration = ingestionConfiguration;
     }
 
-    //collector_name, description, datasourceId, collector_params, crontab, scheduler_flow_code，scheduler_cron_code, state
+    //collector_name, description, datasourceId, collector_params, crontab, scheduler_flow_code，scheduler_cron_code???, state
 
     @Override
     public String createCollector(IngestionCollectorRequestDTO ingestionCollectorRequestDTO) {
@@ -66,5 +66,29 @@ public class IngestionServiceImpl implements IngestionService {
 
         // create collector instance
         return null;
+    }
+
+    public void updateCollector(IngestionCollectorRequestDTO ingestionCollectorRequestDTO) {
+
+        // query collector instance by code
+
+        // compare before and after update
+
+        // determine if the schedule flow instance needs to be updated
+
+        // determine if the schedule cron instance needs to be updated
+
+        // update collector instance
+
+    }
+
+    public void deleteCollector() {
+
+        String flowCode = "";
+        // delete schedule flow instance
+        schedulerPluginHelper.getScheduler().deleteFlowByCode(flowCode);
+
+        // delete collector instance
+
     }
 }

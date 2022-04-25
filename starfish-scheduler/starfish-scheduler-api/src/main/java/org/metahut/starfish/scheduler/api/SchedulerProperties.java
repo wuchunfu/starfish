@@ -78,6 +78,15 @@ public class SchedulerProperties {
     }
 
     public static class HttpClient {
+        private int connectTimeout;
+
+        public int getConnectTimeout() {
+            return connectTimeout;
+        }
+
+        public void setConnectTimeout(int connectTimeout) {
+            this.connectTimeout = connectTimeout;
+        }
 
     }
 

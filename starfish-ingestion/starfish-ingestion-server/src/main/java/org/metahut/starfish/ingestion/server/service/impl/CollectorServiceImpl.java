@@ -25,7 +25,7 @@ public class CollectorServiceImpl implements CollectorService {
     @Override
     public CollectorResult execute(CollectorExecuteRequestDTO collectorExecuteRequestDTO) {
 
-        // collector_name, description, datasourceId, collector_params, crontab, scheduler_flow_code，scheduler_cron_code, state
+        // collector_name, description, datasourceId, collector_params, crontab, scheduler_flow_code，scheduler_cron_code???, state
 
         // request: datasourceId, {"type":"Hive", "xxx":"xxx"}
         AbstractCollectorParameter parameter = JSONUtils.parseObject(collectorExecuteRequestDTO.getParameter(), AbstractCollectorParameter.class);

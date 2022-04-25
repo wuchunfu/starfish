@@ -29,28 +29,10 @@ public interface IScheduler extends AutoCloseable {
 
     String createSchedule(ScheduleParameter scheduleParameter);
 
-    SchedulerResult updateSchedule(ScheduleParameter scheduleParameter);
+    void updateSchedule(ScheduleParameter scheduleParameter);
 
     String createSingleHttpTask(TaskParameter taskDefinitionParameter);
 
     void deleteFlowByCode(String flowCode);
 
-//    //查看任务定义（分页）
-//    Object queryTaskDefinitionPageList();
-//
-//    //查看任务定义详情
-//    Object queryTaskDefinitionByCode();
-//
-//    //查看任务日志（分页）
-//    Object queryTaskInstanceLogs();
-//
-//
-//    //删除任务定义
-//    Object deleteTaskDefinitionByCode();
-//
-//    //修改任务定义
-//    Object updateTaskDefinition();
-    // 生成任务
-
-    // 执行任务
 }
