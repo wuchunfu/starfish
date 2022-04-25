@@ -1,4 +1,4 @@
-package org.metahut.starfish.api.utils;
+package org.metahut.starfish.server.utils;
 
 import org.metahut.starfish.api.enums.Status;
 import org.metahut.starfish.api.exception.BusinessException;

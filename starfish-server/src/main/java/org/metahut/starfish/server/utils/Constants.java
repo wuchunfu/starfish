@@ -1,4 +1,4 @@
-package org.metahut.starfish.api.utils;
+package org.metahut.starfish.server.utils;
 
 public class Constants {
 

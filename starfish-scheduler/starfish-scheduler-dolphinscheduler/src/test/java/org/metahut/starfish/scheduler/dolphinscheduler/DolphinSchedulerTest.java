@@ -28,8 +28,6 @@ public class DolphinSchedulerTest {
     private static final String TOKEN = "c6258d4a509df0f1b89f77fb552d8ddf";
     private static final String PROJECT_CODE = "4996418468000";
 
-    public static final String jsonFilePath = "/json/dolphin_httptask.json";
-
     @BeforeEach
     public void before() {
         SchedulerProperties schedulerProperties = new SchedulerProperties();
@@ -86,34 +84,5 @@ public class DolphinSchedulerTest {
         String flowCode = scheduler.createSingleHttpTask(taskParameter);
 
         Assertions.assertNotNull(flowCode);
-    }
-
-    @Test
-    public void testHttpUpdateTask() throws IOException {
-        scheduler.updateTaskDefinition();
-    }
-
-    @Test
-    public void testHttpgetTasks() throws IOException {
-        DolphinResult result = (DolphinResult) scheduler.queryTaskDefinitionPageList();
-        Assertions.assertNotNull(result);
-    }
-
-    @Test
-    public void testQueryTaskDefinitionByCode() throws IOException {
-        DolphinResult result = (DolphinResult) scheduler.queryTaskDefinitionByCode();
-        Assertions.assertNotNull(result);
-    }
-
-    @Test
-    public void testQueryTaskInstanceLogs() throws IOException {
-        DolphinResult result = (DolphinResult) scheduler.queryTaskInstanceLogs();
-        Assertions.assertNotNull(result);
-    }
-
-    @Test
-    public void testDeleteTaskDefinitionByCode() throws IOException {
-        DolphinResult result = (DolphinResult) scheduler.deleteTaskDefinitionByCode();
-        Assertions.assertNotNull(result);
     }
 }

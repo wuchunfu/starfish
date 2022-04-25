@@ -10,8 +10,8 @@ import org.springframework.web.servlet.i18n.LocaleChangeInterceptor;
 
 import java.util.Locale;
 
-import static org.metahut.starfish.api.utils.Constants.LOCALE_COOKIE;
-import static org.metahut.starfish.api.utils.Constants.LOCALE_LANGUAGE;
+import static org.metahut.starfish.server.utils.Constants.LOCALE_COOKIE;
+import static org.metahut.starfish.server.utils.Constants.LOCALE_LANGUAGE;
 
 @Configuration
 public class WebConfiguration implements WebMvcConfigurer {

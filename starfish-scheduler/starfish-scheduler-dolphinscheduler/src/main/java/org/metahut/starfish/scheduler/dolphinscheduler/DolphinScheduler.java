@@ -54,7 +54,6 @@ public class DolphinScheduler implements IScheduler {
     static final HashMap<String, String> formTaskMap = new HashMap<>();
     static final HashMap<String, String> onLineMap = new HashMap<>();
     static HashMap<String, String> schedulerMap = new HashMap<>();
-    static HashMap<String, String> deleteMap = new HashMap<>();
     static HashMap<String, String> putMap = new HashMap<>();
     static HashMap<String, String> putScheduleMap = new HashMap<>();
 
@@ -81,7 +80,6 @@ public class DolphinScheduler implements IScheduler {
         schedulerMap.put("schedule",
                 "{\"startTime\":\"2022-03-30 00:00:00\",\"endTime\":\"2122-03-30 00:00:00\",\"crontab\":\"0 0 * * * ? *\",\"timezoneId\":\"Asia/Shanghai\"}");
 
-        deleteMap.put("code", "5028829411360");
 
         putMap.put("name", "test_http3");
         putMap.put("locations",
@@ -336,6 +334,23 @@ public class DolphinScheduler implements IScheduler {
     }
 
     @Override
+    public void deleteFlowByCode(String flowCode) {
+        String url = MessageFormat.format("/projects/{0}/process-definition/{1}", properties.getProjectCode(), flowCode);
+        try {
+            // Update flow status to online
+            updateFlowState(Long.valueOf(flowCode), ReleaseState.OFFLINE.toString());
+
+            // delete flow by code
+            String resultJson = delete(url);
+            DolphinResult result = JSONUtils.parseObject(resultJson, DolphinResult.class);
+            checkResult(result, "deleteFlowByCode");
+        } catch (IOException e) {
+            throw new SchedulerException("dolphin scheduler call deleteFlowByCode method exception", e);
+        }
+
+    }
+
+    // TODO @Deprecated
     public Object queryTaskDefinitionPageList() {
         String url = "http://dolphinscheduler.dev.zhaopin.com/dolphinscheduler/projects/4996418468000/process-definition?pageNo=1&pageSize=10&&searchVal=";
         DolphinResult result = null;
@@ -351,7 +366,6 @@ public class DolphinScheduler implements IScheduler {
         return result;
     }
 
-    @Override
     public Object queryTaskDefinitionByCode() {
         String url = "http://dolphinscheduler.dev.zhaopin.com/dolphinscheduler/projects/4996418468000/process-definition/5028876785952";
         DolphinResult result = null;
@@ -389,7 +403,6 @@ public class DolphinScheduler implements IScheduler {
         }
     }
 
-    @Override
     public Object queryTaskInstanceLogs() {
         String url = "http://dolphinscheduler.dev.zhaopin.com/dolphinscheduler/projects/4996418468000/task-instances?"
                 + "pageSize=10&pageNo=1&searchVal=&processInstanceId=&host=&stateType=&startDate=&endDate=&executorName=&processInstanceName=";
@@ -406,46 +419,37 @@ public class DolphinScheduler implements IScheduler {
         return result;
     }
 
-    @Override
-    public Object deleteTaskDefinitionByCode() {
-        String url = "http://dolphinscheduler.dev.zhaopin.com/dolphinscheduler/projects/4996418468000/process-definition/5028829411360";
-        DolphinResult result = null;
-        try {
-            String json = delete(url, deleteMap);
-            result = JSONUtils.parseObject(json, DolphinResult.class);
-            if (Objects.isNull(result) || HTTP_SUCCESS != result.getCode()) {
-                return new SchedulerResult(false, "delete processdefinition is error");
-            }
-        } catch (IOException e) {
-            e.printStackTrace();
-        }
-        return result;
-    }
+//    public Object updateTaskDefinition() {
+//        String url = "http://dolphinscheduler.dev.zhaopin.com/dolphinscheduler/projects/4996418468000/process-definition/5028876785952";
+//        DolphinResult result = null;
+//        String cronJson = null;
+//        DolphinResult cronResult = null;
+//        try {
+//            String json = put(url, putMap);
+//            result = JSONUtils.parseObject(json, DolphinResult.class);
+//            if (Objects.isNull(result) || HTTP_SUCCESS != result.getCode()) {
+//                return new SchedulerResult(false, "delete processdefinition is error");
+//            }
+//            schedulerMap
+//                    .put("processDefinitionCode", "5017950541088");
+//            cronJson = put(
+//                    "http://dolphinscheduler.dev.zhaopin.com/dolphinscheduler/projects/4996418468000/schedules/28",
+//                    putScheduleMap);
+//            cronResult = JSONUtils.parseObject(cronJson, DolphinResult.class);
+//        } catch (IOException e) {
+//            e.printStackTrace();
+//        }
+//        return cronResult;
+//    }
 
-    @Override
-    public Object updateTaskDefinition() {
-        String url = "http://dolphinscheduler.dev.zhaopin.com/dolphinscheduler/projects/4996418468000/process-definition/5028876785952";
-        DolphinResult result = null;
-        String cronJson = null;
-        DolphinResult cronResult = null;
-        try {
-            String json = put(url, putMap);
-            result = JSONUtils.parseObject(json, DolphinResult.class);
-            if (Objects.isNull(result) || HTTP_SUCCESS != result.getCode()) {
-                return new SchedulerResult(false, "delete processdefinition is error");
-            }
-            schedulerMap
-                    .put("processDefinitionCode", "5017950541088");
-            cronJson = put(
-                    "http://dolphinscheduler.dev.zhaopin.com/dolphinscheduler/projects/4996418468000/schedules/28",
-                    putScheduleMap);
-            cronResult = JSONUtils.parseObject(cronJson, DolphinResult.class);
-        } catch (IOException e) {
-            e.printStackTrace();
-        }
-        return cronResult;
-    }
+    // -----------------------------------------------------------------------------------------------------------------
 
+    /**
+     * get http request
+     * @param url
+     * @return json response
+     * @throws IOException
+     */
     public String get(String url) throws IOException {
         url = properties.getServiceUrl() + url;
         Request request = new Request.Builder()
@@ -458,24 +462,8 @@ public class DolphinScheduler implements IScheduler {
         }
     }
 
-    public String formPost(String url, Map<String, String> params) throws IOException {
-        FormBody.Builder formBody = new FormBody.Builder();
-        params.entrySet().stream().forEach(map -> {
-            formBody.add(map.getKey(), map.getValue());
-        });
-        Request request = new Request.Builder()
-                .url(url)
-                .post(formBody.build())
-                .addHeader(HEADER_TOKEN_NAME, properties.getToken())
-                .addHeader("Content-type", "application/x-www-form-urlencoded")
-                .build();
-        try (Response response = client.newCall(request).execute()) {
-            return response.body().string();
-        }
-    }
-
     /**
-     * Form post request
+     * Form post http request
      * @param url url
      * @param body form body
      * @return json response
@@ -486,6 +474,18 @@ public class DolphinScheduler implements IScheduler {
         Request request = new Request.Builder()
                 .url(url)
                 .post(body)
+                .addHeader(HEADER_TOKEN_NAME, properties.getToken())
+                .build();
+        try (Response response = client.newCall(request).execute()) {
+            return response.body().string();
+        }
+    }
+
+    public String delete(String url) throws IOException {
+        url = properties.getServiceUrl() + url;
+        Request request = new Request.Builder()
+                .url(url)
+                .delete()
                 .addHeader(HEADER_TOKEN_NAME, properties.getToken())
                 .build();
         try (Response response = client.newCall(request).execute()) {
@@ -506,29 +506,11 @@ public class DolphinScheduler implements IScheduler {
         }
     }
 
-    public String delete(String url, Map<String, String> params) throws IOException {
-        FormBody.Builder deleteBody = new FormBody.Builder();
-        params.entrySet().stream().forEach(map -> {
-            deleteBody.add(map.getKey(), map.getValue());
-        });
+    public String put(String url, FormBody body) throws IOException {
+        url = properties.getServiceUrl() + url;
         Request request = new Request.Builder()
                 .url(url)
-                .delete()
-                .addHeader(HEADER_TOKEN_NAME, properties.getToken())
-                .build();
-        try (Response response = client.newCall(request).execute()) {
-            return response.body().string();
-        }
-    }
-
-    public String put(String url, Map<String, String> params) throws IOException {
-        FormBody.Builder putBody = new FormBody.Builder();
-        params.entrySet().stream().forEach(map -> {
-            putBody.add(map.getKey(), map.getValue());
-        });
-        Request request = new Request.Builder()
-                .url(url)
-                .put(putBody.build())
+                .put(body)
                 .addHeader(HEADER_TOKEN_NAME, properties.getToken())
                 .build();
         try (Response response = client.newCall(request).execute()) {
