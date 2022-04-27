@@ -4,7 +4,6 @@ import org.metahut.starfish.store.model.AbstractNodeEntity;
 import org.metahut.starfish.store.rdbms.entity.NodeEntity;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
-import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.params.ParameterizedTest;
@@ -55,9 +54,7 @@ public class NodeEntityRepositoryTest {
         Assertions.assertNotNull(savedEntity.getId());
         Assertions.assertNotNull(savedEntity.getCreateTime());
         Assertions.assertNotNull(savedEntity.getUpdateTime());
-        savedEntity.getProperties().stream().forEach(property -> {
-            System.out.println(property.getValue());
-        });
+        savedEntity.getProperties().stream().forEach(property -> Assertions.assertNotNull(property.getValue()));
     }
 
     @ParameterizedTest

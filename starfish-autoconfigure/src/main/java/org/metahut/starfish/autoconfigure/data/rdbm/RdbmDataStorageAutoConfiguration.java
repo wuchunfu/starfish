@@ -19,7 +19,6 @@ import org.metahut.starfish.store.rdbms.entity.NodeEntity;
 import org.metahut.starfish.store.rdbms.entity.NodeEntityProperty;
 import org.metahut.starfish.store.rdbms.entity.RelationEntity;
 
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.autoconfigure.AutoConfigureAfter;
 import org.springframework.boot.autoconfigure.condition.ConditionalOnClass;
 import org.springframework.boot.autoconfigure.condition.ConditionalOnMissingBean;
@@ -72,25 +71,27 @@ public class RdbmDataStorageAutoConfiguration {
         return convert(null,category,name,properties);
     }
 
-    private RelationEntity convert(Long id,LinkCategory category,Long headId,Long tailId,String property) {
+    private RelationEntity convert(Long id,LinkCategory category,NodeEntity head,NodeEntity tail,String property) {
         RelationEntity relationEntity = new RelationEntity();
         relationEntity.setId(id);
         relationEntity.setCategory(category.name());
         relationEntity.setName(property);
+        relationEntity.setStartNodeEntity(head);
+        relationEntity.setEndNodeEntity(tail);
         return relationEntity;
     }
 
-    private RelationEntity convert(LinkCategory category,Long headId,Long tailId,String property) {
-        return convert(null,category,headId,tailId,property);
+    private RelationEntity convert(LinkCategory category,NodeEntity head,NodeEntity tail,String property) {
+        return convert(null,category,head,tail,property);
     }
 
     @Bean
     @ConditionalOnMissingBean(AbstractLinkService.class)
-    public AbstractLinkService<Long> linkService(RelationEntityMapper relationEntityMapper) {
+    public AbstractLinkService<Long> linkService(RelationEntityMapper relationEntityMapper,NodeEntityMapper nodeEntityMapper) {
         return new AbstractLinkService<Long>() {
             @Override
             public void link(Long parentId, Long childId, LinkCategory linkCategory) throws AbstractMetaParserException {
-                relationEntityMapper.create(convert(linkCategory,parentId,childId,linkCategory.name()));
+                relationEntityMapper.create(convert(linkCategory, nodeEntityMapper.findById(parentId), nodeEntityMapper.findById(childId),linkCategory.name()));
             }
 
             @Override
@@ -277,14 +278,14 @@ public class RdbmDataStorageAutoConfiguration {
 
             @Override
             public Long create(Long sourceId, Class classInfo, Map<String, Object> properties) throws AbstractMetaParserException {
-                final NodeEntity nodeEntity = convert(TypeCategory.CLASSIFICATION,classInfo.getFullClassName(),properties);
+                final NodeEntity nodeEntity = convert(TypeCategory.CLASSIFICATION,classInfo.fullClassName(),properties);
                 addClassInfo(nodeEntity,classInfo);
                 return nodeEntityMapper.create(nodeEntity).getId();
             }
 
             @Override
             public void update(Long id, Class classInfo, Map<String, Object> properties) throws AbstractMetaParserException {
-                final NodeEntity nodeEntity = convert(id,TypeCategory.CLASSIFICATION,classInfo.getFullClassName(),properties);
+                final NodeEntity nodeEntity = convert(id,TypeCategory.CLASSIFICATION,classInfo.fullClassName(),properties);
                 addClassInfo(nodeEntity,classInfo);
                 nodeEntityMapper.update(nodeEntity);
             }

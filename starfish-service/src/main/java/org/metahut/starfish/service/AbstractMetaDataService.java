@@ -1,12 +1,19 @@
 package org.metahut.starfish.service;
 
 import org.metahut.starfish.parser.domain.enums.LinkCategory;
+import org.metahut.starfish.parser.domain.instance.BatchRequestBody;
 import org.metahut.starfish.parser.domain.instance.Class;
 import org.metahut.starfish.parser.exception.AbstractMetaParserException;
+import org.metahut.starfish.parser.exception.DataValidException;
+
+import com.fasterxml.jackson.core.JsonProcessingException;
+import com.fasterxml.jackson.databind.ObjectMapper;
+import org.springframework.transaction.annotation.Transactional;
 
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collection;
+import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
@@ -23,6 +30,7 @@ import java.util.Map;
  *  分开递归校验？
  *  如果只拷贝节点， 局部校验节点， 然后？
  */
+@Transactional
 public abstract class AbstractMetaDataService<K,T> implements IMetaDataApi<K,T> {
 
     protected abstract ISourceApi<K,T> sourceApi();
@@ -34,6 +42,27 @@ public abstract class AbstractMetaDataService<K,T> implements IMetaDataApi<K,T> 
     protected abstract ILinkApi<K> linkApi();
 
     @Override
+    public K batchCreate(BatchRequestBody<T> batchRequestBody) throws AbstractMetaParserException {
+        K sourceId = createSource(batchRequestBody.getSource().getName(), batchRequestBody.getSource().getAttributes());
+        Map<String, K> classMap = new HashMap<>();
+        for (Class type : batchRequestBody.getTypes()) {
+            classMap.put(type.fullClassName(),createType(sourceId,type,null));
+        }
+        for (Map.Entry<String, List<String>> entry : batchRequestBody.getInstances().entrySet()) {
+            String className = entry.getKey();
+            for (String entityJson : entry.getValue()) {
+                try {
+                    Map map = new ObjectMapper().readValue(entityJson, Map.class);
+                    createEntity(classMap.get(className),"",map);
+                } catch (JsonProcessingException e) {
+                    throw new DataValidException("json data error : " + entityJson);
+                }
+            }
+        }
+        return sourceId;
+    }
+
+    @Override
     public K createSource(String name, Map<String, T> properties) throws AbstractMetaParserException {
         return sourceApi().create(name,properties);
     }
@@ -42,7 +71,7 @@ public abstract class AbstractMetaDataService<K,T> implements IMetaDataApi<K,T> 
     public K createType(K sourceId, Class classInfo, Map<String, T> properties) throws AbstractMetaParserException {
         //TODO valid 创建时候两个type 要不要建立连接？
         K typeId = typeApi().create(sourceId,classInfo,properties);
-        linkApi().link(typeId,sourceId, LinkCategory.SOURCE_TYPE);
+        linkApi().link(sourceId,typeId, LinkCategory.SOURCE_TYPE);
         return typeId;
     }
 
@@ -91,7 +120,7 @@ public abstract class AbstractMetaDataService<K,T> implements IMetaDataApi<K,T> 
                             deleteType(ids);
                             break;
                         case SOURCE_ENTITY:
-                            deleteEntity(childrenIds);
+                            //deleteEntity(childrenIds);
                             break;
                         default:
                     }
@@ -116,7 +145,7 @@ public abstract class AbstractMetaDataService<K,T> implements IMetaDataApi<K,T> 
                     ids.addAll(childrenIds);
                     switch (linkCategory) {
                         case TYPE_ENTITY:
-                            deleteEntity(ids);
+                            deleteEntity(childrenIds);
                             break;
                         default:
                     }
@@ -129,7 +158,11 @@ public abstract class AbstractMetaDataService<K,T> implements IMetaDataApi<K,T> 
 
     @Override
     public void deleteType(Collection<K> ids) throws AbstractMetaParserException {
-        typeApi().delete(ids);
+        if (ids != null) {
+            for (K id : ids) {
+                deleteType(id);
+            }
+        }
     }
 
     @Override
@@ -156,11 +189,11 @@ public abstract class AbstractMetaDataService<K,T> implements IMetaDataApi<K,T> 
 
     @Override
     public void link(K headId, K tailId, String property) throws AbstractMetaParserException {
-
+        graphApi().link(headId,tailId,property);
     }
 
     @Override
     public void crack(K headId, K tailId, String property) throws AbstractMetaParserException {
-
+        graphApi().crack(headId,tailId,property);
     }
 }

@@ -4,19 +4,21 @@ import java.util.Map;
 import java.util.Map.Entry;
 
 /**
- * @author Hua Jiang
+ * author Hua Jiang
  */
 
-public class PropertyValue <K, V> implements Entry<K, V>, java.io.Serializable {
+public class PropertyValue<K, V> implements Entry<K, V>, java.io.Serializable {
     private K key;
     private V value;
 
-    public PropertyValue(){}
+    public PropertyValue() {}
 
     public PropertyValue(K key, V value) {
         this.key = key;
         this.value = value;
     }
+
+    @Override
     public String toString() {
         return key + "=" + value;
     }
@@ -41,16 +43,18 @@ public class PropertyValue <K, V> implements Entry<K, V>, java.io.Serializable {
         return this.value;
     }
 
+    @Override
     public boolean equals(Object o) {
-        if (!(o instanceof Map.Entry))
+        if (!(o instanceof Map.Entry)) {
             return false;
+        }
         Map.Entry<?,?> e = (Map.Entry<?,?>)o;
         return eq(key, e.getKey()) && eq(value, e.getValue());
     }
 
+    @Override
     public int hashCode() {
-        return (key   == null ? 0 :   key.hashCode()) ^
-            (value == null ? 0 : value.hashCode());
+        return (key   == null ? 0 :   key.hashCode()) ^ (value == null ? 0 : value.hashCode());
     }
 
     private static boolean eq(Object o1, Object o2) {

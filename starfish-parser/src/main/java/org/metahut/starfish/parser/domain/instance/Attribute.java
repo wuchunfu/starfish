@@ -2,10 +2,12 @@ package org.metahut.starfish.parser.domain.instance;
 
 import org.metahut.starfish.parser.domain.enums.RelType;
 
+import java.io.Serializable;
+
 /**
  *
  */
-public class Attribute {
+public class Attribute implements Serializable {
 
     /**
      * Attribute Name

@@ -1,13 +1,14 @@
-package org.metahut.starfish.parser.domain.struct;
+package org.metahut.starfish.parser.domain.instance;
 
 import org.metahut.starfish.parser.domain.enums.TagLife;
 
+import java.io.Serializable;
 import java.util.Map;
 
 /**
  *
  */
-public abstract class TagLoader {
+public abstract class TagLoader implements Serializable {
 
     private Map<TagLife, TagModel> tagModelMap;
 

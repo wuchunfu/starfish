@@ -1,8 +1,7 @@
 package org.metahut.starfish.store.rdbms.entity;
 
-import java.util.Map;
-import java.util.Map.Entry;
 import org.metahut.starfish.store.model.AbstractEntityProperty;
+import org.metahut.starfish.store.rdbms.common.PropertyValue;
 
 import com.vladmihalcea.hibernate.type.json.JsonType;
 import lombok.Getter;
@@ -11,7 +10,6 @@ import org.hibernate.annotations.NotFound;
 import org.hibernate.annotations.NotFoundAction;
 import org.hibernate.annotations.Type;
 import org.hibernate.annotations.TypeDef;
-import org.metahut.starfish.store.rdbms.common.PropertyValue;
 import org.springframework.data.annotation.CreatedDate;
 import org.springframework.data.annotation.LastModifiedDate;
 import org.springframework.data.jpa.domain.support.AuditingEntityListener;
@@ -74,7 +72,7 @@ public class NodeEntityProperty extends AbstractEntityProperty<Long, Object, Nod
     @Override
     public Object getValue() {
         if (this.value instanceof PropertyValue) {
-           return ((PropertyValue<?, ?>) this.value).getValue();
+            return ((PropertyValue<?, ?>) this.value).getValue();
         }
         return this.value;
     }

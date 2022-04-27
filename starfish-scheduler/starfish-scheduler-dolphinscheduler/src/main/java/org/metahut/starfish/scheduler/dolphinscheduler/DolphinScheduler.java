@@ -444,17 +444,17 @@ public class DolphinScheduler implements IScheduler {
         String cronJson = null;
         DolphinResult cronResult = null;
         //try {
-            // String json = put(url, putMap);
-            // result = JSONUtils.parseObject(json, DolphinResult.class);
-            if (Objects.isNull(result) || HTTP_SUCCESS != result.getCode()) {
-                return new SchedulerResult(false, "delete processdefinition is error");
-            }
-            schedulerMap
-                    .put("processDefinitionCode", "5017950541088");
-            //cronJson = put(
-            //        "http://dolphinscheduler.dev.zhaopin.com/dolphinscheduler/projects/4996418468000/schedules/28",
-            //        putScheduleMap);
-            cronResult = JSONUtils.parseObject(cronJson, DolphinResult.class);
+        // String json = put(url, putMap);
+        // result = JSONUtils.parseObject(json, DolphinResult.class);
+        if (Objects.isNull(result) || HTTP_SUCCESS != result.getCode()) {
+            return new SchedulerResult(false, "delete processdefinition is error");
+        }
+        schedulerMap
+                .put("processDefinitionCode", "5017950541088");
+        //cronJson = put(
+        //        "http://dolphinscheduler.dev.zhaopin.com/dolphinscheduler/projects/4996418468000/schedules/28",
+        //        putScheduleMap);
+        cronResult = JSONUtils.parseObject(cronJson, DolphinResult.class);
         //} catch (IOException e) {
         //    e.printStackTrace();
         //}

@@ -6,9 +6,9 @@ import java.util.Map;
 /**
  *
  */
-public class BatchRequestBody {
+public class BatchRequestBody<T> {
 
-    private SourceBody source;
+    private SourceBody<T> source;
 
     private List<Class> types;
 
@@ -18,7 +18,7 @@ public class BatchRequestBody {
      */
     private Map<String,List<String>> instances;
 
-    public SourceBody getSource() {
+    public SourceBody<T> getSource() {
         return source;
     }
 
@@ -42,11 +42,11 @@ public class BatchRequestBody {
         this.instances = instances;
     }
 
-    class SourceBody {
+    public static class SourceBody<T> {
 
         private String name;
 
-        private Map<String,Object> attributes;
+        private Map<String,T> attributes;
 
         public String getName() {
             return name;
@@ -56,11 +56,11 @@ public class BatchRequestBody {
             this.name = name;
         }
 
-        public Map<String, Object> getAttributes() {
+        public Map<String, T> getAttributes() {
             return attributes;
         }
 
-        public void setAttributes(Map<String, Object> attributes) {
+        public void setAttributes(Map<String, T> attributes) {
             this.attributes = attributes;
         }
     }

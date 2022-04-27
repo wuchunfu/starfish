@@ -1,5 +1,6 @@
 package org.metahut.starfish.service;
 
+import org.metahut.starfish.parser.domain.instance.BatchRequestBody;
 import org.metahut.starfish.parser.domain.instance.Class;
 import org.metahut.starfish.parser.exception.AbstractMetaParserException;
 
@@ -11,6 +12,14 @@ import java.util.Map;
  */
 interface IMetaDataApi<K,T> {
     //all
+
+    /**
+     * batch create
+     * @param batchRequestBody
+     * @return
+     * @throws AbstractMetaParserException
+     */
+    K batchCreate(BatchRequestBody<T> batchRequestBody) throws AbstractMetaParserException;
 
     /**
      * create a source with properties

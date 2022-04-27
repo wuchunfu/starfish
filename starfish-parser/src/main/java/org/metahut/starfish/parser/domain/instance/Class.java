@@ -1,15 +1,15 @@
 package org.metahut.starfish.parser.domain.instance;
 
 import org.metahut.starfish.parser.domain.SymbolConstants;
-import org.metahut.starfish.parser.domain.struct.TagLoader;
 
+import java.io.Serializable;
 import java.util.List;
 import java.util.concurrent.ThreadLocalRandom;
 
 /**
  *
  */
-public class Class extends TagLoader {
+public class Class extends TagLoader implements Serializable {
 
     /**
      * Serial Version UID
@@ -55,7 +55,10 @@ public class Class extends TagLoader {
         this.packagePath = packagePath;
     }
 
-    public final String getFullClassName() {
+    public final String fullClassName() {
+        if (packagePath == null || packagePath.length() == 0) {
+            return name;
+        }
         return packagePath + SymbolConstants.PACKAGE_SPLIT + name;
     }
 

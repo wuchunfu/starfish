@@ -1,6 +1,7 @@
 package org.metahut.starfish.store.rdbms.entity;
 
 import org.metahut.starfish.store.model.AbstractEntityProperty;
+import org.metahut.starfish.store.rdbms.common.PropertyValue;
 
 import com.vladmihalcea.hibernate.type.json.JsonType;
 import lombok.Getter;
@@ -9,7 +10,6 @@ import org.hibernate.annotations.NotFound;
 import org.hibernate.annotations.NotFoundAction;
 import org.hibernate.annotations.Type;
 import org.hibernate.annotations.TypeDef;
-import org.metahut.starfish.store.rdbms.common.PropertyValue;
 import org.springframework.data.annotation.CreatedDate;
 import org.springframework.data.annotation.LastModifiedDate;
 import org.springframework.data.jpa.domain.support.AuditingEntityListener;
@@ -27,7 +27,6 @@ import javax.persistence.JoinColumn;
 import javax.persistence.ManyToOne;
 import javax.persistence.Table;
 
-import java.util.AbstractMap;
 import java.util.Date;
 
 @Setter
