@@ -44,7 +44,7 @@ spring:
     #    driver-class-name: org.h2.Driver
     #    url: jdbc:h2:mem:starfish;MODE=MySQL;DB_CLOSE_DELAY=-1;DATABASE_TO_LOWER=true;
     driver-class-name: org.postgresql.Driver
-    url: jdbc:postgresql://127.0.0.1:ss06/starfish?serverTimezone=CST
+    url: jdbc:postgresql://127.0.0.1:3306/starfish?serverTimezone=CST
     #    driver-class-name: com.mysql.cj.jdbc.Driver
     #    url: jdbc:mysql://127.0.0.1:3306/starfish?useUnicode=true&characterEncoding=UTF-8&serverTimezone=Asia/Shanghai&rewriteBatchedStatements=true
     username: root

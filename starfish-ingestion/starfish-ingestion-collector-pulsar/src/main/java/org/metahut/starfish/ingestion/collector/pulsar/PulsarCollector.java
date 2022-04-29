@@ -193,25 +193,20 @@ public class PulsarCollector implements ICollector {
                                 types.add(pulsarSchema);
                                 types.add(pulsarSchemaType);
                                 //topic metaInstance info
-                                List<String> topicMetaInfo = new ArrayList<>();
-                                topicMetaInfo.add("{\"topic\":\"" + topic + "\"}");
+                                Map<String, Object> topicMetaInfo = new HashMap<>();
+                                topicMetaInfo.put("topic", topic);
                                 String perType = topic.split("://")[0];
                                 if (nonPersistent.equals(perType)) {
-                                    topicMetaInfo.add(
-                                        "{\"persistent\":\"" + false + "\"}");
+                                    topicMetaInfo.put("persistent", false);
                                 } else {
-                                    topicMetaInfo.add(
-                                        "{\"persistent\":\"" + true + "\"}");
+                                    topicMetaInfo.put("persistent", true);
                                 }
-                                topicMetaInfo.add(
-                                    "{\"namespace\":\"" + entry.getKey() + "\"}");
+                                topicMetaInfo.put("namespace", entry.getKey());
                                 try {
                                     if (CollectionUtils.isNotEmpty(admin.namespaces()
                                         .getNamespaceReplicationClusters(entry.getKey()))) {
-                                        topicMetaInfo.add(
-                                            "{\"clusters\":\"" + admin.namespaces()
-                                                .getNamespaceReplicationClusters(entry.getKey())
-                                                + "\"}");
+                                        topicMetaInfo.put("clusters", admin.namespaces()
+                                            .getNamespaceReplicationClusters(entry.getKey()));
                                     }
                                 } catch (PulsarAdminException e) {
                                     throw new IngestionException(
@@ -221,9 +216,8 @@ public class PulsarCollector implements ICollector {
                                 try {
                                     if (CollectionUtils
                                         .isNotEmpty(admin.topics().getSubscriptions(topic))) {
-                                        topicMetaInfo.add(
-                                            "{\"subscribe\":\"" + admin.topics().getSubscriptions(topic)
-                                                + "\"}");
+                                        topicMetaInfo.put(
+                                            "subscribe", admin.topics().getSubscriptions(topic));
                                     }
                                 } catch (PulsarAdminException e) {
                                     throw new IngestionException(
@@ -231,21 +225,21 @@ public class PulsarCollector implements ICollector {
                                 }
 
                                 HashMap<String, List<String>> instances = new HashMap<String, List<String>>();
+                                HashMap<String, Object> schema = new HashMap<>();
+                                HashMap<String, Object> schemaType = new HashMap<>();
                                 try {
-                                    HashMap schemaMap = new HashMap<String, Object>();
-                                    schemaMap.put("schema", admin.schemas()
+                                    schema.put("schema", admin.schemas()
                                         .getSchemaInfo(topic).getSchemaDefinition());
                                     instances.put("org.starfish.Schema",
                                         Arrays.asList(
-                                            JSONUtils.toJSONString(schemaMap))
-                                    );
+                                            JSONUtils.toJSONString(schema)));
+                                    schemaType.put("schemaType", admin.schemas()
+                                        .getSchemaInfo(topic).getType().name());
                                     instances.put("org.starfish.SchemaType",
                                         Arrays.asList(
-                                            "{\"schemaType\":\"" + admin.schemas()
-                                                .getSchemaInfo(topic).getType().name() + "\"}"
-                                        ));
+                                            JSONUtils.toJSONString(schemaType)));
                                     instances.put("org.starfish.Topic",
-                                        topicMetaInfo);
+                                        Arrays.asList(JSONUtils.toJSONString(topicMetaInfo)));
                                 } catch (PulsarAdminException e) {
                                     e.printStackTrace();
                                 }
