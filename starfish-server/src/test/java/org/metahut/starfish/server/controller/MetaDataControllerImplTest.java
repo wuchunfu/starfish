@@ -3,6 +3,7 @@ package org.metahut.starfish.server.controller;
 import org.metahut.starfish.api.controller.MetaDataController;
 import org.metahut.starfish.api.dto.BatchMetaDataDTO;
 
+import org.junit.jupiter.api.Disabled;
 import org.junit.jupiter.api.Test;
 import org.springframework.boot.test.context.SpringBootTest;
 
@@ -18,6 +19,7 @@ import java.util.Map;
  *
  */
 @SpringBootTest
+@Disabled
 public class MetaDataControllerImplTest {
 
     @Resource
@@ -31,7 +33,8 @@ public class MetaDataControllerImplTest {
         sourceBodyDTO.setAttributes(null);
         dto.setSource(sourceBodyDTO);
         Map<String, List<String>> instances = new HashMap<>();
-        instances.put("org.starfish.HiveColumn", Arrays.asList("{\"columnName\":\"username\",\"columnType\":\"varchar\"}"));
+        instances.put("org.starfish.HiveColumn",
+            Arrays.asList("{\"columnName\":\"username\",\"columnType\":\"varchar\"}"));
         instances.put("org.starfish.HiveTable", Arrays.asList("{\"tableName\":\"tb_user\"}"));
         dto.setInstances(instances);
         List<BatchMetaDataDTO.ClassDTO> types = new ArrayList<>();

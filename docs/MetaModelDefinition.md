@@ -80,9 +80,9 @@ StorageDescriptor :   Hive文件存储信息元数据
          String pkeyType 分区字段类型
          int integerIndex 分区字段顺序
 }     
-    map<String,String> parameters:{ 存储序列化的一些属性、格式信息,比如：行、列分隔符
-       String param_key 例如:field.delim(字段分隔符)
-       String param_value 例如：, ;
+    map<String,String> parameters:{//分区
+       String param_key 例如:分区属性名
+       String param_value 例如：分区属性值, ;
     })
    String viewOriginalText, 视图的原始HQL语句
    String viewExpandedText, 视图的详细HQL语句

@@ -1,5 +1,6 @@
 package org.metahut.starfish.ingestion.collector.pulsar;
 
+import org.metahut.starfish.api.dto.BatchMetaDataDTO;
 import org.metahut.starfish.datasource.pulsar.PulsarDatasource;
 import org.metahut.starfish.datasource.pulsar.PulsarDatasourceManager;
 import org.metahut.starfish.ingestion.collector.api.CollectorResult;
@@ -57,6 +58,11 @@ public class PulsarCollector implements ICollector {
         collectorResult.setMessage("get metaData is sucess");
         collectorResult.setState(true);
         return collectorResult;
+    }
+
+    @Override
+    public List<BatchMetaDataDTO> getMsg() {
+        return null;
     }
 
     public List<ConcurrentHashMap<String, String>> getTopicMetaData() throws PulsarAdminException {

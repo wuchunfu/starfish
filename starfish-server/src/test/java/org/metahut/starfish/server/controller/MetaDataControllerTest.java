@@ -6,6 +6,7 @@ import org.metahut.starfish.parser.domain.instance.Class;
 import org.metahut.starfish.parser.exception.AbstractMetaParserException;
 import org.metahut.starfish.service.AbstractMetaDataService;
 
+import org.junit.jupiter.api.Disabled;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
@@ -21,6 +22,7 @@ import java.util.Map;
  */
 @Transactional
 @SpringBootTest
+@Disabled
 public class MetaDataControllerTest {
 
     @Autowired

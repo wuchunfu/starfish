@@ -39,7 +39,25 @@ spring:
   messages:
     basename: i18n/messages
     encoding: UTF-8
-
+  datasource:
+    #    type: com.zaxxer.hikari.HikariDataSource
+    #    driver-class-name: org.h2.Driver
+    #    url: jdbc:h2:mem:starfish;MODE=MySQL;DB_CLOSE_DELAY=-1;DATABASE_TO_LOWER=true;
+    driver-class-name: org.postgresql.Driver
+    url: jdbc:postgresql://127.0.0.1:ss06/starfish?serverTimezone=CST
+    #    driver-class-name: com.mysql.cj.jdbc.Driver
+    #    url: jdbc:mysql://127.0.0.1:3306/starfish?useUnicode=true&characterEncoding=UTF-8&serverTimezone=Asia/Shanghai&rewriteBatchedStatements=true
+    username: root
+    password: root
+    sql:
+      init:
+        schema-locations: "classpath:sql/starfish_h2.sql"
+    jpa:
+      properties:
+        hibernate:
+          hbm2ddl:
+            auto: update
+      show-sql: true
 starfish:
   scheduler:
     type: dolphinscheduler
@@ -50,3 +68,6 @@ starfish:
     service-address: localhost:8802
     collector-execute-rest: http://{0}/collector/execute
 
+
+
+    database-platform: org.hibernate.dialect.H2Dialect

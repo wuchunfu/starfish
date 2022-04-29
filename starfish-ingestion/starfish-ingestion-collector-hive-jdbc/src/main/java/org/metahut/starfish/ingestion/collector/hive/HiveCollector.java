@@ -1,9 +1,12 @@
 package org.metahut.starfish.ingestion.collector.hive;
 
+import org.metahut.starfish.api.controller.MetaDataController;
+import org.metahut.starfish.api.dto.BatchMetaDataDTO;
 import org.metahut.starfish.datasource.hive.HiveDatasource;
 import org.metahut.starfish.datasource.hive.HiveDatasourceManager;
 import org.metahut.starfish.ingestion.collector.api.CollectorResult;
 import org.metahut.starfish.ingestion.collector.api.ICollector;
+import org.metahut.starfish.ingestion.collector.api.IngestionException;
 import org.metahut.starfish.ingestion.collector.api.JSONUtils;
 import org.metahut.starfish.ingestion.common.MetaMessageProducer;
 import org.metahut.starfish.message.api.IMessageProducer;
@@ -13,6 +16,7 @@ import org.apache.hadoop.hive.metastore.IMetaStoreClient;
 import org.apache.hadoop.hive.metastore.api.FieldSchema;
 import org.apache.hadoop.hive.metastore.api.Table;
 import org.apache.thrift.TException;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.core.io.ClassPathResource;
 
 import java.io.IOException;
@@ -51,7 +55,7 @@ public class HiveCollector implements ICollector {
             InputStream fileInputStream = classPathResource.getInputStream();
             properties.load(fileInputStream);
         } catch (IOException e) {
-            e.printStackTrace();
+            throw new IngestionException(e.getMessage());
         }
         hiveMetaColumn = Arrays.stream(properties.get("METADATA").toString().split(","))
             .map(String::trim).collect(
@@ -73,15 +77,13 @@ public class HiveCollector implements ICollector {
     public CollectorResult execute() {
         CollectorResult collectorResult = new CollectorResult();
         //transform the message
-        List<Map<String, Object>> hiveMessages = getTables();
+        List<BatchMetaDataDTO> hiveMessages = getMsg();
         try {
             // TODO what is the key?
             producer
-                .send("this.hiveParameter.getDatasourceId()", JSONUtils.toJSONString(hiveMessages));
+                .send("testHive", JSONUtils.toJSONString(hiveMessages));
         } catch (Exception e) {
-            collectorResult.setState(false);
-            collectorResult.setMessage(e.getMessage());
-            return collectorResult;
+            throw new IngestionException(e.getMessage());
         }
         collectorResult.setState(true);
         collectorResult.setMessage("send hive messages is success");
@@ -89,7 +91,7 @@ public class HiveCollector implements ICollector {
     }
 
     //table metaData
-    public List<Map<String, Object>> getTables() {
+    public List<BatchMetaDataDTO> getMsg() {
 
         Map<String, List<Table>> dataBase = new HashMap<>();
         try {
@@ -100,55 +102,70 @@ public class HiveCollector implements ICollector {
                         try {
                             tables.add(metaClient.getTable(dbName, tbName));
                         } catch (TException e) {
-                            e.printStackTrace();
+                            throw new IngestionException(e.getMessage());
                         }
                     });
                     dataBase.put(dbName, tables);
                 } catch (TException e) {
-                    e.printStackTrace();
+                    throw new IngestionException(e.getMessage());
                 }
             });
         } catch (TException e) {
-            e.printStackTrace();
+            throw new IngestionException(e.getMessage());
         }
         return dataBase.entrySet().stream().map(Entry::getValue
         ).flatMap(Collection::stream).collect(Collectors.toList()).stream().map(table -> {
-            HashMap<String, Object> hiveMetaData = new HashMap<>();
+            BatchMetaDataDTO dto = new BatchMetaDataDTO();
+            BatchMetaDataDTO.SourceBodyDTO sourceBodyDTO = new BatchMetaDataDTO.SourceBodyDTO();
+            sourceBodyDTO.setName("Hive");
+            sourceBodyDTO.setAttributes(null);
+            dto.setSource(sourceBodyDTO);
+
             Class<? extends Table> clazz = table.getClass();
             Field[] fields = clazz.getDeclaredFields();
-            HashMap classInfo = new HashMap();
-            classInfo.put("packagePath", "default");
-            classInfo.put("name", "hiveTable");
-            List<HashMap<String, Object>> attrList = geHiveMetaClassInfo(table, fields);
-            classInfo.put("attribute", attrList);
-            Map<String, Object> instanceInfo = geHiveMetaClassInstance(table, fields);
+            List<String> instanceInfo = geHiveMetaInstance(table, fields);
+
             List<FieldSchema> fieldSchemaList = table.getSd().getCols();
-            HashMap columnInfo = new HashMap();
-            columnInfo.put("packagePath", "default");
-            columnInfo.put("name", "hiveColumn");
-            List<Map<String, Object>> fieldMetaClassList = fieldSchemaList.stream()
+            List<String> fieldMetaInsatnceList = fieldSchemaList.stream()
                 .map(fieldSchema -> {
                     HashMap<String, Object> props = new HashMap<>();
-                    props.put("name", fieldSchema.getName());
-                    props.put("className", fieldSchema.getType());
-                    props.put("RelType", RelType.PRIMITIVE);
-                    props.put("array", false);
-                    return props;
+                    props.put("columnName", fieldSchema.getName());
+                    props.put("columnType", fieldSchema.getType());
+                    return JSONUtils.toJSONString(props);
                 }).collect(Collectors.toList());
-            columnInfo.put("attribute", fieldMetaClassList);
-            List<Map<String, Object>> fieldMetaInsatnceList = fieldSchemaList.stream()
-                .map(fieldSchema -> {
-                    HashMap<String, Object> props = new HashMap<>();
-                    props.put("name", fieldSchema.getName());
-                    props.put("type", fieldSchema.getType());
-                    props.put("comment", fieldSchema.getComment());
-                    return props;
-                }).collect(Collectors.toList());
-            hiveMetaData.put("tableClassInfo", classInfo);
-            hiveMetaData.put("tableInstanceInfo", instanceInfo);
-            hiveMetaData.put("fieldMetaClassList", fieldMetaClassList);
-            hiveMetaData.put("fieldMetaInsatnceList", fieldMetaInsatnceList);
-            return hiveMetaData;
+            HashMap<String, List<String>> hiveMetaData = new HashMap<>();
+
+            hiveMetaData.put("org.starfish.HiveTable", instanceInfo);
+            hiveMetaData.put("org.starfish.HiveColumn", fieldMetaInsatnceList);
+            dto.setInstances(hiveMetaData);
+            List<BatchMetaDataDTO.ClassDTO> types = new ArrayList<>();
+
+            BatchMetaDataDTO.ClassDTO hiveTable = new BatchMetaDataDTO.ClassDTO();
+            hiveTable.setName("HiveTable");
+            hiveTable.setPackagePath("org.starfish");
+            List<BatchMetaDataDTO.AttributeDTO> attrList = geHiveMetaClassInfo(table, fields);
+            hiveTable.setAttributes(attrList);
+            types.add(hiveTable);
+
+            BatchMetaDataDTO.ClassDTO hiveColumn = new BatchMetaDataDTO.ClassDTO();
+            hiveColumn.setPackagePath("org.starfish");
+            hiveColumn.setName("HiveColumn");
+            hiveColumn.setAttributes(new ArrayList<>());
+            BatchMetaDataDTO.AttributeDTO tableNameAttr = new BatchMetaDataDTO.AttributeDTO();
+            tableNameAttr.setName("columnName");
+            tableNameAttr.setArray(false);
+            tableNameAttr.setClassName("String");
+            tableNameAttr.setRelType("PRIMITIVE");
+            hiveColumn.getAttributes().add(tableNameAttr);
+            BatchMetaDataDTO.AttributeDTO columnsAttr = new BatchMetaDataDTO.AttributeDTO();
+            columnsAttr.setRelType("PRIMITIVE");
+            columnsAttr.setClassName("String");
+            columnsAttr.setArray(false);
+            columnsAttr.setName("columnType");
+            hiveColumn.getAttributes().add(columnsAttr);
+            types.add(hiveColumn);
+            dto.setTypes(types);
+            return dto;
         }).collect(Collectors.toList());
     }
 
@@ -159,24 +176,26 @@ public class HiveCollector implements ICollector {
      * @param fields
      * @return
      */
-    private List<HashMap<String, Object>> geHiveMetaClassInfo(Object table, Field[] fields) {
-        List<HashMap<String, Object>> attrList = new ArrayList<>();
+    private List<BatchMetaDataDTO.AttributeDTO> geHiveMetaClassInfo(Object table, Field[] fields) {
+        List<BatchMetaDataDTO.AttributeDTO> attrList = new ArrayList<>();
         for (Field field : fields) {
             field.setAccessible(true);
-            HashMap<String, Object> props = new HashMap<>();
-            try {
-                props.put("name", field.get(table));
-                props.put("className", field.getType());
-                props.put("RelType", RelType.PRIMITIVE);
-                if (field.get(table) instanceof Collection) {
-                    props.put("array", true);
-                } else {
-                    props.put("array", false);
+            if (hiveMetaColumn.contains(field.getName())) {
+                BatchMetaDataDTO.AttributeDTO props = new BatchMetaDataDTO.AttributeDTO();
+                try {
+                    if (field.get(table) instanceof Collection) {
+                        props.setArray(true);
+                    } else {
+                        props.setArray(false);
+                    }
+                } catch (IllegalAccessException e) {
+                    throw new IngestionException(e.getMessage());
                 }
-            } catch (IllegalAccessException e) {
-                e.printStackTrace();
+                props.setName(field.getName());
+                props.setClassName(field.getType().getName());
+                props.setRelType("PRIMITIVE");
+                attrList.add(props);
             }
-            attrList.add(props);
         }
         return attrList;
     }
@@ -188,32 +207,33 @@ public class HiveCollector implements ICollector {
      * @param fields
      * @return
      */
-    private HashMap<String, Object> geHiveMetaClassInstance(Table table, Field[] fields) {
-        HashMap<String, Object> metaInstance = new HashMap<>();
+    private List<String> geHiveMetaInstance(Table table, Field[] fields) {
+        List<String> hiveMetaData = new ArrayList<>();
         for (Field field : fields) {
             try {
                 if (hiveMetaColumn.contains(field.getName())) {
+                    HashMap<String, Object> metaInstance = new HashMap<>();
                     field.setAccessible(true);
                     if (partitionKeys.equals(field.getName())) {
-                        metaInstance
+                        HashMap<String, Object> partitionStatusInstance = new HashMap<>();
+                        partitionStatusInstance
                             .put(partitionStatus,
                                 table.getPartitionKeys().size() > 0 ? true : false);
-                        metaInstance.put(partitionKeys,
+                        hiveMetaData.add(JSONUtils.toJSONString(partitionStatusInstance));
+                        HashMap<String, Object> partitionKeysInstance = new HashMap<>();
+                        partitionKeysInstance.put(partitionKeys,
                             Objects.nonNull(table.getPartitionKeys()) ? table.getPartitionKeys()
                                 : new ArrayList<>());
-                    }
-                    metaInstance.put(field.getName(), field.get(table));
-                    metaInstance.put("className", field.getType());
-                    if (field.get(table) instanceof Collection) {
-                        metaInstance.put("array", true);
+                        hiveMetaData.add(JSONUtils.toJSONString(partitionKeysInstance));
                     } else {
-                        metaInstance.put("array", false);
+                        metaInstance.put(field.getName(), field.get(table));
                     }
+                    hiveMetaData.add(JSONUtils.toJSONString(metaInstance));
                 }
             } catch (IllegalAccessException e) {
-                e.printStackTrace();
+                throw new IngestionException(e.getMessage());
             }
         }
-        return metaInstance;
+        return hiveMetaData;
     }
 }

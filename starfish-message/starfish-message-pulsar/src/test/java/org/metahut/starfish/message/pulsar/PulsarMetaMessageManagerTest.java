@@ -25,11 +25,13 @@ import org.metahut.starfish.message.api.MessageProperties;
 import org.metahut.starfish.message.api.MessageType;
 
 import org.junit.jupiter.api.AfterEach;
+import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Disabled;
 import org.junit.jupiter.api.Test;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.springframework.util.CollectionUtils;
 
 import java.util.HashMap;
 import java.util.List;
@@ -39,12 +41,14 @@ import java.util.Objects;
 @Disabled
 class PulsarMetaMessageManagerTest {
 
-    private static final Logger logger = LoggerFactory.getLogger(PulsarMetaMessageManagerTest.class);
+    private static final Logger logger = LoggerFactory
+        .getLogger(PulsarMetaMessageManagerTest.class);
 
     private PulsarMessageManager pulsarMessageManager;
 
     private static final String PULSAR_SERVICE_URL = "http://pulsar-idc-qa.zpidc.com:8080";
     private static final String PULSAR_PRODUCER_1_NAME = "metaProducer";
+    private static final String PULSAR_CONSUMER_1_NAME = "metaConsumer";
 
     @BeforeEach
     public void before() throws MessageException {
@@ -63,7 +67,10 @@ class PulsarMetaMessageManagerTest {
         pulsar.setProducers(producerMap);
 
         Map<String, MessageProperties.PulsarConsumer> consumerMap = new HashMap<>();
-
+        MessageProperties.PulsarConsumer pulsarConsumer = new MessageProperties.PulsarConsumer();
+        pulsarConsumer.setTopicName("my-topic");
+        pulsarConsumer.setSubscriptionName("my-subscription");
+        consumerMap.put(PULSAR_CONSUMER_1_NAME, pulsarConsumer);
         pulsar.setConsumers(consumerMap);
 
         pulsarMessageManager = new PulsarMessageManager(messageProperties);
@@ -84,17 +91,18 @@ class PulsarMetaMessageManagerTest {
 
     @Test
     public void testConsumer() throws MessageException {
-        IMessageConsumer consumer = pulsarMessageManager.getConsumer(PULSAR_PRODUCER_1_NAME);
+        IMessageConsumer consumer = pulsarMessageManager.getConsumer(PULSAR_CONSUMER_1_NAME);
 
         while (true) {
             try {
                 List<ConsumerResult> result = consumer.batchReceive();
-
+                if (!CollectionUtils.isEmpty(result)) {
+                    Assertions.assertNotNull(result);
+                }
             } catch (MessageException e) {
                 logger.error(e.getMessage(), e);
             }
         }
-
     }
 
 }
