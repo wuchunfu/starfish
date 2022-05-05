@@ -39,6 +39,10 @@ spring:
   messages:
     basename: i18n/messages
     encoding: UTF-8
+  mvc:
+    pathmatch:
+      matching-strategy: ant_path_matcher
+
   datasource:
     #    type: com.zaxxer.hikari.HikariDataSource
     #    driver-class-name: org.h2.Driver
@@ -58,6 +62,8 @@ spring:
           hbm2ddl:
             auto: update
       show-sql: true
+      database-platform: org.hibernate.dialect.H2Dialect
+
 starfish:
   scheduler:
     type: dolphinscheduler
@@ -68,6 +74,5 @@ starfish:
     service-address: localhost:8802
     collector-execute-rest: http://{0}/collector/execute
 
-
-
-    database-platform: org.hibernate.dialect.H2Dialect
+knife4j:
+  enable: true

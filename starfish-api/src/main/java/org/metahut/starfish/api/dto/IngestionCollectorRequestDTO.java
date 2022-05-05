@@ -2,12 +2,23 @@ package org.metahut.starfish.api.dto;
 
 import org.metahut.starfish.api.enums.ReleaseStateEnum;
 
+import io.swagger.annotations.ApiModel;
+import io.swagger.annotations.ApiModelProperty;
+
+@ApiModel(description = "ingestion collector request dto")
 public class IngestionCollectorRequestDTO {
 
+    @ApiModelProperty(value = "collector name", required = true)
     private String name;
     private String description;
+
+    @ApiModelProperty(value = "datasource id", required = true)
     private String datasourceId;
+
+    @ApiModelProperty(value = "collector plugin parameter", required = true)
     private String parameter;
+
+    @ApiModelProperty(value = "cron expression", required = true)
     private String cron;
     private ReleaseStateEnum state;
 

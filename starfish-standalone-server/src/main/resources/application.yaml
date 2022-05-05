@@ -39,6 +39,9 @@ spring:
   messages:
     basename: i18n/messages
     encoding: UTF-8
+  mvc:
+    pathmatch:
+      matching-strategy: ant_path_matcher
 
 starfish:
   scheduler:
@@ -52,3 +55,5 @@ starfish:
     service-host: localhost:8080
     collector-execute-url: http://{0}/collector/execute
 
+knife4j:
+  enable: true
