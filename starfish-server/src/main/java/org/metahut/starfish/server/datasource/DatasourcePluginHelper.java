@@ -23,7 +23,6 @@ public class DatasourcePluginHelper {
     @PostConstruct
     public void init() {
         ServiceLoader.load(IDatasourceManager.class).forEach(manager -> {
-
             String type = manager.getType();
             IDatasourceManager datasourceManager = datasourceMap.get(type);
 

@@ -26,6 +26,7 @@ import org.apache.hadoop.hive.metastore.IMetaStoreClient;
 import org.apache.hadoop.hive.metastore.RetryingMetaStoreClient;
 import org.apache.hadoop.hive.metastore.api.MetaException;
 
+import java.sql.Connection;
 import java.util.Objects;
 
 public class HiveDatasource implements IDatasource {
@@ -34,13 +35,26 @@ public class HiveDatasource implements IDatasource {
 
     private IMetaStoreClient metaClient;
 
+    private static Connection conn;
+
     public HiveDatasource(HiveDatasourceParameter parameter) {
         this.parameter = parameter;
     }
 
     @Override
     public DatasourceResult testConnection() {
-        return null;
+
+        Configuration conf = new Configuration();
+        conf.set("hive.metastore.uris", parameter.getJdbcUrl());
+        try {
+            metaClient = RetryingMetaStoreClient.getProxy(conf, false);
+        } catch (MetaException e) {
+            return new DatasourceResult(false, e.toString());
+        }
+        if (Objects.isNull(metaClient)) {
+            return new DatasourceResult(false, "connect is error!");
+        }
+        return new DatasourceResult(true, "connect is success!");
     }
 
     @Override

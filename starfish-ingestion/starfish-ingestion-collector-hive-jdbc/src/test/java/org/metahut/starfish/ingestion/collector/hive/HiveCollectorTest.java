@@ -80,9 +80,9 @@ public class HiveCollectorTest {
         hiveDatasourceParameter.setDriverClassName("org.apache.hive.jdbc.HiveDriver");
         hiveDatasourceParameter.setJdbcUrl("thrift://172.21.100.231:9083");
         hiveCollectorParameter
-            .setDatasourceParameter(JSONUtils.toJSONString(hiveDatasourceParameter));
+                .setDatasourceParameter(JSONUtils.toJSONString(hiveDatasourceParameter));
         CollectorResult result = new HiveCollectorManager().generateInstance(hiveCollectorParameter)
-            .execute();
+                .execute();
         Assertions.assertNotNull(result);
     }
 
@@ -93,10 +93,10 @@ public class HiveCollectorTest {
         hiveDatasourceParameter.setDriverClassName("org.apache.hive.jdbc.HiveDriver");
         hiveDatasourceParameter.setJdbcUrl("thrift://172.21.100.231:9083");
         hiveCollectorParameter
-            .setDatasourceParameter(JSONUtils.toJSONString(hiveDatasourceParameter));
+                .setDatasourceParameter(JSONUtils.toJSONString(hiveDatasourceParameter));
         List<BatchMetaDataDTO> result = new HiveCollectorManager()
-            .generateInstance(hiveCollectorParameter)
-            .getMsg();
+                .generateInstance(hiveCollectorParameter)
+                .getMsg();
         doPostJson(url, JSONUtils.toJSONString(result.get(1)));
         Assertions.assertNotNull(result);
     }
@@ -106,7 +106,7 @@ public class HiveCollectorTest {
             HttpClientBuilder httpClientBuilder = HttpClientBuilder.create();
             HttpPost httpPost = new HttpPost(url);
             RequestConfig requestConfig = RequestConfig.custom().setSocketTimeout(60000)
-                .setConnectTimeout(600000).build();
+                    .setConnectTimeout(600000).build();
             httpPost.setConfig(requestConfig);
             httpPost.setHeader("Content-Type", "application/json;charset=UTF-8");
             StringEntity stringEntity = new StringEntity(params);
@@ -120,7 +120,7 @@ public class HiveCollectorTest {
 
     public static String postResponse(HttpClientBuilder httpClientBuilder, HttpPost httpPost) {
         try (CloseableHttpResponse closeableHttpResponse = httpClientBuilder.build()
-            .execute(httpPost)) {
+                .execute(httpPost)) {
             HttpEntity httpEntity = closeableHttpResponse.getEntity();
             return EntityUtils.toString(httpEntity, "UTF-8");
         } catch (Exception ex) {

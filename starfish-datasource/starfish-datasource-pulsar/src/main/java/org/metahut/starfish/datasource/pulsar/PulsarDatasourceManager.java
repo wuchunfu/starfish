@@ -9,7 +9,7 @@ import java.util.Objects;
 public class PulsarDatasourceManager implements IDatasourceManager {
     @Override
     public String getType() {
-        return null;
+        return "Pulsar";
     }
 
     @Override

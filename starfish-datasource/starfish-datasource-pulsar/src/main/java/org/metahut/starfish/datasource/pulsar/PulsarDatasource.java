@@ -20,7 +20,18 @@ public class PulsarDatasource implements IDatasource {
 
     @Override
     public DatasourceResult testConnection() {
-        return null;
+        try {
+            PulsarAdmin.builder()
+                    .serviceHttpUrl(parameter.getServerUrl())
+                    .build();
+        } catch (PulsarClientException e) {
+            return new DatasourceResult(false, e.toString());
+        }
+        if (Objects.isNull(pulsarAdmin)) {
+            return new DatasourceResult(false, "connect is fail!");
+        }
+        return new DatasourceResult(true, "connect is success!");
+
     }
 
     @Override

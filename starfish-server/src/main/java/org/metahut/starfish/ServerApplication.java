@@ -6,8 +6,8 @@ import org.springframework.data.jpa.repository.config.EnableJpaAuditing;
 import org.springframework.scheduling.annotation.EnableAsync;
 
 @EnableAsync
-@SpringBootApplication
 @EnableJpaAuditing
+@SpringBootApplication
 public class ServerApplication {
 
     public static void main(String[] args) {
