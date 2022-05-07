@@ -7,6 +7,7 @@ import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 
+
 /**
  *
  */
@@ -15,6 +16,7 @@ public interface MetaDataController {
 
     /**
      * batch to install metaData of an type
+     *
      * @param metaDataDTO
      * @return
      */

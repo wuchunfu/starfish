@@ -2,6 +2,7 @@ package org.metahut.starfish.server.controller;
 
 import org.metahut.starfish.api.controller.DatasourceController;
 import org.metahut.starfish.api.dto.DatasourceDataRequestDTO;
+import org.metahut.starfish.api.dto.DatasourceDataResponseDTO;
 import org.metahut.starfish.api.dto.ResultEntity;
 import org.metahut.starfish.api.enums.Status;
 import org.metahut.starfish.datasource.api.DatasourceResult;
@@ -42,6 +43,7 @@ public class DatasourceControllerImpl implements DatasourceController {
     // insert
     @Override
     public ResultEntity createDatasource(DatasourceDataRequestDTO datasourceDataRequestDTO) {
+
         return null;
     }
 
@@ -66,13 +68,22 @@ public class DatasourceControllerImpl implements DatasourceController {
 
     // page query
     @Override
-    public ResultEntity queryDatasourcePageList(DatasourceDataRequestDTO datasourceDataRequestDTO,
-                                                Long pagesize, Long pageNo) {
+    public ResultEntity queryDatasourcePageList(DatasourceDataRequestDTO datasourceDataRequestDTO) {
+        return null;
+    }
+
+    @Override
+    public ResultEntity<DatasourceDataResponseDTO> queryDatasourceList(DatasourceDataRequestDTO datasourceDataRequestDTO) {
         return null;
     }
 
     @Override
     public ResultEntity datasourceType() {
+        return null;
+    }
+
+    @Override
+    public ResultEntity queryDatasourceInstance(String type) {
         return null;
     }
 }

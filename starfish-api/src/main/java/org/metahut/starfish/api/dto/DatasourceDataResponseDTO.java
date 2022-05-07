@@ -8,7 +8,7 @@ import io.swagger.annotations.ApiModelProperty;
  */
 
 @ApiModel(description  = "datasource response dto")
-public class DatasourceDataResponseDTO {
+public class DatasourceDataResponseDTO extends PageResponseDTO {
 
     //datasource id
     @ApiModelProperty(value = "datasource id",required = true)

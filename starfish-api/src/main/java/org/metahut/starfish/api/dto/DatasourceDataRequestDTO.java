@@ -4,7 +4,7 @@ import io.swagger.annotations.ApiModel;
 import io.swagger.annotations.ApiModelProperty;
 
 @ApiModel(description = "datasource request dto")
-public class DatasourceDataRequestDTO {
+public class DatasourceDataRequestDTO extends PageRequestDTO {
 
     //datasouce catagory name
     @ApiModelProperty(value = "datasource name", required = true)
