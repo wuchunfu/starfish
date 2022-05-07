@@ -10,6 +10,7 @@ import org.metahut.starfish.server.config.IngestionConfiguration;
 import org.metahut.starfish.server.scheduler.SchedulerPluginHelper;
 import org.metahut.starfish.server.service.IngestionService;
 
+import org.springframework.core.convert.ConversionService;
 import org.springframework.stereotype.Service;
 
 import java.util.HashMap;
@@ -20,10 +21,12 @@ public class IngestionServiceImpl implements IngestionService {
 
     private final SchedulerPluginHelper schedulerPluginHelper;
     private final IngestionConfiguration ingestionConfiguration;
+    private final ConversionService conversionService;
 
-    public IngestionServiceImpl(SchedulerPluginHelper schedulerPluginHelper, IngestionConfiguration ingestionConfiguration) {
+    public IngestionServiceImpl(SchedulerPluginHelper schedulerPluginHelper, IngestionConfiguration ingestionConfiguration, ConversionService conversionService) {
         this.schedulerPluginHelper = schedulerPluginHelper;
         this.ingestionConfiguration = ingestionConfiguration;
+        this.conversionService = conversionService;
     }
 
     //collector_name, description, datasourceId, collector_params, crontab, scheduler_flow_code，scheduler_cron_code???, state
@@ -65,6 +68,8 @@ public class IngestionServiceImpl implements IngestionService {
         String scheduleCode = schedulerPluginHelper.getScheduler().createSchedule(scheduleParameter);
 
         // create collector instance
+
+        // return conversionService.convert(save, IngestionCollectorResponseDTO.class);
         return null;
     }
 
