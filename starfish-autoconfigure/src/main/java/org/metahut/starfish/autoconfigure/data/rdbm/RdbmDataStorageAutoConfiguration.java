@@ -154,6 +154,14 @@ public class RdbmDataStorageAutoConfiguration {
                 }
                 return result;
             }
+
+            @Override
+            public Collection<Long> findChildren(Long parentId, LinkCategory linkCategory) throws AbstractMetaParserException {
+                NodeEntity entity = new NodeEntity();
+                entity.setId(parentId);
+                Collection<RelationEntity> relationEntities = relationEntityMapper.findByStartNodeEntityAndCategory(entity,linkCategory.name());
+                return relationEntities.stream().map(endEntity -> endEntity.getId()).collect(Collectors.toList());
+            }
         };
     }
 
@@ -249,6 +257,15 @@ public class RdbmDataStorageAutoConfiguration {
             }
 
             @Override
+            public Long getIdByName(String name) throws AbstractMetaParserException {
+                List<NodeEntity> nodeEntities = nodeEntityMapper.findByCategoryAndName(TypeCategory.SOURCE.name(), name);
+                if (nodeEntities == null || nodeEntities.size() < 1) {
+                    return null;
+                }
+                return nodeEntities.get(0).getId();
+            }
+
+            @Override
             public Collection<Object> query(AbstractQueryCondition condition) {
                 return null;
             }
@@ -298,6 +315,20 @@ public class RdbmDataStorageAutoConfiguration {
             @Override
             public void delete(Collection<Long> ids) throws AbstractMetaParserException {
                 nodeEntityMapper.removeBatchById(ids);
+            }
+
+            @Override
+            public Map<Long,Class> types(Collection<Long> typeIds) {
+                List<NodeEntity> types = nodeEntityMapper.findAllById(typeIds);
+                return types.stream().filter(bean -> bean != null).collect(Collectors.toMap(NodeEntity::getId,
+                        nodeEntity -> {
+                            Optional<NodeEntityProperty> first = nodeEntity.getProperties().stream().filter(nodeEntityProperty -> "_class".equals(nodeEntityProperty.getName())).findFirst();
+                            if (first.isPresent()) {
+                                return (Class)(first.get().getValue());
+                            } else {
+                                return null;
+                            }
+                        }));
             }
         };
     }

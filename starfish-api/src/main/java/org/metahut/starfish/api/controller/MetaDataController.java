@@ -1,6 +1,7 @@
 package org.metahut.starfish.api.controller;
 
 import org.metahut.starfish.api.dto.BatchMetaDataDTO;
+import org.metahut.starfish.api.dto.BatchSchemaDTO;
 import org.metahut.starfish.api.dto.BusinessTermResponseDTO;
 import org.metahut.starfish.api.dto.BusinessTermSearchRequestDTO;
 import org.metahut.starfish.api.dto.CreateOrUpdateBusinessTermRequestDTO;
@@ -34,8 +35,18 @@ public interface MetaDataController {
      * @param metaDataDTO
      * @return
      */
-    @PostMapping("batch")
-    ResultEntity batchRequest(@RequestBody BatchMetaDataDTO metaDataDTO) throws Exception;
+    @PostMapping("batchInstance")
+    @ApiOperation(value = "batchInstance", notes = "BATCH_INSTNCE_CREATE")
+    ResultEntity batchInstances(@RequestBody BatchMetaDataDTO metaDataDTO) throws Exception;
+
+    /**
+     * batch to install metaData of an type
+     * @param metaDataDTO
+     * @return
+     */
+    @PostMapping("batchType")
+    @ApiOperation(value = "batchType", notes = "BATCH_TYPE_CREATE")
+    ResultEntity batchType(@RequestBody BatchSchemaDTO metaDataDTO) throws Exception;
 
     @PostMapping("downloadTemplate")
     @ApiOperation(value = "downloadTemplate", notes = "DOWNLOAD_TEMPLATE_NOTES")

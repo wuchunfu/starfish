@@ -89,6 +89,7 @@ public class PulsarCollector implements ICollector {
         return collectorResult;
     }
 
+    @Override
     public CopyOnWriteArrayList<BatchMetaDataDTO> getMsg() {
         Map<String, List<String>> topics = new HashMap<>();
         CopyOnWriteArrayList<BatchMetaDataDTO> topicMetaList = new CopyOnWriteArrayList();
@@ -128,70 +129,7 @@ public class PulsarCollector implements ICollector {
                         entry.getValue().stream().forEach(
                             topic -> {
                                 BatchMetaDataDTO dto = new BatchMetaDataDTO();
-                                BatchMetaDataDTO.SourceBodyDTO sourceBodyDTO = new BatchMetaDataDTO.SourceBodyDTO();
-                                sourceBodyDTO.setName("Pulsar");
-                                sourceBodyDTO.setAttributes(null);
-                                dto.setSource(sourceBodyDTO);
-
-                                List<BatchMetaDataDTO.ClassDTO> types = new ArrayList<>();
-
-                                //topic metaClass info
-                                BatchMetaDataDTO.ClassDTO topicInfo = new BatchMetaDataDTO.ClassDTO();
-                                topicInfo.setName("Topic");
-                                topicInfo.setPackagePath("org.starfish");
-                                List<BatchMetaDataDTO.AttributeDTO> attributes = null;
-                                attributes = pulsarMetaColumn.stream().map(
-                                    pulsarMetaColumnItem -> {
-                                        BatchMetaDataDTO.AttributeDTO attribute = new BatchMetaDataDTO.AttributeDTO();
-                                        String[] values = pulsarMetaColumnItem.split(":");
-                                        attribute.setName(values[0]);
-                                        attribute.setClassName(values[1]);
-                                        attribute.setArray(Boolean.valueOf(values[2]));
-                                        attribute.setRelType(values[3]);
-                                        return attribute;
-                                    }
-                                ).collect(Collectors.toList());
-                                topicInfo.setAttributes(attributes);
-
-                                //schecma metaClass info
-                                BatchMetaDataDTO.ClassDTO pulsarSchema = new BatchMetaDataDTO.ClassDTO();
-                                pulsarSchema.setName("Schema");
-                                pulsarSchema.setPackagePath("org.starfish");
-                                List<BatchMetaDataDTO.AttributeDTO> schemaAttributes = null;
-                                schemaAttributes = schemaInfo.stream().map(
-                                    schemaInfoItem -> {
-                                        BatchMetaDataDTO.AttributeDTO attribute = new BatchMetaDataDTO.AttributeDTO();
-                                        String[] values = schemaInfoItem.split(":");
-                                        attribute.setName(values[0]);
-                                        attribute.setClassName(values[1]);
-                                        attribute.setArray(Boolean.valueOf(values[2]));
-                                        attribute.setRelType(values[3]);
-                                        return attribute;
-                                    }
-                                ).collect(Collectors.toList());
-                                pulsarSchema.setAttributes(schemaAttributes);
-
-                                //schemaType metaClass info
-                                BatchMetaDataDTO.ClassDTO pulsarSchemaType = new BatchMetaDataDTO.ClassDTO();
-                                pulsarSchemaType.setName("SchemaType");
-                                pulsarSchemaType.setPackagePath("org.starfish");
-                                List<BatchMetaDataDTO.AttributeDTO> schemaTypeAttributes = null;
-                                schemaTypeAttributes = schemaType.stream().map(
-                                    schemaTypeItem -> {
-                                        BatchMetaDataDTO.AttributeDTO attribute = new BatchMetaDataDTO.AttributeDTO();
-                                        String[] values = schemaTypeItem.split(":");
-                                        attribute.setName(values[0]);
-                                        attribute.setClassName(values[1]);
-                                        attribute.setArray(Boolean.valueOf(values[2]));
-                                        attribute.setRelType(values[3]);
-                                        return attribute;
-                                    }
-                                ).collect(Collectors.toList());
-                                pulsarSchemaType.setAttributes(schemaTypeAttributes);
-
-                                types.add(topicInfo);
-                                types.add(pulsarSchema);
-                                types.add(pulsarSchemaType);
+                                dto.setSourceName("Pulsar");
                                 //topic metaInstance info
                                 Map<String, Object> topicMetaInfo = new HashMap<>();
                                 topicMetaInfo.put("topic", topic);
@@ -244,7 +182,6 @@ public class PulsarCollector implements ICollector {
                                     e.printStackTrace();
                                 }
                                 dto.setInstances(instances);
-                                dto.setTypes(types);
                                 topicMetaList.add(dto);
                                 latch.countDown();
                             }

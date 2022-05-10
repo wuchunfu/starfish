@@ -2,6 +2,7 @@ package org.metahut.starfish.server.controller;
 
 import org.metahut.starfish.api.controller.MetaDataController;
 import org.metahut.starfish.api.dto.BatchMetaDataDTO;
+import org.metahut.starfish.api.dto.BatchSchemaDTO;
 import org.metahut.starfish.api.dto.BusinessTermResponseDTO;
 import org.metahut.starfish.api.dto.BusinessTermSearchRequestDTO;
 import org.metahut.starfish.api.dto.CreateOrUpdateBusinessTermRequestDTO;
@@ -12,7 +13,9 @@ import org.metahut.starfish.api.dto.MetaDataVersionResponseDTO;
 import org.metahut.starfish.api.dto.ResultEntity;
 import org.metahut.starfish.parser.domain.enums.RelType;
 import org.metahut.starfish.parser.domain.instance.Attribute;
-import org.metahut.starfish.parser.domain.instance.BatchRequestBody;
+import org.metahut.starfish.parser.domain.instance.BatchInstanceBody;
+import org.metahut.starfish.parser.domain.instance.BatchTypeBody;
+import org.metahut.starfish.parser.domain.instance.BodyStruct;
 import org.metahut.starfish.parser.domain.instance.Class;
 import org.metahut.starfish.service.AbstractMetaDataService;
 
@@ -33,12 +36,19 @@ public class MetaDataControllerImpl implements MetaDataController {
     private AbstractMetaDataService abstractMetaDataService;
 
     @Override
-    public ResultEntity batchRequest(BatchMetaDataDTO metaDataDTO) throws Exception {
-        BatchRequestBody batchRequestBody = new BatchRequestBody();
-        batchRequestBody.setInstances(metaDataDTO.getInstances());
-        BatchRequestBody.SourceBody sourceBody = new BatchRequestBody.SourceBody();
-        sourceBody.setAttributes(metaDataDTO.getSource().getAttributes());
-        sourceBody.setName(metaDataDTO.getSource().getName());
+    public ResultEntity batchInstances(BatchMetaDataDTO metaDataDTO) throws Exception {
+        BatchInstanceBody batchInstanceBody = new BatchInstanceBody();
+        batchInstanceBody.setSourceName(metaDataDTO.getSourceName());
+        batchInstanceBody.setInstances(metaDataDTO.getInstances());
+        return ResultEntity.success(abstractMetaDataService.batchInstances(batchInstanceBody));
+    }
+
+    @Override
+    public ResultEntity batchType(BatchSchemaDTO metaDataDTO) throws Exception {
+        BatchTypeBody batchTypeBody = new BatchTypeBody();
+        BodyStruct bodyStruct = new BodyStruct();
+        bodyStruct.setAttributes(metaDataDTO.getSource().getAttributes());
+        bodyStruct.setName(metaDataDTO.getSource().getName());
         List<Class> classInfos = metaDataDTO.getTypes().stream().map(type -> {
             Class classInfo = new Class();
             classInfo.setSerialVersionUID(type.getSerialVersionUID());
@@ -61,10 +71,9 @@ public class MetaDataControllerImpl implements MetaDataController {
             }
             return classInfo;
         }).collect(Collectors.toList());
-        batchRequestBody.setSource(sourceBody);
-        batchRequestBody.setTypes(classInfos);
-        abstractMetaDataService.batchCreate(batchRequestBody);
-        return null;
+        batchTypeBody.setSource(bodyStruct);
+        batchTypeBody.setTypes(classInfos);
+        return ResultEntity.success(abstractMetaDataService.initSourceAndType(batchTypeBody));
     }
 
     @Override

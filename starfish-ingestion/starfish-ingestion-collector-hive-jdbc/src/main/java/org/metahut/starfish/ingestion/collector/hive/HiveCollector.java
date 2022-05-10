@@ -11,7 +11,6 @@ import org.metahut.starfish.ingestion.common.MetaMessageProducer;
 import org.metahut.starfish.message.api.IMessageProducer;
 
 import org.apache.hadoop.hive.metastore.IMetaStoreClient;
-import org.apache.hadoop.hive.metastore.api.FieldSchema;
 import org.apache.hadoop.hive.metastore.api.Table;
 import org.apache.thrift.TException;
 import org.springframework.core.io.ClassPathResource;
@@ -88,6 +87,7 @@ public class HiveCollector implements ICollector {
     }
 
     //table metaData
+    @Override
     public List<BatchMetaDataDTO> getMsg() {
 
         Map<String, List<Table>> dataBase = new HashMap<>();
@@ -116,83 +116,18 @@ public class HiveCollector implements ICollector {
             List<String> instanceInfoList = new ArrayList<>();
             List<String> fieldMetaInsatnceList = new ArrayList<>();
             BatchMetaDataDTO dto = new BatchMetaDataDTO();
-            BatchMetaDataDTO.SourceBodyDTO sourceBodyDTO = new BatchMetaDataDTO.SourceBodyDTO();
-            sourceBodyDTO.setName("Hive");
-            sourceBodyDTO.setAttributes(null);
-            dto.setSource(sourceBodyDTO);
-            List<BatchMetaDataDTO.ClassDTO> types = new ArrayList<>();
             Class<? extends Table> clazz = table.getClass();
             Field[] fields = clazz.getDeclaredFields();
             String instanceInfo = geHiveMetaInstance(table, fields);
-            List<FieldSchema> fieldSchemaList = table.getSd().getCols();
             HashMap<String, Object> props = new HashMap<>();
-            fieldSchemaList.stream().forEach(fieldSchema -> {
-                props.put("columnName", fieldSchema.getName());
-                props.put("columnType", fieldSchema.getType());
-            });
             instanceInfoList.add(instanceInfo);
             fieldMetaInsatnceList.add(JSONUtils.toJSONString(props));
             hiveMetaData.put("org.starfish.HiveTable", instanceInfoList);
             hiveMetaData.put("org.starfish.HiveColumn", fieldMetaInsatnceList);
             dto.setInstances(hiveMetaData);
-            BatchMetaDataDTO.ClassDTO hiveTable = new BatchMetaDataDTO.ClassDTO();
-            hiveTable.setName("HiveTable");
-            hiveTable.setPackagePath("org.starfish");
-            List<BatchMetaDataDTO.AttributeDTO> attrList = geHiveMetaClassInfo(table, fields);
-            hiveTable.setAttributes(attrList);
-            types.add(hiveTable);
-
-            BatchMetaDataDTO.ClassDTO hiveColumn = new BatchMetaDataDTO.ClassDTO();
-            hiveColumn.setPackagePath("org.starfish");
-            hiveColumn.setName("HiveColumn");
-            hiveColumn.setAttributes(new ArrayList<>());
-            BatchMetaDataDTO.AttributeDTO tableNameAttr = new BatchMetaDataDTO.AttributeDTO();
-            tableNameAttr.setName("name");
-            tableNameAttr.setArray(false);
-            tableNameAttr.setClassName("String");
-            tableNameAttr.setRelType("PRIMITIVE");
-            hiveColumn.getAttributes().add(tableNameAttr);
-            BatchMetaDataDTO.AttributeDTO columnsAttr = new BatchMetaDataDTO.AttributeDTO();
-            columnsAttr.setRelType("PRIMITIVE");
-            columnsAttr.setClassName("String");
-            columnsAttr.setArray(false);
-            columnsAttr.setName("type");
-            hiveColumn.getAttributes().add(columnsAttr);
-            types.add(hiveColumn);
-            dto.setTypes(types);
+            dto.setSourceName("Hive");
             return dto;
         }).collect(Collectors.toList());
-    }
-
-    /**
-     * get meta information about hive table class
-     *
-     * @param table
-     * @param fields
-     * @return
-     */
-    private List<BatchMetaDataDTO.AttributeDTO> geHiveMetaClassInfo(Object table, Field[] fields) {
-        List<BatchMetaDataDTO.AttributeDTO> attrList = new ArrayList<>();
-        for (Field field : fields) {
-            field.setAccessible(true);
-            if (hiveMetaColumn.contains(field.getName())) {
-                BatchMetaDataDTO.AttributeDTO props = new BatchMetaDataDTO.AttributeDTO();
-                try {
-                    if (field.get(table) instanceof Collection) {
-                        props.setArray(true);
-                    } else {
-                        props.setArray(false);
-                    }
-                } catch (IllegalAccessException e) {
-                    throw new IngestionException(e.getMessage());
-                }
-                props.setName(field.getName());
-                props.setClassName(field.getType().getName());
-                props.setRelType("PRIMITIVE");
-                attrList.add(props);
-            }
-        }
-        return attrList;
     }
 
     /**

@@ -1,13 +1,17 @@
 package org.metahut.starfish.service;
 
 import org.metahut.starfish.parser.domain.enums.LinkCategory;
-import org.metahut.starfish.parser.domain.instance.BatchRequestBody;
+import org.metahut.starfish.parser.domain.instance.BatchInstanceBody;
+import org.metahut.starfish.parser.domain.instance.BatchTypeBody;
 import org.metahut.starfish.parser.domain.instance.Class;
 import org.metahut.starfish.parser.exception.AbstractMetaParserException;
 import org.metahut.starfish.parser.exception.DataValidException;
+import org.metahut.starfish.parser.exception.SourceNameUnExistException;
 
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.util.ArrayList;
@@ -42,13 +46,29 @@ public abstract class AbstractMetaDataService<K,T> implements IMetaDataApi<K,T> 
     protected abstract ILinkApi<K> linkApi();
 
     @Override
-    public K batchCreate(BatchRequestBody<T> batchRequestBody) throws AbstractMetaParserException {
-        K sourceId = createSource(batchRequestBody.getSource().getName(), batchRequestBody.getSource().getAttributes());
-        Map<String, K> classMap = new HashMap<>();
-        for (Class type : batchRequestBody.getTypes()) {
-            classMap.put(type.fullClassName(),createType(sourceId,type,null));
+    public K initSourceAndType(BatchTypeBody<T> batchTypeBody) throws AbstractMetaParserException {
+        K id = sourceApi().getIdByName(batchTypeBody.getSource().getName());
+        if (id != null) {
+            deleteSource(id);
         }
-        for (Map.Entry<String, List<String>> entry : batchRequestBody.getInstances().entrySet()) {
+        K sourceId = createSource(batchTypeBody.getSource().getName(), batchTypeBody.getSource().getAttributes());
+        for (Class type : batchTypeBody.getTypes()) {
+            createType(sourceId,type,null);
+        }
+        return sourceId;
+    }
+
+    @Override
+    public K batchInstances(BatchInstanceBody batchInstanceBody) throws AbstractMetaParserException {
+        Map<String, K> classMap = new HashMap<>();
+        //getall
+        K sourceId = sourceApi().getIdByName(batchInstanceBody.getSourceName());
+        if (sourceId == null) {
+            throw new SourceNameUnExistException();
+        }
+        Collection<K> typeIds = linkApi().findChildren(sourceId,LinkCategory.SOURCE_TYPE);
+        typeApi().types(typeIds).entrySet().forEach(entry -> classMap.put(entry.getValue().fullClassName(),entry.getKey()));
+        for (Map.Entry<String, List<String>> entry : batchInstanceBody.getInstances().entrySet()) {
             String className = entry.getKey();
             for (String entityJson : entry.getValue()) {
                 try {
@@ -60,6 +80,46 @@ public abstract class AbstractMetaDataService<K,T> implements IMetaDataApi<K,T> 
             }
         }
         return sourceId;
+    }
+
+    @Override
+    public List<?> sources(AbstractQueryCondition condition) throws AbstractMetaParserException {
+        return null;
+    }
+
+    @Override
+    public Page<?> sources(AbstractQueryCondition condition, Pageable page) throws AbstractMetaParserException {
+        return null;
+    }
+
+    @Override
+    public List<?> types(K sourceId, AbstractQueryCondition condition) throws AbstractMetaParserException {
+        return null;
+    }
+
+    @Override
+    public List<?> types(K sourceId, AbstractQueryCondition condition, Pageable page) throws AbstractMetaParserException {
+        return null;
+    }
+
+    @Override
+    public List<?> instances(K typeId, AbstractQueryCondition condition) throws AbstractMetaParserException {
+        return null;
+    }
+
+    @Override
+    public Page<?> instances(K typeId, AbstractQueryCondition condition, Pageable page) throws AbstractMetaParserException {
+        return null;
+    }
+
+    @Override
+    public List<?> instances(K upperTypeId, String property, AbstractQueryCondition condition) throws AbstractMetaParserException {
+        return null;
+    }
+
+    @Override
+    public Page<?> instances(K upperTypeId, String property, AbstractQueryCondition condition, Pageable page) throws AbstractMetaParserException {
+        return null;
     }
 
     @Override

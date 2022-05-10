@@ -52,4 +52,11 @@ interface ILinkApi<K> {
      */
     Map<LinkCategory, Collection<K>> findChildren(K parentId) throws AbstractMetaParserException;
 
+    /**
+     *
+     * @param parentId
+     * @return
+     * @throws AbstractMetaParserException
+     */
+    Collection<K> findChildren(K parentId,LinkCategory linkCategory) throws AbstractMetaParserException;
 }

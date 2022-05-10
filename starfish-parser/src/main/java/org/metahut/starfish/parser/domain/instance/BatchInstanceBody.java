@@ -1,4 +1,4 @@
-package org.metahut.starfish.api.dto;
+package org.metahut.starfish.parser.domain.instance;
 
 import java.util.List;
 import java.util.Map;
@@ -6,12 +6,13 @@ import java.util.Map;
 /**
  *
  */
-public class BatchMetaDataDTO {
+public class BatchInstanceBody {
 
     private String sourceName;
+
     /**
      * key:     classFullName
-     * value:   objectJson
+     * value:   objectJsons
      */
     private Map<String,List<String>> instances;
 

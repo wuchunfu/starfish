@@ -37,7 +37,8 @@ public class DatasourceControllerImpl implements DatasourceController {
     @Override
     public ResultEntity testConnection(String type, String parameter) {
         DatasourceResult datasourceResult = datasourceService.testConnection(type, parameter);
-        return datasourceResult.isStatus() ? ResultEntity.success(datasourceResult) : ResultEntity.of(Status.DATASOURCE_TEST_FAIL.getCode(), String.format(Status.DATASOURCE_TEST_FAIL.getMessage(), datasourceResult.getMessage()));
+        return datasourceResult.isStatus() ? ResultEntity.success(datasourceResult) :
+                ResultEntity.of(Status.DATASOURCE_TEST_FAIL.getCode(), String.format(Status.DATASOURCE_TEST_FAIL.getMessage(), datasourceResult.getMessage()));
     }
 
     // insert

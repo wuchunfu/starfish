@@ -27,8 +27,17 @@ interface ISourceApi<K,T> extends AbstractQueryService<T> {
     void update(K id, String name,Map<String,T> properties) throws AbstractMetaParserException;
 
     /**
-     * 
+     *
      * @param id
      */
     void delete(K id);
+
+    /**
+     *
+     * @param name
+     * @return
+     * @throws AbstractMetaParserException
+     */
+    @Deprecated
+    K getIdByName(String name) throws AbstractMetaParserException;
 }

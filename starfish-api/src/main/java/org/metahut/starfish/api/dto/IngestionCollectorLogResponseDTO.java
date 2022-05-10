@@ -6,7 +6,7 @@ import io.swagger.annotations.ApiModelProperty;
 import java.util.Date;
 
 @ApiModel(description = "ingestion collector task log response dto")
-public class IngestionCollectorLogResponseDTO extends PageResponseDTO{
+public class IngestionCollectorLogResponseDTO extends PageResponseDTO {
 
     @ApiModelProperty(value = "ingestion log id")
     private Long ingestionLogId;

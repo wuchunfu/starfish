@@ -1,25 +1,112 @@
 package org.metahut.starfish.service;
 
-import org.metahut.starfish.parser.domain.instance.BatchRequestBody;
+import org.metahut.starfish.parser.domain.instance.BatchInstanceBody;
+import org.metahut.starfish.parser.domain.instance.BatchTypeBody;
 import org.metahut.starfish.parser.domain.instance.Class;
 import org.metahut.starfish.parser.exception.AbstractMetaParserException;
 
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
+
 import java.util.Collection;
+import java.util.List;
 import java.util.Map;
 
 /**
  * TODO query
  */
 interface IMetaDataApi<K,T> {
-    //all
 
     /**
-     * batch create
-     * @param batchRequestBody
+     *
+     * @throws AbstractMetaParserException
+     */
+    K initSourceAndType(BatchTypeBody<T> batchTypeBody) throws AbstractMetaParserException;
+
+    /**
+     *
+     * batch create instances
+     * @param batchInstanceBody
      * @return
      * @throws AbstractMetaParserException
      */
-    K batchCreate(BatchRequestBody<T> batchRequestBody) throws AbstractMetaParserException;
+    K batchInstances(BatchInstanceBody batchInstanceBody) throws AbstractMetaParserException;
+
+    /**
+     * query all source with conditions
+     * @param condition conditions which can be null
+     * @return
+     * @throws AbstractMetaParserException
+     */
+    List<?> sources(AbstractQueryCondition condition) throws AbstractMetaParserException;
+
+    /**
+     * query all sources with conditions (page)
+     * @param condition
+     * @param page
+     * @return
+     * @throws AbstractMetaParserException
+     */
+    Page<?> sources(AbstractQueryCondition condition,Pageable page) throws AbstractMetaParserException;
+
+    /**
+     * query all types with conditions
+     * @param sourceId
+     * @param condition
+     * @return
+     * @throws AbstractMetaParserException
+     */
+    List<?> types(K sourceId,AbstractQueryCondition condition) throws AbstractMetaParserException;
+
+    /**
+     * query all types with conditions (page)
+     * @param sourceId
+     * @param condition
+     * @param page
+     * @return
+     * @throws AbstractMetaParserException
+     */
+    List<?> types(K sourceId,AbstractQueryCondition condition,Pageable page) throws AbstractMetaParserException;
+
+    /**
+     * query all instances with conditions
+     * @param typeId
+     * @param condition
+     * @return
+     * @throws AbstractMetaParserException
+     */
+    List<?> instances(K typeId,AbstractQueryCondition condition) throws AbstractMetaParserException;
+
+    /**
+     * query all instances with conditions (page)
+     * @param typeId
+     * @param condition
+     * @param page
+     * @return
+     * @throws AbstractMetaParserException
+     */
+    Page<?> instances(K typeId,AbstractQueryCondition condition,Pageable page) throws AbstractMetaParserException;
+
+    /**
+     *
+     * @param upperTypeId
+     * @param property
+     * @param condition
+     * @return
+     * @throws AbstractMetaParserException
+     */
+    List<?> instances(K upperTypeId,String property,AbstractQueryCondition condition) throws AbstractMetaParserException;
+
+    /**
+     *
+     * @param upperTypeId
+     * @param property
+     * @param condition
+     * @param page
+     * @return
+     * @throws AbstractMetaParserException
+     */
+    Page<?> instances(K upperTypeId,String property,AbstractQueryCondition condition,Pageable page) throws AbstractMetaParserException;
 
     /**
      * create a source with properties
