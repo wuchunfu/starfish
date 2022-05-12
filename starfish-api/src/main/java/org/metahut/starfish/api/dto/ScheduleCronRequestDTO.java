@@ -1,11 +1,15 @@
 package org.metahut.starfish.api.dto;
 
+import javax.validation.constraints.NotEmpty;
+
 import java.util.Date;
 
 public class ScheduleCronRequestDTO {
 
     private Date startTime;
     private Date endTime;
+
+    @NotEmpty(message = "{parameter.not.null}")
     private String cron;
     private String timezoneId;
 
