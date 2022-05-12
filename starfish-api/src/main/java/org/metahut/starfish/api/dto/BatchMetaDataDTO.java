@@ -1,6 +1,5 @@
 package org.metahut.starfish.api.dto;
 
-import java.util.List;
 import java.util.Map;
 
 /**
@@ -11,9 +10,9 @@ public class BatchMetaDataDTO {
     private String sourceName;
     /**
      * key:     classFullName
-     * value:   objectJson
+     * value:   jsons or json of the object
      */
-    private Map<String,List<String>> instances;
+    private Map<String,String> instances;
 
     public String getSourceName() {
         return sourceName;
@@ -23,11 +22,11 @@ public class BatchMetaDataDTO {
         this.sourceName = sourceName;
     }
 
-    public Map<String, List<String>> getInstances() {
+    public Map<String, String> getInstances() {
         return instances;
     }
 
-    public void setInstances(Map<String, List<String>> instances) {
+    public void setInstances(Map<String, String> instances) {
         this.instances = instances;
     }
 

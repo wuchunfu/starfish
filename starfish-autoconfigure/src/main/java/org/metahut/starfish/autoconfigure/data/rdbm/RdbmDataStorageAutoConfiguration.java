@@ -1,10 +1,12 @@
 package org.metahut.starfish.autoconfigure.data.rdbm;
 
+import org.metahut.starfish.parser.domain.KeyWord;
 import org.metahut.starfish.parser.domain.enums.LinkCategory;
 import org.metahut.starfish.parser.domain.enums.TypeCategory;
 import org.metahut.starfish.parser.domain.instance.Class;
 import org.metahut.starfish.parser.exception.AbstractMetaParserException;
 import org.metahut.starfish.parser.exception.StarFishMetaDataOperatingException;
+import org.metahut.starfish.parser.exception.TypeConvertException;
 import org.metahut.starfish.service.AbstractGraphService;
 import org.metahut.starfish.service.AbstractLinkService;
 import org.metahut.starfish.service.AbstractMetaDataService;
@@ -19,6 +21,7 @@ import org.metahut.starfish.store.rdbms.entity.NodeEntity;
 import org.metahut.starfish.store.rdbms.entity.NodeEntityProperty;
 import org.metahut.starfish.store.rdbms.entity.RelationEntity;
 
+import org.apache.commons.beanutils.BeanUtils;
 import org.springframework.boot.autoconfigure.AutoConfigureAfter;
 import org.springframework.boot.autoconfigure.condition.ConditionalOnClass;
 import org.springframework.boot.autoconfigure.condition.ConditionalOnMissingBean;
@@ -28,6 +31,7 @@ import org.springframework.context.annotation.Configuration;
 
 import javax.sql.DataSource;
 
+import java.lang.reflect.InvocationTargetException;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collection;
@@ -160,7 +164,7 @@ public class RdbmDataStorageAutoConfiguration {
                 NodeEntity entity = new NodeEntity();
                 entity.setId(parentId);
                 Collection<RelationEntity> relationEntities = relationEntityMapper.findByStartNodeEntityAndCategory(entity,linkCategory.name());
-                return relationEntities.stream().map(endEntity -> endEntity.getId()).collect(Collectors.toList());
+                return relationEntities.stream().map(relationEntity -> relationEntity.getEndNodeEntity().getId()).collect(Collectors.toList());
             }
         };
     }
@@ -282,7 +286,7 @@ public class RdbmDataStorageAutoConfiguration {
                     nodeEntity.setProperties(new HashSet<>());
                 }
                 NodeEntityProperty classProperty = new NodeEntityProperty();
-                classProperty.setName("_class");
+                classProperty.setName(KeyWord.CLASS.getValue());
                 classProperty.setValue(classInfo);
                 classProperty.setEntity(nodeEntity);
                 nodeEntity.getProperties().add(classProperty);
@@ -322,9 +326,16 @@ public class RdbmDataStorageAutoConfiguration {
                 List<NodeEntity> types = nodeEntityMapper.findAllById(typeIds);
                 return types.stream().filter(bean -> bean != null).collect(Collectors.toMap(NodeEntity::getId,
                         nodeEntity -> {
-                            Optional<NodeEntityProperty> first = nodeEntity.getProperties().stream().filter(nodeEntityProperty -> "_class".equals(nodeEntityProperty.getName())).findFirst();
+                            Optional<NodeEntityProperty> first = nodeEntity
+                                    .getProperties().stream().filter(nodeEntityProperty -> KeyWord.CLASS.getValue().equals(nodeEntityProperty.getName())).findFirst();
                             if (first.isPresent()) {
-                                return (Class)(first.get().getValue());
+                                Class resultClass = new Class();
+                                try {
+                                    BeanUtils.copyProperties(resultClass,first.get().getValue());
+                                } catch (IllegalAccessException | InvocationTargetException exception) {
+                                    throw new TypeConvertException("Convert type error.",exception);
+                                }
+                                return resultClass;
                             } else {
                                 return null;
                             }

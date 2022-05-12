@@ -113,7 +113,7 @@ public class HiveCollector implements ICollector {
         }
         return dataBase.entrySet().stream().map(Entry::getValue
         ).flatMap(Collection::stream).collect(Collectors.toList()).stream().map(table -> {
-            Map<String, List<String>> hiveMetaData = new HashMap<>();
+            Map<String, String> hiveMetaData = new HashMap<>();
             List<String> instanceInfoList = new ArrayList<>();
             List<String> fieldMetaInsatnceList = new ArrayList<>();
             BatchMetaDataDTO dto = new BatchMetaDataDTO();
@@ -129,8 +129,8 @@ public class HiveCollector implements ICollector {
                     return JSONUtils.toJSONString(props);
                 }).collect(Collectors.toList());
             hiveMetaData = new HashMap<>();
-            hiveMetaData.put("org.starfish.HiveTable", instanceInfo);
-            hiveMetaData.put("org.starfish.HiveColumn", fieldMetaInsatnceList);
+            hiveMetaData.put("org.starfish.HiveTable", JSONUtils.toJSONString(instanceInfo));
+            hiveMetaData.put("org.starfish.HiveColumn", JSONUtils.toJSONString(fieldMetaInsatnceList));
             dto.setInstances(hiveMetaData);
             dto.setSourceName("Hive");
             return dto;

@@ -6,7 +6,7 @@ import java.io.PrintWriter;
 /**
  *
  */
-public abstract class AbstractMetaParserException extends Exception {
+public abstract class AbstractMetaParserException extends RuntimeException {
 
     public AbstractMetaParserException() {
         super();

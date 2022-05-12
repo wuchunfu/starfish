@@ -4,6 +4,7 @@ import org.metahut.starfish.parser.domain.SymbolConstants;
 
 import java.io.Serializable;
 import java.util.List;
+import java.util.Optional;
 import java.util.concurrent.ThreadLocalRandom;
 
 /**
@@ -15,6 +16,11 @@ public class Class extends TagLoader implements Serializable {
      * Serial Version UID
      */
     private long serialVersionUID = ThreadLocalRandom.current().nextLong();
+
+    /**
+     * name attribute rel to
+     */
+    private String nameAttributeRel;
 
     /**
      * name
@@ -68,5 +74,22 @@ public class Class extends TagLoader implements Serializable {
 
     public void setAttributes(List<Attribute> attributes) {
         this.attributes = attributes;
+    }
+
+    public String getNameAttributeRel() {
+        return nameAttributeRel;
+    }
+
+    public void setNameAttributeRel(String nameAttributeRel) {
+        this.nameAttributeRel = nameAttributeRel;
+    }
+
+    public Attribute findAttributeByName(String name) {
+        Optional<Attribute> attributeOptional = attributes.stream().filter(attribute -> name.equals(attribute.getName())).findFirst();
+        if (attributeOptional.isPresent()) {
+            return attributeOptional.get();
+        } else {
+            return null;
+        }
     }
 }

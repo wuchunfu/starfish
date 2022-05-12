@@ -162,22 +162,19 @@ public class PulsarCollector implements ICollector {
                                         e.getMessage());
                                 }
 
-                                HashMap<String, List<String>> instances = new HashMap<String, List<String>>();
+                                HashMap<String, String> instances = new HashMap<>();
                                 HashMap<String, Object> schema = new HashMap<>();
                                 HashMap<String, Object> schemaType = new HashMap<>();
                                 try {
                                     schema.put("schema", admin.schemas()
                                         .getSchemaInfo(topic).getSchemaDefinition());
                                     instances.put("org.starfish.Schema",
-                                        Arrays.asList(
-                                            JSONUtils.toJSONString(schema)));
+
+                                            JSONUtils.toJSONString(schema));
                                     schemaType.put("schemaType", admin.schemas()
                                         .getSchemaInfo(topic).getType().name());
-                                    instances.put("org.starfish.SchemaType",
-                                        Arrays.asList(
-                                            JSONUtils.toJSONString(schemaType)));
-                                    instances.put("org.starfish.Topic",
-                                        Arrays.asList(JSONUtils.toJSONString(topicMetaInfo)));
+                                    instances.put("org.starfish.SchemaType", JSONUtils.toJSONString(schemaType));
+                                    instances.put("org.starfish.Topic", JSONUtils.toJSONString(topicMetaInfo));
                                 } catch (PulsarAdminException e) {
                                     e.printStackTrace();
                                 }

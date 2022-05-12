@@ -2,6 +2,7 @@ package org.metahut.starfish.server.utils;
 
 import org.metahut.starfish.api.dto.BatchMetaDataDTO;
 import org.metahut.starfish.api.dto.BatchSchemaDTO;
+import org.metahut.starfish.datasource.common.JSONUtils;
 
 import java.lang.reflect.Field;
 import java.lang.reflect.InvocationTargetException;
@@ -47,7 +48,7 @@ public class ConvertUtils {
     public static <T> BatchMetaDataDTO getBatchMetaDataDTO(T converImpl, List<Object> sources) {
         BatchMetaDataDTO batchMetaDataDTO = new BatchMetaDataDTO();
         Class<?> covertInstance = converImpl.getClass();
-        HashMap<String, List<String>> metaDataInstance = new HashMap<>();
+        HashMap<String, String> metaDataInstance = new HashMap<>();
         try {
             Method convertMethod = covertInstance.getDeclaredMethod("convert", Object.class);
             sources.stream().forEach(source -> {
@@ -62,7 +63,7 @@ public class ConvertUtils {
                     e.printStackTrace();
                 }
                 try {
-                    metaDataInstance.put(key, (List<String>) convertMethod.invoke(converImpl, source));
+                    metaDataInstance.put(key, JSONUtils.toJSONString(convertMethod.invoke(converImpl, source)));
                 } catch (IllegalAccessException e) {
                     e.printStackTrace();
                 } catch (InvocationTargetException e) {

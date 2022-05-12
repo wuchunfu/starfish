@@ -1,15 +1,14 @@
 package org.metahut.starfish.service;
 
+import org.metahut.starfish.parser.antlr4.json.JsonExtensionVisitor;
 import org.metahut.starfish.parser.domain.enums.LinkCategory;
 import org.metahut.starfish.parser.domain.instance.BatchInstanceBody;
 import org.metahut.starfish.parser.domain.instance.BatchTypeBody;
 import org.metahut.starfish.parser.domain.instance.Class;
+import org.metahut.starfish.parser.domain.instance.InstanceAnalysisStruct;
 import org.metahut.starfish.parser.exception.AbstractMetaParserException;
-import org.metahut.starfish.parser.exception.DataValidException;
-import org.metahut.starfish.parser.exception.SourceNameUnExistException;
+import org.metahut.starfish.parser.exception.SourceNameNotPresentException;
 
-import com.fasterxml.jackson.core.JsonProcessingException;
-import com.fasterxml.jackson.databind.ObjectMapper;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.transaction.annotation.Transactional;
@@ -61,23 +60,35 @@ public abstract class AbstractMetaDataService<K,T> implements IMetaDataApi<K,T> 
     @Override
     public K batchInstances(BatchInstanceBody batchInstanceBody) throws AbstractMetaParserException {
         Map<String, K> classMap = new HashMap<>();
-        //getall
+        //get all
         K sourceId = sourceApi().getIdByName(batchInstanceBody.getSourceName());
         if (sourceId == null) {
-            throw new SourceNameUnExistException();
+            throw new SourceNameNotPresentException();
         }
         Collection<K> typeIds = linkApi().findChildren(sourceId,LinkCategory.SOURCE_TYPE);
-        typeApi().types(typeIds).entrySet().forEach(entry -> classMap.put(entry.getValue().fullClassName(),entry.getKey()));
-        for (Map.Entry<String, List<String>> entry : batchInstanceBody.getInstances().entrySet()) {
-            String className = entry.getKey();
-            for (String entityJson : entry.getValue()) {
-                try {
-                    Map map = new ObjectMapper().readValue(entityJson, Map.class);
-                    createEntity(classMap.get(className),"",map);
-                } catch (JsonProcessingException e) {
-                    throw new DataValidException("json data error : " + entityJson);
-                }
+        Map<K, Class> types = typeApi().types(typeIds);
+        Collection<Class> classInfos = types.values();
+        types.entrySet().forEach(entry -> classMap.put(entry.getValue().fullClassName(),entry.getKey()));
+        for (Map.Entry<String, String> entry : batchInstanceBody.getInstances().entrySet()) {
+            InstanceAnalysisStruct<K,T> analysis = JsonExtensionVisitor.analysis(entry.getValue(), entry.getKey(), types);
+            for (InstanceAnalysisStruct.Instance<K,T> instance : analysis.getInstances().values()) {
+                K entityId = createEntity(instance.getTypeId(), instance.getName(), instance.getProperties());
+                instance.setId(entityId);
             }
+            for (InstanceAnalysisStruct.Link<K, T> link : analysis.getLinks()) {
+                link(link.getHead().getId(),link.getTail().getId(),link.getProperty());
+            }
+            //
+            //for (String entityJson : entry.getValue()) {
+            //    try {
+            //        //TODO link ?
+            //        Map map = new ObjectMapper().readValue(entityJson, Map.class);
+            //        //split
+            //        createEntity(classMap.get(className),"",map);
+            //    } catch (JsonProcessingException e) {
+            //        throw new DataValidException("json data error : " + entityJson);
+            //    }
+            //}
         }
         return sourceId;
     }

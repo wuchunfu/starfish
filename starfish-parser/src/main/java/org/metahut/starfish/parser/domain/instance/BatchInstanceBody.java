@@ -1,6 +1,5 @@
 package org.metahut.starfish.parser.domain.instance;
 
-import java.util.List;
 import java.util.Map;
 
 /**
@@ -14,7 +13,7 @@ public class BatchInstanceBody {
      * key:     classFullName
      * value:   objectJsons
      */
-    private Map<String,List<String>> instances;
+    private Map<String,String> instances;
 
     public String getSourceName() {
         return sourceName;
@@ -24,11 +23,11 @@ public class BatchInstanceBody {
         this.sourceName = sourceName;
     }
 
-    public Map<String, List<String>> getInstances() {
+    public Map<String, String> getInstances() {
         return instances;
     }
 
-    public void setInstances(Map<String, List<String>> instances) {
+    public void setInstances(Map<String, String> instances) {
         this.instances = instances;
     }
 

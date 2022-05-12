@@ -59,6 +59,8 @@
         <janino.version>3.1.6</janino.version>
         <slf4j.version>1.7.36</slf4j.version>
         <commonsLang3.version>3.12.0</commonsLang3.version>
+        <commonsText.version>1.9</commonsText.version>
+        <commonsBeanUtils.version>1.9.4</commonsBeanUtils.version>
         <pulsar.version>2.9.1</pulsar.version>
         <knife4j.version>3.0.3</knife4j.version>
         <json-path.version>2.7.0</json-path.version>
@@ -310,6 +312,18 @@
                 <groupId>org.apache.commons</groupId>
                 <artifactId>commons-lang3</artifactId>
                 <version>${commonsLang3.version}</version>
+            </dependency>
+
+            <dependency>
+                <groupId>org.apache.commons</groupId>
+                <artifactId>commons-text</artifactId>
+                <version>${commonsText.version}</version>
+            </dependency>
+
+            <dependency>
+                <groupId>commons-beanutils</groupId>
+                <artifactId>commons-beanutils</artifactId>
+                <version>${commonsBeanUtils.version}</version>
             </dependency>
 
             <dependency>
