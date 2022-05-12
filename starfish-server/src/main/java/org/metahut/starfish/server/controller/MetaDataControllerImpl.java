@@ -132,7 +132,7 @@ public class MetaDataControllerImpl implements MetaDataController {
     }
 
     @Override
-    public ResultEntity<MetaDataDetailResponseDTO> queryMetaDataDetail(Long code) {
+    public ResultEntity<List<MetaDataDetailResponseDTO>> queryMetaDataDetail(Long code) {
         return null;
     }
 

@@ -1,5 +1,6 @@
 package org.metahut.starfish.api.controller;
 
+import org.metahut.starfish.api.dto.CreateOrUpdateDatasourceDataRequestDTO;
 import org.metahut.starfish.api.dto.DatasourceDataRequestDTO;
 import org.metahut.starfish.api.dto.DatasourceDataResponseDTO;
 import org.metahut.starfish.api.dto.DatasourceTypeResponseDTO;
@@ -39,13 +40,13 @@ public interface DatasourceController {
     // insert
     @PostMapping
     @ApiOperation(value = "createDatasource", notes = "CREATE_DATASOURCE_NOTES")
-    ResultEntity<DatasourceDataResponseDTO> createDatasource(@RequestBody DatasourceDataRequestDTO datasourceDataRequestDTO);
+    ResultEntity<DatasourceDataResponseDTO> createDatasource(@RequestBody CreateOrUpdateDatasourceDataRequestDTO datasourceDataRequestDTO);
 
     // update
     @PutMapping("/{code}")
     @ApiOperation(value = "updateDatasource", notes = "UPDATE_DATASOURCE_NOTES")
     ResultEntity<DatasourceDataResponseDTO> updateDatasource(@PathVariable(value = "code", required = true) Long datasourceId,
-                                                             @RequestBody DatasourceDataRequestDTO datasourceDataRequestDTO);
+                                                             @RequestBody CreateOrUpdateDatasourceDataRequestDTO datasourceDataRequestDTO);
 
     // delete
     @DeleteMapping("/{code}")

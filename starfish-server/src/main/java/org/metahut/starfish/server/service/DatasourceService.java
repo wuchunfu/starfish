@@ -1,5 +1,6 @@
 package org.metahut.starfish.server.service;
 
+import org.metahut.starfish.api.dto.CreateOrUpdateDatasourceDataRequestDTO;
 import org.metahut.starfish.datasource.api.AbstractDatasourceParameter;
 import org.metahut.starfish.datasource.api.DatasourceResult;
 
@@ -12,4 +13,6 @@ public interface DatasourceService {
     AbstractDatasourceParameter getDefaultParameter(String type);
 
     DatasourceResult testConnection(String type, String parameter);
+
+    DatasourceResult createDatasource(CreateOrUpdateDatasourceDataRequestDTO datasourceDataRequestDTO);
 }

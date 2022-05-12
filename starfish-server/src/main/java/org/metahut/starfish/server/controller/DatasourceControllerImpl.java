@@ -1,6 +1,7 @@
 package org.metahut.starfish.server.controller;
 
 import org.metahut.starfish.api.controller.DatasourceController;
+import org.metahut.starfish.api.dto.CreateOrUpdateDatasourceDataRequestDTO;
 import org.metahut.starfish.api.dto.DatasourceDataRequestDTO;
 import org.metahut.starfish.api.dto.DatasourceDataResponseDTO;
 import org.metahut.starfish.api.dto.ResultEntity;
@@ -8,6 +9,8 @@ import org.metahut.starfish.api.enums.Status;
 import org.metahut.starfish.datasource.api.DatasourceResult;
 import org.metahut.starfish.server.service.DatasourceService;
 
+import org.apache.commons.lang.StringUtils;
+import org.springframework.core.convert.ConversionService;
 import org.springframework.web.bind.annotation.RestController;
 
 @RestController
@@ -15,8 +18,12 @@ public class DatasourceControllerImpl implements DatasourceController {
 
     private final DatasourceService datasourceService;
 
-    public DatasourceControllerImpl(DatasourceService datasourceService) {
+    private final ConversionService conversionService;
+
+    public DatasourceControllerImpl(DatasourceService datasourceService
+            , ConversionService conversionService) {
         this.datasourceService = datasourceService;
+        this.conversionService = conversionService;
     }
 
     public ResultEntity getTypes() {
@@ -41,19 +48,24 @@ public class DatasourceControllerImpl implements DatasourceController {
                 ResultEntity.of(Status.DATASOURCE_TEST_FAIL.getCode(), String.format(Status.DATASOURCE_TEST_FAIL.getMessage(), datasourceResult.getMessage()));
     }
 
-    // insert
     @Override
-    public ResultEntity createDatasource(DatasourceDataRequestDTO datasourceDataRequestDTO) {
+    public ResultEntity<DatasourceDataResponseDTO> createDatasource(CreateOrUpdateDatasourceDataRequestDTO datasourceDataRequestDTO) {
+        if (StringUtils.isBlank(datasourceDataRequestDTO.getParamter()) || StringUtils.isBlank(datasourceDataRequestDTO.getType())) {
+            return ResultEntity.of(Status.DATASOURCE_PARAMETER_NULL.getCode(), Status.DATASOURCE_PARAMETER_NULL.getMessage());
+        }
+        DatasourceResult datasourceResult = datasourceService.createDatasource(datasourceDataRequestDTO);
+        if (!datasourceResult.isStatus()) {
+            return ResultEntity.of(Status.DATASOURCE_PARAMETER_NULL.getCode(), Status.DATASOURCE_PARAMETER_NULL.getMessage());
+        }
+        DatasourceDataResponseDTO datasourceDataResponseDTO = conversionService.convert(datasourceDataRequestDTO, DatasourceDataResponseDTO.class);
+        return ResultEntity.success(datasourceDataResponseDTO);
+    }
 
+    @Override
+    public ResultEntity<DatasourceDataResponseDTO> updateDatasource(Long datasourceId, CreateOrUpdateDatasourceDataRequestDTO datasourceDataRequestDTO) {
         return null;
     }
 
-    // update
-    @Override
-    public ResultEntity updateDatasource(Long datasourceId,
-                                         DatasourceDataRequestDTO datasourceDataRequestDTO) {
-        return null;
-    }
 
     // delete
     @Override

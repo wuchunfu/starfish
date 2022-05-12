@@ -11,6 +11,7 @@ import org.metahut.starfish.ingestion.common.MetaMessageProducer;
 import org.metahut.starfish.message.api.IMessageProducer;
 
 import org.apache.hadoop.hive.metastore.IMetaStoreClient;
+import org.apache.hadoop.hive.metastore.api.FieldSchema;
 import org.apache.hadoop.hive.metastore.api.Table;
 import org.apache.thrift.TException;
 import org.springframework.core.io.ClassPathResource;
@@ -118,11 +119,17 @@ public class HiveCollector implements ICollector {
             BatchMetaDataDTO dto = new BatchMetaDataDTO();
             Class<? extends Table> clazz = table.getClass();
             Field[] fields = clazz.getDeclaredFields();
-            String instanceInfo = geHiveMetaInstance(table, fields);
-            HashMap<String, Object> props = new HashMap<>();
-            instanceInfoList.add(instanceInfo);
-            fieldMetaInsatnceList.add(JSONUtils.toJSONString(props));
-            hiveMetaData.put("org.starfish.HiveTable", instanceInfoList);
+            List<String> instanceInfo = geHiveMetaInstance(table, fields);
+            List<FieldSchema> fieldSchemaList = table.getSd().getCols();
+            fieldMetaInsatnceList = fieldSchemaList.stream()
+                .map(fieldSchema -> {
+                    HashMap<String, Object> props = new HashMap<>();
+                    props.put("columnName", fieldSchema.getName());
+                    props.put("columnType", fieldSchema.getType());
+                    return JSONUtils.toJSONString(props);
+                }).collect(Collectors.toList());
+            hiveMetaData = new HashMap<>();
+            hiveMetaData.put("org.starfish.HiveTable", instanceInfo);
             hiveMetaData.put("org.starfish.HiveColumn", fieldMetaInsatnceList);
             dto.setInstances(hiveMetaData);
             dto.setSourceName("Hive");
@@ -137,28 +144,32 @@ public class HiveCollector implements ICollector {
      * @param fields
      * @return
      */
-    private String geHiveMetaInstance(Table table, Field[] fields) {
-        HashMap<String, Object> metaInstance = new HashMap<>();
+    private List<String> geHiveMetaInstance(Table table, Field[] fields) {
+        List<String> hiveMetaData = new ArrayList<>();
         for (Field field : fields) {
             try {
                 if (hiveMetaColumn.contains(field.getName())) {
-
+                    HashMap<String, Object> metaInstance = new HashMap<>();
                     field.setAccessible(true);
                     if (partitionKeys.equals(field.getName())) {
-                        metaInstance
+                        HashMap<String, Object> partitionStatusInstance = new HashMap<>();
+                        partitionStatusInstance
                             .put(partitionStatus,
                                 table.getPartitionKeys().size() > 0 ? true : false);
-                        metaInstance.put(partitionKeys,
+                        hiveMetaData.add(JSONUtils.toJSONString(partitionStatusInstance));
+                        HashMap<String, Object> partitionKeysInstance = new HashMap<>();
+                        partitionKeysInstance.put(partitionKeys,
                             Objects.nonNull(table.getPartitionKeys()) ? table.getPartitionKeys()
                                 : new ArrayList<>());
                     } else {
                         metaInstance.put(field.getName(), field.get(table));
+                        hiveMetaData.add(JSONUtils.toJSONString(metaInstance));
                     }
                 }
             } catch (IllegalAccessException e) {
                 throw new IngestionException(e.getMessage());
             }
         }
-        return JSONUtils.toJSONString(metaInstance);
+        return hiveMetaData;
     }
 }

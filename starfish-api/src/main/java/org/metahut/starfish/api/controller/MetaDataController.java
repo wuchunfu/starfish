@@ -97,6 +97,6 @@ public interface MetaDataController {
 
     @GetMapping("queryMetaDataDetail/{code}")
     @ApiOperation(value = "queryMetaDataDetail", notes = "QUERY_META_DATA_DETAIL_NOTES")
-    ResultEntity<MetaDataDetailResponseDTO> queryMetaDataDetail(@PathVariable(value = "code", required = true) Long code);
+    ResultEntity<List<MetaDataDetailResponseDTO>> queryMetaDataDetail(@PathVariable(value = "code", required = true) Long code);
 
 }
