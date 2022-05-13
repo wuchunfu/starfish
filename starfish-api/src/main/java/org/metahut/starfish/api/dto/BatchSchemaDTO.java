@@ -73,6 +73,8 @@ public class BatchSchemaDTO {
          */
         private List<AttributeDTO> attributes;
 
+        private String nameAttributeRel;
+
         public long getSerialVersionUID() {
             return serialVersionUID;
         }
@@ -103,6 +105,14 @@ public class BatchSchemaDTO {
 
         public void setAttributes(List<AttributeDTO> attributes) {
             this.attributes = attributes;
+        }
+
+        public String getNameAttributeRel() {
+            return nameAttributeRel;
+        }
+
+        public void setNameAttributeRel(String nameAttributeRel) {
+            this.nameAttributeRel = nameAttributeRel;
         }
     }
 

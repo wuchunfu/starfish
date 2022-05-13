@@ -54,6 +54,7 @@ public class MetaDataControllerImpl implements MetaDataController {
             classInfo.setSerialVersionUID(type.getSerialVersionUID());
             classInfo.setName(type.getName());
             classInfo.setPackagePath(type.getPackagePath());
+            classInfo.setNameAttributeRel(type.getNameAttributeRel());
             if (type.getAttributes() != null) {
                 classInfo.setAttributes(type.getAttributes().stream().map(
                         attributeDTO -> {
