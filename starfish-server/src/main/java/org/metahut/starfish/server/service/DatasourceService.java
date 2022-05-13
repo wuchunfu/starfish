@@ -1,10 +1,11 @@
 package org.metahut.starfish.server.service;
 
 import org.metahut.starfish.api.dto.CreateOrUpdateDatasourceDataRequestDTO;
+import org.metahut.starfish.api.dto.DatasourceDataRequestDTO;
 import org.metahut.starfish.datasource.api.AbstractDatasourceParameter;
-import org.metahut.starfish.datasource.api.DatasourceResult;
 
 import java.util.Collection;
+import java.util.List;
 
 public interface DatasourceService {
 
@@ -12,7 +13,21 @@ public interface DatasourceService {
 
     AbstractDatasourceParameter getDefaultParameter(String type);
 
-    DatasourceResult testConnection(String type, String parameter);
+    boolean testConnection(String type, String parameter);
 
-    DatasourceResult createDatasource(CreateOrUpdateDatasourceDataRequestDTO datasourceDataRequestDTO);
+    void createDatasource(CreateOrUpdateDatasourceDataRequestDTO datasourceDataRequestDTO);
+
+    void updateDatasource(Long datasourceId, CreateOrUpdateDatasourceDataRequestDTO datasourceDataRequestDTO);
+
+    void deleteDatasource(Long datasourceId);
+
+    Object queryDatasourceById(Long datasourceId);
+
+    List<Object> queryDatasourcePageList(DatasourceDataRequestDTO datasourceDataRequestDTO);
+
+    List<Object> queryDatasourceList(DatasourceDataRequestDTO datasourceDataRequestDTO);
+
+    List<String> datasourceType();
+
+    List<Object> queryDatasourceInstance(String type);
 }

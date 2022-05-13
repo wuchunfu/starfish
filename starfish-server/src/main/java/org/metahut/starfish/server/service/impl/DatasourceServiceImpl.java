@@ -4,14 +4,15 @@ import org.metahut.starfish.api.controller.MetaDataController;
 import org.metahut.starfish.api.dto.BatchMetaDataDTO;
 import org.metahut.starfish.api.dto.BatchSchemaDTO;
 import org.metahut.starfish.api.dto.CreateOrUpdateDatasourceDataRequestDTO;
+import org.metahut.starfish.api.dto.DatasourceDataRequestDTO;
 import org.metahut.starfish.api.enums.Status;
-import org.metahut.starfish.api.exception.DatasourceException;
 import org.metahut.starfish.datasource.api.AbstractDatasourceParameter;
 import org.metahut.starfish.datasource.api.DatasourceResult;
 import org.metahut.starfish.server.converter.factory.DatasourceToBatchMetaDataDTOFactory;
 import org.metahut.starfish.server.converter.factory.DatasourceToBatchSchemaDTOFactory;
 import org.metahut.starfish.server.datasource.DatasourcePluginHelper;
 import org.metahut.starfish.server.service.DatasourceService;
+import org.metahut.starfish.server.utils.Assert;
 import org.metahut.starfish.server.utils.ConvertUtils;
 
 import org.springframework.stereotype.Service;
@@ -20,6 +21,7 @@ import javax.transaction.Transactional;
 
 import java.util.Arrays;
 import java.util.Collection;
+import java.util.List;
 import java.util.Map;
 
 @Service
@@ -54,24 +56,82 @@ public class DatasourceServiceImpl implements DatasourceService {
     }
 
     @Override
-    public DatasourceResult testConnection(String type, String parameter) {
-        return datasourcePluginHelper.generateInstance(type, parameter).testConnection();
+    public boolean testConnection(String type, String parameter) {
+        DatasourceResult result = datasourcePluginHelper.generateInstance(type, parameter).testConnection();
+        return result.isStatus();
     }
 
     @Override
     @Transactional
-    public DatasourceResult createDatasource(CreateOrUpdateDatasourceDataRequestDTO datasourceDataRequestDTO) {
+    public void createDatasource(CreateOrUpdateDatasourceDataRequestDTO datasourceDataRequestDTO) {
         testConnection(datasourceDataRequestDTO.getType(), datasourceDataRequestDTO.getParamter());
         Map<String, Object> requestDTOMap = ConvertUtils.getBatchAll(datasourceToBatchSchemaDTOFactory, datasourceToBatchMetaDataDTOFactory, Arrays.asList(datasourceDataRequestDTO));
         if (!requestDTOMap.containsKey("type") || !requestDTOMap.containsKey("instance")) {
-            return new DatasourceResult(false, Status.DATASOURCE_PARAMETER_NULL.getMessage());
+            Assert.throwException(Status.DATASOURCE_CONVERT_PARAMETER_NULL, null, null);
         }
         try {
             metaDataController.batchType((BatchSchemaDTO) requestDTOMap.get("type"));
             metaDataController.batchInstances((BatchMetaDataDTO) requestDTOMap.get("instance"));
         } catch (Exception e) {
-            throw new DatasourceException(Status.DATASOURCE_PARAMETER_NULL, e);
+            Assert.throwException(Status.DATASOURCE_CREATE_ERROR, null, e);
         }
-        return new DatasourceResult(true, Status.SUCCESS.getMessage());
+    }
+
+    @Override
+    public void updateDatasource(Long datasourceId, CreateOrUpdateDatasourceDataRequestDTO datasourceDataRequestDTO) {
+        //query datasource by id
+
+        //check dataSource
+
+        //convert parameters
+        Map<String, Object> requestDTOMap = ConvertUtils.getBatchAll(datasourceToBatchSchemaDTOFactory, datasourceToBatchMetaDataDTOFactory, Arrays.asList(datasourceDataRequestDTO));
+        if (!requestDTOMap.containsKey("type") || !requestDTOMap.containsKey("instance")) {
+            Assert.throwException(Status.DATASOURCE_CONVERT_PARAMETER_NULL, null, null);
+        }
+        //update datasource
+
+    }
+
+    @Override
+    public void deleteDatasource(Long datasourceId) {
+        //delete datasource
+
+    }
+
+    @Override
+    public Object queryDatasourceById(Long datasourceId) {
+        //query datasource by id
+
+        return null;
+    }
+
+    @Override
+    public List<Object> queryDatasourcePageList(DatasourceDataRequestDTO datasourceDataRequestDTO) {
+
+        //get query conditions
+
+        //query datasource by conditions
+
+        return null;
+    }
+
+    @Override
+    public List<Object> queryDatasourceList(DatasourceDataRequestDTO datasourceDataRequestDTO) {
+
+        //get query conditions
+
+        //query datasource by conditions
+
+        return null;
+    }
+
+    @Override
+    public List<String> datasourceType() {
+        return null;
+    }
+
+    @Override
+    public List<Object> queryDatasourceInstance(String type) {
+        return null;
     }
 }
