@@ -9,6 +9,7 @@ import org.metahut.starfish.api.enums.Status;
 import org.metahut.starfish.server.service.DatasourceService;
 import org.metahut.starfish.server.utils.Assert;
 
+import org.apache.commons.lang3.StringUtils;
 import org.springframework.core.convert.ConversionService;
 import org.springframework.web.bind.annotation.RestController;
 
@@ -28,7 +29,8 @@ public class DatasourceControllerImpl implements DatasourceController {
         this.conversionService = conversionService;
     }
 
-    public ResultEntity getTypes() {
+    @Override
+    public ResultEntity getSupportDatasourceTypes() {
         return ResultEntity.success(datasourceService.getTypes());
     }
 
@@ -52,13 +54,12 @@ public class DatasourceControllerImpl implements DatasourceController {
 
     @Override
     public ResultEntity<DatasourceDataResponseDTO> createDatasource(CreateOrUpdateDatasourceDataRequestDTO datasourceDataRequestDTO) {
-        DatasourceDataResponseDTO datasourceDataResponseDTO = null;
-        datasourceService.createDatasource(datasourceDataRequestDTO);
-        try {
-            datasourceDataResponseDTO = conversionService.convert(datasourceDataRequestDTO, DatasourceDataResponseDTO.class);
-        } catch (Exception e) {
-            Assert.throwException(Status.DATASOURCE_CONVERT_PARAMETER_ERROR,null,e.getCause());
+        if (StringUtils.isBlank(datasourceDataRequestDTO.getParamter()) || StringUtils.isBlank(datasourceDataRequestDTO.getType())) {
+            return ResultEntity.of(Status.DATASOURCE_PARAMETER_NULL.getCode(), Status.DATASOURCE_PARAMETER_NULL.getMessage());
         }
+        Long dataSourceId = datasourceService.createDatasource(datasourceDataRequestDTO);
+        DatasourceDataResponseDTO datasourceDataResponseDTO = new DatasourceDataResponseDTO();
+        datasourceDataResponseDTO.setDatasourceId(dataSourceId);
         return ResultEntity.success(datasourceDataResponseDTO);
     }
 

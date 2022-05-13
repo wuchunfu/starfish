@@ -2,13 +2,18 @@ package org.metahut.starfish.service;
 
 import org.metahut.starfish.parser.antlr4.json.JsonExtensionVisitor;
 import org.metahut.starfish.parser.domain.enums.LinkCategory;
+import org.metahut.starfish.parser.domain.enums.RelType;
+import org.metahut.starfish.parser.domain.instance.Attribute;
 import org.metahut.starfish.parser.domain.instance.BatchInstanceBody;
 import org.metahut.starfish.parser.domain.instance.BatchTypeBody;
 import org.metahut.starfish.parser.domain.instance.Class;
 import org.metahut.starfish.parser.domain.instance.InstanceAnalysisStruct;
 import org.metahut.starfish.parser.exception.AbstractMetaParserException;
+import org.metahut.starfish.parser.exception.InstanceNameNullException;
 import org.metahut.starfish.parser.exception.SourceNameNotPresentException;
+import org.metahut.starfish.parser.exception.TypeValidException;
 
+import org.apache.commons.lang3.StringUtils;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.transaction.annotation.Transactional;
@@ -78,17 +83,6 @@ public abstract class AbstractMetaDataService<K,T> implements IMetaDataApi<K,T> 
             for (InstanceAnalysisStruct.Link<K, T> link : analysis.getLinks()) {
                 link(link.getHead().getId(),link.getTail().getId(),link.getProperty());
             }
-            //
-            //for (String entityJson : entry.getValue()) {
-            //    try {
-            //        //TODO link ?
-            //        Map map = new ObjectMapper().readValue(entityJson, Map.class);
-            //        //split
-            //        createEntity(classMap.get(className),"",map);
-            //    } catch (JsonProcessingException e) {
-            //        throw new DataValidException("json data error : " + entityJson);
-            //    }
-            //}
         }
         return sourceId;
     }
@@ -146,14 +140,19 @@ public abstract class AbstractMetaDataService<K,T> implements IMetaDataApi<K,T> 
         return typeId;
     }
 
-    @Override
-    public K createEntity(K typeId, String name, Map<String, T> properties) throws AbstractMetaParserException {
-        //TODO valid
+    private K createEntity(K typeId,String name,Map<String,T> properties) throws AbstractMetaParserException {
         K entityId = graphApi().createNode(name, properties);
         K sourceId = linkApi().findParent(typeId,LinkCategory.SOURCE_TYPE);
         linkApi().link(sourceId,entityId,LinkCategory.SOURCE_ENTITY);
         linkApi().link(typeId,entityId,LinkCategory.TYPE_ENTITY);
         return entityId;
+    }
+
+    @Override
+    public K createEntity(K typeId, Map<String, T> properties) throws AbstractMetaParserException {
+        Class type = typeApi().type(typeId);
+        String name = validAndObtainName(type,properties);
+        return createEntity(typeId,name,properties);
     }
 
     @Override
@@ -171,8 +170,10 @@ public abstract class AbstractMetaDataService<K,T> implements IMetaDataApi<K,T> 
     }
 
     @Override
-    public void updateEntity(K id, String name, Map<String, T> properties) throws AbstractMetaParserException {
-        //TODO valid
+    public void updateEntity(K id, Map<String, T> properties) throws AbstractMetaParserException {
+        K typeId = linkApi().findParent(id,LinkCategory.TYPE_ENTITY);
+        Class type = typeApi().type(typeId);
+        String name = validAndObtainName(type,properties);
         graphApi().updateNode(id,name,properties);
     }
 
@@ -266,5 +267,26 @@ public abstract class AbstractMetaDataService<K,T> implements IMetaDataApi<K,T> 
     @Override
     public void crack(K headId, K tailId, String property) throws AbstractMetaParserException {
         graphApi().crack(headId,tailId,property);
+    }
+
+    private String validAndObtainName(Class typeInfo,Map<String,T> properties) {
+        Map<String,T> result = new HashMap<>();
+        String name = null;
+        for (Attribute attribute : typeInfo.getAttributes()) {
+            if (RelType.PRIMITIVE == attribute.getRelType()) {
+                T remove = properties.remove(attribute.getName());
+                if (typeInfo.getNameAttributeRel().equals(attribute.getName())) {
+                    name = String.valueOf(remove);
+                } else {
+                    result.put(attribute.getName(),remove);
+                }
+            }
+        }
+        properties.clear();
+        properties.putAll(result);
+        if (StringUtils.isBlank(name)) {
+            throw new InstanceNameNullException();
+        }
+        return name;
     }
 }

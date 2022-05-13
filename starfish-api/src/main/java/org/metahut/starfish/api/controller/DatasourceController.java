@@ -23,6 +23,11 @@ import java.util.List;
 public interface DatasourceController {
 
     /**
+     *
+     * @return
+     */
+    ResultEntity getSupportDatasourceTypes();
+    /**
      * datasource test connection
      *
      * @param type

@@ -15,7 +15,7 @@ public interface DatasourceService {
 
     boolean testConnection(String type, String parameter);
 
-    void createDatasource(CreateOrUpdateDatasourceDataRequestDTO datasourceDataRequestDTO);
+    Long createDatasource(CreateOrUpdateDatasourceDataRequestDTO datasourceDataRequestDTO);
 
     void updateDatasource(Long datasourceId, CreateOrUpdateDatasourceDataRequestDTO datasourceDataRequestDTO);
 

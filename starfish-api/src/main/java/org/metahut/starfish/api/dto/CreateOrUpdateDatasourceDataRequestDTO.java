@@ -5,6 +5,9 @@ import io.swagger.annotations.ApiModelProperty;
 
 @ApiModel(description = "datasource create or update request dto")
 public class CreateOrUpdateDatasourceDataRequestDTO {
+
+    @ApiModelProperty(value = "datasource type id", required = true)
+    private Long typeId;
     //datasouce catagory name
     @ApiModelProperty(value = "datasource name", required = true)
     private String name;
@@ -46,5 +49,13 @@ public class CreateOrUpdateDatasourceDataRequestDTO {
 
     public void setType(String type) {
         this.type = type;
+    }
+
+    public Long getTypeId() {
+        return typeId;
+    }
+
+    public void setTypeId(Long typeId) {
+        this.typeId = typeId;
     }
 }

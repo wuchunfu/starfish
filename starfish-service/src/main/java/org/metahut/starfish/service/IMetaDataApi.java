@@ -128,12 +128,11 @@ interface IMetaDataApi<K,T> {
     /**
      * create a entity of type
      * @param typeId
-     * @param name
      * @param properties
      * @return
      * @throws AbstractMetaParserException
      */
-    K createEntity(K typeId,String name,Map<String,T> properties) throws AbstractMetaParserException;
+    K createEntity(K typeId,Map<String,T> properties) throws AbstractMetaParserException;
 
     /**
      * update source
@@ -156,11 +155,10 @@ interface IMetaDataApi<K,T> {
     /**
      * update entity
      * @param id
-     * @param name
      * @param properties
      * @throws AbstractMetaParserException
      */
-    void updateEntity(K id,String name,Map<String,T> properties) throws AbstractMetaParserException;
+    void updateEntity(K id,Map<String,T> properties) throws AbstractMetaParserException;
 
     /**
      * delete an node

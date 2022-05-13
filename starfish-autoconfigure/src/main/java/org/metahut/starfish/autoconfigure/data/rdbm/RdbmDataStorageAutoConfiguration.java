@@ -7,6 +7,7 @@ import org.metahut.starfish.parser.domain.instance.Class;
 import org.metahut.starfish.parser.exception.AbstractMetaParserException;
 import org.metahut.starfish.parser.exception.StarFishMetaDataOperatingException;
 import org.metahut.starfish.parser.exception.TypeConvertException;
+import org.metahut.starfish.parser.exception.TypeNotPresentException;
 import org.metahut.starfish.service.AbstractGraphService;
 import org.metahut.starfish.service.AbstractLinkService;
 import org.metahut.starfish.service.AbstractMetaDataService;
@@ -340,6 +341,24 @@ public class RdbmDataStorageAutoConfiguration {
                                 return null;
                             }
                         }));
+            }
+
+            @Override
+            public Class type(Long typeId) {
+                NodeEntity typeEntity = nodeEntityMapper.findById(typeId);
+                Optional<NodeEntityProperty> first = typeEntity
+                        .getProperties().stream().filter(nodeEntityProperty -> KeyWord.CLASS.getValue().equals(nodeEntityProperty.getName())).findFirst();
+                if (first.isPresent()) {
+                    Class resultClass = new Class();
+                    try {
+                        BeanUtils.copyProperties(resultClass,first.get().getValue());
+                    } catch (IllegalAccessException | InvocationTargetException exception) {
+                        throw new TypeConvertException("Convert type error.",exception);
+                    }
+                    return resultClass;
+                } else {
+                    throw new TypeNotPresentException(String.valueOf(typeId));
+                }
             }
         };
     }
