@@ -56,7 +56,8 @@ public class MetaDataControllerTest {
     }
 
     static Stream<CreateOrUpdateDatasourceDataRequestDTO> datasourceDataRequestDTOProvider() throws IOException {
-        CreateOrUpdateDatasourceDataRequestDTO dto = new ObjectMapper().readValue(MetaDataControllerTest.class.getResourceAsStream("/json/datasourceDataRequestDTO.json"), CreateOrUpdateDatasourceDataRequestDTO.class);
+        CreateOrUpdateDatasourceDataRequestDTO dto = new ObjectMapper()
+                .readValue(MetaDataControllerTest.class.getResourceAsStream("/json/datasourceDataRequestDTO.json"), CreateOrUpdateDatasourceDataRequestDTO.class);
         return Stream.of(dto);
     }
 
@@ -68,11 +69,12 @@ public class MetaDataControllerTest {
     }
 
     @Test
+    @Commit
     public void hiveInstanceSaveTest() throws Exception {
         BatchMetaDataDTO batchInstanceBody = new BatchMetaDataDTO();
         batchInstanceBody.setSourceName("Hive");
         Map<String,String> instances = new HashMap();
-        String json = "{\"tableName\",\"testTable\"}";
+        String json = "{\"tableName\":\"testTable\"}";
         instances.put("org.starfish.HiveTable",json);
         batchInstanceBody.setInstances(instances);
         metaDataController.batchInstances(batchInstanceBody);

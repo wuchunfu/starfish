@@ -61,7 +61,7 @@ class JsonExtensionVisitorTest {
                 attribute(RelType.PRIMITIVE,"String","sql")
 
         ),"constantName");
-        result.put(3L,columnClass);
+        result.put(3L,constantClass);
         return result;
     }
 

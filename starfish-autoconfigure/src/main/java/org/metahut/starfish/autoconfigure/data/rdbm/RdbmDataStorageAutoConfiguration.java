@@ -22,6 +22,7 @@ import org.metahut.starfish.store.rdbms.entity.NodeEntity;
 import org.metahut.starfish.store.rdbms.entity.NodeEntityProperty;
 import org.metahut.starfish.store.rdbms.entity.RelationEntity;
 
+import com.fasterxml.jackson.databind.ObjectMapper;
 import org.apache.commons.beanutils.BeanUtils;
 import org.springframework.boot.autoconfigure.AutoConfigureAfter;
 import org.springframework.boot.autoconfigure.condition.ConditionalOnClass;
@@ -330,13 +331,12 @@ public class RdbmDataStorageAutoConfiguration {
                             Optional<NodeEntityProperty> first = nodeEntity
                                     .getProperties().stream().filter(nodeEntityProperty -> KeyWord.CLASS.getValue().equals(nodeEntityProperty.getName())).findFirst();
                             if (first.isPresent()) {
-                                Class resultClass = new Class();
                                 try {
-                                    BeanUtils.copyProperties(resultClass,first.get().getValue());
-                                } catch (IllegalAccessException | InvocationTargetException exception) {
+                                    ObjectMapper objectMapper = new ObjectMapper();
+                                    return objectMapper.convertValue(first.get().getValue(),Class.class);
+                                } catch (IllegalArgumentException exception) {
                                     throw new TypeConvertException("Convert type error.",exception);
                                 }
-                                return resultClass;
                             } else {
                                 return null;
                             }
