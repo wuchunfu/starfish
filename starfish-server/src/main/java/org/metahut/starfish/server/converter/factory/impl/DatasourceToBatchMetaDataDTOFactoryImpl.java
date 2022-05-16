@@ -1,9 +1,9 @@
 package org.metahut.starfish.server.converter.factory.impl;
 
 import org.metahut.starfish.api.enums.Status;
+import org.metahut.starfish.api.exception.DatasourceException;
 import org.metahut.starfish.datasource.common.JSONUtils;
 import org.metahut.starfish.server.converter.factory.DatasourceToBatchMetaDataDTOFactory;
-import org.metahut.starfish.server.utils.Assert;
 
 import org.springframework.stereotype.Component;
 
@@ -28,7 +28,7 @@ public class DatasourceToBatchMetaDataDTOFactoryImpl implements DatasourceToBatc
                 field.setAccessible(true);
                 metaInstanceMap.put(field.getName(), field.get(source));
             } catch (IllegalAccessException e) {
-                Assert.throwException(Status.DATASOURCE_CONVERT_PARAMETER_NULL, null, null);
+                throw new DatasourceException(Status.DATASOURCE_PARAMETER_CONVERT_ERROR, e);
             }
             metaDataList.add(JSONUtils.toJSONString(metaInstanceMap));
         }

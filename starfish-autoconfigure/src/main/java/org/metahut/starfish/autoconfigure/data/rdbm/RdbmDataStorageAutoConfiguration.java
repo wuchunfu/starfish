@@ -343,7 +343,6 @@ public class RdbmDataStorageAutoConfiguration {
                         }));
             }
 
-            @Override
             public Class type(Long typeId) {
                 NodeEntity typeEntity = nodeEntityMapper.findById(typeId);
                 Optional<NodeEntityProperty> first = typeEntity

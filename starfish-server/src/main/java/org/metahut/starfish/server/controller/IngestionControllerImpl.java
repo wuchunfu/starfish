@@ -24,18 +24,17 @@ public class IngestionControllerImpl implements IngestionController {
     }
 
     @Override
-    public ResultEntity<IngestionCollectorResponseDTO> createCollector(IngestionCollectorRequestDTO ingestionCollectorRequestDTO) {
-        ResultEntity.success(ingestionService.createCollector(ingestionCollectorRequestDTO));
+    public ResultEntity createCollector(IngestionCollectorRequestDTO ingestionCollectorRequestDTO) {
+        return ResultEntity.success(ingestionService.createCollector(ingestionCollectorRequestDTO));
+    }
+
+    @Override
+    public ResultEntity updateCollector(Long collectorId, IngestionCollectorRequestDTO ingestionCollectorRequestDTO) {
         return null;
     }
 
     @Override
-    public ResultEntity<IngestionCollectorResponseDTO> updateCollector(Long collectorId, IngestionCollectorRequestDTO ingestionCollectorRequestDTO) {
-        return null;
-    }
-
-    @Override
-    public ResultEntity  deleteCollector(Long collectorId) {
+    public ResultEntity deleteCollector(Long collectorId) {
         return null;
     }
 
@@ -45,7 +44,7 @@ public class IngestionControllerImpl implements IngestionController {
     }
 
     @Override
-    public ResultEntity<IngestionCollectorResponseDTO> queryCollectorPage(QueryIngestionCollectorRequestDTO queryIngestionCollectorRequestDTO) {
+    public ResultEntity queryCollectorPage(QueryIngestionCollectorRequestDTO queryIngestionCollectorRequestDTO) {
         return null;
     }
 

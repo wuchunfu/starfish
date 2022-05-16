@@ -2,6 +2,7 @@ package org.metahut.starfish.server.exception;
 
 import org.metahut.starfish.api.dto.ResultEntity;
 import org.metahut.starfish.api.exception.BusinessException;
+import org.metahut.starfish.api.exception.DatasourceException;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -25,6 +26,13 @@ public class GlobalExceptionHandler {
 
     @ExceptionHandler(value = BusinessException.class)
     public ResultEntity exceptionHandler(BusinessException exception) {
+        logger.error(exception.getMessage(), exception);
+        String message = messageSource.getMessage(exception.getMessage(), exception.getArgs(), LocaleContextHolder.getLocale());
+        return ResultEntity.of(exception.getCode(), message);
+    }
+
+    @ExceptionHandler(value = DatasourceException.class)
+    public ResultEntity exceptionHandler(DatasourceException exception) {
         logger.error(exception.getMessage(), exception);
         String message = messageSource.getMessage(exception.getMessage(), exception.getArgs(), LocaleContextHolder.getLocale());
         return ResultEntity.of(exception.getCode(), message);

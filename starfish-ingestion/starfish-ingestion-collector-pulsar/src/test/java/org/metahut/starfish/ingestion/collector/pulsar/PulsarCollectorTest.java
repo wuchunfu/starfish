@@ -1,6 +1,7 @@
 package org.metahut.starfish.ingestion.collector.pulsar;
 
 import org.metahut.starfish.api.dto.BatchMetaDataDTO;
+import org.metahut.starfish.api.dto.BatchSchemaDTO;
 import org.metahut.starfish.datasource.pulsar.PulsarDatasourceParameter;
 import org.metahut.starfish.ingestion.collector.api.CollectorResult;
 import org.metahut.starfish.ingestion.collector.api.JSONUtils;
@@ -34,7 +35,8 @@ public class PulsarCollectorTest {
     PulsarClient client = null;
     PulsarAdmin admin = null;
     String url = "XXX";
-    final String pulsarUrl = "http://localhost:8801/metaData/batch";
+    final String typeUrl = "http://localhost:8801/metaData/batchType";
+    final String instanceUrl = "http://localhost:8801/metaData/batchInstance";
 
     @BeforeEach
     @Disabled
@@ -196,9 +198,22 @@ public class PulsarCollectorTest {
         PulsarCollectorParameter parameter = new PulsarCollectorParameter();
         // parameter.setDatasourceId("my-topic");
         parameter.setDatasourceParameter(JSONUtils.toJSONString(pulsarDatasourceParameter));
-        List<BatchMetaDataDTO> collectorResult = new PulsarCollectorManager()
+        BatchMetaDataDTO collectorResult = new PulsarCollectorManager()
             .generateInstance(parameter).getMsg();
-        doPostJson(pulsarUrl, JSONUtils.toJSONString(collectorResult.get(5)));
+        doPostJson(instanceUrl, JSONUtils.toJSONString(collectorResult));
+        Assertions.assertNotNull(collectorResult);
+    }
+
+    @Test
+    public void testGetClassInfo() {
+        PulsarDatasourceParameter pulsarDatasourceParameter = new PulsarDatasourceParameter();
+        pulsarDatasourceParameter.setServerUrl("http://pulsar-idc-qa.zpidc.com:8080");
+        PulsarCollectorParameter parameter = new PulsarCollectorParameter();
+        // parameter.setDatasourceId("my-topic");
+        parameter.setDatasourceParameter(JSONUtils.toJSONString(pulsarDatasourceParameter));
+        BatchSchemaDTO collectorResult = new PulsarCollectorManager()
+                .generateInstance(parameter).getClassInfo();
+        doPostJson(typeUrl, JSONUtils.toJSONString(collectorResult));
         Assertions.assertNotNull(collectorResult);
     }
 

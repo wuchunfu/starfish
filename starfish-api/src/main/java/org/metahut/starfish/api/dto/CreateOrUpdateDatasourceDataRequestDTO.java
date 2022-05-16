@@ -5,7 +5,7 @@ import io.swagger.annotations.ApiModelProperty;
 
 @ApiModel(description = "datasource create or update request dto")
 public class CreateOrUpdateDatasourceDataRequestDTO {
-
+    //datasouce catagory name
     @ApiModelProperty(value = "datasource type id", required = true)
     private Long typeId;
     //datasouce catagory name

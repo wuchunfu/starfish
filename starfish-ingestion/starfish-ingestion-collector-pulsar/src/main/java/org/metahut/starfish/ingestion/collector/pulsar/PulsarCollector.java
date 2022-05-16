@@ -1,6 +1,7 @@
 package org.metahut.starfish.ingestion.collector.pulsar;
 
 import org.metahut.starfish.api.dto.BatchMetaDataDTO;
+import org.metahut.starfish.api.dto.BatchSchemaDTO;
 import org.metahut.starfish.datasource.pulsar.PulsarDatasource;
 import org.metahut.starfish.datasource.pulsar.PulsarDatasourceManager;
 import org.metahut.starfish.ingestion.collector.api.CollectorResult;
@@ -12,7 +13,7 @@ import org.metahut.starfish.ingestion.common.ThreadUtils;
 import org.metahut.starfish.message.api.IMessageProducer;
 
 import org.apache.commons.collections.CollectionUtils;
-import org.apache.commons.collections4.ListUtils;
+import org.apache.commons.lang.StringUtils;
 import org.apache.pulsar.client.admin.PulsarAdmin;
 import org.apache.pulsar.client.admin.PulsarAdminException;
 import org.slf4j.Logger;
@@ -28,6 +29,7 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.Properties;
+import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.CopyOnWriteArrayList;
 import java.util.concurrent.CountDownLatch;
 import java.util.concurrent.ExecutorService;
@@ -46,13 +48,15 @@ public class PulsarCollector implements ICollector {
     private List<String> schemaType = null;
     private final String nonPersistent = "non-persistent";
     private static Properties properties = new Properties();
-    private final int pulsarSize = 500;
+    private static final String pulsar_topic = "PulsarTopic";
+    private static final String schema = "schema";
+    private static final String schema_type = "schemaType";
 
     public PulsarCollector(PulsarCollectorParameter parameter) {
         this.parameter = parameter;
         producer = MetaMessageProducer.getInstance();
         pulsarDatasource = new PulsarDatasourceManager()
-            .generateInstance(parameter.getDatasourceParameter());
+                .generateInstance(parameter.getDatasourceParameter());
         admin = pulsarDatasource.getMetaClient();
         ClassPathResource classPathResource = new ClassPathResource("\\pulsarMetaData.properties");
         try {
@@ -62,37 +66,31 @@ public class PulsarCollector implements ICollector {
             throw new IngestionException(e.getMessage());
         }
         pulsarMetaColumn = Arrays.stream(properties.get("TOPIC").toString().split(","))
-            .map(String::trim).collect(
-                Collectors.toList());
+                .map(String::trim).collect(
+                        Collectors.toList());
         schemaInfo = Arrays.stream(properties.get("SCHEMAINFO").toString().split(","))
-            .map(String::trim).collect(
-                Collectors.toList());
+                .map(String::trim).collect(
+                        Collectors.toList());
         schemaType = Arrays.stream(properties.get("SHEMATYPE").toString().split(","))
-            .map(String::trim).collect(
-                Collectors.toList());
+                .map(String::trim).collect(
+                        Collectors.toList());
     }
 
     @Override
     public CollectorResult execute() {
         CollectorResult collectorResult = new CollectorResult();
-        CopyOnWriteArrayList<BatchMetaDataDTO> topicMetaDataList = getMsg();
+        BatchMetaDataDTO topicMetaData = getMsg();
         // TODO what is the key?
-        List<List<BatchMetaDataDTO>> subLists = ListUtils
-            .partition(topicMetaDataList, pulsarSize);
-        subLists.stream().forEach(
-            subList -> {
-                producer.send("my-topic", JSONUtils.toJSONString(subList));
-            }
-        );
+        producer.send("my-topic", JSONUtils.toJSONString(topicMetaData));
         collectorResult.setMessage("get metaData is sucess");
         collectorResult.setState(true);
         return collectorResult;
     }
 
     @Override
-    public CopyOnWriteArrayList<BatchMetaDataDTO> getMsg() {
+    public BatchMetaDataDTO getMsg() {
         Map<String, List<String>> topics = new HashMap<>();
-        CopyOnWriteArrayList<BatchMetaDataDTO> topicMetaList = new CopyOnWriteArrayList();
+        BatchMetaDataDTO topicMeta = new BatchMetaDataDTO();
         List<String> namespaceList = new ArrayList<>();
         try {
             namespaceList = admin.tenants().getTenants().stream().map(name -> {
@@ -112,26 +110,62 @@ public class PulsarCollector implements ICollector {
                 throw new IngestionException("get topic metaData is error:", e);
             }
         });
-        getTopicMetaInfo(topics, topicMetaList);
-        return topicMetaList;
+        getTopicMetaInfo(topics, topicMeta);
+        return topicMeta;
+    }
+
+    @Override
+    public BatchSchemaDTO getClassInfo() {
+        BatchSchemaDTO schemaDTO = new BatchSchemaDTO();
+        //source
+        BatchSchemaDTO.SourceBodyDTO sourceBodyDTO = new BatchSchemaDTO.SourceBodyDTO();
+        sourceBodyDTO.setName("Pulsar");
+        schemaDTO.setSource(sourceBodyDTO);
+        List<BatchSchemaDTO.ClassDTO> types = new ArrayList<>();
+        BatchSchemaDTO.ClassDTO topicClassInfo = getType(pulsarMetaColumn, pulsar_topic);
+        BatchSchemaDTO.ClassDTO topicSchemaInfo = getType(schemaInfo, schema);
+        BatchSchemaDTO.ClassDTO topicSchemaType = getType(schemaType, schema_type);
+        types.add(topicClassInfo);
+        types.add(topicSchemaInfo);
+        types.add(topicSchemaType);
+        schemaDTO.setTypes(types);
+        return schemaDTO;
+    }
+
+    private BatchSchemaDTO.ClassDTO getType(List<String> metaColumns, String className) {
+        BatchSchemaDTO.ClassDTO tableClassDTO = new BatchSchemaDTO.ClassDTO();
+        tableClassDTO.setName(className);
+        tableClassDTO.setPackagePath("org.starfish");
+        //topic
+        List<BatchSchemaDTO.AttributeDTO> topicAttributeList = metaColumns.stream().map(metaColumn -> {
+            BatchSchemaDTO.AttributeDTO tableAttributeDTO = new BatchSchemaDTO.AttributeDTO();
+            String[] values = metaColumn.split(":");
+            tableAttributeDTO.setName(values[0]);
+            tableAttributeDTO.setClassName(values[1]);
+            tableAttributeDTO.setRelType(values[3]);
+            tableAttributeDTO.setArray(Boolean.valueOf(values[2]));
+            return tableAttributeDTO;
+        }).collect(Collectors.toList());
+        tableClassDTO.setAttributes(topicAttributeList);
+        return tableClassDTO;
     }
 
     private void getTopicMetaInfo(Map<String, List<String>> topics,
-        CopyOnWriteArrayList<BatchMetaDataDTO> topicMetaList) {
-        ExecutorService threadPool = ThreadUtils.getThreadPoolExecutor();
+                                  BatchMetaDataDTO topicMeta) {
+        ExecutorService threadPoolExecutor = ThreadUtils.getThreadPoolExecutor();
+        topicMeta.setSourceName("Pulsar");
+        CopyOnWriteArrayList<ConcurrentHashMap<String, Object>> instanceList = new CopyOnWriteArrayList();
+        ConcurrentHashMap<String, String> instancesMap = new ConcurrentHashMap<>();
         Integer latchSizelatchSize = topics.entrySet().stream().map(topic -> {
             return topic.getValue().size();
         }).reduce(0, Integer::sum);
         CountDownLatch latch = new CountDownLatch(latchSizelatchSize);
-        topics.entrySet().forEach(entry -> {
-                threadPool.submit(
-                    () -> {
-                        entry.getValue().stream().forEach(
+        topics.entrySet().forEach(entry ->
+                threadPoolExecutor.submit(() -> {
+                    entry.getValue().stream().forEach(
                             topic -> {
-                                BatchMetaDataDTO dto = new BatchMetaDataDTO();
-                                dto.setSourceName("Pulsar");
                                 //topic metaInstance info
-                                Map<String, Object> topicMetaInfo = new HashMap<>();
+                                ConcurrentHashMap<String, Object> topicMetaInfo = new ConcurrentHashMap<>();
                                 topicMetaInfo.put("topic", topic);
                                 String perType = topic.split("://")[0];
                                 if (nonPersistent.equals(perType)) {
@@ -142,56 +176,56 @@ public class PulsarCollector implements ICollector {
                                 topicMetaInfo.put("namespace", entry.getKey());
                                 try {
                                     if (CollectionUtils.isNotEmpty(admin.namespaces()
-                                        .getNamespaceReplicationClusters(entry.getKey()))) {
+                                            .getNamespaceReplicationClusters(entry.getKey()))) {
                                         topicMetaInfo.put("clusters", admin.namespaces()
-                                            .getNamespaceReplicationClusters(entry.getKey()));
+                                                .getNamespaceReplicationClusters(entry.getKey()));
                                     }
                                 } catch (PulsarAdminException e) {
                                     throw new IngestionException(
-                                        "get tenant detail information is error:",
-                                        e);
+                                            "get tenant detail information is error:",
+                                            e);
                                 }
                                 try {
                                     if (CollectionUtils
-                                        .isNotEmpty(admin.topics().getSubscriptions(topic))) {
+                                            .isNotEmpty(admin.topics().getSubscriptions(topic))) {
                                         topicMetaInfo.put(
-                                            "subscribe", admin.topics().getSubscriptions(topic));
+                                                "subscribe", admin.topics().getSubscriptions(topic));
                                     }
                                 } catch (PulsarAdminException e) {
                                     throw new IngestionException(
-                                        e.getMessage());
+                                            e.getMessage());
                                 }
-
-                                HashMap<String, String> instances = new HashMap<>();
-                                HashMap<String, Object> schema = new HashMap<>();
-                                HashMap<String, Object> schemaType = new HashMap<>();
                                 try {
-                                    schema.put("schema", admin.schemas()
-                                        .getSchemaInfo(topic).getSchemaDefinition());
-                                    instances.put("org.starfish.Schema",
-
-                                            JSONUtils.toJSONString(schema));
-                                    schemaType.put("schemaType", admin.schemas()
-                                        .getSchemaInfo(topic).getType().name());
-                                    instances.put("org.starfish.SchemaType", JSONUtils.toJSONString(schemaType));
-                                    instances.put("org.starfish.Topic", JSONUtils.toJSONString(topicMetaInfo));
+                                    String schemaJson = admin.schemas()
+                                            .getSchemaInfo(topic).getSchemaDefinition();
+                                    if (StringUtils.isNotBlank(schemaJson)) {
+                                        Map<String, Object> props = JSONUtils.parseObject(admin.schemas().getSchemaInfo(topic).getSchemaDefinition(), Map.class);
+                                        List<HashMap<String, String>> fieldsProp = JSONUtils.parseObject(JSONUtils.toJSONString(props.get("fields")), ArrayList.class);
+                                        List<ConcurrentHashMap<String, Object>> schemaList = fieldsProp.stream().map(field -> {
+                                            ConcurrentHashMap<String, Object> schemaField = new ConcurrentHashMap<>();
+                                            schemaField.put("name", field.get("name"));
+                                            schemaField.put("type", field.get("type"));
+                                            return schemaField;
+                                        }).collect(Collectors.toList());
+                                        topicMetaInfo.put("schema", schemaList);
+                                    }
                                 } catch (PulsarAdminException e) {
                                     e.printStackTrace();
                                 }
-                                dto.setInstances(instances);
-                                topicMetaList.add(dto);
+                                instanceList.add(topicMetaInfo);
                                 latch.countDown();
                             }
-                        );
-                    }
-                );
-            }
+                    );
+
+                })
         );
         try {
             latch.await();
         } catch (InterruptedException e) {
             e.printStackTrace();
         }
+        instancesMap.put("org.starfish.PulsarTopic", JSONUtils.toJSONString(instanceList));
+        topicMeta.setInstances(instancesMap);
     }
 
     @Override

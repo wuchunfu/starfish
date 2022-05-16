@@ -2,7 +2,11 @@ package org.metahut.starfish.server.utils;
 
 import org.metahut.starfish.api.dto.BatchMetaDataDTO;
 import org.metahut.starfish.api.dto.BatchSchemaDTO;
+import org.metahut.starfish.api.enums.Status;
+import org.metahut.starfish.api.exception.DatasourceException;
 import org.metahut.starfish.datasource.common.JSONUtils;
+
+import org.springframework.lang.Nullable;
 
 import java.lang.reflect.Field;
 import java.lang.reflect.InvocationTargetException;
@@ -90,5 +94,24 @@ public class ConvertUtils {
             batchSchemaAndMetaDataDTO.put("instance", batchMetaDataDTO);
         }
         return batchSchemaAndMetaDataDTO;
+    }
+
+    //convert to entry instance
+    public static <R> HashMap<String, R> getMetaDataProps(Object source, @Nullable Map<String, R> rel) {
+
+        HashMap<String, R> metaDataInstance = new HashMap<>();
+        Field[] fields = source.getClass().getDeclaredFields();
+        for (Field field : fields) {
+            try {
+                field.setAccessible(true);
+                metaDataInstance.put(field.getName(), (R) field.get(source));
+            } catch (IllegalAccessException e) {
+                throw new DatasourceException(Status.DATASOURCE_PARAMETER_CONVERT_ERROR, e);
+            }
+        }
+        if (Objects.nonNull(rel) && rel.isEmpty()) {
+            metaDataInstance.putAll(rel);
+        }
+        return metaDataInstance;
     }
 }

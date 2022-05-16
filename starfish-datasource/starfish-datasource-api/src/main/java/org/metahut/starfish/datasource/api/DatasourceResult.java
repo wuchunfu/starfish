@@ -42,5 +42,4 @@ public class DatasourceResult {
         this.status = status;
         this.message = message;
     }
-
 }

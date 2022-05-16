@@ -7,14 +7,14 @@ import io.swagger.annotations.ApiModelProperty;
 public class DatasourceDataRequestDTO extends PageRequestDTO {
 
     //datasouce catagory name
-    @ApiModelProperty(value = "datasource name")
+    @ApiModelProperty(value = "datasource name", required = true)
     private String name;
     //datasource paramter instance
-    @ApiModelProperty(value = "datasource parameter to connect")
+    @ApiModelProperty(value = "datasource parameter to connect", required = true)
     private String paramter;
-    @ApiModelProperty(value = "datasource description")
+    @ApiModelProperty(value = "datasource description", required = true)
     private String description;
-    @ApiModelProperty(value = "datasource type")
+    @ApiModelProperty(value = "datasource type", required = true)
     private String type;
 
     public String getName() {

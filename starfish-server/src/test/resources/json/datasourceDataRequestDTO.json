@@ -1,1 +1,1 @@
-{"name":"IDC-001","paramter":"{\"driverClassName\":\"org.apache.hive.jdbc.HiveDriver\", \"jdbcUrl\":\"thrift://172.21.100.231:9083\"}","description":"描述","type":"Hive"}
+{"typeId":183,"name":"IDC-001","paramter":"{\"driverClassName\":\"org.apache.hive.jdbc.HiveDriver\", \"jdbcUrl\":\"thrift://172.21.100.231:9083\"}","description":"描述","type":"Hive"}

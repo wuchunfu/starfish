@@ -1,0 +1,1 @@
+{"sourceName": "datasource","className":"HiveDatasource","classField": ["DatasourceName:String:false:PRIMITIVE","URL:String:false:PRIMITIVE","Driver:String:false:PRIMITIVE","Driver:String:false:PRIMITIVE","UserName:String:false:PRIMITIVE","Password:String:false:PRIMITIVE"],"classRelName":"URL"}

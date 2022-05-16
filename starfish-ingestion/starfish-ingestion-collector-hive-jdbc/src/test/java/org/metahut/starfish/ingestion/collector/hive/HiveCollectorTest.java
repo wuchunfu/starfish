@@ -1,6 +1,7 @@
 package org.metahut.starfish.ingestion.collector.hive;
 
 import org.metahut.starfish.api.dto.BatchMetaDataDTO;
+import org.metahut.starfish.api.dto.BatchSchemaDTO;
 import org.metahut.starfish.datasource.hive.HiveDatasourceParameter;
 import org.metahut.starfish.ingestion.collector.api.CollectorResult;
 import org.metahut.starfish.ingestion.collector.api.JSONUtils;
@@ -33,8 +34,8 @@ public class HiveCollectorTest {
     Configuration conf = null;
     IMetaStoreClient hmsClient = null;
 
-    final String url = "http://localhost:8801/metaData/batch";
-
+    final String typeUrl = "http://localhost:8801/metaData/batchType";
+    final String instanceUrl = "http://localhost:8801/metaData/batchInstance";
     @Test
     public void testHive3Client() {
         try {
@@ -87,17 +88,32 @@ public class HiveCollectorTest {
     }
 
     @Test
-    public void testCreateMsg() {
+    public void testGetMsg() {
         HiveCollectorParameter hiveCollectorParameter = new HiveCollectorParameter();
         HiveDatasourceParameter hiveDatasourceParameter = new HiveDatasourceParameter();
         hiveDatasourceParameter.setDriverClassName("org.apache.hive.jdbc.HiveDriver");
         hiveDatasourceParameter.setJdbcUrl("thrift://172.21.100.231:9083");
         hiveCollectorParameter
                 .setDatasourceParameter(JSONUtils.toJSONString(hiveDatasourceParameter));
-        List<BatchMetaDataDTO> result = new HiveCollectorManager()
+        BatchMetaDataDTO result = new HiveCollectorManager()
                 .generateInstance(hiveCollectorParameter)
                 .getMsg();
-        doPostJson(url, JSONUtils.toJSONString(result.get(1)));
+        doPostJson(instanceUrl, JSONUtils.toJSONString(result));
+        Assertions.assertNotNull(result);
+    }
+
+    @Test
+    public void testGetClassInfo() {
+        HiveCollectorParameter hiveCollectorParameter = new HiveCollectorParameter();
+        HiveDatasourceParameter hiveDatasourceParameter = new HiveDatasourceParameter();
+        hiveDatasourceParameter.setDriverClassName("org.apache.hive.jdbc.HiveDriver");
+        hiveDatasourceParameter.setJdbcUrl("thrift://172.21.100.231:9083");
+        hiveCollectorParameter
+                .setDatasourceParameter(JSONUtils.toJSONString(hiveDatasourceParameter));
+        BatchSchemaDTO result = new HiveCollectorManager()
+                .generateInstance(hiveCollectorParameter)
+                .getClassInfo();
+        doPostJson(typeUrl, JSONUtils.toJSONString(result));
         Assertions.assertNotNull(result);
     }
 

@@ -6,6 +6,7 @@ import org.metahut.starfish.datasource.common.JSONUtils;
 
 import com.fasterxml.jackson.core.type.TypeReference;
 import org.junit.jupiter.api.Assertions;
+import org.junit.jupiter.api.Disabled;
 import org.junit.jupiter.api.Test;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.util.UriComponentsBuilder;
@@ -13,6 +14,7 @@ import org.springframework.web.util.UriComponentsBuilder;
 import java.util.List;
 import java.util.Map;
 
+@Disabled
 public class SelectItemControllerImplTest extends WebApplicationTest {
 
     private static final String REST_FUNCTION_URL_PREFIX = "/selectItem/";
