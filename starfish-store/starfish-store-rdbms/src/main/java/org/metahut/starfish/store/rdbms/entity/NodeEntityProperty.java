@@ -1,7 +1,6 @@
 package org.metahut.starfish.store.rdbms.entity;
 
 import org.metahut.starfish.store.model.AbstractEntityProperty;
-import org.metahut.starfish.store.rdbms.common.PropertyValue;
 
 import com.vladmihalcea.hibernate.type.json.JsonType;
 import lombok.Getter;
@@ -28,6 +27,8 @@ import javax.persistence.ManyToOne;
 import javax.persistence.Table;
 
 import java.util.Date;
+import java.util.LinkedHashMap;
+import java.util.Map;
 
 @Setter
 @Getter
@@ -66,13 +67,15 @@ public class NodeEntityProperty extends AbstractEntityProperty<Long, Object, Nod
 
     @Override
     public void setValue(Object value) {
-        this.value = new PropertyValue(name, value);
+        Map<String, Object> wrappedMap = new LinkedHashMap<>();
+        wrappedMap.put(name, value);
+        this.value = wrappedMap;
     }
 
     @Override
     public Object getValue() {
-        if (this.value instanceof PropertyValue) {
-            return ((PropertyValue<?, ?>) this.value).getValue();
+        if (this.value instanceof Map) {
+            return ((Map<?, ?>) this.value).get(name);
         }
         return this.value;
     }

@@ -72,9 +72,10 @@ public class NodeEntityRepositoryTest {
     @MethodSource("typeEntityWithPropertyProvider")
     public void findByIdWithPropertiesTest(NodeEntity entity) {
         NodeEntity savedEntity = repository.save(entity);
-        NodeEntity nodeEntity = repository.findAllById(Sets.newHashSet(savedEntity.getId())).get(0);
-        nodeEntity.getProperties().stream().forEach(property -> {
-            Assertions.assertNotNull(property.getValue());
+        repository.findAllById(Sets.newHashSet(savedEntity.getId())).stream().forEach(nodeEntity -> {
+            nodeEntity.getProperties().stream().forEach(property -> {
+                Assertions.assertNotNull(property.getValue());
+            });
         });
     }
 

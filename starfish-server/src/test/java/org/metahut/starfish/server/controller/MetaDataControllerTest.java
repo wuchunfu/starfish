@@ -78,7 +78,6 @@ public class MetaDataControllerTest {
         metaDataController.batchInstances(batchInstanceBody);
     }
 
-
     @ParameterizedTest
     @MethodSource("pulsarSchemaProvider")
     @Commit
@@ -91,6 +90,4 @@ public class MetaDataControllerTest {
     public void convertDTOTest(CreateOrUpdateDatasourceDataRequestDTO createOrUpdateDatasourceDataRequestDTO) throws Exception {
         ConvertUtils.getBatchAll(datasourceToBatchSchemaDTOFactory, datasourceToBatchMetaDataDTOFactory, Arrays.asList(createOrUpdateDatasourceDataRequestDTO));
     }
-
-
 }
