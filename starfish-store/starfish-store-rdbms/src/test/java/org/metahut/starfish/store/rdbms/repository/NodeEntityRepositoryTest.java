@@ -4,6 +4,7 @@ import org.metahut.starfish.store.model.AbstractNodeEntity;
 import org.metahut.starfish.store.rdbms.entity.NodeEntity;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
+import com.google.common.collect.Sets;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.params.ParameterizedTest;
@@ -27,10 +28,20 @@ public class NodeEntityRepositoryTest {
 
     public static final String jsonFilePath = "/json/node_entity.json";
 
+    public static final String typeJsonData = "/json/type_entity.json";
+
     public static final ObjectMapper objectMapper = new ObjectMapper();
 
     static Stream<NodeEntity> nodeEntityWithPropertyProvider() throws IOException {
         NodeEntity entity = objectMapper.readValue(NodeEntityRepositoryTest.class.getResourceAsStream(jsonFilePath), NodeEntity.class);
+        entity.getProperties().stream().forEach(property -> {
+            property.setEntity(entity);
+        });
+        return Stream.of(entity);
+    }
+
+    static Stream<NodeEntity> typeEntityWithPropertyProvider() throws IOException {
+        NodeEntity entity = objectMapper.readValue(NodeEntityRepositoryTest.class.getResourceAsStream(typeJsonData), NodeEntity.class);
         entity.getProperties().stream().forEach(property -> {
             property.setEntity(entity);
         });
@@ -55,6 +66,16 @@ public class NodeEntityRepositoryTest {
         Assertions.assertNotNull(savedEntity.getCreateTime());
         Assertions.assertNotNull(savedEntity.getUpdateTime());
         savedEntity.getProperties().stream().forEach(property -> Assertions.assertNotNull(property.getValue()));
+    }
+
+    @ParameterizedTest
+    @MethodSource("typeEntityWithPropertyProvider")
+    public void findByIdWithPropertiesTest(NodeEntity entity) {
+        NodeEntity savedEntity = repository.save(entity);
+        NodeEntity nodeEntity = repository.findAllById(Sets.newHashSet(savedEntity.getId())).get(0);
+        nodeEntity.getProperties().stream().forEach(property -> {
+            Assertions.assertNotNull(property.getValue());
+        });
     }
 
     @ParameterizedTest

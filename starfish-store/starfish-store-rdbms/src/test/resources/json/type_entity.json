@@ -1,0 +1,98 @@
+{
+  "name": "HiveTable",
+  "category": "CLASSIFICATION",
+  "operator": 1,
+  "properties": [
+    {
+      "name": "_class",
+      "operator": 1,
+      "value": {
+        "tagModelMap": null,
+        "serialVersionUID": 4894264666717244861,
+        "nameAttributeRel": "tableName",
+        "name": "HiveTable",
+        "packagePath": "org.starfish",
+        "attributes": [
+          {
+            "name": "tableName",
+            "className": "java.lang.String",
+            "relType": "PRIMITIVE",
+            "array": false,
+            "defaultValue": null
+          },
+          {
+            "name": "dbName",
+            "className": "java.lang.String",
+            "relType": "PRIMITIVE",
+            "array": false,
+            "defaultValue": null
+          },
+          {
+            "name": "owner",
+            "className": "java.lang.String",
+            "relType": "PRIMITIVE",
+            "array": false,
+            "defaultValue": null
+          },
+          {
+            "name": "lastAccessTime",
+            "className": "int",
+            "relType": "PRIMITIVE",
+            "array": false,
+            "defaultValue": null
+          },
+          {
+            "name": "partitionKeys",
+            "className": "java.util.List",
+            "relType": "PRIMITIVE",
+            "array": true,
+            "defaultValue": null
+          },
+          {
+            "name": "tableType",
+            "className": "java.lang.String",
+            "relType": "PRIMITIVE",
+            "array": false,
+            "defaultValue": null
+          },
+          {
+            "name": "temporary",
+            "className": "boolean",
+            "relType": "PRIMITIVE",
+            "array": false,
+            "defaultValue": null
+          },
+          {
+            "name": "ownerType",
+            "className": "org.apache.hadoop.hive.metastore.api.PrincipalType",
+            "relType": "PRIMITIVE",
+            "array": false,
+            "defaultValue": null
+          },
+          {
+            "name": "HiveColumn",
+            "className": "org.starfish.HiveColumn",
+            "relType": "ENTITY",
+            "array": false,
+            "defaultValue": null
+          }
+        ]
+      }
+    },
+    {
+      "name": "partitions",
+      "operator": 1,
+      "value": [
+        {
+          "name": "dt",
+          "type": "string"
+        }
+      ]
+    },
+    {
+      "name": "developer",
+      "value": "root",
+      "operator": 1
+    }
+  ]
+}

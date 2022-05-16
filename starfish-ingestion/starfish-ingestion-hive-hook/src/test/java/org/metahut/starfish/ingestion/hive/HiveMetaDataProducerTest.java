@@ -15,6 +15,4 @@ public class HiveMetaDataProducerTest {
         IMessageProducer instance = MetaMessageProducer.getInstance();
         instance.send("test", "test");
     }
-
-
 }

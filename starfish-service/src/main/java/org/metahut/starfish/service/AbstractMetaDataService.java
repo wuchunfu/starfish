@@ -11,7 +11,6 @@ import org.metahut.starfish.parser.domain.instance.InstanceAnalysisStruct;
 import org.metahut.starfish.parser.exception.AbstractMetaParserException;
 import org.metahut.starfish.parser.exception.InstanceNameNullException;
 import org.metahut.starfish.parser.exception.SourceNameNotPresentException;
-import org.metahut.starfish.parser.exception.TypeValidException;
 
 import org.apache.commons.lang3.StringUtils;
 import org.springframework.data.domain.Page;
