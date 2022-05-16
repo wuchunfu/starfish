@@ -1,6 +1,7 @@
 package org.metahut.starfish.server.controller;
 
 import org.metahut.starfish.api.controller.MetaDataController;
+import org.metahut.starfish.api.dto.BatchMetaDataDTO;
 import org.metahut.starfish.api.dto.BatchSchemaDTO;
 import org.metahut.starfish.api.dto.CreateOrUpdateDatasourceDataRequestDTO;
 import org.metahut.starfish.server.converter.factory.DatasourceToBatchMetaDataDTOFactory;
@@ -9,6 +10,7 @@ import org.metahut.starfish.server.utils.ConvertUtils;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
 import org.junit.jupiter.api.Disabled;
+import org.junit.jupiter.api.Test;
 import org.junit.jupiter.params.ParameterizedTest;
 import org.junit.jupiter.params.provider.MethodSource;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -18,6 +20,8 @@ import org.springframework.transaction.annotation.Transactional;
 
 import java.io.IOException;
 import java.util.Arrays;
+import java.util.HashMap;
+import java.util.Map;
 import java.util.stream.Stream;
 
 
@@ -62,6 +66,18 @@ public class MetaDataControllerTest {
     public void hiveSchemaSaveTest(BatchSchemaDTO dto) throws Exception {
         metaDataController.batchType(dto);
     }
+
+    @Test
+    public void hiveInstanceSaveTest() throws Exception {
+        BatchMetaDataDTO batchInstanceBody = new BatchMetaDataDTO();
+        batchInstanceBody.setSourceName("Hive");
+        Map<String,String> instances = new HashMap();
+        String json = "{\"tableName\",\"testTable\"}";
+        instances.put("org.starfish.HiveTable",json);
+        batchInstanceBody.setInstances(instances);
+        metaDataController.batchInstances(batchInstanceBody);
+    }
+
 
     @ParameterizedTest
     @MethodSource("pulsarSchemaProvider")
