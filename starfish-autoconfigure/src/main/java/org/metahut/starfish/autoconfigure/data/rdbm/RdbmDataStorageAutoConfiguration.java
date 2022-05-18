@@ -343,6 +343,15 @@ public class RdbmDataStorageAutoConfiguration {
                         }));
             }
 
+            @Override
+            public Long getIdByName(String name) {
+                List<NodeEntity> nodeEntities = nodeEntityMapper.findByCategoryAndName(TypeCategory.CLASSIFICATION.name(), name);
+                if (nodeEntities == null || nodeEntities.size() < 1) {
+                    return null;
+                }
+                return nodeEntities.get(0).getId();
+            }
+
             public Class type(Long typeId) {
                 NodeEntity typeEntity = nodeEntityMapper.findById(typeId);
                 Optional<NodeEntityProperty> first = typeEntity

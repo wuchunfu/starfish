@@ -30,5 +30,4 @@ public class SchedulerControllerTest {
                 .assertEquals("previewSchedule.arg0.cron: {parameter.not.null}", exception.getMessage());
     }
 
-
 }

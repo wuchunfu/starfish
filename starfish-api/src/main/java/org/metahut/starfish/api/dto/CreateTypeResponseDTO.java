@@ -3,7 +3,6 @@ package org.metahut.starfish.api.dto;
 import io.swagger.annotations.ApiModel;
 import io.swagger.annotations.ApiModelProperty;
 
-
 @ApiModel(description = "create type request dto")
 public class CreateTypeResponseDTO extends PageRequestDTO {
 

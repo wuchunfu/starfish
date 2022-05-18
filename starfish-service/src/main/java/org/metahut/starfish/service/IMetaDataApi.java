@@ -125,6 +125,8 @@ interface IMetaDataApi<K,T> {
      */
     K createType(K sourceId,Class classInfo,Map<String,T> properties) throws AbstractMetaParserException;
 
+    K createEntityByTypeName(String typeName,String name,Map<String,T> properties) throws AbstractMetaParserException;
+
     /**
      * create a entity of type
      * @param typeId

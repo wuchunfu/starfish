@@ -48,6 +48,7 @@ public abstract class AbstractMetaDataService<K,T> implements IMetaDataApi<K,T> 
     public K initSourceAndType(BatchTypeBody<T> batchTypeBody) throws AbstractMetaParserException {
         K id = sourceApi().getIdByName(batchTypeBody.getSource().getName());
         if (id != null) {
+            //TODO
             deleteSource(id);
         }
         K sourceId = createSource(batchTypeBody.getSource().getName(), batchTypeBody.getSource().getAttributes());
@@ -144,6 +145,12 @@ public abstract class AbstractMetaDataService<K,T> implements IMetaDataApi<K,T> 
         K typeId = typeApi().create(sourceId,classInfo,properties);
         linkApi().link(sourceId,typeId, LinkCategory.SOURCE_TYPE);
         return typeId;
+    }
+
+    @Override
+    public K createEntityByTypeName(String typeName, String name, Map<String, T> properties) throws AbstractMetaParserException {
+        K typeId = typeApi().getIdByName(typeName);
+        return createEntity(typeId,name,properties);
     }
 
     @Override
