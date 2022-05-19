@@ -5,9 +5,13 @@ import org.metahut.starfish.store.model.AbstractNodeEntity;
 
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
+import org.springframework.data.domain.Sort;
+import org.springframework.data.jpa.domain.Specification;
 
 import java.io.Serializable;
 import java.util.Collection;
+import java.util.List;
+import java.util.Optional;
 
 public interface IEntityPropertyMapper<I extends Serializable, N extends AbstractNodeEntity, P extends AbstractEntityProperty> {
 
@@ -105,5 +109,42 @@ public interface IEntityPropertyMapper<I extends Serializable, N extends Abstrac
      * @return the page of the instance of N
      */
     Page<P> findByName(String name, Pageable pageable);
+
+    /**
+     *
+     * @param spec complex querying conditions
+     * @return the instance of P
+     */
+    Optional<P> findOne(Specification<P> spec);
+
+    /**
+     *
+     * @param spec complex querying conditions
+     * @return the list of instances of P
+     */
+    List<P> findAll(Specification<P> spec);
+
+    /**
+     *
+     * @param spec complex querying conditions
+     * @param pageable
+     * @return the page of the instance of P
+     */
+    Page<P> findAll(Specification<P> spec, Pageable pageable);
+
+    /**
+     *
+     * @param spec complex querying conditions
+     * @param sort
+     * @return the list of the instance of P
+     */
+    List<P> findAll(Specification<P> spec, Sort sort);
+
+    /**
+     *
+     * @param spec complex querying conditions
+     * @return the number of records matching the spec
+     */
+    long count(Specification<P> spec);
     
 }

@@ -11,11 +11,21 @@ import org.junit.jupiter.params.ParameterizedTest;
 import org.junit.jupiter.params.provider.MethodSource;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.jpa.domain.Specification;
 import org.springframework.test.annotation.Commit;
 import org.springframework.transaction.annotation.Transactional;
 
+import javax.persistence.criteria.CriteriaBuilder;
+import javax.persistence.criteria.CriteriaQuery;
+import javax.persistence.criteria.Path;
+import javax.persistence.criteria.Predicate;
+import javax.persistence.criteria.Root;
+
 import java.io.IOException;
 import java.util.List;
+import java.util.Optional;
 import java.util.stream.Stream;
 
 @Commit
@@ -106,9 +116,72 @@ public class NodeEntityRepositoryTest {
     @MethodSource("nodeEntityWithPropertyProvider")
     public void removeByNameTest(NodeEntity entity) {
         NodeEntity savedEntity = repository.save(entity);
-
         List<NodeEntity> list = repository.removeByName(entity.getName());
-
         Assertions.assertEquals(1L, list.size());
+    }
+
+    @ParameterizedTest
+    @MethodSource("nodeEntityWithPropertyProvider")
+    public void findOneTest(NodeEntity entity) {
+        NodeEntity savedEntity = repository.save(entity);
+        Specification<NodeEntity> specification = new Specification<NodeEntity>() {
+            @Override
+            public Predicate toPredicate(Root<NodeEntity> root, CriteriaQuery<?> query,
+                CriteriaBuilder criteriaBuilder) {
+                Path<Object> name =  root.get("name");
+                Predicate predicate = criteriaBuilder.equal(name, "dwd.user_info");
+                return predicate;
+            }
+        };
+
+        Optional<NodeEntity> nodeEntityOptional = repository.findOne(specification);
+
+        NodeEntity actualEntity = nodeEntityOptional.get();
+
+        Assertions.assertEquals(savedEntity.toString(), actualEntity.toString());
+    }
+
+    @ParameterizedTest
+    @MethodSource("nodeEntityWithPropertyProvider")
+    public void findAllTest(NodeEntity entity) {
+        NodeEntity savedEntity = repository.save(entity);
+        Specification<NodeEntity> specification = new Specification<NodeEntity>() {
+            @Override
+            public Predicate toPredicate(Root<NodeEntity> root, CriteriaQuery<?> query,
+                CriteriaBuilder criteriaBuilder) {
+                Path<Object> name =  root.get("name");
+                Predicate predicate = criteriaBuilder.equal(name, "dwd.user_info");
+                return predicate;
+            }
+        };
+
+        List<NodeEntity> nodeEntityList = repository.findAll(specification);
+
+        NodeEntity actualEntity = nodeEntityList.get(0);
+
+        Assertions.assertEquals(savedEntity.toString(), actualEntity.toString());
+    }
+
+    @ParameterizedTest
+    @MethodSource("nodeEntityWithPropertyProvider")
+    public void findAllPagingTest(NodeEntity entity) {
+        NodeEntity savedEntity = repository.save(entity);
+        Specification<NodeEntity> specification = new Specification<NodeEntity>() {
+            @Override
+            public Predicate toPredicate(Root<NodeEntity> root, CriteriaQuery<?> query,
+                CriteriaBuilder criteriaBuilder) {
+                Path<Object> name =  root.get("name");
+                Predicate predicate = criteriaBuilder.equal(name, "dwd.user_info");
+                return predicate;
+            }
+        };
+
+        PageRequest pageRequest = PageRequest.of(0, 10);
+
+        Page<NodeEntity> page = repository.findAll(specification, pageRequest);
+
+        NodeEntity actualEntity = page.stream().findFirst().get();
+
+        Assertions.assertEquals(savedEntity.toString(), actualEntity.toString());
     }
 }

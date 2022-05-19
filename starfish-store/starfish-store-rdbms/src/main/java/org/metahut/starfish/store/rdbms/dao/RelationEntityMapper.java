@@ -11,10 +11,14 @@ import org.springframework.data.domain.Example;
 import org.springframework.data.domain.ExampleMatcher;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
+import org.springframework.data.domain.Sort;
+import org.springframework.data.jpa.domain.Specification;
 import org.springframework.stereotype.Repository;
 import org.springframework.util.CollectionUtils;
 
 import java.util.Collection;
+import java.util.List;
+import java.util.Optional;
 
 @Repository
 public class RelationEntityMapper implements IRelationEntityMapper<Long, RelationEntity, RelationEntityProperty, NodeEntity> {
@@ -231,5 +235,30 @@ public class RelationEntityMapper implements IRelationEntityMapper<Long, Relatio
         ExampleMatcher matcher = ExampleMatcher.matching()
             .withIgnoreCase("category", "name");
         return repository.findAll(Example.of(entity, matcher), pageable);
+    }
+
+    @Override
+    public Optional<RelationEntity> findOne(Specification<RelationEntity> spec) {
+        return repository.findOne(spec);
+    }
+
+    @Override
+    public List<RelationEntity> findAll(Specification<RelationEntity> spec) {
+        return repository.findAll(spec);
+    }
+
+    @Override
+    public Page<RelationEntity> findAll(Specification<RelationEntity> spec, Pageable pageable) {
+        return repository.findAll(spec, pageable);
+    }
+
+    @Override
+    public List<RelationEntity> findAll(Specification<RelationEntity> spec, Sort sort) {
+        return repository.findAll(spec, sort);
+    }
+
+    @Override
+    public long count(Specification<RelationEntity> spec) {
+        return repository.count(spec);
     }
 }

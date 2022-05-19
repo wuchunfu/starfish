@@ -85,7 +85,6 @@ public class RelationEntityProperty extends AbstractEntityProperty<Long, Object,
         return "RelationEntityProperty("
             + "id=" + id
             + ",name=" + name
-            + ",entityId=" + entity.getId()
             + ",value=" + value
             + ",operator=" + operator
             + ",createTime=" + createTime

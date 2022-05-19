@@ -10,10 +10,14 @@ import org.springframework.data.domain.Example;
 import org.springframework.data.domain.ExampleMatcher;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
+import org.springframework.data.domain.Sort;
+import org.springframework.data.jpa.domain.Specification;
 import org.springframework.stereotype.Repository;
 import org.springframework.util.CollectionUtils;
 
 import java.util.Collection;
+import java.util.List;
+import java.util.Optional;
 
 @Repository
 public class NodeEntityPropertyMapper implements
@@ -114,5 +118,31 @@ public class NodeEntityPropertyMapper implements
         property.setName(name);
 
         return repository.findAll(Example.of(property, matcher), pageable);
+    }
+
+    @Override
+    public Optional<NodeEntityProperty> findOne(Specification<NodeEntityProperty> spec) {
+        return repository.findOne(spec);
+    }
+
+    @Override
+    public List<NodeEntityProperty> findAll(Specification<NodeEntityProperty> spec) {
+        return repository.findAll(spec);
+    }
+
+    @Override
+    public Page<NodeEntityProperty> findAll(Specification<NodeEntityProperty> spec,
+        Pageable pageable) {
+        return repository.findAll(spec, pageable);
+    }
+
+    @Override
+    public List<NodeEntityProperty> findAll(Specification<NodeEntityProperty> spec, Sort sort) {
+        return repository.findAll(spec, sort);
+    }
+
+    @Override
+    public long count(Specification<NodeEntityProperty> spec) {
+        return repository.count(spec);
     }
 }

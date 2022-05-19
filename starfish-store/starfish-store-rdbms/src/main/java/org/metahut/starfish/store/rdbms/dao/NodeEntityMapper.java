@@ -11,11 +11,14 @@ import org.springframework.data.domain.Example;
 import org.springframework.data.domain.ExampleMatcher;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
+import org.springframework.data.domain.Sort;
+import org.springframework.data.jpa.domain.Specification;
 import org.springframework.stereotype.Repository;
 import org.springframework.util.CollectionUtils;
 
 import java.util.Collection;
 import java.util.List;
+import java.util.Optional;
 
 @Repository
 public class NodeEntityMapper implements INodeEntityMapper<Long, NodeEntity, NodeEntityProperty> {
@@ -200,5 +203,30 @@ public class NodeEntityMapper implements INodeEntityMapper<Long, NodeEntity, Nod
             .withIgnoreCase("category", "name");
         Example<NodeEntity> example = Example.of(nodeEntity, matcher);
         return repository.findAll(example, pageable);
+    }
+
+    @Override
+    public Optional<NodeEntity> findOne(Specification<NodeEntity> spec) {
+        return repository.findOne(spec);
+    }
+
+    @Override
+    public List<NodeEntity> findAll(Specification<NodeEntity> spec) {
+        return repository.findAll(spec);
+    }
+
+    @Override
+    public Page<NodeEntity> findAll(Specification<NodeEntity> spec, Pageable pageable) {
+        return repository.findAll(spec, pageable);
+    }
+
+    @Override
+    public List<NodeEntity> findAll(Specification<NodeEntity> spec, Sort sort) {
+        return repository.findAll(spec, sort);
+    }
+
+    @Override
+    public long count(Specification<NodeEntity> spec) {
+        return repository.count(spec);
     }
 }

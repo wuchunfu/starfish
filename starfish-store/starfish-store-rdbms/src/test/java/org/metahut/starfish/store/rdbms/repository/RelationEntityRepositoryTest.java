@@ -9,8 +9,15 @@ import org.junit.jupiter.params.ParameterizedTest;
 import org.junit.jupiter.params.provider.MethodSource;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
+import org.springframework.data.jpa.domain.Specification;
 import org.springframework.test.annotation.Commit;
 import org.springframework.transaction.annotation.Transactional;
+
+import javax.persistence.criteria.CriteriaBuilder;
+import javax.persistence.criteria.CriteriaQuery;
+import javax.persistence.criteria.Path;
+import javax.persistence.criteria.Predicate;
+import javax.persistence.criteria.Root;
 
 import java.io.IOException;
 import java.util.List;
@@ -98,6 +105,31 @@ public class RelationEntityRepositoryTest {
         List<RelationEntity> list = repository.removeByStartNodeEntityAndEndNodeEntity(entity.getStartNodeEntity(), entity.getEndNodeEntity());
 
         Assertions.assertEquals(list.size(), 1L);
+    }
+
+    @ParameterizedTest
+    @MethodSource("relationEntityProvider")
+    public void findOneTest(RelationEntity entity) {
+        nodeEntityRepository.save(entity.getStartNodeEntity());
+        nodeEntityRepository.save(entity.getEndNodeEntity());
+
+        RelationEntity savedRelationEntity = repository.save(entity);
+
+        Specification<RelationEntity> specification = new Specification<RelationEntity>() {
+            @Override
+            public Predicate toPredicate(Root<RelationEntity> root, CriteriaQuery<?> query,
+                CriteriaBuilder criteriaBuilder) {
+                Path<Object> name = root.get("name");
+
+                Predicate predicate = criteriaBuilder.equal(name, "own");
+                return predicate;
+            }
+        };
+
+        RelationEntity actualEntity = repository.findOne(specification).get();
+
+        Assertions.assertEquals(savedRelationEntity.toString(), actualEntity.toString());
+
     }
 
 }

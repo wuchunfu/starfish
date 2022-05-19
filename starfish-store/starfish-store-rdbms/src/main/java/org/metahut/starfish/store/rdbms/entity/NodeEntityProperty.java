@@ -85,7 +85,6 @@ public class NodeEntityProperty extends AbstractEntityProperty<Long, Object, Nod
         return "NodeEntityProperty("
             + "id=" + id
             + ",name=" + name
-            + ",entityId=" + entity.getId()
             + ",value=" + value
             + ",operator=" + operator
             + ",createTime=" + createTime

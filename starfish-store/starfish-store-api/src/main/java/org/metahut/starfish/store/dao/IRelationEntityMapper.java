@@ -6,9 +6,13 @@ import org.metahut.starfish.store.model.AbstractRelationEntity;
 
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
+import org.springframework.data.domain.Sort;
+import org.springframework.data.jpa.domain.Specification;
 
 import java.io.Serializable;
 import java.util.Collection;
+import java.util.List;
+import java.util.Optional;
 
 public interface IRelationEntityMapper<I extends Serializable, R extends AbstractRelationEntity, P extends AbstractEntityProperty,  N extends AbstractNodeEntity>  {
 
@@ -231,5 +235,42 @@ public interface IRelationEntityMapper<I extends Serializable, R extends Abstrac
      * @return the page of the instance of R
      */
     Page<R> findByCategoryAndName(String category, String name, Pageable pageable);
+
+    /**
+     *
+     * @param spec complex querying conditions
+     * @return the instance of R
+     */
+    Optional<R> findOne(Specification<R> spec);
+
+    /**
+     *
+     * @param spec complex querying conditions
+     * @return the list of instances of R
+     */
+    List<R> findAll(Specification<R> spec);
+
+    /**
+     *
+     * @param spec complex querying conditions
+     * @param pageable
+     * @return the page of the instance of R
+     */
+    Page<R> findAll(Specification<R> spec, Pageable pageable);
+
+    /**
+     *
+     * @param spec complex querying conditions
+     * @param sort
+     * @return the list of the instance of R
+     */
+    List<R> findAll(Specification<R> spec, Sort sort);
+
+    /**
+     *
+     * @param spec complex querying conditions
+     * @return the number of records matching the spec
+     */
+    long count(Specification<R> spec);
 
 }
