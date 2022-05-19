@@ -20,12 +20,8 @@ public class HiveCollectorManager implements ICollectorManager {
         return new HiveCollectorTask(adapter, taskParameter);
     }
 
-    public HiveCollectorAdapterParameter deserializeAdapterParameter() {
-
-    }
-
     @Override
-    public HiveCollectorAdapter generateAdapterInstance(String parameter) {
+    public HiveCollectorAdapterParameter deserializeAdapterParameter(String parameter) {
         HiveCollectorAdapterParameter adapterParameter = JSONUtils.parseObject(parameter, HiveCollectorAdapterParameter.class);
         if (Objects.isNull(adapterParameter)) {
             throw new CollectorException("Invalid adapter parameters to convert");
@@ -34,6 +30,12 @@ public class HiveCollectorManager implements ICollectorManager {
         if (!checkParameter) {
             throw new CollectorException("The incoming parameter can not be empty");
         }
+        return adapterParameter;
+    }
+
+    @Override
+    public HiveCollectorAdapter generateAdapterInstance(String parameter) {
+        HiveCollectorAdapterParameter adapterParameter = deserializeAdapterParameter(parameter);
         return new HiveCollectorAdapter(adapterParameter);
     }
 

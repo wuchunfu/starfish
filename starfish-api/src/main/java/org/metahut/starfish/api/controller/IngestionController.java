@@ -23,10 +23,6 @@ public interface IngestionController {
 
     // collectorTask
 
-    @GetMapping("collectorAdapter/testConnection")
-    @ApiOperation(value = "testConnection", notes = "TEST_CONNECTION_COLLECTOR_NOTES")
-    ResultEntity testConnection(@RequestParam String type, @RequestParam String parameter);
-
     @ApiOperation(value = "createCollector", notes = "CREATE_INGESTION_COLLECTOR_INSTANCE_NOTES")
     @PostMapping("createCollector")
     ResultEntity<IngestionCollectorResponseDTO> createCollector(@RequestBody IngestionCollectorCreateOrUpdateRequestDTO ingestionCollectorCreateOrUpdateRequestDTO);

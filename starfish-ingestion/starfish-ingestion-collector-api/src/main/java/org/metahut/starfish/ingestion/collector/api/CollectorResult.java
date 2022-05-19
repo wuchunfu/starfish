@@ -1,7 +1,5 @@
 package org.metahut.starfish.ingestion.collector.api;
 
-import javax.annotation.Nullable;
-
 public class CollectorResult {
 
     private boolean state;
@@ -15,7 +13,7 @@ public class CollectorResult {
         this.state = state;
     }
 
-    public CollectorResult(boolean state, @Nullable String message) {
+    public CollectorResult(boolean state, String message) {
         this.state = state;
         this.message = message;
     }

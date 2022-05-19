@@ -14,7 +14,7 @@ public class CollectorTaskCreateOrUpdateRequestDTO {
     private String description;
 
     @ApiModelProperty(value = "collector adapter id", required = true)
-    private Long collectorAdapterId;
+    private Long adapterId;
 
     @ApiModelProperty(value = "collector task plugin parameter", required = true)
     private String parameter;
@@ -40,12 +40,12 @@ public class CollectorTaskCreateOrUpdateRequestDTO {
         this.description = description;
     }
 
-    public Long getCollectorAdapterId() {
-        return collectorAdapterId;
+    public Long getAdapterId() {
+        return adapterId;
     }
 
-    public void setCollectorAdapterId(Long collectorAdapterId) {
-        this.collectorAdapterId = collectorAdapterId;
+    public void setAdapterId(Long adapterId) {
+        this.adapterId = adapterId;
     }
 
     public String getParameter() {

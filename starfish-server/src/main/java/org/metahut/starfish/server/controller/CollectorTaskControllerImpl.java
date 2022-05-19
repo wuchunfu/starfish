@@ -5,6 +5,7 @@ import org.metahut.starfish.api.dto.CollectorTaskCreateOrUpdateRequestDTO;
 import org.metahut.starfish.api.dto.CollectorTaskRequestDTO;
 import org.metahut.starfish.api.dto.CollectorTaskResponseDTO;
 import org.metahut.starfish.api.dto.ResultEntity;
+import org.metahut.starfish.server.service.CollectorTaskService;
 import org.springframework.web.bind.annotation.RestController;
 
 import java.util.List;
@@ -12,9 +13,15 @@ import java.util.List;
 @RestController
 public class CollectorTaskControllerImpl implements CollectorTaskController {
 
+    private final CollectorTaskService collectorTaskService;
+
+    public CollectorTaskControllerImpl(CollectorTaskService collectorTaskService) {
+        this.collectorTaskService = collectorTaskService;
+    }
+
     @Override
     public ResultEntity<CollectorTaskResponseDTO> create(CollectorTaskCreateOrUpdateRequestDTO requestDTO) {
-        return null;
+        return ResultEntity.success(collectorTaskService.create(requestDTO));
     }
 
     @Override

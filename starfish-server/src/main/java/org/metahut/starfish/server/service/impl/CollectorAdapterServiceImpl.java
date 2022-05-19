@@ -1,6 +1,7 @@
 package org.metahut.starfish.server.service.impl;
 
 import org.metahut.starfish.api.dto.*;
+import org.metahut.starfish.server.collector.CollectorPluginHelper;
 import org.metahut.starfish.server.service.CollectorAdapterService;
 
 import org.metahut.starfish.service.AbstractMetaDataService;
@@ -12,16 +13,20 @@ import static org.metahut.starfish.server.utils.Constants.COLLECTOR_ADAPTER_TYPE
 @Service
 public class CollectorAdapterServiceImpl implements CollectorAdapterService {
 
+    private final CollectorPluginHelper collectorPluginHelper;
     private final ConversionService conversionService;
     private final AbstractMetaDataService<Long, Object> metaDataService;
 
-    public CollectorAdapterServiceImpl(ConversionService conversionService, AbstractMetaDataService metaDataService) {
+    public CollectorAdapterServiceImpl(CollectorPluginHelper collectorPluginHelper, ConversionService conversionService, AbstractMetaDataService<Long, Object> metaDataService) {
+        this.collectorPluginHelper = collectorPluginHelper;
         this.conversionService = conversionService;
         this.metaDataService = metaDataService;
     }
 
     @Override
     public CollectorAdapterResponseDTO create(CollectorAdapterCreateOrUpdateRequestDTO requestDTO) {
+        collectorPluginHelper.checkAdapterParameter(requestDTO.getType(), requestDTO.getParameter());
+
         NodePropertiesRequestDTO convert = conversionService.convert(requestDTO, NodePropertiesRequestDTO.class);
         Long entityId = metaDataService.createEntityByTypeName(COLLECTOR_ADAPTER_TYPE_NAME, requestDTO.getName(), convert.getProperties());
         CollectorAdapterResponseDTO collectorAdapterResponseDTO = new CollectorAdapterResponseDTO();

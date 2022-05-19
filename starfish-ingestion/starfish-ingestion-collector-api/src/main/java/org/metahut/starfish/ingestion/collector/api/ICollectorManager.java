@@ -6,5 +6,7 @@ public interface ICollectorManager {
 
     ICollectorTask generateTaskInstance(String adapterParameter, String parameter);
 
+    AbstractCollectorParameter deserializeAdapterParameter(String parameter);
+
     ICollectorAdapter generateAdapterInstance(String parameter);
 }

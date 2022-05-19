@@ -54,6 +54,10 @@ public class CollectorPluginHelper {
         return COLLECTOR_MANAGER_MAP.get(type);
     }
 
+    public void checkAdapterParameter(String type, String parameter) {
+        getCollector(type).deserializeAdapterParameter(parameter);
+    }
+
     public Set<String> getAllTypes() {
         return COLLECTOR_MANAGER_MAP.keySet();
     }

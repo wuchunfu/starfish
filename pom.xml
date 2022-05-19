@@ -38,7 +38,6 @@
         <module>starfish-dist</module>
         <module>starfish-examples</module>
         <module>starfish-autoconfigure</module>
-        <module>starfish-datasource</module>
         <module>starfish-standalone-server</module>
         <module>starfish-tools</module>
     </modules>
@@ -115,21 +114,6 @@
             <dependency>
                 <groupId>org.metahut.starfish</groupId>
                 <artifactId>starfish-api</artifactId>
-                <version>${project.version}</version>
-            </dependency>
-            <dependency>
-                <groupId>org.metahut.starfish</groupId>
-                <artifactId>starfish-datasource-api</artifactId>
-                <version>${project.version}</version>
-            </dependency>
-            <dependency>
-                <groupId>org.metahut.starfish</groupId>
-                <artifactId>starfish-datasource-hive</artifactId>
-                <version>${project.version}</version>
-            </dependency>
-            <dependency>
-                <groupId>org.metahut.starfish</groupId>
-                <artifactId>starfish-datasource-pulsar</artifactId>
                 <version>${project.version}</version>
             </dependency>
             <dependency>

@@ -1,9 +1,5 @@
 package org.metahut.starfish.ingestion.collector.hive;
 
-import org.metahut.starfish.api.dto.BatchMetaDataDTO;
-
-import org.metahut.starfish.api.dto.BatchSchemaDTO;
-
 import org.metahut.starfish.ingestion.collector.api.CollectorException;
 import org.metahut.starfish.ingestion.collector.api.CollectorResult;
 import org.metahut.starfish.ingestion.collector.api.ICollectorTask;
