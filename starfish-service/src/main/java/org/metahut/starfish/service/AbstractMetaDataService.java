@@ -119,9 +119,19 @@ public abstract class AbstractMetaDataService<K,T> implements IMetaDataApi<K,T> 
     }
 
     @Override
+    public <U> Collection<U> instancesByName(String typeName, AbstractQueryCondition<U> condition) throws AbstractMetaParserException {
+        return instances(typeApi().getIdByName(typeName),condition);
+    }
+
+    @Override
     public <U> Page<U> instances(K typeId, AbstractQueryCondition<U> condition, Pageable page) throws AbstractMetaParserException {
         Collection<K> instanceIds = linkApi().findChildren(typeId, LinkCategory.TYPE_ENTITY);
         return graphApi().nodes(instanceIds,condition,page);
+    }
+
+    @Override
+    public <U> Page<U> instancesByName(String typeName, AbstractQueryCondition<U> condition, Pageable page) throws AbstractMetaParserException {
+        return instances(typeApi().getIdByName(typeName),condition,page);
     }
 
     @Override
@@ -174,8 +184,6 @@ public abstract class AbstractMetaDataService<K,T> implements IMetaDataApi<K,T> 
         Optional<K> optionalKey = types.entrySet().stream().filter(kClassEntry -> kClassEntry.getValue().fullClassName().equals(fullName)).map(kClassEntry -> kClassEntry.getKey()).findFirst();
         if (optionalKey.isPresent()) {
             K newEntityKey = createEntity(optionalKey.get(),name, properties);
-            linkApi().link(sourceId,newEntityKey,LinkCategory.SOURCE_ENTITY);
-            linkApi().link(typeId,newEntityKey,LinkCategory.TYPE_ENTITY);
             graphApi().link(upperInstanceId,newEntityKey,propertyName);
             return newEntityKey;
         } else {

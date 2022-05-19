@@ -19,9 +19,12 @@ import org.metahut.starfish.store.rdbms.dao.NodeEntityMapper;
 import org.metahut.starfish.store.rdbms.dao.RelationEntityMapper;
 import org.metahut.starfish.store.rdbms.entity.NodeEntity;
 import org.metahut.starfish.store.rdbms.entity.NodeEntityProperty;
+import org.metahut.starfish.store.rdbms.entity.NodeEntityProperty_;
+import org.metahut.starfish.store.rdbms.entity.NodeEntity_;
 import org.metahut.starfish.store.rdbms.entity.RelationEntity;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
+import org.apache.commons.lang3.StringUtils;
 import org.springframework.boot.autoconfigure.AutoConfigureAfter;
 import org.springframework.boot.autoconfigure.condition.ConditionalOnClass;
 import org.springframework.boot.autoconfigure.condition.ConditionalOnMissingBean;
@@ -31,7 +34,10 @@ import org.springframework.context.annotation.Configuration;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageImpl;
 import org.springframework.data.domain.Pageable;
+import org.springframework.data.jpa.domain.Specification;
 
+import javax.persistence.criteria.Predicate;
+import javax.persistence.criteria.SetJoin;
 import javax.sql.DataSource;
 
 import java.util.ArrayList;
@@ -42,7 +48,6 @@ import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
 import java.util.Optional;
-import java.util.function.Function;
 import java.util.stream.Collectors;
 
 /**
@@ -114,6 +119,30 @@ public class RdbmDataStorageAutoConfiguration {
 
     private RelationEntity convert(LinkCategory category,NodeEntity head,NodeEntity tail,String property) {
         return convert(null,category,head,tail,property);
+    }
+
+    private <U> Specification<NodeEntity> convertEntity(AbstractQueryCondition<U> condition,TypeCategory typeCategory,String name) {
+        return (root, query, criteriaBuilder) -> {
+            List<Predicate> conditions = new ArrayList<>();
+            if (StringUtils.isNotEmpty(name)) {
+                conditions.add(criteriaBuilder.equal(root.get(NodeEntity_.NAME),name));
+            }
+            if (typeCategory != null) {
+                conditions.add(criteriaBuilder.equal(root.get(NodeEntity_.CATEGORY),typeCategory.name()));
+            }
+            SetJoin<NodeEntity, NodeEntityProperty> join = query.from(NodeEntity.class).join(NodeEntity_.properties);
+            Map<String,Object> properties = new HashMap<>();
+            properties.entrySet().stream().forEach(
+                    stringObjectEntry -> {
+                        criteriaBuilder.and(
+                                criteriaBuilder.equal(join.get(NodeEntityProperty_.name),stringObjectEntry.getKey()),
+                                criteriaBuilder.equal(join.get(NodeEntityProperty_.value),stringObjectEntry.getValue())
+                        );
+                    }
+            );
+
+            return null;
+        };
     }
 
     @Bean

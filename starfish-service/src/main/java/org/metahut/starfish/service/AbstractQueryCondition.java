@@ -11,6 +11,8 @@ public class AbstractQueryCondition<U> {
 
     private SearchFilterCriteria filters;
 
+    private StartType startType;
+
     public Class<U> getResultType() {
         return resultType;
     }
@@ -29,7 +31,7 @@ public class AbstractQueryCondition<U> {
 
     public static class SearchFilterCriteria {
         private String attributeName;
-        private String attributeValue;
+        private Object attributeValue;
         private FilterOperationSymbolEnum operationSymbolEnum;
         private FilterConditionEnum filterConditionEnum;
         private List<SearchFilterCriteria> criterion;
@@ -42,7 +44,7 @@ public class AbstractQueryCondition<U> {
             this.attributeName = attributeName;
         }
 
-        public String getAttributeValue() {
+        public Object getAttributeValue() {
             return attributeValue;
         }
 
@@ -73,6 +75,12 @@ public class AbstractQueryCondition<U> {
         public void setCriterion(List<SearchFilterCriteria> criterion) {
             this.criterion = criterion;
         }
+    }
+
+    public enum StartType {
+        ENTITY,
+        PROPERTY,
+        RELATION;
     }
 
     public enum FilterOperationSymbolEnum {

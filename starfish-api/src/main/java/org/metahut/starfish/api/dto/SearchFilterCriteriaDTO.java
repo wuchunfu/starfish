@@ -9,7 +9,7 @@ public class SearchFilterCriteriaDTO {
 
     private String   attributeName;
     private FilterOperationSymbolEnum operationSymbolEnum;
-    private String   attributeValue;
+    private Object attributeValue;
 
     private FilterConditionEnum conditionEnum;
     private List<SearchFilterCriteriaDTO> criterion;
@@ -30,7 +30,7 @@ public class SearchFilterCriteriaDTO {
         this.operationSymbolEnum = operationSymbolEnum;
     }
 
-    public String getAttributeValue() {
+    public Object getAttributeValue() {
         return attributeValue;
     }
 

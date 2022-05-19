@@ -76,6 +76,16 @@ interface IMetaDataApi<K,T> {
     <U> Collection<U> instances(K typeId,AbstractQueryCondition<U> condition) throws AbstractMetaParserException;
 
     /**
+     *
+     * @param typeName
+     * @param condition
+     * @param <U>
+     * @return
+     * @throws AbstractMetaParserException
+     */
+    <U> Collection<U> instancesByName(String typeName, AbstractQueryCondition<U> condition) throws AbstractMetaParserException;
+
+    /**
      * query all instances with conditions (page)
      * @param typeId
      * @param condition
@@ -84,6 +94,17 @@ interface IMetaDataApi<K,T> {
      * @throws AbstractMetaParserException
      */
     <U> Page<U> instances(K typeId,AbstractQueryCondition<U> condition,Pageable page) throws AbstractMetaParserException;
+
+    /**
+     *
+     * @param typeName
+     * @param condition
+     * @param page
+     * @param <U>
+     * @return
+     * @throws AbstractMetaParserException
+     */
+    <U> Page<U> instancesByName(String typeName, AbstractQueryCondition<U> condition, Pageable page) throws AbstractMetaParserException ;
 
     /**
      *
