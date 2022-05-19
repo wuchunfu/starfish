@@ -14,13 +14,19 @@ public class Assert {
 
     }
 
-    public static void notNull(@Nullable Object object, Status status, @Nullable Object[] args) {
+    public static void notNull(@Nullable Object object, Status status, @Nullable Object... args) {
         if (object == null) {
             throw new BusinessException(status, args);
         }
     }
 
-    public static void notEmpty(@Nullable Collection<?> collection, Status status, @Nullable Object[] args) {
+    public static void notTrue(@Nullable Boolean object, Status status, @Nullable Object... args) {
+        if (object == null || !object) {
+            throw new BusinessException(status, args);
+        }
+    }
+
+    public static void notEmpty(@Nullable Collection<?> collection, Status status, @Nullable Object... args) {
         if (CollectionUtils.isEmpty(collection)) {
             throw new BusinessException(status, args);
         }

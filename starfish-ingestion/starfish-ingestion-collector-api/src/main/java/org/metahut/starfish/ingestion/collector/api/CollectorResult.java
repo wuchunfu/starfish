@@ -18,7 +18,7 @@ public class CollectorResult {
         this.message = message;
     }
 
-    public boolean isState() {
+    public boolean getState() {
         return state;
     }
 

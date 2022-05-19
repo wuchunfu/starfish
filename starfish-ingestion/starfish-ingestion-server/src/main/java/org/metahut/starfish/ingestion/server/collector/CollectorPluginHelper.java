@@ -17,8 +17,8 @@
 
 package org.metahut.starfish.ingestion.server.collector;
 
-import org.metahut.starfish.ingestion.collector.api.ICollectorTask;
 import org.metahut.starfish.ingestion.collector.api.ICollectorManager;
+import org.metahut.starfish.ingestion.collector.api.ICollectorTask;
 
 import org.springframework.stereotype.Component;
 

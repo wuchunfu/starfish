@@ -1,8 +1,8 @@
 package org.metahut.starfish.api.controller;
 
+import org.metahut.starfish.api.dto.ResultEntity;
 import org.metahut.starfish.api.dto.TypeRequestCreateOrUpdateDTO;
 import org.metahut.starfish.api.dto.TypeResponseDTO;
-import org.metahut.starfish.api.dto.ResultEntity;
 
 import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiOperation;

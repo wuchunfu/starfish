@@ -1,26 +1,15 @@
 package org.metahut.starfish.ingestion.collector.hive;
 
-import org.metahut.starfish.ingestion.collector.api.CollectorException;
 import org.metahut.starfish.ingestion.collector.api.CollectorResult;
 import org.metahut.starfish.ingestion.collector.api.ICollectorTask;
-import org.metahut.starfish.ingestion.common.JSONUtils;
 import org.metahut.starfish.ingestion.common.MetaMessageProducer;
 import org.metahut.starfish.message.api.IMessageProducer;
 
 import org.apache.hadoop.hive.metastore.IMetaStoreClient;
-import org.apache.hadoop.hive.metastore.api.Table;
-import org.apache.thrift.TException;
 
-import java.lang.reflect.Field;
-import java.util.ArrayList;
-import java.util.Collection;
-import java.util.HashMap;
 import java.util.List;
-import java.util.Map;
-import java.util.Map.Entry;
 import java.util.Objects;
 import java.util.Properties;
-import java.util.stream.Collectors;
 
 public class HiveCollectorTask implements ICollectorTask {
 
@@ -54,7 +43,6 @@ public class HiveCollectorTask implements ICollectorTask {
     public CollectorResult execute() {
         CollectorResult collectorResult = new CollectorResult();
 
-
 //        //transform the message
 //        BatchMetaDataDTO hiveMessages = getMsg();
 //        try {
@@ -66,7 +54,6 @@ public class HiveCollectorTask implements ICollectorTask {
         collectorResult.setMessage("send hive messages is success");
         return collectorResult;
     }
-
 
     private void deleteNonExistentMetadata() {
 

@@ -36,17 +36,16 @@ public class TypeServiceImpl implements TypeService {
         classInfo.setNameAttributeRel(typeRequestCreateOrUpdateDTO.getClassRelName());
         classInfo.setPackagePath("org.starfish");
         classInfo.setName(typeRequestCreateOrUpdateDTO.getClassName());
-        List<Attribute> attributeList = typeRequestCreateOrUpdateDTO.getClassField().stream().map
-                (field -> {
-                            Attribute attribute = new Attribute();
-                            String[] fields = field.split(":");
-                            attribute.setName(fields[0]);
-                            attribute.setClassName(fields[1]);
-                            attribute.setArray(Boolean.valueOf(fields[2]));
-                            attribute.setRelType(RelType.valueOf(fields[3]));
-                            return attribute;
-                        }
-                ).collect(Collectors.toList());
+        List<Attribute> attributeList = typeRequestCreateOrUpdateDTO.getClassField().stream()
+                .map(field -> {
+                    Attribute attribute = new Attribute();
+                    String[] fields = field.split(":");
+                    attribute.setName(fields[0]);
+                    attribute.setClassName(fields[1]);
+                    attribute.setArray(Boolean.valueOf(fields[2]));
+                    attribute.setRelType(RelType.valueOf(fields[3]));
+                    return attribute;
+                }).collect(Collectors.toList());
         classInfo.setAttributes(attributeList);
         batchTypeBody.setTypes(Arrays.asList(classInfo));
         Long sourceId = (Long) abstractMetaDataService.initSourceAndType(batchTypeBody);

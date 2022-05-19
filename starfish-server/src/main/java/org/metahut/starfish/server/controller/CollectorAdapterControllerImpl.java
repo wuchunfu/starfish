@@ -1,11 +1,19 @@
 package org.metahut.starfish.server.controller;
 
 import org.metahut.starfish.api.controller.CollectorAdapterController;
-import org.metahut.starfish.api.dto.*;
+import org.metahut.starfish.api.dto.CollectorAdapterCreateOrUpdateRequestDTO;
+import org.metahut.starfish.api.dto.CollectorAdapterRequestDTO;
+import org.metahut.starfish.api.dto.CollectorAdapterResponseDTO;
+import org.metahut.starfish.api.dto.ResultEntity;
+import org.metahut.starfish.ingestion.collector.api.CollectorResult;
 import org.metahut.starfish.server.service.CollectorAdapterService;
+import org.metahut.starfish.server.utils.Assert;
+
 import org.springframework.web.bind.annotation.RestController;
 
 import java.util.List;
+
+import static org.metahut.starfish.api.enums.Status.COLLECTOR_ADAPTER_TEST_CONNECTION_FAIL;
 
 @RestController
 public class CollectorAdapterControllerImpl implements CollectorAdapterController {
@@ -18,36 +26,39 @@ public class CollectorAdapterControllerImpl implements CollectorAdapterControlle
 
     @Override
     public ResultEntity testConnection(String type, String parameter) {
-        return null;
+        CollectorResult collectorResult = collectorAdapterService.testConnection(type, parameter);
+        Assert.notTrue(collectorResult.getState(), COLLECTOR_ADAPTER_TEST_CONNECTION_FAIL, collectorResult.getMessage());
+        return ResultEntity.success();
     }
 
     @Override
     public ResultEntity<CollectorAdapterResponseDTO> create(CollectorAdapterCreateOrUpdateRequestDTO requestDTO) {
-        return null;
+        return ResultEntity.success(collectorAdapterService.create(requestDTO));
     }
 
     @Override
     public ResultEntity<CollectorAdapterResponseDTO> update(Long id, CollectorAdapterCreateOrUpdateRequestDTO requestDTO) {
-        return null;
+        return ResultEntity.success(collectorAdapterService.update(id, requestDTO));
     }
 
     @Override
     public ResultEntity deleteById(Long id) {
-        return null;
+        collectorAdapterService.deleteById(id);
+        return ResultEntity.success();
     }
 
     @Override
     public ResultEntity<CollectorAdapterResponseDTO> queryById(Long id) {
-        return null;
+        return ResultEntity.success(collectorAdapterService.queryById(id));
     }
 
     @Override
-    public ResultEntity<List<CollectorAdapterResponseDTO>> queryPageList(CollectorAdapterRequestDTO requestDTO) {
-        return null;
+    public ResultEntity<List<CollectorAdapterResponseDTO>> queryListPage(CollectorAdapterRequestDTO requestDTO) {
+        return ResultEntity.success(collectorAdapterService.queryListPage(requestDTO));
     }
 
     @Override
     public ResultEntity<List<CollectorAdapterResponseDTO>> queryList(CollectorAdapterRequestDTO requestDTO) {
-        return null;
+        return ResultEntity.success(collectorAdapterService.queryList(requestDTO));
     }
 }

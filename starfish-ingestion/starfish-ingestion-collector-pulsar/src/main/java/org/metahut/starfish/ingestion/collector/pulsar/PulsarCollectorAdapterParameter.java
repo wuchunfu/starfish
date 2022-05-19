@@ -1,7 +1,8 @@
 package org.metahut.starfish.ingestion.collector.pulsar;
 
-import org.apache.commons.lang3.StringUtils;
 import org.metahut.starfish.ingestion.collector.api.AbstractCollectorParameter;
+
+import org.apache.commons.lang3.StringUtils;
 
 public class PulsarCollectorAdapterParameter extends AbstractCollectorParameter {
 

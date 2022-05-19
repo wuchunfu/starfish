@@ -76,7 +76,6 @@ public class RdbmDataStorageAutoConfiguration {
                 .collect(Collectors.toCollection(ArrayList::new)),pageResult.getPageable(),pageResult.getTotalElements());
     }
 
-
     private NodeEntity convert(Long id,TypeCategory category,String name,Map<String,Object> properties) {
         final NodeEntity nodeEntity = new NodeEntity();
         nodeEntity.setId(id);

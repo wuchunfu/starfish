@@ -2,10 +2,14 @@ package org.metahut.starfish.server.controller;
 
 import org.metahut.starfish.api.controller.CollectorTaskController;
 import org.metahut.starfish.api.dto.CollectorTaskCreateOrUpdateRequestDTO;
+import org.metahut.starfish.api.dto.CollectorTaskInstanceLogResponseDTO;
+import org.metahut.starfish.api.dto.CollectorTaskInstanceRequestDTO;
+import org.metahut.starfish.api.dto.CollectorTaskInstanceResponseDTO;
 import org.metahut.starfish.api.dto.CollectorTaskRequestDTO;
 import org.metahut.starfish.api.dto.CollectorTaskResponseDTO;
 import org.metahut.starfish.api.dto.ResultEntity;
 import org.metahut.starfish.server.service.CollectorTaskService;
+
 import org.springframework.web.bind.annotation.RestController;
 
 import java.util.List;
@@ -26,26 +30,37 @@ public class CollectorTaskControllerImpl implements CollectorTaskController {
 
     @Override
     public ResultEntity<CollectorTaskResponseDTO> update(Long id, CollectorTaskCreateOrUpdateRequestDTO requestDTO) {
-        return null;
+        return ResultEntity.success(collectorTaskService.update(id, requestDTO));
     }
 
     @Override
     public ResultEntity deleteById(Long id) {
-        return null;
+        collectorTaskService.deleteById(id);
+        return ResultEntity.success();
     }
 
     @Override
     public ResultEntity<CollectorTaskResponseDTO> queryById(Long id) {
-        return null;
+        return ResultEntity.success(collectorTaskService.queryById(id));
     }
 
     @Override
-    public ResultEntity<List<CollectorTaskResponseDTO>> queryPageList(CollectorTaskRequestDTO requestDTO) {
-        return null;
+    public ResultEntity<List<CollectorTaskResponseDTO>> queryListPage(CollectorTaskRequestDTO requestDTO) {
+        return ResultEntity.success(collectorTaskService.queryListPage(requestDTO));
     }
 
     @Override
     public ResultEntity<List<CollectorTaskResponseDTO>> queryList(CollectorTaskRequestDTO requestDTO) {
-        return null;
+        return ResultEntity.success(collectorTaskService.queryList(requestDTO));
+    }
+
+    @Override
+    public ResultEntity<CollectorTaskInstanceResponseDTO> queryInstanceListPage(CollectorTaskInstanceRequestDTO requestDTO) {
+        return ResultEntity.success(collectorTaskService.queryInstanceListPage(requestDTO));
+    }
+
+    @Override
+    public ResultEntity<CollectorTaskInstanceLogResponseDTO> queryInstanceLog(String instanceId) {
+        return ResultEntity.success(collectorTaskService.queryInstanceLog(instanceId));
     }
 }

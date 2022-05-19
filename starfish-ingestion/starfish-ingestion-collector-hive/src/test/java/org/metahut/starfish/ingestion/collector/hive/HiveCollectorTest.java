@@ -14,7 +14,6 @@ import org.apache.thrift.TException;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.Disabled;
 import org.junit.jupiter.api.Test;
-import org.metahut.starfish.ingestion.common.JSONUtils;
 
 import java.sql.Connection;
 import java.sql.SQLException;

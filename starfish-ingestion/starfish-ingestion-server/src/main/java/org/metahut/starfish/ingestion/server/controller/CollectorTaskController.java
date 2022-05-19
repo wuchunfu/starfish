@@ -40,6 +40,6 @@ public class CollectorTaskController {
     @PostMapping("execute")
     public ResultEntity execute(@RequestBody CollectorExecuteRequestDTO collectorExecuteRequestDTO) {
         CollectorResult result = collectorTaskService.execute(collectorExecuteRequestDTO);
-        return result.isState() ? ResultEntity.success() : ResultEntity.of(10000, result.getMessage());
+        return result.getState() ? ResultEntity.success() : ResultEntity.of(10000, result.getMessage());
     }
 }

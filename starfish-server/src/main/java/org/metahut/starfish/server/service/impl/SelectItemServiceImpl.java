@@ -55,9 +55,10 @@ public class SelectItemServiceImpl implements SelectItemService {
     }
 
     public List<SelectItemResponseDTO> queryCollectorTypeItem() {
-       return collectorPluginHelper.getAllTypes().stream()
+        return collectorPluginHelper.getAllTypes().stream()
                 .map(value -> toSelectItem(value, value)).collect(Collectors.toList());
     }
+
     private List<SelectItemResponseDTO> queryMetricsDimensionItem() {
         return null;
     }

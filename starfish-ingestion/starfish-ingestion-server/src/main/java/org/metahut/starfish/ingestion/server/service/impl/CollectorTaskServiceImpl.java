@@ -1,16 +1,13 @@
 package org.metahut.starfish.ingestion.server.service.impl;
 
-import org.metahut.starfish.ingestion.collector.api.*;
-import org.metahut.starfish.ingestion.collector.api.CollectorException;
-import org.metahut.starfish.ingestion.common.JSONUtils;
+import org.metahut.starfish.ingestion.collector.api.CollectorResult;
+import org.metahut.starfish.ingestion.collector.api.ICollectorTask;
 import org.metahut.starfish.ingestion.server.collector.CollectorPluginHelper;
 import org.metahut.starfish.ingestion.server.dto.CollectorExecuteRequestDTO;
 import org.metahut.starfish.ingestion.server.service.CollectorAdapterService;
 import org.metahut.starfish.ingestion.server.service.CollectorTaskService;
 
 import org.springframework.stereotype.Service;
-
-import java.util.Objects;
 
 @Service
 public class CollectorTaskServiceImpl implements CollectorTaskService {

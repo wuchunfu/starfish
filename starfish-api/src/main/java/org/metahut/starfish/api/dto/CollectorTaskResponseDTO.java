@@ -1,8 +1,9 @@
 package org.metahut.starfish.api.dto;
 
+import org.metahut.starfish.api.enums.ReleaseStateEnum;
+
 import io.swagger.annotations.ApiModel;
 import io.swagger.annotations.ApiModelProperty;
-import org.metahut.starfish.api.enums.ReleaseStateEnum;
 
 @ApiModel(description = "collector task response dto")
 public class CollectorTaskResponseDTO {

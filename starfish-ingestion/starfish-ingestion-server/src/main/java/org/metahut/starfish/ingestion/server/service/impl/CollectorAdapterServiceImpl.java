@@ -7,7 +7,6 @@ import org.springframework.stereotype.Service;
 @Service
 public class CollectorAdapterServiceImpl implements CollectorAdapterService {
 
-
     public void queryById(Long id) {
 
     }

@@ -3,6 +3,7 @@ package org.metahut.starfish.ingestion.collector.hive;
 import org.metahut.starfish.ingestion.collector.api.AbstractCollectorParameter;
 
 import org.apache.commons.lang3.StringUtils;
+
 public class HiveCollectorAdapterParameter extends AbstractCollectorParameter {
 
     private String hiveMetastoreUris;

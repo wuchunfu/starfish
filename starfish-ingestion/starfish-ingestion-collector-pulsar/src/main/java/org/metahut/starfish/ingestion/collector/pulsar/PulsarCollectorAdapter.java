@@ -1,10 +1,11 @@
 package org.metahut.starfish.ingestion.collector.pulsar;
 
-import org.apache.pulsar.client.admin.PulsarAdmin;
-import org.apache.pulsar.client.api.PulsarClientException;
 import org.metahut.starfish.ingestion.collector.api.CollectorException;
 import org.metahut.starfish.ingestion.collector.api.CollectorResult;
 import org.metahut.starfish.ingestion.collector.api.ICollectorAdapter;
+
+import org.apache.pulsar.client.admin.PulsarAdmin;
+import org.apache.pulsar.client.api.PulsarClientException;
 
 import java.util.Objects;
 

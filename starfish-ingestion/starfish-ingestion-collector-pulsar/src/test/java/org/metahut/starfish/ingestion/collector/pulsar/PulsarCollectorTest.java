@@ -1,16 +1,5 @@
 package org.metahut.starfish.ingestion.collector.pulsar;
 
-import org.metahut.starfish.api.dto.BatchMetaDataDTO;
-import org.metahut.starfish.api.dto.BatchSchemaDTO;
-import org.metahut.starfish.ingestion.collector.api.CollectorResult;
-
-import org.apache.http.HttpEntity;
-import org.apache.http.client.config.RequestConfig;
-import org.apache.http.client.methods.CloseableHttpResponse;
-import org.apache.http.client.methods.HttpPost;
-import org.apache.http.entity.StringEntity;
-import org.apache.http.impl.client.HttpClientBuilder;
-import org.apache.http.util.EntityUtils;
 import org.apache.pulsar.client.admin.PulsarAdmin;
 import org.apache.pulsar.client.admin.PulsarAdminException;
 import org.apache.pulsar.client.api.PulsarClient;
@@ -215,30 +204,30 @@ public class PulsarCollectorTest {
 //        Assertions.assertNotNull(collectorResult);
 //    }
 
-    public static String doPostJson(String url, String params) {
-        try {
-            HttpClientBuilder httpClientBuilder = HttpClientBuilder.create();
-            HttpPost httpPost = new HttpPost(url);
-            RequestConfig requestConfig = RequestConfig.custom().setSocketTimeout(60000)
-                .setConnectTimeout(600000).build();
-            httpPost.setConfig(requestConfig);
-            httpPost.setHeader("Content-Type", "application/json;charset=UTF-8");
-            StringEntity stringEntity = new StringEntity(params);
-            stringEntity.setContentType("text/json");
-            httpPost.setEntity(stringEntity);
-            return postResponse(httpClientBuilder, httpPost);
-        } catch (Exception ex) {
-            throw new RuntimeException(ex);
-        }
-    }
-
-    public static String postResponse(HttpClientBuilder httpClientBuilder, HttpPost httpPost) {
-        try (CloseableHttpResponse closeableHttpResponse = httpClientBuilder.build()
-            .execute(httpPost)) {
-            HttpEntity httpEntity = closeableHttpResponse.getEntity();
-            return EntityUtils.toString(httpEntity, "UTF-8");
-        } catch (Exception ex) {
-            throw new RuntimeException(ex);
-        }
-    }
+//    public static String doPostJson(String url, String params) {
+//        try {
+//            HttpClientBuilder httpClientBuilder = HttpClientBuilder.create();
+//            HttpPost httpPost = new HttpPost(url);
+//            RequestConfig requestConfig = RequestConfig.custom().setSocketTimeout(60000)
+//                .setConnectTimeout(600000).build();
+//            httpPost.setConfig(requestConfig);
+//            httpPost.setHeader("Content-Type", "application/json;charset=UTF-8");
+//            StringEntity stringEntity = new StringEntity(params);
+//            stringEntity.setContentType("text/json");
+//            httpPost.setEntity(stringEntity);
+//            return postResponse(httpClientBuilder, httpPost);
+//        } catch (Exception ex) {
+//            throw new RuntimeException(ex);
+//        }
+//    }
+//
+//    public static String postResponse(HttpClientBuilder httpClientBuilder, HttpPost httpPost) {
+//        try (CloseableHttpResponse closeableHttpResponse = httpClientBuilder.build()
+//            .execute(httpPost)) {
+//            HttpEntity httpEntity = closeableHttpResponse.getEntity();
+//            return EntityUtils.toString(httpEntity, "UTF-8");
+//        } catch (Exception ex) {
+//            throw new RuntimeException(ex);
+//        }
+//    }
 }

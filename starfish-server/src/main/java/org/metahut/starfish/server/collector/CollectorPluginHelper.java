@@ -17,8 +17,8 @@
 
 package org.metahut.starfish.server.collector;
 
-import org.metahut.starfish.ingestion.collector.api.AbstractCollectorParameter;
-import org.metahut.starfish.ingestion.collector.api.ICollectorTask;
+import org.metahut.starfish.ingestion.collector.api.CollectorResult;
+import org.metahut.starfish.ingestion.collector.api.ICollectorAdapter;
 import org.metahut.starfish.ingestion.collector.api.ICollectorManager;
 
 import org.springframework.stereotype.Component;
@@ -26,7 +26,11 @@ import org.springframework.stereotype.Component;
 import javax.annotation.PostConstruct;
 
 import java.text.MessageFormat;
-import java.util.*;
+import java.util.HashMap;
+import java.util.Map;
+import java.util.Objects;
+import java.util.ServiceLoader;
+import java.util.Set;
 
 @Component
 public class CollectorPluginHelper {
@@ -50,16 +54,20 @@ public class CollectorPluginHelper {
         });
     }
 
-    public ICollectorManager getCollector(String type) {
+    private ICollectorManager getCollector(String type) {
         return COLLECTOR_MANAGER_MAP.get(type);
-    }
-
-    public void checkAdapterParameter(String type, String parameter) {
-        getCollector(type).deserializeAdapterParameter(parameter);
     }
 
     public Set<String> getAllTypes() {
         return COLLECTOR_MANAGER_MAP.keySet();
+    }
+
+    public ICollectorAdapter generateAdapterInstance(String type, String parameter) {
+        return getCollector(type).generateAdapterInstance(parameter);
+    }
+
+    public CollectorResult testAdapterConnection(String type, String parameter) {
+        return generateAdapterInstance(type, parameter).testConnection();
     }
 
 }
