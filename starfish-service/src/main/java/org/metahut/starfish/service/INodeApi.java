@@ -2,6 +2,9 @@ package org.metahut.starfish.service;
 
 import org.metahut.starfish.parser.exception.AbstractMetaParserException;
 
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
+
 import java.util.Collection;
 import java.util.Map;
 
@@ -41,5 +44,9 @@ interface INodeApi<K,T> extends AbstractQueryService {
      * @throws AbstractMetaParserException
      */
     void delete(Collection<K> ids) throws AbstractMetaParserException;
+
+    <U> Collection<U> nodes(Collection<K> nodeIds,AbstractQueryCondition<U> condition) throws AbstractMetaParserException;
+
+    <U> Page<U> nodes(Collection<K> nodeIds,AbstractQueryCondition<U> condition, Pageable page) throws AbstractMetaParserException;
 
 }

@@ -107,6 +107,8 @@ public interface INodeEntityMapper<I extends Serializable, N extends AbstractNod
      */
     Collection<N> findAllById(Collection<Long> ids);
 
+    Page<N> findAllById(Collection<Long> ids,Pageable pageable);
+
     /**
      *
      * @param name

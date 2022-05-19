@@ -1,5 +1,6 @@
 package org.metahut.starfish.service;
 
+import org.metahut.starfish.parser.domain.enums.LinkCategory;
 import org.metahut.starfish.parser.exception.StarFishMetaDataOperatingException;
 
 import java.util.Collection;
@@ -16,7 +17,7 @@ public interface IRelationApi<K,T> extends AbstractQueryService {
      * @param property
      * @throws StarFishMetaDataOperatingException
      */
-    void link(K headId,K tailId,String property) throws StarFishMetaDataOperatingException;
+    void link(K headId,K tailId, LinkCategory linkCategory,String property) throws StarFishMetaDataOperatingException;
 
     // crack
     /**
@@ -75,4 +76,5 @@ public interface IRelationApi<K,T> extends AbstractQueryService {
      */
     void move(K oldHeadId,K newHeadId,K tailId,String property) throws StarFishMetaDataOperatingException;
 
+    Collection<K> findChildren(K headId,LinkCategory category,String property) throws StarFishMetaDataOperatingException;
 }

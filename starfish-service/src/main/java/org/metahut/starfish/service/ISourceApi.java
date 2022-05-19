@@ -7,7 +7,7 @@ import java.util.Map;
 /**
  *
  */
-interface ISourceApi<K,T> extends AbstractQueryService<T> {
+interface ISourceApi<K,T> extends AbstractQueryService {
 
     /**
      *

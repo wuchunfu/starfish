@@ -144,6 +144,11 @@ public class NodeEntityMapper implements INodeEntityMapper<Long, NodeEntity, Nod
     }
 
     @Override
+    public Page<NodeEntity> findAllById(Collection<Long> ids, Pageable pageable) {
+        return repository.findALlByIdIn(ids,pageable);
+    }
+
+    @Override
     public List<NodeEntity> findByName(String name) {
         NodeEntity nodeEntity = new NodeEntity();
         nodeEntity.setName(name);

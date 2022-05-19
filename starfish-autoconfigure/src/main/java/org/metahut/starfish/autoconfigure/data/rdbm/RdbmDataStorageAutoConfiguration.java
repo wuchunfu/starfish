@@ -212,12 +212,12 @@ public class RdbmDataStorageAutoConfiguration {
             }
 
             @Override
-            public void link(Long headId, Long tailId, String property) {
+            public void link(Long headId, Long tailId,LinkCategory linkCategory, String property) {
                 //TODO typeName
                 NodeEntity head = nodeEntityMapper.findById(headId);
                 NodeEntity tail = nodeEntityMapper.findById(tailId);
                 RelationEntity relationEntity = new RelationEntity();
-                relationEntity.setCategory(TypeCategory.RELATIONSHIP.name());
+                relationEntity.setCategory(linkCategory.name());
                 relationEntity.setStartNodeEntity(head);
                 relationEntity.setEndNodeEntity(tail);
                 relationEntity.setName(property);
@@ -269,6 +269,13 @@ public class RdbmDataStorageAutoConfiguration {
 
             }
 
+            @Override
+            public Collection<Long> findChildren(Long headId, LinkCategory category, String property) throws StarFishMetaDataOperatingException {
+                NodeEntity nodeEntity = new NodeEntity();
+                nodeEntity.setId(headId);
+                Collection<RelationEntity> children = relationEntityMapper.findByStartNodeEntityAndCategoryAndName(nodeEntity, category.name(), property);
+                return children.stream().map(relationEntity -> relationEntity.getEndNodeEntity().getId()).collect(Collectors.toCollection(ArrayList::new));
+            }
         };
     }
 
@@ -432,6 +439,18 @@ public class RdbmDataStorageAutoConfiguration {
             @Override
             public void delete(Collection<Long> ids) throws AbstractMetaParserException {
                 nodeEntityMapper.removeBatchById(ids);
+            }
+
+            @Override
+            public <U> Collection<U> nodes(Collection<Long> nodeIds, AbstractQueryCondition<U> condition) throws AbstractMetaParserException {
+                List<NodeEntity> nodeEntities = nodeEntityMapper.findAllById(nodeIds);
+                return convert(nodeEntities,condition.getResultType());
+            }
+
+            @Override
+            public <U> Page<U> nodes(Collection<Long> nodeIds, AbstractQueryCondition<U> condition, Pageable page) throws AbstractMetaParserException {
+                Page<NodeEntity> pageResult = nodeEntityMapper.findAllById(nodeIds, page);
+                return convert(pageResult,condition.getResultType());
             }
 
             @Override

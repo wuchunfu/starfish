@@ -87,24 +87,24 @@ interface IMetaDataApi<K,T> {
 
     /**
      *
-     * @param upperTypeId
+     * @param upperInstanceId
      * @param property
      * @param condition
      * @return
      * @throws AbstractMetaParserException
      */
-    <U> Collection<U> instances(K upperTypeId,String property,AbstractQueryCondition<U> condition) throws AbstractMetaParserException;
+    <U> Collection<U> instances(K upperInstanceId,String property,AbstractQueryCondition<U> condition) throws AbstractMetaParserException;
 
     /**
      *
-     * @param upperTypeId
+     * @param upperInstanceId
      * @param property
      * @param condition
      * @param page
      * @return
      * @throws AbstractMetaParserException
      */
-    <U> Page<U> instances(K upperTypeId,String property,AbstractQueryCondition<U> condition,Pageable page) throws AbstractMetaParserException;
+    <U> Page<U> instances(K upperInstanceId,String property,AbstractQueryCondition<U> condition,Pageable page) throws AbstractMetaParserException;
 
     /**
      * create a source with properties
@@ -123,6 +123,14 @@ interface IMetaDataApi<K,T> {
      */
     K createType(K sourceId,Class classInfo,Map<String,T> properties) throws AbstractMetaParserException;
 
+    /**
+     *
+     * @param typeName
+     * @param name
+     * @param properties
+     * @return
+     * @throws AbstractMetaParserException
+     */
     K createEntityByTypeName(String typeName,String name,Map<String,T> properties) throws AbstractMetaParserException;
 
     /**

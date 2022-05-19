@@ -27,6 +27,8 @@ public interface RelationEntityRepository extends JpaRepository<RelationEntity, 
 
     List<RelationEntity> findByStartNodeEntityIdAndCategory(Long startNodeEntityId, String category);
 
+    List<RelationEntity> findByStartNodeEntityIdAndCategoryAndName(Long startNodeEntityId, String category,String name);
+
     List<RelationEntity> findByEndNodeEntityId(Long endNodeEntityId);
 
     List<RelationEntity> findByEndNodeEntityIdAndCategory(Long endNodeEntityId, String category);

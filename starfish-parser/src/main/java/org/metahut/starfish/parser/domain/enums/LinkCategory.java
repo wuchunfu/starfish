@@ -7,6 +7,6 @@ package org.metahut.starfish.parser.domain.enums;
 public enum LinkCategory {
     SOURCE_TYPE,
     TYPE_ENTITY,
-    SOURCE_ENTITY;
-
+    SOURCE_ENTITY,
+    RELATIONSHIP;
 }

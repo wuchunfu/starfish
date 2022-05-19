@@ -1,5 +1,6 @@
 package org.metahut.starfish.service;
 
+import org.metahut.starfish.parser.domain.enums.LinkCategory;
 import org.metahut.starfish.parser.domain.instance.Graph;
 import org.metahut.starfish.parser.domain.instance.Node;
 import org.metahut.starfish.parser.domain.instance.Relation;
@@ -40,6 +41,28 @@ public abstract class AbstractGraphService<K,T> implements IGraphApi<K,T> {
     }
 
     @Override
+    public <U> Collection<U> nodes(Collection<K> instanceIds, AbstractQueryCondition<U> condition) throws AbstractMetaParserException {
+        return nodeService().nodes(instanceIds,condition);
+    }
+
+    @Override
+    public <U> Collection<U> nodes(K upperInstanceId, String property, AbstractQueryCondition<U> condition) throws AbstractMetaParserException {
+        Collection<K> instanceIds = relationService().findChildren(upperInstanceId, LinkCategory.RELATIONSHIP, property);
+        return nodeService().nodes(instanceIds,condition);
+    }
+
+    @Override
+    public <U> Page<U> nodes(Collection<K> instanceIds, AbstractQueryCondition<U> condition, Pageable page) throws AbstractMetaParserException {
+        return nodeService().nodes(instanceIds,condition,page);
+    }
+
+    @Override
+    public <U> Page<U> nodes(K upperInstanceId, String property, AbstractQueryCondition<U> condition, Pageable page) throws AbstractMetaParserException {
+        Collection<K> instanceIds = relationService().findChildren(upperInstanceId, LinkCategory.RELATIONSHIP, property);
+        return nodeService().nodes(instanceIds,condition,page);
+    }
+
+    @Override
     public <U> Future<Collection<U>> query(Supplier<AbstractQueryCondition<U>> condition) {
         return new FakeFuture<>(merge(nodeService().query(condition), relationService().query(condition)));
     }
@@ -68,7 +91,7 @@ public abstract class AbstractGraphService<K,T> implements IGraphApi<K,T> {
 
     @Override
     public void link(K headId, K tailId, String property) throws AbstractMetaParserException {
-        relationService().link(headId,tailId,property);
+        relationService().link(headId,tailId, LinkCategory.RELATIONSHIP,property);
     }
 
     @Override
