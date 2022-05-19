@@ -143,6 +143,8 @@ interface IMetaDataApi<K,T> {
      */
     K createEntity(K typeId,String name,Map<String,T> properties) throws AbstractMetaParserException;
 
+    K createEntity(K upperInstanceId,String propertyName,String name,Map<String,T> properties) throws AbstractMetaParserException;
+
     /**
      * update source
      * @param id

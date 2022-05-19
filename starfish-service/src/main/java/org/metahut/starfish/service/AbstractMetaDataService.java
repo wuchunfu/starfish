@@ -2,12 +2,14 @@ package org.metahut.starfish.service;
 
 import org.metahut.starfish.parser.antlr4.json.JsonExtensionVisitor;
 import org.metahut.starfish.parser.domain.enums.LinkCategory;
+import org.metahut.starfish.parser.domain.instance.Attribute;
 import org.metahut.starfish.parser.domain.instance.BatchInstanceBody;
 import org.metahut.starfish.parser.domain.instance.BatchTypeBody;
 import org.metahut.starfish.parser.domain.instance.Class;
 import org.metahut.starfish.parser.domain.instance.InstanceAnalysisStruct;
 import org.metahut.starfish.parser.exception.AbstractMetaParserException;
 import org.metahut.starfish.parser.exception.SourceNameNotPresentException;
+import org.metahut.starfish.parser.exception.TypeNotPresentException;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
 import org.springframework.data.domain.Page;
@@ -19,6 +21,7 @@ import java.util.Arrays;
 import java.util.Collection;
 import java.util.List;
 import java.util.Map;
+import java.util.Optional;
 
 /**
  * 拼接三大api
@@ -101,7 +104,7 @@ public abstract class AbstractMetaDataService<K,T> implements IMetaDataApi<K,T> 
 
     @Override
     public Collection<Class> types(K sourceId) throws AbstractMetaParserException {
-        return typeApi().types(sourceId);
+        return typeApi().types(sourceId).values();
     }
 
     @Override
@@ -155,11 +158,29 @@ public abstract class AbstractMetaDataService<K,T> implements IMetaDataApi<K,T> 
         //TODO valid
         K entityId = graphApi().createNode(name, properties);
         K sourceId = linkApi().findParent(typeId,LinkCategory.SOURCE_TYPE);
-        Collection<Class> types = typeApi().types(sourceId);
-
         linkApi().link(sourceId,entityId,LinkCategory.SOURCE_ENTITY);
         linkApi().link(typeId,entityId,LinkCategory.TYPE_ENTITY);
         return entityId;
+    }
+
+    @Override
+    public K createEntity(K upperInstanceId, String propertyName, String name, Map<String, T> properties) throws AbstractMetaParserException {
+        K sourceId = linkApi().findParent(upperInstanceId, LinkCategory.SOURCE_ENTITY);
+        Map<K, Class> types = typeApi().types(sourceId);
+        K typeId = linkApi().findParent(upperInstanceId, LinkCategory.TYPE_ENTITY);
+        Class classInfo = types.get(typeId);
+        Attribute attribute = classInfo.findAttributeByName(propertyName);
+        String fullName = attribute.getClassName();
+        Optional<K> optionalKey = types.entrySet().stream().filter(kClassEntry -> kClassEntry.getValue().fullClassName().equals(fullName)).map(kClassEntry -> kClassEntry.getKey()).findFirst();
+        if (optionalKey.isPresent()) {
+            K newEntityKey = createEntity(optionalKey.get(),name, properties);
+            linkApi().link(sourceId,newEntityKey,LinkCategory.SOURCE_ENTITY);
+            linkApi().link(typeId,newEntityKey,LinkCategory.TYPE_ENTITY);
+            graphApi().link(upperInstanceId,newEntityKey,propertyName);
+            return newEntityKey;
+        } else {
+            throw new TypeNotPresentException(fullName + " in Source:" + sourceId);
+        }
     }
 
     @Override
@@ -243,6 +264,7 @@ public abstract class AbstractMetaDataService<K,T> implements IMetaDataApi<K,T> 
     }
 
     @Override
+    //TODO deep delete
     public void deleteEntity(K id) throws AbstractMetaParserException {
         graphApi().deleteNode(id);
         linkApi().deleteLinkRelatedToIds(Arrays.asList(id));

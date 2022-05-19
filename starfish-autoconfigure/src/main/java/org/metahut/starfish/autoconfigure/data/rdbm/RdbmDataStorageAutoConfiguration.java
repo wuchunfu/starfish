@@ -42,6 +42,7 @@ import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
 import java.util.Optional;
+import java.util.function.Function;
 import java.util.stream.Collectors;
 
 /**
@@ -379,11 +380,12 @@ public class RdbmDataStorageAutoConfiguration {
             }
 
             @Override
-            public Collection<Class> types(Long sourceId) {
+            public Map<Long,Class> types(Long sourceId) {
                 NodeEntity sourceEntity = new NodeEntity();
                 sourceEntity.setId(sourceId);
                 Collection<RelationEntity> relationEntityCollection = relationEntityMapper.findByStartNodeEntityAndCategory(sourceEntity, LinkCategory.SOURCE_TYPE.name());
-                return relationEntityCollection.stream().map(relationEntity -> readClassFromNodeEntity(relationEntity.getEndNodeEntity())).collect(Collectors.toCollection(ArrayList::new));
+                return relationEntityCollection.stream().collect(Collectors.toMap(relationEntity -> relationEntity.getEndNodeEntity().getId(),
+                        relationEntity -> readClassFromNodeEntity(relationEntity.getEndNodeEntity())));
             }
 
             @Override

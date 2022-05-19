@@ -19,7 +19,7 @@ interface ITypeApi<K,T> extends AbstractQueryService  {
 
     void delete(Collection<K> ids) throws AbstractMetaParserException;
 
-    Collection<Class> types(K sourceId);
+    Map<K,Class> types(K sourceId);
 
     Map<K,Class> types(Collection<K> typeIds);
 
