@@ -8,7 +8,7 @@ import io.swagger.annotations.ApiModelProperty;
 import java.util.Date;
 
 @ApiModel(description = "ingestion collector response dto")
-public class IngestionCollectorResponseDTO extends PageResponseDTO {
+public class IngestionCollectorResponseDTO {
 
     @ApiModelProperty(value = "collector name", required = true)
     private Long ingestionCollectorId;

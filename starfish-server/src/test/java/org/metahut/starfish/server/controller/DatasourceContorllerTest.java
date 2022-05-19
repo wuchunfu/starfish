@@ -3,8 +3,8 @@ package org.metahut.starfish.server.controller;
 import org.metahut.starfish.api.controller.DatasourceController;
 import org.metahut.starfish.api.controller.TypeController;
 import org.metahut.starfish.api.dto.CreateOrUpdateDatasourceDataRequestDTO;
-import org.metahut.starfish.api.dto.CreateTypeRequestDTO;
-import org.metahut.starfish.api.dto.CreateTypeResponseDTO;
+import org.metahut.starfish.api.dto.TypeRequestCreateOrUpdateDTO;
+import org.metahut.starfish.api.dto.TypeResponseDTO;
 import org.metahut.starfish.api.dto.ResultEntity;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
@@ -34,10 +34,10 @@ public class DatasourceContorllerTest {
         return Stream.of(dto);
     }
 
-    static Stream<CreateTypeRequestDTO> createTypeRequestDTO() throws IOException {
-        CreateTypeRequestDTO dto = new ObjectMapper().readValue(
+    static Stream<TypeRequestCreateOrUpdateDTO> createTypeRequestDTO() throws IOException {
+        TypeRequestCreateOrUpdateDTO dto = new ObjectMapper().readValue(
                 DatasourceContorllerTest.class.getResourceAsStream("/json/createTypeRequestDTO.json")
-                , CreateTypeRequestDTO.class);
+                , TypeRequestCreateOrUpdateDTO.class);
         return Stream.of(dto);
     }
 
@@ -50,8 +50,8 @@ public class DatasourceContorllerTest {
     @ParameterizedTest
     @MethodSource("createTypeRequestDTO")
     @Commit
-    public void createType(CreateTypeRequestDTO createTypeRequestDTO) throws Exception {
-        ResultEntity<CreateTypeResponseDTO> type = typeController.createType(createTypeRequestDTO);
+    public void createType(TypeRequestCreateOrUpdateDTO typeRequestCreateOrUpdateDTO) throws Exception {
+        ResultEntity<TypeResponseDTO> type = typeController.createType(typeRequestCreateOrUpdateDTO);
         Assertions.assertNotNull(type.getData().getSourceId());
     }
 

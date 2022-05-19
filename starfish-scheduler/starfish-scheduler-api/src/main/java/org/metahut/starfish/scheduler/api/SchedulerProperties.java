@@ -26,8 +26,8 @@ import java.util.Objects;
 @ConfigurationProperties(prefix = "starfish.scheduler")
 public class SchedulerProperties {
 
-    private SchedulerType type;
-    private DolphinScheduler dolphinScheduler = new DolphinScheduler();
+    private SchedulerTypeEnum type;
+    private DolphinScheduler dolphinscheduler = new DolphinScheduler();
 
     public static class DolphinScheduler {
         private String serviceUrl;
@@ -90,19 +90,19 @@ public class SchedulerProperties {
 
     }
 
-    public SchedulerType getType() {
+    public SchedulerTypeEnum getType() {
         return type;
     }
 
-    public void setType(SchedulerType type) {
+    public void setType(SchedulerTypeEnum type) {
         this.type = type;
     }
 
-    public DolphinScheduler getDolphinScheduler() {
-        return dolphinScheduler;
+    public DolphinScheduler getDolphinscheduler() {
+        return dolphinscheduler;
     }
 
-    public void setDolphinScheduler(DolphinScheduler dolphinScheduler) {
-        this.dolphinScheduler = dolphinScheduler;
+    public void setDolphinscheduler(DolphinScheduler dolphinscheduler) {
+        this.dolphinscheduler = dolphinscheduler;
     }
 }

@@ -1,8 +1,9 @@
 package org.metahut.starfish.server.service;
 
-import org.metahut.starfish.api.dto.IngestionCollectorRequestDTO;
+import org.metahut.starfish.api.dto.IngestionCollectorCreateOrUpdateRequestDTO;
+import org.metahut.starfish.api.dto.IngestionCollectorResponseDTO;
 
 public interface IngestionService {
 
-    String createCollector(IngestionCollectorRequestDTO ingestionCollectorRequestDTO);
+    IngestionCollectorResponseDTO createCollector(IngestionCollectorCreateOrUpdateRequestDTO ingestionCollectorCreateOrUpdateRequestDTO);
 }

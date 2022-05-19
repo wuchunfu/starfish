@@ -4,5 +4,7 @@ public interface ICollectorManager {
 
     String getType();
 
-    ICollector generateInstance(AbstractCollectorParameter parameter);
+    ICollectorTask generateTaskInstance(String adapterParameter, String parameter);
+
+    ICollectorAdapter generateAdapterInstance(String parameter);
 }

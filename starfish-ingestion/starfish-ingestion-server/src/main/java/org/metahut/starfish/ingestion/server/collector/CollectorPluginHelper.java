@@ -17,8 +17,7 @@
 
 package org.metahut.starfish.ingestion.server.collector;
 
-import org.metahut.starfish.ingestion.collector.api.AbstractCollectorParameter;
-import org.metahut.starfish.ingestion.collector.api.ICollector;
+import org.metahut.starfish.ingestion.collector.api.ICollectorTask;
 import org.metahut.starfish.ingestion.collector.api.ICollectorManager;
 
 import org.springframework.stereotype.Component;
@@ -34,7 +33,7 @@ import java.util.ServiceLoader;
 @Component
 public class CollectorPluginHelper {
 
-    private static final Map<String, ICollectorManager> collectorMap = new HashMap<>();
+    private static final Map<String, ICollectorManager> COLLECTOR_MANAGER_MAP = new HashMap<>();
 
     @PostConstruct
     public void init() {
@@ -42,22 +41,22 @@ public class CollectorPluginHelper {
 
             String type = manager.getType();
 
-            ICollectorManager collectorManager = collectorMap.get(type);
+            ICollectorManager collectorManager = COLLECTOR_MANAGER_MAP.get(type);
 
             if (Objects.nonNull(collectorManager)) {
                 throw new IllegalArgumentException(MessageFormat.format("Duplicate ingestion collector type exists: {0}", type));
             }
 
-            collectorMap.put(type, manager);
+            COLLECTOR_MANAGER_MAP.put(type, manager);
 
         });
     }
 
     public ICollectorManager getCollector(String type) {
-        return collectorMap.get(type);
+        return COLLECTOR_MANAGER_MAP.get(type);
     }
 
-    public ICollector generateInstance(AbstractCollectorParameter parameter) {
-        return getCollector(parameter.getType()).generateInstance(parameter);
+    public ICollectorTask generateTaskInstance(String type, String adapterParameter, String parameter) {
+        return getCollector(type).generateTaskInstance(adapterParameter, parameter);
     }
 }

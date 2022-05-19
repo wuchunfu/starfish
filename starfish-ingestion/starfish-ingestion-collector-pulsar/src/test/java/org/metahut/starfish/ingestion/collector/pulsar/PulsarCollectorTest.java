@@ -2,9 +2,7 @@ package org.metahut.starfish.ingestion.collector.pulsar;
 
 import org.metahut.starfish.api.dto.BatchMetaDataDTO;
 import org.metahut.starfish.api.dto.BatchSchemaDTO;
-import org.metahut.starfish.datasource.pulsar.PulsarDatasourceParameter;
 import org.metahut.starfish.ingestion.collector.api.CollectorResult;
-import org.metahut.starfish.ingestion.collector.api.JSONUtils;
 
 import org.apache.http.HttpEntity;
 import org.apache.http.client.config.RequestConfig;
@@ -179,43 +177,43 @@ public class PulsarCollectorTest {
         Assertions.assertNotNull(topicStats);
     }
 
-    @Test
-    public void execute() {
-        PulsarDatasourceParameter pulsarDatasourceParameter = new PulsarDatasourceParameter();
-        pulsarDatasourceParameter.setServerUrl("http://pulsar-idc-qa.zpidc.com:8080");
-        PulsarCollectorParameter parameter = new PulsarCollectorParameter();
-        // parameter.setDatasourceId("my-topic");
-        parameter.setDatasourceParameter(JSONUtils.toJSONString(pulsarDatasourceParameter));
-        CollectorResult collectorResult = new PulsarCollectorManager().generateInstance(parameter)
-            .execute();
-        Assertions.assertNotNull(collectorResult);
-    }
+//    @Test
+//    public void execute() {
+//        PulsarDatasourceParameter pulsarDatasourceParameter = new PulsarDatasourceParameter();
+//        pulsarDatasourceParameter.setServerUrl("http://pulsar-idc-qa.zpidc.com:8080");
+//        PulsarCollectorParameter parameter = new PulsarCollectorParameter();
+//        // parameter.setDatasourceId("my-topic");
+//        parameter.setDatasourceParameter(JSONUtils.toJSONString(pulsarDatasourceParameter));
+//        CollectorResult collectorResult = new PulsarCollectorManager().generateInstance(parameter)
+//            .execute();
+//        Assertions.assertNotNull(collectorResult);
+//    }
 
-    @Test
-    public void createMsg() {
-        PulsarDatasourceParameter pulsarDatasourceParameter = new PulsarDatasourceParameter();
-        pulsarDatasourceParameter.setServerUrl("http://pulsar-idc-qa.zpidc.com:8080");
-        PulsarCollectorParameter parameter = new PulsarCollectorParameter();
-        // parameter.setDatasourceId("my-topic");
-        parameter.setDatasourceParameter(JSONUtils.toJSONString(pulsarDatasourceParameter));
-        BatchMetaDataDTO collectorResult = new PulsarCollectorManager()
-            .generateInstance(parameter).getMsg();
-        doPostJson(instanceUrl, JSONUtils.toJSONString(collectorResult));
-        Assertions.assertNotNull(collectorResult);
-    }
-
-    @Test
-    public void testGetClassInfo() {
-        PulsarDatasourceParameter pulsarDatasourceParameter = new PulsarDatasourceParameter();
-        pulsarDatasourceParameter.setServerUrl("http://pulsar-idc-qa.zpidc.com:8080");
-        PulsarCollectorParameter parameter = new PulsarCollectorParameter();
-        // parameter.setDatasourceId("my-topic");
-        parameter.setDatasourceParameter(JSONUtils.toJSONString(pulsarDatasourceParameter));
-        BatchSchemaDTO collectorResult = new PulsarCollectorManager()
-                .generateInstance(parameter).getClassInfo();
-        doPostJson(typeUrl, JSONUtils.toJSONString(collectorResult));
-        Assertions.assertNotNull(collectorResult);
-    }
+//    @Test
+//    public void createMsg() {
+//        PulsarDatasourceParameter pulsarDatasourceParameter = new PulsarDatasourceParameter();
+//        pulsarDatasourceParameter.setServerUrl("http://pulsar-idc-qa.zpidc.com:8080");
+//        PulsarCollectorParameter parameter = new PulsarCollectorParameter();
+//        // parameter.setDatasourceId("my-topic");
+//        parameter.setDatasourceParameter(JSONUtils.toJSONString(pulsarDatasourceParameter));
+//        BatchMetaDataDTO collectorResult = new PulsarCollectorManager()
+//            .generateInstance(parameter).getMsg();
+//        doPostJson(instanceUrl, JSONUtils.toJSONString(collectorResult));
+//        Assertions.assertNotNull(collectorResult);
+//    }
+//
+//    @Test
+//    public void testGetClassInfo() {
+//        PulsarDatasourceParameter pulsarDatasourceParameter = new PulsarDatasourceParameter();
+//        pulsarDatasourceParameter.setServerUrl("http://pulsar-idc-qa.zpidc.com:8080");
+//        PulsarCollectorParameter parameter = new PulsarCollectorParameter();
+//        // parameter.setDatasourceId("my-topic");
+//        parameter.setDatasourceParameter(JSONUtils.toJSONString(pulsarDatasourceParameter));
+//        BatchSchemaDTO collectorResult = new PulsarCollectorManager()
+//                .generateInstance(parameter).getClassInfo();
+//        doPostJson(typeUrl, JSONUtils.toJSONString(collectorResult));
+//        Assertions.assertNotNull(collectorResult);
+//    }
 
     public static String doPostJson(String url, String params) {
         try {

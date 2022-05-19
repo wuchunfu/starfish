@@ -1,7 +1,7 @@
 package org.metahut.starfish.api.controller;
 
-import org.metahut.starfish.api.dto.CreateTypeRequestDTO;
-import org.metahut.starfish.api.dto.CreateTypeResponseDTO;
+import org.metahut.starfish.api.dto.TypeRequestCreateOrUpdateDTO;
+import org.metahut.starfish.api.dto.TypeResponseDTO;
 import org.metahut.starfish.api.dto.ResultEntity;
 
 import io.swagger.annotations.Api;
@@ -14,6 +14,6 @@ import org.springframework.web.bind.annotation.RequestMapping;
 public interface TypeController {
 
     @ApiOperation(value = "createType", notes = "CREATE_TYPE_NOTES")
-    @PostMapping("createType")
-    ResultEntity<CreateTypeResponseDTO> createType(CreateTypeRequestDTO createTypeRequestDTO);
+    @PostMapping("create")
+    ResultEntity<TypeResponseDTO> createType(TypeRequestCreateOrUpdateDTO typeRequestCreateOrUpdateDTO);
 }

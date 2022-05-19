@@ -1,0 +1,94 @@
+{
+  "source": {
+    "name": "Pulsar",
+    "attributes": null
+  },
+  "types": [
+    {
+      "serialVersionUID": 0,
+      "nameAttributeRel": "name",
+      "name": "PulsarCluster",
+      "packagePath": "org.starfish",
+      "attributes": [
+        {
+          "name": "name",
+          "className": "java.lang.String",
+          "relType": "PRIMITIVE",
+          "array": false,
+          "defaultValue": null
+        },
+        {
+          "name": "serviceUrl",
+          "className": "java.lang.String",
+          "relType": "PRIMITIVE",
+          "array": false,
+          "defaultValue": null
+        },
+        {
+          "name": "serviceUrlTls",
+          "className": "java.lang.String",
+          "relType": "PRIMITIVE",
+          "array": false,
+          "defaultValue": null
+        },
+        {
+          "name": "brokerServiceUrl",
+          "className": "java.lang.String",
+          "relType": "PRIMITIVE",
+          "array": false,
+          "defaultValue": null
+        },
+        {
+          "name": "brokerServiceUrlTls",
+          "className": "java.lang.String",
+          "relType": "PRIMITIVE",
+          "array": false,
+          "defaultValue": null
+        },
+        {
+          "name": "proxyServiceUrl",
+          "className": "java.lang.String",
+          "relType": "PRIMITIVE",
+          "array": false,
+          "defaultValue": null
+        },
+        {
+          "name": "topics",
+          "className": "org.starfish.PulsarTopic",
+          "relType": "ENTITY",
+          "array": true,
+          "defaultValue": null
+        }
+      ]
+    },
+    {
+      "serialVersionUID": 0,
+      "nameAttributeRel": "name",
+      "name": "PulsarTopic",
+      "packagePath": "org.starfish",
+      "attributes": [
+        {
+          "name": "name",
+          "className": "java.lang.String",
+          "relType": "PRIMITIVE",
+          "array": false,
+          "defaultValue": null
+        },
+        {
+          "name": "persistent",
+          "className": "boolean",
+          "relType": "PRIMITIVE",
+          "array": false,
+          "defaultValue": null
+        },
+        {
+          "name": "cluster",
+          "className": "org.starfish.PulsarCluster",
+          "relType": "ENTITY",
+          "array": false,
+          "defaultValue": null
+        }
+      ]
+    }
+  ]
+}

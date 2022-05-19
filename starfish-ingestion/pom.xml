@@ -32,7 +32,7 @@
         <module>starfish-ingestion-hive-hook</module>
         <module>starfish-ingestion-server</module>
         <module>starfish-ingestion-collector-api</module>
-        <module>starfish-ingestion-collector-hive-jdbc</module>
+        <module>starfish-ingestion-collector-hive</module>
         <module>starfish-ingestion-collector-pulsar</module>
     </modules>
 

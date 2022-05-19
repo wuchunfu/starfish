@@ -1,7 +1,7 @@
 package org.metahut.starfish.scheduler.dolphinscheduler;
 
 import org.metahut.starfish.scheduler.api.SchedulerProperties;
-import org.metahut.starfish.scheduler.api.SchedulerType;
+import org.metahut.starfish.scheduler.api.SchedulerTypeEnum;
 import org.metahut.starfish.scheduler.api.parameters.HttpTaskParameter;
 import org.metahut.starfish.scheduler.api.parameters.ScheduleCronParameter;
 import org.metahut.starfish.scheduler.api.parameters.TaskParameter;
@@ -31,7 +31,7 @@ public class DolphinSchedulerTest {
     @BeforeEach
     public void before() {
         SchedulerProperties schedulerProperties = new SchedulerProperties();
-        schedulerProperties.setType(SchedulerType.dolphinscheduler);
+        schedulerProperties.setType(SchedulerTypeEnum.dolphinscheduler);
 
         SchedulerProperties.DolphinScheduler dolphinProperties = new SchedulerProperties.DolphinScheduler();
         dolphinProperties.setServiceUrl(SERVICE_URL);

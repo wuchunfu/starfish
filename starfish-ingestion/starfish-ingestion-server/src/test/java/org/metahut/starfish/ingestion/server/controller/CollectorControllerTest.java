@@ -1,7 +1,7 @@
 package org.metahut.starfish.ingestion.server.controller;
 
 import org.metahut.starfish.ingestion.collector.api.AbstractCollectorParameter;
-import org.metahut.starfish.ingestion.collector.api.JSONUtils;
+import org.metahut.starfish.ingestion.common.JSONUtils;
 import org.metahut.starfish.ingestion.collector.hive.HiveCollectorParameter;
 
 import org.junit.jupiter.api.Assertions;

@@ -1,21 +1,38 @@
 package org.metahut.starfish.ingestion.collector.pulsar;
 
 import org.metahut.starfish.ingestion.collector.api.AbstractCollectorParameter;
-import org.metahut.starfish.ingestion.collector.api.ICollector;
+import org.metahut.starfish.ingestion.collector.api.CollectorException;
 import org.metahut.starfish.ingestion.collector.api.ICollectorManager;
+import org.metahut.starfish.ingestion.collector.api.ICollectorTask;
+import org.metahut.starfish.ingestion.common.JSONUtils;
 
-import static org.metahut.starfish.ingestion.collector.pulsar.Constants.COLLECTOR_TYPE;
+import java.util.Objects;
 
 public class PulsarCollectorManager implements ICollectorManager {
 
     @Override
     public String getType() {
-        return COLLECTOR_TYPE;
+        return "Pulsar";
     }
 
     @Override
-    public ICollector generateInstance(AbstractCollectorParameter parameter) {
-        return new PulsarCollector((PulsarCollectorParameter) parameter);
+    public PulsarCollectorTask generateTaskInstance(String adapterParameter, String parameter) {
+        PulsarCollectorTaskParameter taskParameter = JSONUtils.parseObject(parameter, PulsarCollectorTaskParameter.class);
+        PulsarCollectorAdapter adapter = generateAdapterInstance(adapterParameter);
+        return new PulsarCollectorTask(adapter, taskParameter);
+    }
+
+    @Override
+    public PulsarCollectorAdapter generateAdapterInstance(String parameter) {
+        PulsarCollectorAdapterParameter adapterParameter = JSONUtils.parseObject(parameter, PulsarCollectorAdapterParameter.class);
+        if (Objects.isNull(adapterParameter)) {
+            throw new CollectorException("Invalid adapter parameters to convert");
+        }
+        boolean checkParameter = adapterParameter.checkParameter();
+        if (!checkParameter) {
+            throw new CollectorException("The incoming parameter can not be empty");
+        }
+        return new PulsarCollectorAdapter(adapterParameter);
     }
 
 }
