@@ -8,7 +8,7 @@ import java.util.Map;
 /**
  *
  */
-interface IGraphApi<K, T> extends AbstractQueryService<T> {
+interface IGraphApi<K,T> extends AbstractQueryService {
 
     K createNode(String name,Map<String,T> properties) throws AbstractMetaParserException;
 

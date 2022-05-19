@@ -9,7 +9,7 @@ import java.util.Map;
 /**
  *
  */
-interface ITypeApi<K,T> extends AbstractQueryService<T>  {
+interface ITypeApi<K,T> extends AbstractQueryService  {
 
     K create(K sourceId,Class classInfo, Map<String,T> properties) throws AbstractMetaParserException;
 
@@ -18,6 +18,8 @@ interface ITypeApi<K,T> extends AbstractQueryService<T>  {
     void delete(K id) throws AbstractMetaParserException;
 
     void delete(Collection<K> ids) throws AbstractMetaParserException;
+
+    Collection<Class> types(K sourceId);
 
     Map<K,Class> types(Collection<K> typeIds);
 

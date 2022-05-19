@@ -2,6 +2,8 @@ package org.metahut.starfish.service;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
 
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -16,7 +18,7 @@ import java.util.stream.Stream;
 /**
  * abstract class or interface
  */
-public interface AbstractQueryService<T> {
+public interface AbstractQueryService {
 
     Logger LOG = LoggerFactory.getLogger(AbstractQueryService.class);
 
@@ -25,7 +27,27 @@ public interface AbstractQueryService<T> {
      * @param condition query condition
      * @return
      */
-    Collection<T> query(AbstractQueryCondition condition);
+    <T> Collection<T> query(AbstractQueryCondition<T> condition);
+
+    /**
+     * page by condition
+     * @param condition
+     * @param pageable
+     * @param <T>
+     * @return
+     */
+    <T> Page<T> query(AbstractQueryCondition<T> condition, Pageable pageable);
+
+    /**
+     *
+     * @param condition
+     * @param pageableSupplier
+     * @param <T>
+     * @return
+     */
+    default <T> Future<Page<T>> query(Supplier<AbstractQueryCondition<T>> condition,Supplier<Pageable> pageableSupplier) {
+        return new FakeFuture<>(query(condition.get(),pageableSupplier.get()));
+    }
 
     /**
      * TODO better implement
@@ -34,7 +56,7 @@ public interface AbstractQueryService<T> {
      * @param condition
      * @return
      */
-    default Future<Collection<T>> query(Supplier<AbstractQueryCondition> condition) {
+    default <T> Future<Collection<T>> query(Supplier<AbstractQueryCondition<T>> condition) {
         return new FakeFuture<>(query(condition.get()));
     }
 
@@ -44,7 +66,7 @@ public interface AbstractQueryService<T> {
      * @param collections
      * @return
      */
-    default Collection<T> merge(Collection<T>... collections) {
+    default <T> Collection<T> merge(Collection<T>... collections) {
         return Arrays.stream(collections).flatMap(collection -> collection.stream()).collect(Collectors.toCollection(ArrayList::new));
     }
 
@@ -54,7 +76,7 @@ public interface AbstractQueryService<T> {
      * @param collections
      * @return
      */
-    default Collection<T> merge(Future<Collection<T>>... collections) {
+    default <T> Collection<T> merge(Future<Collection<T>>... collections) {
         return Arrays.stream(collections).flatMap(collection -> {
             try {
                 return collection.get().stream();

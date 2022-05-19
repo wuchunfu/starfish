@@ -7,7 +7,6 @@ import org.metahut.starfish.parser.domain.instance.Class;
 import org.metahut.starfish.parser.exception.AbstractMetaParserException;
 import org.metahut.starfish.parser.exception.StarFishMetaDataOperatingException;
 import org.metahut.starfish.parser.exception.TypeConvertException;
-import org.metahut.starfish.parser.exception.TypeNotPresentException;
 import org.metahut.starfish.service.AbstractGraphService;
 import org.metahut.starfish.service.AbstractLinkService;
 import org.metahut.starfish.service.AbstractMetaDataService;
@@ -23,17 +22,18 @@ import org.metahut.starfish.store.rdbms.entity.NodeEntityProperty;
 import org.metahut.starfish.store.rdbms.entity.RelationEntity;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
-import org.apache.commons.beanutils.BeanUtils;
 import org.springframework.boot.autoconfigure.AutoConfigureAfter;
 import org.springframework.boot.autoconfigure.condition.ConditionalOnClass;
 import org.springframework.boot.autoconfigure.condition.ConditionalOnMissingBean;
 import org.springframework.boot.autoconfigure.jdbc.DataSourceAutoConfiguration;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageImpl;
+import org.springframework.data.domain.Pageable;
 
 import javax.sql.DataSource;
 
-import java.lang.reflect.InvocationTargetException;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collection;
@@ -51,6 +51,31 @@ import java.util.stream.Collectors;
 @ConditionalOnClass({DataSource.class})
 @AutoConfigureAfter({DataSourceAutoConfiguration.class})
 public class RdbmDataStorageAutoConfiguration {
+
+    private <T> T convert(NodeEntity nodeEntity,java.lang.Class<T> classInfo) {
+        ObjectMapper objectMapper = new ObjectMapper();
+        Map<String,Object> map = new HashMap<>();
+        nodeEntity.getProperties().stream().forEach(
+                nodeEntityProperty -> map.put(nodeEntityProperty.getName(),nodeEntityProperty.getValue())
+        );
+        map.put("name",nodeEntity.getName());
+        map.put("id",nodeEntity.getId());
+        return objectMapper.convertValue(map,classInfo);
+    }
+
+    private <T> Collection<T> convert(Collection<NodeEntity> nodeEntities,java.lang.Class<T> classInfo) {
+        return nodeEntities
+                .stream()
+                .map(nodeEntity -> convert(nodeEntity,classInfo))
+                .collect(Collectors.toCollection(ArrayList::new));
+    }
+
+    private <T> Page<T> convert(Page<NodeEntity> pageResult,java.lang.Class<T> classInfo) {
+        return new PageImpl<>(pageResult.get()
+                .map(nodeEntity -> convert(nodeEntity,classInfo))
+                .collect(Collectors.toCollection(ArrayList::new)),pageResult.getPageable(),pageResult.getTotalElements());
+    }
+
 
     private NodeEntity convert(Long id,TypeCategory category,String name,Map<String,Object> properties) {
         final NodeEntity nodeEntity = new NodeEntity();
@@ -176,7 +201,14 @@ public class RdbmDataStorageAutoConfiguration {
     public AbstractRelationService<Long,Object> relationService(NodeEntityMapper nodeEntityMapper, RelationEntityMapper relationEntityMapper) {
         return new AbstractRelationService<Long,Object>() {
             @Override
-            public Collection query(AbstractQueryCondition condition) {
+            public <T> Collection<T> query(AbstractQueryCondition<T> condition) {
+                //TODO
+                return null;
+            }
+
+            @Override
+            public <T> Page<T> query(AbstractQueryCondition<T> condition, Pageable pageable) {
+                //TODO
                 return null;
             }
 
@@ -272,15 +304,20 @@ public class RdbmDataStorageAutoConfiguration {
             }
 
             @Override
-            public Collection<Object> query(AbstractQueryCondition condition) {
-                return null;
+            public <T> Collection<T> query(AbstractQueryCondition<T> condition) {
+                return convert(nodeEntityMapper.findByCategory(TypeCategory.SOURCE.name()),condition.getResultType());
+            }
+
+            @Override
+            public <T> Page<T> query(AbstractQueryCondition<T> condition, Pageable pageable) {
+                return convert(nodeEntityMapper.findByCategory(TypeCategory.SOURCE.name(),pageable),condition.getResultType());
             }
         };
     }
 
     @Bean
     @ConditionalOnMissingBean(AbstractTypeService.class)
-    public AbstractTypeService<Long,Object> typeService(final NodeEntityMapper nodeEntityMapper) {
+    public AbstractTypeService<Long,Object> typeService(final NodeEntityMapper nodeEntityMapper,final RelationEntityMapper relationEntityMapper) {
         return new AbstractTypeService<Long,Object>() {
 
             private void addClassInfo(NodeEntity nodeEntity,Class classInfo) {
@@ -295,8 +332,13 @@ public class RdbmDataStorageAutoConfiguration {
             }
 
             @Override
-            public Collection<Object> query(AbstractQueryCondition condition) {
-                return null;
+            public <T> Collection<T> query(AbstractQueryCondition<T> condition) {
+                return convert(nodeEntityMapper.findByCategory(TypeCategory.CLASSIFICATION.name()), condition.getResultType());
+            }
+
+            @Override
+            public <T> Page<T> query(AbstractQueryCondition<T> condition, Pageable pageable) {
+                return convert(nodeEntityMapper.findByCategory(TypeCategory.CLASSIFICATION.name(),pageable), condition.getResultType());
             }
 
             @Override
@@ -327,20 +369,15 @@ public class RdbmDataStorageAutoConfiguration {
             public Map<Long,Class> types(Collection<Long> typeIds) {
                 List<NodeEntity> types = nodeEntityMapper.findAllById(typeIds);
                 return types.stream().filter(bean -> bean != null).collect(Collectors.toMap(NodeEntity::getId,
-                        nodeEntity -> {
-                            Optional<NodeEntityProperty> first = nodeEntity
-                                    .getProperties().stream().filter(nodeEntityProperty -> KeyWord.CLASS.getValue().equals(nodeEntityProperty.getName())).findFirst();
-                            if (first.isPresent()) {
-                                try {
-                                    ObjectMapper objectMapper = new ObjectMapper();
-                                    return objectMapper.convertValue(first.get().getValue(),Class.class);
-                                } catch (IllegalArgumentException exception) {
-                                    throw new TypeConvertException("Convert type error.",exception);
-                                }
-                            } else {
-                                return null;
-                            }
-                        }));
+                        nodeEntity -> readClassFromNodeEntity(nodeEntity)));
+            }
+
+            @Override
+            public Collection<Class> types(Long sourceId) {
+                NodeEntity sourceEntity = new NodeEntity();
+                sourceEntity.setId(sourceId);
+                Collection<RelationEntity> relationEntityCollection = relationEntityMapper.findByStartNodeEntityAndCategory(sourceEntity, LinkCategory.SOURCE_TYPE.name());
+                return relationEntityCollection.stream().map(relationEntity -> readClassFromNodeEntity(relationEntity.getEndNodeEntity())).collect(Collectors.toCollection(ArrayList::new));
             }
 
             @Override
@@ -354,18 +391,21 @@ public class RdbmDataStorageAutoConfiguration {
 
             public Class type(Long typeId) {
                 NodeEntity typeEntity = nodeEntityMapper.findById(typeId);
-                Optional<NodeEntityProperty> first = typeEntity
+                return readClassFromNodeEntity(typeEntity);
+            }
+
+            private Class readClassFromNodeEntity (NodeEntity nodeEntity) {
+                Optional<NodeEntityProperty> first = nodeEntity
                         .getProperties().stream().filter(nodeEntityProperty -> KeyWord.CLASS.getValue().equals(nodeEntityProperty.getName())).findFirst();
                 if (first.isPresent()) {
-                    Class resultClass = new Class();
                     try {
-                        BeanUtils.copyProperties(resultClass,first.get().getValue());
-                    } catch (IllegalAccessException | InvocationTargetException exception) {
+                        ObjectMapper objectMapper = new ObjectMapper();
+                        return objectMapper.convertValue(first.get().getValue(),Class.class);
+                    } catch (IllegalArgumentException exception) {
                         throw new TypeConvertException("Convert type error.",exception);
                     }
-                    return resultClass;
                 } else {
-                    throw new TypeNotPresentException(String.valueOf(typeId));
+                    throw new TypeConvertException("Null type of entity " + nodeEntity.getId());
                 }
             }
         };
@@ -396,8 +436,13 @@ public class RdbmDataStorageAutoConfiguration {
             }
 
             @Override
-            public Collection<Object> query(AbstractQueryCondition condition) {
-                return null;
+            public <U> Collection<U> query(AbstractQueryCondition<U> condition) {
+                return convert(nodeEntityMapper.findByCategory(TypeCategory.ENTITY.name()),condition.getResultType());
+            }
+
+            @Override
+            public <T> Page<T> query(AbstractQueryCondition<T> condition, Pageable pageable) {
+                return convert(nodeEntityMapper.findByCategory(TypeCategory.ENTITY.name(),pageable),condition.getResultType());
             }
         };
     }

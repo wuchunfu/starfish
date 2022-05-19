@@ -7,7 +7,7 @@ import java.util.Collection;
 /**
  *
  */
-public interface IRelationApi<K,T> extends AbstractQueryService<T> {
+public interface IRelationApi<K,T> extends AbstractQueryService {
     // link
     /**
      *

@@ -5,6 +5,9 @@ import org.metahut.starfish.parser.domain.instance.Node;
 import org.metahut.starfish.parser.domain.instance.Relation;
 import org.metahut.starfish.parser.exception.AbstractMetaParserException;
 
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
+
 import java.util.Arrays;
 import java.util.Collection;
 import java.util.List;
@@ -15,7 +18,7 @@ import java.util.function.Supplier;
 /**
  *
  */
-public abstract class AbstractGraphService<K,T> implements IGraphApi<K, T> {
+public abstract class AbstractGraphService<K,T> implements IGraphApi<K,T> {
 
     protected abstract AbstractNodeService<K,T> nodeService();
 
@@ -26,12 +29,18 @@ public abstract class AbstractGraphService<K,T> implements IGraphApi<K, T> {
     }
 
     @Override
-    public Collection<T> query(AbstractQueryCondition condition) {
+    public <U> Collection<U> query(AbstractQueryCondition<U> condition) {
         return merge(nodeService().query(condition), relationService().query(condition));
     }
 
     @Override
-    public Future<Collection<T>> query(Supplier<AbstractQueryCondition> condition) {
+    public <T> Page<T> query(AbstractQueryCondition<T> condition, Pageable pageable) {
+        //TODO page?
+        return null;
+    }
+
+    @Override
+    public <U> Future<Collection<U>> query(Supplier<AbstractQueryCondition<U>> condition) {
         return new FakeFuture<>(merge(nodeService().query(condition), relationService().query(condition)));
     }
 

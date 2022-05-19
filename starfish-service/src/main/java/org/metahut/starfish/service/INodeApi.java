@@ -8,7 +8,7 @@ import java.util.Map;
 /**
  *
  */
-interface INodeApi<K,T> extends AbstractQueryService<T> {
+interface INodeApi<K,T> extends AbstractQueryService {
 
     /**
      * create node

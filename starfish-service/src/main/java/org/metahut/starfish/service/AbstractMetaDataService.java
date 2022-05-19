@@ -95,42 +95,42 @@ public abstract class AbstractMetaDataService<K,T> implements IMetaDataApi<K,T> 
     }
 
     @Override
-    public List<?> sources(AbstractQueryCondition condition) throws AbstractMetaParserException {
+    public <U> Collection<U> sources(AbstractQueryCondition<U> condition) throws AbstractMetaParserException {
+        return typeApi().query(condition);
+    }
+
+    @Override
+    public <U> Page<U> sources(AbstractQueryCondition<U> condition, Pageable page) throws AbstractMetaParserException {
+        return typeApi().query(condition,page);
+    }
+
+    @Override
+    public Collection<Class> types(K sourceId) throws AbstractMetaParserException {
+        return typeApi().types(sourceId);
+    }
+
+    @Override
+    public <U> U instance(K instanceId, AbstractQueryCondition<U> condition) throws AbstractMetaParserException {
         return null;
     }
 
     @Override
-    public Page<?> sources(AbstractQueryCondition condition, Pageable page) throws AbstractMetaParserException {
+    public <U> Collection<U> instances(K typeId, AbstractQueryCondition<U> condition) throws AbstractMetaParserException {
         return null;
     }
 
     @Override
-    public List<?> types(K sourceId, AbstractQueryCondition condition) throws AbstractMetaParserException {
+    public <U> Page<U> instances(K typeId, AbstractQueryCondition<U> condition, Pageable page) throws AbstractMetaParserException {
         return null;
     }
 
     @Override
-    public List<?> types(K sourceId, AbstractQueryCondition condition, Pageable page) throws AbstractMetaParserException {
+    public <U> Collection<U> instances(K upperTypeId, String property, AbstractQueryCondition<U> condition) throws AbstractMetaParserException {
         return null;
     }
 
     @Override
-    public List<?> instances(K typeId, AbstractQueryCondition condition) throws AbstractMetaParserException {
-        return null;
-    }
-
-    @Override
-    public Page<?> instances(K typeId, AbstractQueryCondition condition, Pageable page) throws AbstractMetaParserException {
-        return null;
-    }
-
-    @Override
-    public List<?> instances(K upperTypeId, String property, AbstractQueryCondition condition) throws AbstractMetaParserException {
-        return null;
-    }
-
-    @Override
-    public Page<?> instances(K upperTypeId, String property, AbstractQueryCondition condition, Pageable page) throws AbstractMetaParserException {
+    public <U> Page<U> instances(K upperTypeId, String property, AbstractQueryCondition<U> condition, Pageable page) throws AbstractMetaParserException {
         return null;
     }
 

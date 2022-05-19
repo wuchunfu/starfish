@@ -38,7 +38,7 @@ interface IMetaDataApi<K,T> {
      * @return
      * @throws AbstractMetaParserException
      */
-    List<?> sources(AbstractQueryCondition condition) throws AbstractMetaParserException;
+    <U> Collection<U> sources(AbstractQueryCondition<U> condition) throws AbstractMetaParserException;
 
     /**
      * query all sources with conditions (page)
@@ -47,26 +47,25 @@ interface IMetaDataApi<K,T> {
      * @return
      * @throws AbstractMetaParserException
      */
-    Page<?> sources(AbstractQueryCondition condition,Pageable page) throws AbstractMetaParserException;
+    <U> Page<U> sources(AbstractQueryCondition<U> condition,Pageable page) throws AbstractMetaParserException;
 
     /**
      * query all types with conditions
      * @param sourceId
-     * @param condition
      * @return
      * @throws AbstractMetaParserException
      */
-    List<?> types(K sourceId,AbstractQueryCondition condition) throws AbstractMetaParserException;
+    Collection<Class> types(K sourceId) throws AbstractMetaParserException;
 
     /**
-     * query all types with conditions (page)
-     * @param sourceId
+     * find instance by id
+     * TODO how about relation
      * @param condition
-     * @param page
-     * @return
+     * @param instanceId
+     * @param <U>
      * @throws AbstractMetaParserException
      */
-    List<?> types(K sourceId,AbstractQueryCondition condition,Pageable page) throws AbstractMetaParserException;
+    <U> U instance(K instanceId,AbstractQueryCondition<U> condition) throws AbstractMetaParserException;
 
     /**
      * query all instances with conditions
@@ -75,7 +74,7 @@ interface IMetaDataApi<K,T> {
      * @return
      * @throws AbstractMetaParserException
      */
-    List<?> instances(K typeId,AbstractQueryCondition condition) throws AbstractMetaParserException;
+    <U> Collection<U> instances(K typeId,AbstractQueryCondition<U> condition) throws AbstractMetaParserException;
 
     /**
      * query all instances with conditions (page)
@@ -85,7 +84,7 @@ interface IMetaDataApi<K,T> {
      * @return
      * @throws AbstractMetaParserException
      */
-    Page<?> instances(K typeId,AbstractQueryCondition condition,Pageable page) throws AbstractMetaParserException;
+    <U> Page<U> instances(K typeId,AbstractQueryCondition<U> condition,Pageable page) throws AbstractMetaParserException;
 
     /**
      *
@@ -95,7 +94,7 @@ interface IMetaDataApi<K,T> {
      * @return
      * @throws AbstractMetaParserException
      */
-    List<?> instances(K upperTypeId,String property,AbstractQueryCondition condition) throws AbstractMetaParserException;
+    <U> Collection<U> instances(K upperTypeId,String property,AbstractQueryCondition<U> condition) throws AbstractMetaParserException;
 
     /**
      *
@@ -106,7 +105,7 @@ interface IMetaDataApi<K,T> {
      * @return
      * @throws AbstractMetaParserException
      */
-    Page<?> instances(K upperTypeId,String property,AbstractQueryCondition condition,Pageable page) throws AbstractMetaParserException;
+    <U> Page<U> instances(K upperTypeId,String property,AbstractQueryCondition<U> condition,Pageable page) throws AbstractMetaParserException;
 
     /**
      * create a source with properties
