@@ -23,6 +23,7 @@ import org.metahut.starfish.store.rdbms.entity.NodeEntityProperty_;
 import org.metahut.starfish.store.rdbms.entity.NodeEntity_;
 import org.metahut.starfish.store.rdbms.entity.RelationEntity;
 
+import com.fasterxml.jackson.databind.DeserializationFeature;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import org.apache.commons.lang3.StringUtils;
 import org.springframework.boot.autoconfigure.AutoConfigureAfter;
@@ -60,10 +61,13 @@ public class RdbmDataStorageAutoConfiguration {
 
     private <T> T convert(NodeEntity nodeEntity,java.lang.Class<T> classInfo) {
         ObjectMapper objectMapper = new ObjectMapper();
+        objectMapper.configure(DeserializationFeature.FAIL_ON_UNKNOWN_PROPERTIES,false);
         Map<String,Object> map = new HashMap<>();
-        nodeEntity.getProperties().stream().forEach(
-                nodeEntityProperty -> map.put(nodeEntityProperty.getName(),nodeEntityProperty.getValue())
-        );
+        if (nodeEntity.getProperties() != null) {
+            nodeEntity.getProperties().stream().forEach(
+                    nodeEntityProperty -> map.put(nodeEntityProperty.getName(), nodeEntityProperty.getValue())
+            );
+        }
         map.put("name",nodeEntity.getName());
         map.put("id",nodeEntity.getId());
         return objectMapper.convertValue(map,classInfo);
@@ -340,6 +344,11 @@ public class RdbmDataStorageAutoConfiguration {
             }
 
             @Override
+            public <U> U source(Long sourceId, AbstractQueryCondition<U> condition) {
+                return convert(nodeEntityMapper.findById(sourceId),condition.getResultType());
+            }
+
+            @Override
             public <T> Collection<T> query(AbstractQueryCondition<T> condition) {
                 return convert(nodeEntityMapper.findByCategory(TypeCategory.SOURCE.name()),condition.getResultType());
             }
@@ -426,6 +435,7 @@ public class RdbmDataStorageAutoConfiguration {
                 return nodeEntities.get(0).getId();
             }
 
+            @Override
             public Class type(Long typeId) {
                 NodeEntity typeEntity = nodeEntityMapper.findById(typeId);
                 return readClassFromNodeEntity(typeEntity);
@@ -470,6 +480,11 @@ public class RdbmDataStorageAutoConfiguration {
             @Override
             public void delete(Collection<Long> ids) throws AbstractMetaParserException {
                 nodeEntityMapper.removeBatchById(ids);
+            }
+
+            @Override
+            public <U> U node(Long nodeId, AbstractQueryCondition<U> condition) throws AbstractMetaParserException {
+                return convert(nodeEntityMapper.findById(nodeId),condition.getResultType());
             }
 
             @Override

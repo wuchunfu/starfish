@@ -45,6 +45,8 @@ interface INodeApi<K,T> extends AbstractQueryService {
      */
     void delete(Collection<K> ids) throws AbstractMetaParserException;
 
+    <U> U node(K nodeId,AbstractQueryCondition<U> condition) throws AbstractMetaParserException;
+
     <U> Collection<U> nodes(Collection<K> nodeIds,AbstractQueryCondition<U> condition) throws AbstractMetaParserException;
 
     <U> Page<U> nodes(Collection<K> nodeIds,AbstractQueryCondition<U> condition, Pageable page) throws AbstractMetaParserException;

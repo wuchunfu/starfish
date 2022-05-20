@@ -3,10 +3,6 @@ package org.metahut.starfish.server.controller;
 import org.metahut.starfish.api.controller.MetaDataController;
 import org.metahut.starfish.api.dto.BatchMetaDataDTO;
 import org.metahut.starfish.api.dto.BatchSchemaDTO;
-import org.metahut.starfish.api.dto.CreateOrUpdateDatasourceDataRequestDTO;
-import org.metahut.starfish.server.converter.factory.DatasourceToBatchMetaDataDTOFactory;
-import org.metahut.starfish.server.converter.factory.DatasourceToBatchSchemaDTOFactory;
-import org.metahut.starfish.server.utils.ConvertUtils;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
 import org.junit.jupiter.api.Disabled;
@@ -19,7 +15,6 @@ import org.springframework.test.annotation.Commit;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.io.IOException;
-import java.util.Arrays;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.stream.Stream;
@@ -36,12 +31,6 @@ public class MetaDataControllerTest {
     @Autowired
     private MetaDataController metaDataController;
 
-    @Autowired
-    private DatasourceToBatchSchemaDTOFactory datasourceToBatchSchemaDTOFactory;
-
-    @Autowired
-    private DatasourceToBatchMetaDataDTOFactory datasourceToBatchMetaDataDTOFactory;
-
     private static BatchSchemaDTO hiveSchema;
 
     static Stream<BatchSchemaDTO> hiveSchemaProvider() throws IOException {
@@ -55,11 +44,11 @@ public class MetaDataControllerTest {
         return Stream.of(dto);
     }
 
-    static Stream<CreateOrUpdateDatasourceDataRequestDTO> datasourceDataRequestDTOProvider() throws IOException {
-        CreateOrUpdateDatasourceDataRequestDTO dto = new ObjectMapper()
-                .readValue(MetaDataControllerTest.class.getResourceAsStream("/json/datasourceDataRequestDTO.json"), CreateOrUpdateDatasourceDataRequestDTO.class);
-        return Stream.of(dto);
-    }
+    //static Stream<CreateOrUpdateDatasourceDataRequestDTO> datasourceDataRequestDTOProvider() throws IOException {
+    //    CreateOrUpdateDatasourceDataRequestDTO dto = new ObjectMapper()
+    //            .readValue(MetaDataControllerTest.class.getResourceAsStream("/json/datasourceDataRequestDTO.json"), CreateOrUpdateDatasourceDataRequestDTO.class);
+    //    return Stream.of(dto);
+    //}
 
     @ParameterizedTest
     @MethodSource("hiveSchemaProvider")
@@ -87,9 +76,9 @@ public class MetaDataControllerTest {
         metaDataController.batchType(dto);
     }
 
-    @ParameterizedTest
-    @MethodSource("datasourceDataRequestDTOProvider")
-    public void convertDTOTest(CreateOrUpdateDatasourceDataRequestDTO createOrUpdateDatasourceDataRequestDTO) throws Exception {
-        ConvertUtils.getBatchAll(datasourceToBatchSchemaDTOFactory, datasourceToBatchMetaDataDTOFactory, Arrays.asList(createOrUpdateDatasourceDataRequestDTO));
-    }
+    //@ParameterizedTest
+    //@MethodSource("datasourceDataRequestDTOProvider")
+    //public void convertDTOTest(CreateOrUpdateDatasourceDataRequestDTO createOrUpdateDatasourceDataRequestDTO) throws Exception {
+    //    ConvertUtils.getBatchAll(datasourceToBatchSchemaDTOFactory, datasourceToBatchMetaDataDTOFactory, Arrays.asList(createOrUpdateDatasourceDataRequestDTO));
+    //}
 }

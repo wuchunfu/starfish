@@ -2,6 +2,7 @@ package org.metahut.starfish.service;
 
 import org.metahut.starfish.parser.antlr4.json.JsonExtensionVisitor;
 import org.metahut.starfish.parser.domain.enums.LinkCategory;
+import org.metahut.starfish.parser.domain.enums.RelType;
 import org.metahut.starfish.parser.domain.instance.Attribute;
 import org.metahut.starfish.parser.domain.instance.BatchInstanceBody;
 import org.metahut.starfish.parser.domain.instance.BatchTypeBody;
@@ -9,6 +10,7 @@ import org.metahut.starfish.parser.domain.instance.Class;
 import org.metahut.starfish.parser.domain.instance.InstanceAnalysisStruct;
 import org.metahut.starfish.parser.exception.AbstractMetaParserException;
 import org.metahut.starfish.parser.exception.SourceNameNotPresentException;
+import org.metahut.starfish.parser.exception.TypeExistsException;
 import org.metahut.starfish.parser.exception.TypeNotPresentException;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
@@ -46,6 +48,27 @@ public abstract class AbstractMetaDataService<K,T> implements IMetaDataApi<K,T> 
     protected abstract ITypeApi<K,T> typeApi();
 
     protected abstract ILinkApi<K> linkApi();
+
+    private void validClassInfoWithId(Class classInfo) {
+        K id = typeApi().getIdByName(classInfo.fullClassName());
+        if (id != null) {
+            throw new TypeExistsException(classInfo.fullClassName());
+        }
+        validClassInfoWithoutId(classInfo);
+    }
+
+    private void validClassInfoWithoutId(Class classInfo) {
+        if (classInfo.getAttributes() != null) {
+            for (Attribute attribute : classInfo.getAttributes()) {
+                if (RelType.ENTITY == attribute.getRelType()) {
+                    K relId = typeApi().getIdByName(attribute.getClassName());
+                    if (relId == null) {
+                        throw new TypeNotPresentException(attribute.getClassName());
+                    }
+                }
+            }
+        }
+    }
 
     private Map<String,T> convertTo(Object object) {
         Map<String,T> map = new ObjectMapper().convertValue(object, Map.class);
@@ -93,13 +116,23 @@ public abstract class AbstractMetaDataService<K,T> implements IMetaDataApi<K,T> 
     }
 
     @Override
+    public <U> U source(K sourceId, AbstractQueryCondition<U> condition) throws AbstractMetaParserException {
+        return sourceApi().source(sourceId,condition);
+    }
+
+    @Override
     public <U> Collection<U> sources(AbstractQueryCondition<U> condition) throws AbstractMetaParserException {
-        return typeApi().query(condition);
+        return sourceApi().query(condition);
     }
 
     @Override
     public <U> Page<U> sources(AbstractQueryCondition<U> condition, Pageable page) throws AbstractMetaParserException {
-        return typeApi().query(condition,page);
+        return sourceApi().query(condition,page);
+    }
+
+    @Override
+    public Class type(K typeId) throws AbstractMetaParserException {
+        return typeApi().type(typeId);
     }
 
     @Override
@@ -109,7 +142,7 @@ public abstract class AbstractMetaDataService<K,T> implements IMetaDataApi<K,T> 
 
     @Override
     public <U> U instance(K instanceId, AbstractQueryCondition<U> condition) throws AbstractMetaParserException {
-        return null;
+        return graphApi().node(instanceId,condition);
     }
 
     @Override
@@ -152,6 +185,7 @@ public abstract class AbstractMetaDataService<K,T> implements IMetaDataApi<K,T> 
     @Override
     public K createType(K sourceId, Class classInfo, Map<String, T> properties) throws AbstractMetaParserException {
         //TODO valid 创建时候两个type 要不要建立连接？
+        validClassInfoWithId(classInfo);
         K typeId = typeApi().create(sourceId,classInfo,properties);
         linkApi().link(sourceId,typeId, LinkCategory.SOURCE_TYPE);
         return typeId;
@@ -199,9 +233,7 @@ public abstract class AbstractMetaDataService<K,T> implements IMetaDataApi<K,T> 
 
     @Override
     public void updateType(K id, Class classInfo, Map<String, T> properties) throws AbstractMetaParserException {
-        //TODO valid
-        //1. valid all entity implements this type
-        //2.
+        validClassInfoWithoutId(classInfo);
         typeApi().update(id,classInfo,properties);
     }
 

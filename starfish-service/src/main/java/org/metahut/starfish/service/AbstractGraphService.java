@@ -41,6 +41,11 @@ public abstract class AbstractGraphService<K,T> implements IGraphApi<K,T> {
     }
 
     @Override
+    public <U> U node(K instanceId, AbstractQueryCondition<U> condition) throws AbstractMetaParserException {
+        return nodeService().node(instanceId,condition);
+    }
+
+    @Override
     public <U> Collection<U> nodes(Collection<K> instanceIds, AbstractQueryCondition<U> condition) throws AbstractMetaParserException {
         return nodeService().nodes(instanceIds,condition);
     }

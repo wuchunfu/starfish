@@ -32,6 +32,16 @@ interface IMetaDataApi<K,T> {
     K batchInstances(BatchInstanceBody batchInstanceBody) throws AbstractMetaParserException;
 
     /**
+     *
+     * @param sourceId
+     * @param condition
+     * @param <U>
+     * @return
+     * @throws AbstractMetaParserException
+     */
+    <U> U source(K sourceId,AbstractQueryCondition<U> condition) throws AbstractMetaParserException;
+
+    /**
      * query all source with conditions
      * @param condition conditions which can be null
      * @return
@@ -47,6 +57,14 @@ interface IMetaDataApi<K,T> {
      * @throws AbstractMetaParserException
      */
     <U> Page<U> sources(AbstractQueryCondition<U> condition,Pageable page) throws AbstractMetaParserException;
+
+    /**
+     *
+     * @param typeId
+     * @return
+     * @throws AbstractMetaParserException
+     */
+    Class type(K typeId) throws AbstractMetaParserException;
 
     /**
      * query all types with conditions

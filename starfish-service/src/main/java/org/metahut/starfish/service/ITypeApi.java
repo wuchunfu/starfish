@@ -24,4 +24,6 @@ interface ITypeApi<K,T> extends AbstractQueryService  {
     Map<K,Class> types(Collection<K> typeIds);
 
     K getIdByName(String name);
+
+    Class type(K typeId);
 }

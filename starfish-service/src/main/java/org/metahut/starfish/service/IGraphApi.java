@@ -13,6 +13,8 @@ import java.util.Map;
  */
 interface IGraphApi<K,T> extends AbstractQueryService {
 
+    <U> U node(K instanceId,AbstractQueryCondition<U> condition) throws AbstractMetaParserException;
+
     <U> Collection<U> nodes(Collection<K> instanceIds,AbstractQueryCondition<U> condition) throws AbstractMetaParserException;
 
     <U> Collection<U> nodes(K upperInstanceId,String property,AbstractQueryCondition<U> condition) throws AbstractMetaParserException;

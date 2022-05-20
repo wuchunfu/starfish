@@ -37,7 +37,7 @@ public class DolphinSchedulerTest {
         dolphinProperties.setServiceUrl(SERVICE_URL);
         dolphinProperties.setToken(TOKEN);
         dolphinProperties.setProjectCode(PROJECT_CODE);
-        schedulerProperties.setDolphinScheduler(dolphinProperties);
+        //schedulerProperties.setDolphinScheduler(dolphinProperties);
 
         scheduler = new DolphinSchedulerManager(schedulerProperties).getScheduler();
 
