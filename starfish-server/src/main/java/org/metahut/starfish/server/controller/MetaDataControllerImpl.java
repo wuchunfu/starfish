@@ -2,7 +2,6 @@ package org.metahut.starfish.server.controller;
 
 import org.metahut.starfish.api.controller.MetaDataController;
 import org.metahut.starfish.api.dto.BatchMetaDataDTO;
-import org.metahut.starfish.api.dto.BatchSchemaDTO;
 import org.metahut.starfish.api.dto.BusinessTermResponseDTO;
 import org.metahut.starfish.api.dto.BusinessTermSearchRequestDTO;
 import org.metahut.starfish.api.dto.CreateOrUpdateBusinessTermRequestDTO;
@@ -11,6 +10,7 @@ import org.metahut.starfish.api.dto.MetaDataRequestDTO;
 import org.metahut.starfish.api.dto.MetaDataResponseDTO;
 import org.metahut.starfish.api.dto.MetaDataVersionResponseDTO;
 import org.metahut.starfish.api.dto.ResultEntity;
+import org.metahut.starfish.api.dto.TypeRequestBatchCreateOrUpdateDTO;
 import org.metahut.starfish.parser.domain.enums.RelType;
 import org.metahut.starfish.parser.domain.instance.Attribute;
 import org.metahut.starfish.parser.domain.instance.BatchInstanceBody;
@@ -44,7 +44,7 @@ public class MetaDataControllerImpl implements MetaDataController {
     }
 
     @Override
-    public ResultEntity batchType(BatchSchemaDTO metaDataDTO) throws Exception {
+    public ResultEntity batchType(TypeRequestBatchCreateOrUpdateDTO metaDataDTO) throws Exception {
         BatchTypeBody batchTypeBody = new BatchTypeBody();
         BodyStruct bodyStruct = new BodyStruct();
         bodyStruct.setAttributes(metaDataDTO.getSource().getAttributes());

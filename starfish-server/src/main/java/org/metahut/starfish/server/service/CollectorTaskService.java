@@ -6,6 +6,7 @@ import org.metahut.starfish.api.dto.CollectorTaskInstanceRequestDTO;
 import org.metahut.starfish.api.dto.CollectorTaskInstanceResponseDTO;
 import org.metahut.starfish.api.dto.CollectorTaskRequestDTO;
 import org.metahut.starfish.api.dto.CollectorTaskResponseDTO;
+import org.metahut.starfish.api.dto.PageResponseDTO;
 
 import java.util.List;
 
@@ -18,7 +19,7 @@ public interface CollectorTaskService {
 
     CollectorTaskResponseDTO queryById(Long id);
 
-    List<CollectorTaskResponseDTO> queryListPage(CollectorTaskRequestDTO requestDTO);
+    PageResponseDTO<CollectorTaskResponseDTO> queryListPage(CollectorTaskRequestDTO requestDTO);
 
     List<CollectorTaskResponseDTO> queryList(CollectorTaskRequestDTO requestDTO);
 

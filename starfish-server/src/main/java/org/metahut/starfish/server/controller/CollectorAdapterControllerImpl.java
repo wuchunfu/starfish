@@ -4,6 +4,7 @@ import org.metahut.starfish.api.controller.CollectorAdapterController;
 import org.metahut.starfish.api.dto.CollectorAdapterCreateOrUpdateRequestDTO;
 import org.metahut.starfish.api.dto.CollectorAdapterRequestDTO;
 import org.metahut.starfish.api.dto.CollectorAdapterResponseDTO;
+import org.metahut.starfish.api.dto.PageResponseDTO;
 import org.metahut.starfish.api.dto.ResultEntity;
 import org.metahut.starfish.ingestion.collector.api.CollectorResult;
 import org.metahut.starfish.server.service.CollectorAdapterService;
@@ -53,7 +54,7 @@ public class CollectorAdapterControllerImpl implements CollectorAdapterControlle
     }
 
     @Override
-    public ResultEntity<List<CollectorAdapterResponseDTO>> queryListPage(CollectorAdapterRequestDTO requestDTO) {
+    public ResultEntity<PageResponseDTO<CollectorAdapterResponseDTO>> queryListPage(CollectorAdapterRequestDTO requestDTO) {
         return ResultEntity.success(collectorAdapterService.queryListPage(requestDTO));
     }
 

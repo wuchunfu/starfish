@@ -6,6 +6,7 @@ import org.metahut.starfish.api.dto.CollectorTaskInstanceRequestDTO;
 import org.metahut.starfish.api.dto.CollectorTaskInstanceResponseDTO;
 import org.metahut.starfish.api.dto.CollectorTaskRequestDTO;
 import org.metahut.starfish.api.dto.CollectorTaskResponseDTO;
+import org.metahut.starfish.api.dto.PageResponseDTO;
 import org.metahut.starfish.api.dto.ResultEntity;
 
 import io.swagger.annotations.Api;
@@ -44,7 +45,7 @@ public interface CollectorTaskController {
 
     @GetMapping("queryListPage")
     @ApiOperation(value = "queryListPage", notes = "QUERY_COLLECTOR_TASK_PAGE_NOTES")
-    ResultEntity<List<CollectorTaskResponseDTO>> queryListPage(CollectorTaskRequestDTO requestDTO);
+    ResultEntity<PageResponseDTO<CollectorTaskResponseDTO>> queryListPage(CollectorTaskRequestDTO requestDTO);
 
     @GetMapping("queryList")
     @ApiOperation(value = "queryList", notes = "QUERY_COLLECTOR_TASK_LIST_NOTES")

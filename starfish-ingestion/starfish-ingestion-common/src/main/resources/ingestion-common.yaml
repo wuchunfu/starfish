@@ -16,6 +16,10 @@
 #
 
 starfish:
+  rest:
+    service-address: localhost:8802
+    query-metadata-api: http://{0}/collector/execute
+    token: 123-1
   message:
     type: pulsar
     pulsar:
@@ -25,11 +29,3 @@ starfish:
           topic-name: my-topic
           schema: STRING
           producer-name: meta
-      consumers:
-        metaConsumer:
-          topic-name: my-topic
-          subscription-name: my-subscription
-          subscription-type: Key_Shared
-  rest:
-    service-url: http://localhost:8801/starfish/api/v1/createMeta
-    token: 123-1

@@ -2,7 +2,7 @@ package org.metahut.starfish.ingestion.collector.hive;
 
 import org.metahut.starfish.ingestion.collector.api.CollectorResult;
 import org.metahut.starfish.ingestion.collector.api.ICollectorTask;
-import org.metahut.starfish.ingestion.common.MetaMessageProducer;
+import org.metahut.starfish.ingestion.common.MetaClient;
 import org.metahut.starfish.message.api.IMessageProducer;
 
 import org.apache.hadoop.hive.metastore.IMetaStoreClient;
@@ -20,7 +20,7 @@ public class HiveCollectorTask implements ICollectorTask {
     public HiveCollectorTask(HiveCollectorAdapter adapter, HiveCollectorTaskParameter parameter) {
         this.adapter = adapter;
         metaStoreClient = this.adapter.getMetaClient();
-        producer = MetaMessageProducer.getInstance();
+        producer = MetaClient.getInstance().getMessageProducer();
     }
 
     @Override
@@ -56,7 +56,7 @@ public class HiveCollectorTask implements ICollectorTask {
     }
 
     private void deleteNonExistentMetadata() {
-
+        // 查询全部，删除事件
     }
 
     private void generateHiveClusterEntity() {

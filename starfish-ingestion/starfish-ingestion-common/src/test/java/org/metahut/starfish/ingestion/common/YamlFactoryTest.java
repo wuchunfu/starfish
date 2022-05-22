@@ -39,9 +39,16 @@ public class YamlFactoryTest {
     }
 
     @Test
-    public void testParseObject() {
+    public void testMessageParseObject() {
         MessageProperties messageProperties = YamlFactory.parseObject("starfish.message", Constants.INGESTION_CONFIG_FILE, new MessageProperties());
         Assertions.assertNotNull(messageProperties);
         logger.info("messageProperties:{}", messageProperties);
+    }
+
+    @Test
+    public void testParseObject() {
+        IngestionProperties ingestionProperties = YamlFactory.parseObject("starfish", Constants.INGESTION_CONFIG_FILE, new IngestionProperties());
+        Assertions.assertNotNull(ingestionProperties);
+        logger.info("messageProperties:{}", ingestionProperties);
     }
 }

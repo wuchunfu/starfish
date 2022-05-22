@@ -1,7 +1,6 @@
 package org.metahut.starfish.api.controller;
 
 import org.metahut.starfish.api.dto.BatchMetaDataDTO;
-import org.metahut.starfish.api.dto.BatchSchemaDTO;
 import org.metahut.starfish.api.dto.BusinessTermResponseDTO;
 import org.metahut.starfish.api.dto.BusinessTermSearchRequestDTO;
 import org.metahut.starfish.api.dto.CreateOrUpdateBusinessTermRequestDTO;
@@ -10,6 +9,7 @@ import org.metahut.starfish.api.dto.MetaDataRequestDTO;
 import org.metahut.starfish.api.dto.MetaDataResponseDTO;
 import org.metahut.starfish.api.dto.MetaDataVersionResponseDTO;
 import org.metahut.starfish.api.dto.ResultEntity;
+import org.metahut.starfish.api.dto.TypeRequestBatchCreateOrUpdateDTO;
 
 import io.swagger.annotations.ApiOperation;
 import org.springframework.web.bind.annotation.DeleteMapping;
@@ -44,9 +44,10 @@ public interface MetaDataController {
      * @param metaDataDTO
      * @return
      */
+    @Deprecated
     @PostMapping("batchType")
     @ApiOperation(value = "batchType", notes = "BATCH_TYPE_CREATE")
-    ResultEntity batchType(@RequestBody BatchSchemaDTO metaDataDTO) throws Exception;
+    ResultEntity batchType(@RequestBody TypeRequestBatchCreateOrUpdateDTO metaDataDTO) throws Exception;
 
     @PostMapping("downloadTemplate")
     @ApiOperation(value = "downloadTemplate", notes = "DOWNLOAD_TEMPLATE_NOTES")

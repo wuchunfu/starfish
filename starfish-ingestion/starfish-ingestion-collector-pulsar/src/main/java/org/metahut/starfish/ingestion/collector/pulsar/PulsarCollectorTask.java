@@ -2,7 +2,7 @@ package org.metahut.starfish.ingestion.collector.pulsar;
 
 import org.metahut.starfish.ingestion.collector.api.CollectorResult;
 import org.metahut.starfish.ingestion.collector.api.ICollectorTask;
-import org.metahut.starfish.ingestion.common.MetaMessageProducer;
+import org.metahut.starfish.ingestion.common.MetaClient;
 import org.metahut.starfish.message.api.IMessageProducer;
 
 import org.apache.pulsar.client.admin.PulsarAdmin;
@@ -20,7 +20,7 @@ public class PulsarCollectorTask implements ICollectorTask {
 
     public PulsarCollectorTask(PulsarCollectorAdapter adapter, PulsarCollectorTaskParameter parameter) {
         this.adapter = adapter;
-        this.producer = MetaMessageProducer.getInstance();
+        this.producer = MetaClient.getInstance().getMessageProducer();
         this.pulsarAdmin = this.adapter.getMetaClient();
     }
 

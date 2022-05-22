@@ -7,6 +7,7 @@ import org.metahut.starfish.api.dto.CollectorTaskInstanceRequestDTO;
 import org.metahut.starfish.api.dto.CollectorTaskInstanceResponseDTO;
 import org.metahut.starfish.api.dto.CollectorTaskRequestDTO;
 import org.metahut.starfish.api.dto.CollectorTaskResponseDTO;
+import org.metahut.starfish.api.dto.PageResponseDTO;
 import org.metahut.starfish.api.dto.ResultEntity;
 import org.metahut.starfish.server.service.CollectorTaskService;
 
@@ -45,7 +46,7 @@ public class CollectorTaskControllerImpl implements CollectorTaskController {
     }
 
     @Override
-    public ResultEntity<List<CollectorTaskResponseDTO>> queryListPage(CollectorTaskRequestDTO requestDTO) {
+    public ResultEntity<PageResponseDTO<CollectorTaskResponseDTO>> queryListPage(CollectorTaskRequestDTO requestDTO) {
         return ResultEntity.success(collectorTaskService.queryListPage(requestDTO));
     }
 

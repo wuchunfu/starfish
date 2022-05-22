@@ -7,7 +7,7 @@ import java.util.concurrent.ThreadLocalRandom;
 /**
  *
  */
-public class BatchSchemaDTO {
+public class TypeRequestBatchCreateOrUpdateDTO {
 
     private SourceBodyDTO source;
 

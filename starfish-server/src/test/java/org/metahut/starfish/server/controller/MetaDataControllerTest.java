@@ -2,7 +2,7 @@ package org.metahut.starfish.server.controller;
 
 import org.metahut.starfish.api.controller.MetaDataController;
 import org.metahut.starfish.api.dto.BatchMetaDataDTO;
-import org.metahut.starfish.api.dto.BatchSchemaDTO;
+import org.metahut.starfish.api.dto.TypeRequestBatchCreateOrUpdateDTO;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
 import org.junit.jupiter.api.Disabled;
@@ -31,16 +31,16 @@ public class MetaDataControllerTest {
     @Autowired
     private MetaDataController metaDataController;
 
-    private static BatchSchemaDTO hiveSchema;
+    private static TypeRequestBatchCreateOrUpdateDTO hiveSchema;
 
-    static Stream<BatchSchemaDTO> hiveSchemaProvider() throws IOException {
-        BatchSchemaDTO dto = new ObjectMapper().readValue(MetaDataControllerTest.class.getResourceAsStream("/json/hiveSchema.json"), BatchSchemaDTO.class);
+    static Stream<TypeRequestBatchCreateOrUpdateDTO> hiveSchemaProvider() throws IOException {
+        TypeRequestBatchCreateOrUpdateDTO dto = new ObjectMapper().readValue(MetaDataControllerTest.class.getResourceAsStream("/json/hiveSchema.json"), TypeRequestBatchCreateOrUpdateDTO.class);
         hiveSchema = dto;
         return Stream.of(dto);
     }
 
-    static Stream<BatchSchemaDTO> pulsarSchemaProvider() throws IOException {
-        BatchSchemaDTO dto = new ObjectMapper().readValue(MetaDataControllerTest.class.getResourceAsStream("/json/pulsarSchema.json"), BatchSchemaDTO.class);
+    static Stream<TypeRequestBatchCreateOrUpdateDTO> pulsarSchemaProvider() throws IOException {
+        TypeRequestBatchCreateOrUpdateDTO dto = new ObjectMapper().readValue(MetaDataControllerTest.class.getResourceAsStream("/json/pulsarSchema.json"), TypeRequestBatchCreateOrUpdateDTO.class);
         return Stream.of(dto);
     }
 
@@ -53,7 +53,7 @@ public class MetaDataControllerTest {
     @ParameterizedTest
     @MethodSource("hiveSchemaProvider")
     @Commit
-    public void hiveSchemaSaveTest(BatchSchemaDTO dto) throws Exception {
+    public void hiveSchemaSaveTest(TypeRequestBatchCreateOrUpdateDTO dto) throws Exception {
         metaDataController.batchType(dto);
     }
 
@@ -72,7 +72,7 @@ public class MetaDataControllerTest {
     @ParameterizedTest
     @MethodSource("pulsarSchemaProvider")
     @Commit
-    public void pulsarSchemaSaveTest(BatchSchemaDTO dto) throws Exception {
+    public void pulsarSchemaSaveTest(TypeRequestBatchCreateOrUpdateDTO dto) throws Exception {
         metaDataController.batchType(dto);
     }
 

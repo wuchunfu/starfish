@@ -6,6 +6,7 @@ import org.metahut.starfish.api.dto.CollectorTaskInstanceRequestDTO;
 import org.metahut.starfish.api.dto.CollectorTaskInstanceResponseDTO;
 import org.metahut.starfish.api.dto.CollectorTaskRequestDTO;
 import org.metahut.starfish.api.dto.CollectorTaskResponseDTO;
+import org.metahut.starfish.api.dto.PageResponseDTO;
 import org.metahut.starfish.scheduler.api.parameters.HttpTaskParameter;
 import org.metahut.starfish.scheduler.api.parameters.ScheduleCronParameter;
 import org.metahut.starfish.scheduler.api.parameters.ScheduleParameter;
@@ -116,7 +117,7 @@ public class CollectorTaskServiceImpl implements CollectorTaskService {
     }
 
     @Override
-    public List<CollectorTaskResponseDTO> queryListPage(CollectorTaskRequestDTO requestDTO) {
+    public PageResponseDTO<CollectorTaskResponseDTO> queryListPage(CollectorTaskRequestDTO requestDTO) {
         return null;
     }
 

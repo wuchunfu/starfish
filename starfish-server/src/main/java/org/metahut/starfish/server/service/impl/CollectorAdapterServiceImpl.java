@@ -3,6 +3,7 @@ package org.metahut.starfish.server.service.impl;
 import org.metahut.starfish.api.dto.CollectorAdapterCreateOrUpdateRequestDTO;
 import org.metahut.starfish.api.dto.CollectorAdapterRequestDTO;
 import org.metahut.starfish.api.dto.CollectorAdapterResponseDTO;
+import org.metahut.starfish.api.dto.PageResponseDTO;
 import org.metahut.starfish.ingestion.collector.api.CollectorResult;
 import org.metahut.starfish.server.collector.CollectorPluginHelper;
 import org.metahut.starfish.server.service.CollectorAdapterService;
@@ -54,6 +55,7 @@ public class CollectorAdapterServiceImpl implements CollectorAdapterService {
 
     @Override
     public void deleteById(Long id) {
+        metaDataService.deleteEntity(id);
     }
 
     @Override
@@ -62,7 +64,8 @@ public class CollectorAdapterServiceImpl implements CollectorAdapterService {
     }
 
     @Override
-    public List<CollectorAdapterResponseDTO> queryListPage(CollectorAdapterRequestDTO requestDTO) {
+    public PageResponseDTO<CollectorAdapterResponseDTO> queryListPage(CollectorAdapterRequestDTO requestDTO) {
+
         return null;
     }
 

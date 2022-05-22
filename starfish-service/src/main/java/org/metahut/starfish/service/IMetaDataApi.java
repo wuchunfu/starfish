@@ -122,7 +122,7 @@ interface IMetaDataApi<K,T> {
      * @return
      * @throws AbstractMetaParserException
      */
-    <U> Page<U> instancesByName(String typeName, AbstractQueryCondition<U> condition, Pageable page) throws AbstractMetaParserException ;
+    <U> Page<U> instancesByName(String typeName, AbstractQueryCondition<U> condition, Pageable page) throws AbstractMetaParserException;
 
     /**
      *
