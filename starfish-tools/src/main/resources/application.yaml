@@ -1,0 +1,30 @@
+spring:
+  mvc:
+    pathmatch:
+      matching-strategy: ant_path_matcher
+  datasource:
+    type: com.zaxxer.hikari.HikariDataSource
+    driver-class-name: org.h2.Driver
+    url: jdbc:h2:mem:starfish;MODE=MySQL;DB_CLOSE_DELAY=-1;DATABASE_TO_LOWER=true;
+    username: sa
+    password: ""
+    sql:
+      init:
+        schema-locations: "classpath:sql/starfish_h2.sql"
+    jpa:
+      properties:
+        hibernate:
+          hbm2ddl:
+            auto: update
+      show-sql: true
+      database-platform: org.hibernate.dialect.H2Dialect
+
+starfish:
+  scheduler:
+    type: dolphinscheduler
+    dolphinscheduler:
+      service-url: http://dolphinscheduler.dev.zhaopin.com/dolphinscheduler
+      project-code: 4996418468000
+  ingestion:
+    service-address: localhost:8802
+    collector-execute-rest: http://{0}/collector/execute
