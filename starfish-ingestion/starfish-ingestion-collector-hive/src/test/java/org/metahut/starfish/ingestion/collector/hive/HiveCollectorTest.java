@@ -68,48 +68,48 @@ public class HiveCollectorTest {
         Assertions.assertNotNull(dataBases);
     }
 
-//    @Test
-//    public void execute() {
-//        HiveCollectorParameter hiveCollectorParameter = new HiveCollectorParameter();
-//        HiveDatasourceParameter hiveDatasourceParameter = new HiveDatasourceParameter();
-//        hiveDatasourceParameter.setDriverClassName("org.apache.hive.jdbc.HiveDriver");
-//        hiveDatasourceParameter.setJdbcUrl("thrift://172.21.100.231:9083");
-//        hiveCollectorParameter
-//                .setDatasourceParameter(JSONUtils.toJSONString(hiveDatasourceParameter));
-//        CollectorResult result = new HiveCollectorManager().generateInstance(hiveCollectorParameter)
-//                .execute();
-//        Assertions.assertNotNull(result);
-//    }
-//
-//    @Test
-//    public void testGetMsg() {
-//        HiveCollectorParameter hiveCollectorParameter = new HiveCollectorParameter();
-//        HiveDatasourceParameter hiveDatasourceParameter = new HiveDatasourceParameter();
-//        hiveDatasourceParameter.setDriverClassName("org.apache.hive.jdbc.HiveDriver");
-//        hiveDatasourceParameter.setJdbcUrl("thrift://172.21.100.231:9083");
-//        hiveCollectorParameter
-//                .setDatasourceParameter(JSONUtils.toJSONString(hiveDatasourceParameter));
-//        BatchMetaDataDTO result = new HiveCollectorManager()
-//                .generateInstance(hiveCollectorParameter)
-//                .getMsg();
-//        doPostJson(instanceUrl, JSONUtils.toJSONString(result));
-//        Assertions.assertNotNull(result);
-//    }
-//
-//    @Test
-//    public void testGetClassInfo() {
-//        HiveCollectorParameter hiveCollectorParameter = new HiveCollectorParameter();
-//        HiveDatasourceParameter hiveDatasourceParameter = new HiveDatasourceParameter();
-//        hiveDatasourceParameter.setDriverClassName("org.apache.hive.jdbc.HiveDriver");
-//        hiveDatasourceParameter.setJdbcUrl("thrift://172.21.100.231:9083");
-//        hiveCollectorParameter
-//                .setDatasourceParameter(JSONUtils.toJSONString(hiveDatasourceParameter));
-//        BatchSchemaDTO result = new HiveCollectorManager()
-//                .generateInstance(hiveCollectorParameter)
-//                .getClassInfo();
-//        doPostJson(typeUrl, JSONUtils.toJSONString(result));
-//        Assertions.assertNotNull(result);
-//    }
+    //@Test
+    //public void execute() {
+    //    HiveCollectorParameter hiveCollectorParameter = new HiveCollectorParameter();
+    //    HiveDatasourceParameter hiveDatasourceParameter = new HiveDatasourceParameter();
+    //    hiveDatasourceParameter.setDriverClassName("org.apache.hive.jdbc.HiveDriver");
+    //    hiveDatasourceParameter.setJdbcUrl("thrift://172.21.100.231:9083");
+    //    hiveCollectorParameter
+    //            .setDatasourceParameter(JSONUtils.toJSONString(hiveDatasourceParameter));
+    //    CollectorResult result = new HiveCollectorManager().generateInstance(hiveCollectorParameter)
+    //            .execute();
+    //    Assertions.assertNotNull(result);
+    //}
+    //
+    //@Test
+    //public void testGetMsg() {
+    //    HiveCollectorParameter hiveCollectorParameter = new HiveCollectorParameter();
+    //    HiveDatasourceParameter hiveDatasourceParameter = new HiveDatasourceParameter();
+    //    hiveDatasourceParameter.setDriverClassName("org.apache.hive.jdbc.HiveDriver");
+    //    hiveDatasourceParameter.setJdbcUrl("thrift://172.21.100.231:9083");
+    //    hiveCollectorParameter
+    //            .setDatasourceParameter(JSONUtils.toJSONString(hiveDatasourceParameter));
+    //    BatchMetaDataDTO result = new HiveCollectorManager()
+    //            .generateInstance(hiveCollectorParameter)
+    //            .getMsg();
+    //    doPostJson(instanceUrl, JSONUtils.toJSONString(result));
+    //    Assertions.assertNotNull(result);
+    //}
+    //
+    //@Test
+    //public void testGetClassInfo() {
+    //    HiveCollectorParameter hiveCollectorParameter = new HiveCollectorParameter();
+    //    HiveDatasourceParameter hiveDatasourceParameter = new HiveDatasourceParameter();
+    //    hiveDatasourceParameter.setDriverClassName("org.apache.hive.jdbc.HiveDriver");
+    //    hiveDatasourceParameter.setJdbcUrl("thrift://172.21.100.231:9083");
+    //    hiveCollectorParameter
+    //            .setDatasourceParameter(JSONUtils.toJSONString(hiveDatasourceParameter));
+    //    BatchSchemaDTO result = new HiveCollectorManager()
+    //            .generateInstance(hiveCollectorParameter)
+    //            .getClassInfo();
+    //    doPostJson(typeUrl, JSONUtils.toJSONString(result));
+    //    Assertions.assertNotNull(result);
+    //}
 
     public static String doPostJson(String url, String params) {
         try {

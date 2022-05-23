@@ -166,68 +166,68 @@ public class PulsarCollectorTest {
         Assertions.assertNotNull(topicStats);
     }
 
-//    @Test
-//    public void execute() {
-//        PulsarDatasourceParameter pulsarDatasourceParameter = new PulsarDatasourceParameter();
-//        pulsarDatasourceParameter.setServerUrl("http://pulsar-idc-qa.zpidc.com:8080");
-//        PulsarCollectorParameter parameter = new PulsarCollectorParameter();
-//        // parameter.setDatasourceId("my-topic");
-//        parameter.setDatasourceParameter(JSONUtils.toJSONString(pulsarDatasourceParameter));
-//        CollectorResult collectorResult = new PulsarCollectorManager().generateInstance(parameter)
-//            .execute();
-//        Assertions.assertNotNull(collectorResult);
-//    }
-
-//    @Test
-//    public void createMsg() {
-//        PulsarDatasourceParameter pulsarDatasourceParameter = new PulsarDatasourceParameter();
-//        pulsarDatasourceParameter.setServerUrl("http://pulsar-idc-qa.zpidc.com:8080");
-//        PulsarCollectorParameter parameter = new PulsarCollectorParameter();
-//        // parameter.setDatasourceId("my-topic");
-//        parameter.setDatasourceParameter(JSONUtils.toJSONString(pulsarDatasourceParameter));
-//        BatchMetaDataDTO collectorResult = new PulsarCollectorManager()
-//            .generateInstance(parameter).getMsg();
-//        doPostJson(instanceUrl, JSONUtils.toJSONString(collectorResult));
-//        Assertions.assertNotNull(collectorResult);
-//    }
-//
-//    @Test
-//    public void testGetClassInfo() {
-//        PulsarDatasourceParameter pulsarDatasourceParameter = new PulsarDatasourceParameter();
-//        pulsarDatasourceParameter.setServerUrl("http://pulsar-idc-qa.zpidc.com:8080");
-//        PulsarCollectorParameter parameter = new PulsarCollectorParameter();
-//        // parameter.setDatasourceId("my-topic");
-//        parameter.setDatasourceParameter(JSONUtils.toJSONString(pulsarDatasourceParameter));
-//        BatchSchemaDTO collectorResult = new PulsarCollectorManager()
-//                .generateInstance(parameter).getClassInfo();
-//        doPostJson(typeUrl, JSONUtils.toJSONString(collectorResult));
-//        Assertions.assertNotNull(collectorResult);
-//    }
-
-//    public static String doPostJson(String url, String params) {
-//        try {
-//            HttpClientBuilder httpClientBuilder = HttpClientBuilder.create();
-//            HttpPost httpPost = new HttpPost(url);
-//            RequestConfig requestConfig = RequestConfig.custom().setSocketTimeout(60000)
-//                .setConnectTimeout(600000).build();
-//            httpPost.setConfig(requestConfig);
-//            httpPost.setHeader("Content-Type", "application/json;charset=UTF-8");
-//            StringEntity stringEntity = new StringEntity(params);
-//            stringEntity.setContentType("text/json");
-//            httpPost.setEntity(stringEntity);
-//            return postResponse(httpClientBuilder, httpPost);
-//        } catch (Exception ex) {
-//            throw new RuntimeException(ex);
-//        }
-//    }
-//
-//    public static String postResponse(HttpClientBuilder httpClientBuilder, HttpPost httpPost) {
-//        try (CloseableHttpResponse closeableHttpResponse = httpClientBuilder.build()
-//            .execute(httpPost)) {
-//            HttpEntity httpEntity = closeableHttpResponse.getEntity();
-//            return EntityUtils.toString(httpEntity, "UTF-8");
-//        } catch (Exception ex) {
-//            throw new RuntimeException(ex);
-//        }
-//    }
+    //@Test
+    //public void execute() {
+    //    PulsarDatasourceParameter pulsarDatasourceParameter = new PulsarDatasourceParameter();
+    //    pulsarDatasourceParameter.setServerUrl("http://pulsar-idc-qa.zpidc.com:8080");
+    //    PulsarCollectorParameter parameter = new PulsarCollectorParameter();
+    //    // parameter.setDatasourceId("my-topic");
+    //    parameter.setDatasourceParameter(JSONUtils.toJSONString(pulsarDatasourceParameter));
+    //    CollectorResult collectorResult = new PulsarCollectorManager().generateInstance(parameter)
+    //        .execute();
+    //    Assertions.assertNotNull(collectorResult);
+    //}
+    //
+    //@Test
+    //public void createMsg() {
+    //    PulsarDatasourceParameter pulsarDatasourceParameter = new PulsarDatasourceParameter();
+    //    pulsarDatasourceParameter.setServerUrl("http://pulsar-idc-qa.zpidc.com:8080");
+    //    PulsarCollectorParameter parameter = new PulsarCollectorParameter();
+    //    // parameter.setDatasourceId("my-topic");
+    //    parameter.setDatasourceParameter(JSONUtils.toJSONString(pulsarDatasourceParameter));
+    //    BatchMetaDataDTO collectorResult = new PulsarCollectorManager()
+    //        .generateInstance(parameter).getMsg();
+    //    doPostJson(instanceUrl, JSONUtils.toJSONString(collectorResult));
+    //    Assertions.assertNotNull(collectorResult);
+    //}
+    //
+    //@Test
+    //public void testGetClassInfo() {
+    //    PulsarDatasourceParameter pulsarDatasourceParameter = new PulsarDatasourceParameter();
+    //    pulsarDatasourceParameter.setServerUrl("http://pulsar-idc-qa.zpidc.com:8080");
+    //    PulsarCollectorParameter parameter = new PulsarCollectorParameter();
+    //    // parameter.setDatasourceId("my-topic");
+    //    parameter.setDatasourceParameter(JSONUtils.toJSONString(pulsarDatasourceParameter));
+    //    BatchSchemaDTO collectorResult = new PulsarCollectorManager()
+    //            .generateInstance(parameter).getClassInfo();
+    //    doPostJson(typeUrl, JSONUtils.toJSONString(collectorResult));
+    //    Assertions.assertNotNull(collectorResult);
+    //}
+    //
+    //public static String doPostJson(String url, String params) {
+    //    try {
+    //        HttpClientBuilder httpClientBuilder = HttpClientBuilder.create();
+    //        HttpPost httpPost = new HttpPost(url);
+    //        RequestConfig requestConfig = RequestConfig.custom().setSocketTimeout(60000)
+    //            .setConnectTimeout(600000).build();
+    //        httpPost.setConfig(requestConfig);
+    //        httpPost.setHeader("Content-Type", "application/json;charset=UTF-8");
+    //        StringEntity stringEntity = new StringEntity(params);
+    //        stringEntity.setContentType("text/json");
+    //        httpPost.setEntity(stringEntity);
+    //        return postResponse(httpClientBuilder, httpPost);
+    //    } catch (Exception ex) {
+    //        throw new RuntimeException(ex);
+    //    }
+    //}
+    //
+    //public static String postResponse(HttpClientBuilder httpClientBuilder, HttpPost httpPost) {
+    //    try (CloseableHttpResponse closeableHttpResponse = httpClientBuilder.build()
+    //        .execute(httpPost)) {
+    //        HttpEntity httpEntity = closeableHttpResponse.getEntity();
+    //        return EntityUtils.toString(httpEntity, "UTF-8");
+    //    } catch (Exception ex) {
+    //        throw new RuntimeException(ex);
+    //    }
+    //}
 }
