@@ -11,6 +11,7 @@ import org.metahut.starfish.parser.domain.instance.InstanceAnalysisStruct;
 import org.metahut.starfish.parser.exception.AbstractMetaParserException;
 import org.metahut.starfish.parser.exception.SourceNameNotPresentException;
 import org.metahut.starfish.parser.exception.TypeExistsException;
+import org.metahut.starfish.parser.exception.TypeNameRepeatException;
 import org.metahut.starfish.parser.exception.TypeNotPresentException;
 import org.metahut.starfish.parser.exception.TypeValidException;
 
@@ -23,6 +24,8 @@ import org.springframework.transaction.annotation.Transactional;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collection;
+import java.util.HashMap;
+import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
 import java.util.Optional;
@@ -52,26 +55,40 @@ public abstract class AbstractMetaDataService<K,T> implements IMetaDataApi<K,T> 
 
     protected abstract ILinkApi<K> linkApi();
 
-    private List<K> validBatchClassInfos(K sourceId,Collection<Class> updateOrCreatedClassInfos) {
+    private List<K> validBatchClassInfos(K sourceId,Collection<Class> insertClassInfos,Map<K,Class> updateClassInfos) {
         List<K> typeIds = new ArrayList<>();
         Map<K, Class> existTypes = typeApi().types(sourceId);
-        for (Class newClassInfo : updateOrCreatedClassInfos) {
-            if (StringUtils.isEmpty(newClassInfo.fullClassName())) {
-                throw new TypeValidException("Null class name,classInfo is " + newClassInfo);
-            }
-            boolean exists = false;
-            for (Map.Entry<K, Class> entry : existTypes.entrySet()) {
-                if (entry.getValue().fullClassName().equals(newClassInfo.fullClassName())) {
-                    exists = true;
-                    entry.setValue(newClassInfo);
-                    typeApi().update(entry.getKey(),newClassInfo,null);
-                    break;
+        if (updateClassInfos != null) {
+            for (Map.Entry<K, Class> entry : updateClassInfos.entrySet()) {
+                String fullClassName = entry.getValue().fullClassName();
+                for (Map.Entry<K, Class> dbEntry : existTypes.entrySet()) {
+                    if (dbEntry.getKey() == entry.getKey()) {
+                        dbEntry.setValue(entry.getValue());
+                    } else if (dbEntry.getValue().fullClassName().equals(fullClassName)) {
+                        throw new TypeNameRepeatException(fullClassName);
+                    }
                 }
             }
-            if (!exists) {
-                K typeId = typeApi().create(sourceId, newClassInfo, null);
-                existTypes.put(typeId,newClassInfo);
-                typeIds.add(typeId);
+        }
+        if (insertClassInfos != null) {
+            for (Class newClassInfo : insertClassInfos) {
+                if (StringUtils.isEmpty(newClassInfo.fullClassName())) {
+                    throw new TypeValidException("Null class name,classInfo is " + newClassInfo);
+                }
+                boolean exists = false;
+                for (Map.Entry<K, Class> entry : existTypes.entrySet()) {
+                    if (entry.getValue().fullClassName().equals(newClassInfo.fullClassName())) {
+                        exists = true;
+                        entry.setValue(newClassInfo);
+                        typeApi().update(entry.getKey(), newClassInfo, null);
+                        break;
+                    }
+                }
+                if (!exists) {
+                    K typeId = typeApi().create(sourceId, newClassInfo, null);
+                    existTypes.put(typeId, newClassInfo);
+                    typeIds.add(typeId);
+                }
             }
         }
         List<String> allFullName = existTypes.values().stream().map(Class::fullClassName).collect(Collectors.toList());
@@ -90,6 +107,26 @@ public abstract class AbstractMetaDataService<K,T> implements IMetaDataApi<K,T> 
         return typeIds;
     }
 
+    private void validAndFilterEntityOfType(Class classInfo,Map<String,T> properties) {
+        if (properties != null) {
+            Iterator<Map.Entry<String, T>> iterator = properties.entrySet().iterator();
+            while (iterator.hasNext()) {
+                Map.Entry<String, T> entry = iterator.next();
+                boolean exist = false;
+                if (classInfo.getAttributes() != null) {
+                    for (Attribute attribute : classInfo.getAttributes()) {
+                        if (attribute.getName().equals(entry.getKey())) {
+                            exist = true;
+                        }
+                    }
+                }
+                if (!exist) {
+                    iterator.remove();
+                }
+            }
+        }
+    }
+
     private Map<String,T> convertTo(Object object) {
         Map<String,T> map = new ObjectMapper().convertValue(object, Map.class);
         return map;
@@ -99,7 +136,7 @@ public abstract class AbstractMetaDataService<K,T> implements IMetaDataApi<K,T> 
     public K initSourceAndType(BatchTypeBody<T> batchTypeBody) throws AbstractMetaParserException {
         K id = sourceApi().getIdByName(batchTypeBody.getSource().getName());
         K sourceId = createSource(batchTypeBody.getSource().getName(), batchTypeBody.getSource().getAttributes());
-        List<K> typeIds = validBatchClassInfos(sourceId,batchTypeBody.getTypes());
+        List<K> typeIds = validBatchClassInfos(sourceId,batchTypeBody.getTypes(),null);
         for (K typeId : typeIds) {
             linkApi().link(sourceId,typeId, LinkCategory.SOURCE_TYPE);
         }
@@ -202,7 +239,7 @@ public abstract class AbstractMetaDataService<K,T> implements IMetaDataApi<K,T> 
     @Override
     public K createType(K sourceId, Class classInfo, Map<String, T> properties) throws AbstractMetaParserException {
         //TODO valid 创建时候两个type 要不要建立连接？
-        List<K> typeIds = validBatchClassInfos(sourceId, Arrays.asList(classInfo));
+        List<K> typeIds = validBatchClassInfos(sourceId, Arrays.asList(classInfo),null);
         for (K typeId : typeIds) {
             linkApi().link(sourceId,typeId, LinkCategory.SOURCE_TYPE);
             return typeId;
@@ -220,6 +257,8 @@ public abstract class AbstractMetaDataService<K,T> implements IMetaDataApi<K,T> 
     public K createEntity(K typeId, String name, Map<String, T> properties) throws AbstractMetaParserException {
         //TODO valid
         K entityId = graphApi().createNode(name, properties);
+        Class type = typeApi().type(typeId);
+        validAndFilterEntityOfType(type,properties);
         K sourceId = linkApi().findParent(typeId,LinkCategory.SOURCE_TYPE);
         linkApi().link(sourceId,entityId,LinkCategory.SOURCE_ENTITY);
         linkApi().link(typeId,entityId,LinkCategory.TYPE_ENTITY);
@@ -234,9 +273,10 @@ public abstract class AbstractMetaDataService<K,T> implements IMetaDataApi<K,T> 
         Class classInfo = types.get(typeId);
         Attribute attribute = classInfo.findAttributeByName(propertyName);
         String fullName = attribute.getClassName();
-        Optional<K> optionalKey = types.entrySet().stream().filter(kClassEntry -> kClassEntry.getValue().fullClassName().equals(fullName)).map(kClassEntry -> kClassEntry.getKey()).findFirst();
-        if (optionalKey.isPresent()) {
-            K newEntityKey = createEntity(optionalKey.get(),name, properties);
+        Optional<Map.Entry<K, Class>> optionalEntry = types.entrySet().stream().filter(kClassEntry -> kClassEntry.getValue().fullClassName().equals(fullName)).findFirst();
+        if (optionalEntry.isPresent()) {
+            validAndFilterEntityOfType(optionalEntry.get().getValue(),properties);
+            K newEntityKey = createEntity(optionalEntry.get().getKey(),name, properties);
             graphApi().link(upperInstanceId,newEntityKey,propertyName);
             return newEntityKey;
         } else {
@@ -252,7 +292,11 @@ public abstract class AbstractMetaDataService<K,T> implements IMetaDataApi<K,T> 
 
     @Override
     public void updateType(K id, Class classInfo, Map<String, T> properties) throws AbstractMetaParserException {
-        validBatchClassInfos(id,Arrays.asList(classInfo));
+        K sourceId = linkApi().findParent(id, LinkCategory.SOURCE_TYPE);
+        Map<K,Class> updateClassInfos = new HashMap<>();
+        updateClassInfos.put(id,classInfo);
+        validBatchClassInfos(sourceId,null,updateClassInfos);
+        typeApi().update(id,classInfo,properties);
     }
 
     @Override

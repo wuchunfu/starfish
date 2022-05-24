@@ -37,6 +37,7 @@ import org.springframework.data.domain.PageImpl;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.jpa.domain.Specification;
 
+import javax.persistence.criteria.CriteriaBuilder;
 import javax.persistence.criteria.Predicate;
 import javax.persistence.criteria.SetJoin;
 import javax.sql.DataSource;
@@ -144,7 +145,6 @@ public class RdbmDataStorageAutoConfiguration {
                         );
                     }
             );
-
             return null;
         };
     }
