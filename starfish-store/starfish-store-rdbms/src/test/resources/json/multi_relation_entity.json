@@ -10,10 +10,15 @@
       }
     ],
     "startNodeEntity": {
-      "name": "dwd",
+      "qualifiedName": "idc_hive.dwd",
       "category": "HiveDatabase",
       "operator": 1,
       "properties": [
+        {
+          "name": "db",
+          "value": "dwd",
+          "operator": 1
+        },
         {
           "name": "creator",
           "value": "root",
@@ -27,10 +32,15 @@
       ]
     },
     "endNodeEntity": {
-      "name": "dwd.user_info",
+      "qualifiedName": "idc_hive.dwd.user_info",
       "category": "HiveTable",
       "operator": 1,
       "properties": [
+        {
+          "name": "tableName",
+          "value": "user_info",
+          "operator": 1
+        },
         {
           "name": "type",
           "value": "HiveTable",
@@ -61,10 +71,15 @@
       }
     ],
     "startNodeEntity": {
-      "name": "dwd",
+      "qualifiedName": "idc_hive.dwd",
       "category": "HiveDatabase",
       "operator": 1,
       "properties": [
+        {
+          "name": "db",
+          "value": "dwd",
+          "operator": 1
+        },
         {
           "name": "creator",
           "value": "root",
@@ -78,10 +93,15 @@
       ]
     },
     "endNodeEntity": {
-      "name": "dwd.user_roles",
+      "qualifiedName": "idc_hive.dwd.user_roles",
       "category": "HiveTable",
       "operator": 1,
       "properties": [
+        {
+          "name": "tableName",
+          "value": "user_roles",
+          "operator": 1
+        },
         {
           "name": "type",
           "value": "HiveTable",
@@ -112,10 +132,15 @@
       }
     ],
     "startNodeEntity": {
-      "name": "dwd",
+      "qualifiedName": "idc_hive.dwd",
       "category": "HiveDatabase",
       "operator": 1,
       "properties": [
+        {
+          "name": "db",
+          "value": "dwd",
+          "operator": 1
+        },
         {
           "name": "creator",
           "value": "root",
@@ -129,10 +154,15 @@
       ]
     },
     "endNodeEntity": {
-      "name": "dwd.user_accounts",
+      "qualifiedName": "idc_hive.dwd.user_accounts",
       "category": "HiveTable",
       "operator": 1,
       "properties": [
+        {
+          "name": "tableName",
+          "value": "user_roles",
+          "operator": 1
+        },
         {
           "name": "type",
           "value": "HiveTable",

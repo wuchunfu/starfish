@@ -10,9 +10,9 @@ public abstract class AbstractNodeEntity<I extends Serializable, P extends Abstr
 
     public abstract void setId(I id);
 
-    public abstract String getName();
+    public abstract String getQualifiedName();
 
-    public abstract void setName(String name);
+    public abstract void setQualifiedName(String name);
 
     public abstract String getCategory();
 

@@ -49,6 +49,7 @@ import java.util.HashMap;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
+import java.util.Objects;
 import java.util.Optional;
 import java.util.stream.Collectors;
 
@@ -69,7 +70,7 @@ public class RdbmDataStorageAutoConfiguration {
                     nodeEntityProperty -> map.put(nodeEntityProperty.getName(), nodeEntityProperty.getValue())
             );
         }
-        map.put("name",nodeEntity.getName());
+        map.put("name",nodeEntity.getQualifiedName());
         map.put("id",nodeEntity.getId());
         return objectMapper.convertValue(map,classInfo);
     }
@@ -91,7 +92,7 @@ public class RdbmDataStorageAutoConfiguration {
         final NodeEntity nodeEntity = new NodeEntity();
         nodeEntity.setId(id);
         nodeEntity.setCategory(category.name());
-        nodeEntity.setName(name);
+        nodeEntity.setQualifiedName(name);
         if (properties != null) {
             nodeEntity.setProperties(properties
                     .entrySet()
@@ -126,14 +127,14 @@ public class RdbmDataStorageAutoConfiguration {
         return convert(null,category,head,tail,property);
     }
 
-    private <U> Specification<NodeEntity> convertEntity(AbstractQueryCondition<U> condition,TypeCategory typeCategory,String name) {
+    private <U> Specification<NodeEntity> convertEntity(AbstractQueryCondition<U> condition, TypeCategory typeCategory, String qualifiedName) {
         return (root, query, criteriaBuilder) -> {
-            List<Predicate> conditions = new ArrayList<>();
-            if (StringUtils.isNotEmpty(name)) {
-                conditions.add(criteriaBuilder.equal(root.get(NodeEntity_.NAME),name));
+            List<Predicate> predicates = new ArrayList<>();
+            if (StringUtils.isNotEmpty(qualifiedName)) {
+                predicates.add(criteriaBuilder.equal(root.get(NodeEntity_.QUALIFIED_NAME), qualifiedName));
             }
             if (typeCategory != null) {
-                conditions.add(criteriaBuilder.equal(root.get(NodeEntity_.CATEGORY),typeCategory.name()));
+                predicates.add(criteriaBuilder.equal(root.get(NodeEntity_.CATEGORY),typeCategory.name()));
             }
             SetJoin<NodeEntity, NodeEntityProperty> join = query.from(NodeEntity.class).join(NodeEntity_.properties);
             Map<String,Object> properties = new HashMap<>();
@@ -336,11 +337,11 @@ public class RdbmDataStorageAutoConfiguration {
 
             @Override
             public Long getIdByName(String name) throws AbstractMetaParserException {
-                List<NodeEntity> nodeEntities = nodeEntityMapper.findByCategoryAndName(TypeCategory.SOURCE.name(), name);
-                if (nodeEntities == null || nodeEntities.size() < 1) {
+                NodeEntity nodeEntity = nodeEntityMapper.findByCategoryAndQualifiedName(TypeCategory.SOURCE.name(), name);
+                if (Objects.isNull(nodeEntity)) {
                     return null;
                 }
-                return nodeEntities.get(0).getId();
+                return nodeEntity.getId();
             }
 
             @Override
@@ -428,11 +429,11 @@ public class RdbmDataStorageAutoConfiguration {
 
             @Override
             public Long getIdByName(String name) {
-                List<NodeEntity> nodeEntities = nodeEntityMapper.findByCategoryAndName(TypeCategory.CLASSIFICATION.name(), name);
-                if (nodeEntities == null || nodeEntities.size() < 1) {
+                NodeEntity nodeEntity = nodeEntityMapper.findByCategoryAndQualifiedName(TypeCategory.CLASSIFICATION.name(), name);
+                if (Objects.isNull(nodeEntity)) {
                     return null;
                 }
-                return nodeEntities.get(0).getId();
+                return nodeEntity.getId();
             }
 
             @Override

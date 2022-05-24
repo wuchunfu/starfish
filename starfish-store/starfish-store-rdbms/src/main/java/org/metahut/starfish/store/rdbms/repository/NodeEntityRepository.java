@@ -15,7 +15,7 @@ import java.util.List;
 public interface NodeEntityRepository extends JpaRepository<NodeEntity, Long>,
     JpaSpecificationExecutor<NodeEntity> {
 
-    List<NodeEntity> removeByName(String name);
+    List<NodeEntity> removeByQualifiedName(String qualifiedName);
 
     List<NodeEntity> removeByCategory(String category);
 

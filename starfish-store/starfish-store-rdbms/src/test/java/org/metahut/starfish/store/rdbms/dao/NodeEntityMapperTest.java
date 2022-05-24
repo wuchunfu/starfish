@@ -14,18 +14,12 @@ import org.junit.jupiter.params.provider.MethodSource;
 import org.mockito.internal.util.collections.Sets;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
-import org.springframework.data.domain.Page;
-import org.springframework.data.domain.PageRequest;
-import org.springframework.data.domain.Sort;
-import org.springframework.test.annotation.Commit;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.io.IOException;
 import java.util.List;
 import java.util.stream.Stream;
 
-@Commit
-@Transactional
 @SpringBootTest
 public class NodeEntityMapperTest {
 
@@ -51,6 +45,7 @@ public class NodeEntityMapperTest {
         mapper.removeAll();
     }
 
+    @Transactional
     @ParameterizedTest
     @MethodSource("nodeEntityWithPropertyProvider")
     public void saveTest(NodeEntity entity) {
@@ -60,6 +55,7 @@ public class NodeEntityMapperTest {
         Assertions.assertNotNull(actual.getUpdateTime());
     }
 
+    @Transactional
     @ParameterizedTest
     @MethodSource("nodeEntityWithPropertyProvider")
     public void removeByCategoryTest(NodeEntity entity) {
@@ -67,14 +63,16 @@ public class NodeEntityMapperTest {
         mapper.removeAllByCategory(entity.getCategory());
     }
 
+    @Transactional
     @ParameterizedTest
     @MethodSource("nodeEntityWithPropertyProvider")
     public void findByNameTest(NodeEntity entity) {
         NodeEntity actual = mapper.create(entity);
-        List<NodeEntity> list = mapper.findByName(entity.getName());
+        List<NodeEntity> list = mapper.findByQualifiedName(entity.getQualifiedName());
         Assertions.assertEquals(1L, list.size());
     }
 
+    @Transactional
     @ParameterizedTest
     @MethodSource("nodeEntityWithPropertyProvider")
     public void findAllByIdTest(NodeEntity entity) {
@@ -83,6 +81,7 @@ public class NodeEntityMapperTest {
         Assertions.assertEquals(1L, list.size());
     }
 
+    @Transactional
     @ParameterizedTest
     @MethodSource("nodeEntityWithPropertyProvider")
     public void findByCategoryTest(NodeEntity entity) {
@@ -91,23 +90,16 @@ public class NodeEntityMapperTest {
         Assertions.assertEquals(1L, list.size());
     }
 
+    @Transactional
     @ParameterizedTest
     @MethodSource("nodeEntityWithPropertyProvider")
-    public void findByCategoryAndNameTest(NodeEntity entity) {
+    public void findByCategoryAndQualifiedNameTest(NodeEntity entity) {
         NodeEntity actual = mapper.create(entity);
-        List<NodeEntity> list = mapper.findByCategoryAndName(entity.getCategory(), entity.getName());
-        Assertions.assertEquals(1L, list.size());
+        NodeEntity expected = mapper.findByCategoryAndQualifiedName(entity.getCategory(), entity.getQualifiedName());
+        Assertions.assertEquals(expected.toString(), actual.toString());
     }
 
-    @ParameterizedTest
-    @MethodSource("nodeEntityWithPropertyProvider")
-    public void findByCategoryAndNamePagingTest(NodeEntity entity) {
-        PageRequest request = PageRequest.of(1, 10, Sort.by("createTime"));
-        NodeEntity actual = mapper.create(entity);
-        Page<NodeEntity> list = mapper.findByCategoryAndName(entity.getCategory(), entity.getName(), request);
-        Assertions.assertEquals(1L, list.getTotalElements());
-    }
-
+    @Transactional
     @ParameterizedTest
     @MethodSource("nodeEntityWithPropertyProvider")
     public void updateTest(NodeEntity entity) {
@@ -115,7 +107,7 @@ public class NodeEntityMapperTest {
 
         NodeEntity updateEntity = new NodeEntity();
         updateEntity.setId(savedEntity.getId());
-        updateEntity.setName(savedEntity.getName());
+        updateEntity.setQualifiedName(savedEntity.getQualifiedName());
         updateEntity.setCategory(savedEntity.getCategory());
         updateEntity.setOperator(savedEntity.getOperator());
 
@@ -127,6 +119,7 @@ public class NodeEntityMapperTest {
         NodeEntity actual = mapper.update(updateEntity);
     }
 
+    @Transactional
     @ParameterizedTest
     @MethodSource("nodeEntityWithPropertyProvider")
     public void removeBatchByIdTest(NodeEntity entity) {

@@ -2,7 +2,9 @@ package org.metahut.starfish.store.rdbms.dao;
 
 import org.metahut.starfish.store.dao.INodeEntityMapper;
 import org.metahut.starfish.store.dao.IRelationEntityMapper;
+import org.metahut.starfish.store.model.AbstractNodeEntity;
 import org.metahut.starfish.store.model.AbstractRelationEntity;
+import org.metahut.starfish.store.rdbms.entity.NodeEntity;
 import org.metahut.starfish.store.rdbms.entity.RelationEntity;
 import org.metahut.starfish.store.rdbms.repository.RelationEntityRepositoryTest;
 
@@ -14,16 +16,14 @@ import org.junit.jupiter.params.ParameterizedTest;
 import org.junit.jupiter.params.provider.MethodSource;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
-import org.springframework.test.annotation.Commit;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.io.IOException;
 import java.util.Collection;
 import java.util.List;
+import java.util.Objects;
 import java.util.stream.Stream;
 
-@Commit
-@Transactional
 @SpringBootTest
 public class RelationEntityMapperTest {
 
@@ -55,11 +55,23 @@ public class RelationEntityMapperTest {
         mapper.removeAll();
     }
 
+    @Transactional
     @ParameterizedTest
     @MethodSource("relationEntityProvider")
     public void saveTest(RelationEntity relation) {
-        nodeEntityMapper.create(relation.getStartNodeEntity());
-        nodeEntityMapper.create(relation.getEndNodeEntity());
+        AbstractNodeEntity startNodeEntity = nodeEntityMapper.findByCategoryAndQualifiedName(relation.getStartNodeEntity().getCategory(),
+            relation.getStartNodeEntity().getQualifiedName());
+
+        AbstractNodeEntity endNodeEntity = nodeEntityMapper.findByCategoryAndQualifiedName(relation.getStartNodeEntity().getCategory(),
+            relation.getEndNodeEntity().getQualifiedName());
+
+        if (Objects.isNull(startNodeEntity)) {
+            nodeEntityMapper.create(relation.getStartNodeEntity());
+        }
+
+        if (Objects.isNull(endNodeEntity)) {
+            nodeEntityMapper.create(relation.getEndNodeEntity());
+        }
 
         AbstractRelationEntity  savedRelationEntity = mapper.create(relation);
         Assertions.assertAll(
@@ -70,33 +82,69 @@ public class RelationEntityMapperTest {
         );
     }
 
+    @Transactional
     @ParameterizedTest
     @MethodSource("relationEntityProvider")
     public void removeAllByNameTest(RelationEntity relation) {
-        nodeEntityMapper.create(relation.getStartNodeEntity());
-        nodeEntityMapper.create(relation.getEndNodeEntity());
+        AbstractNodeEntity startNodeEntity = nodeEntityMapper.findByCategoryAndQualifiedName(relation.getStartNodeEntity().getCategory(),
+            relation.getStartNodeEntity().getQualifiedName());
+
+        AbstractNodeEntity endNodeEntity = nodeEntityMapper.findByCategoryAndQualifiedName(relation.getStartNodeEntity().getCategory(),
+            relation.getEndNodeEntity().getQualifiedName());
+
+        if (Objects.isNull(startNodeEntity)) {
+            nodeEntityMapper.create(relation.getStartNodeEntity());
+        }
+
+        if (Objects.isNull(endNodeEntity)) {
+            nodeEntityMapper.create(relation.getEndNodeEntity());
+        }
 
         mapper.create(relation);
 
         Assertions.assertDoesNotThrow(() -> mapper.removeAllByName(relation.getName()));
     }
 
+    @Transactional
     @ParameterizedTest
     @MethodSource("relationEntityProvider")
     public void removeAllByCategoryTest(RelationEntity relation) {
-        nodeEntityMapper.create(relation.getStartNodeEntity());
-        nodeEntityMapper.create(relation.getEndNodeEntity());
+        AbstractNodeEntity startNodeEntity = nodeEntityMapper.findByCategoryAndQualifiedName(relation.getStartNodeEntity().getCategory(),
+            relation.getStartNodeEntity().getQualifiedName());
+
+        AbstractNodeEntity endNodeEntity = nodeEntityMapper.findByCategoryAndQualifiedName(relation.getStartNodeEntity().getCategory(),
+            relation.getEndNodeEntity().getQualifiedName());
+
+        if (Objects.isNull(startNodeEntity)) {
+            nodeEntityMapper.create(relation.getStartNodeEntity());
+        }
+
+        if (Objects.isNull(endNodeEntity)) {
+            nodeEntityMapper.create(relation.getEndNodeEntity());
+        }
 
         mapper.create(relation);
 
         Assertions.assertDoesNotThrow(() -> mapper.removeAllByCategory(relation.getCategory()));
     }
 
+    @Transactional
     @ParameterizedTest
     @MethodSource("relationEntityProvider")
     public void removeAllByStartNodeEntityAndEndNodeEntityTest(RelationEntity relation) {
-        nodeEntityMapper.create(relation.getStartNodeEntity());
-        nodeEntityMapper.create(relation.getEndNodeEntity());
+        AbstractNodeEntity startNodeEntity = nodeEntityMapper.findByCategoryAndQualifiedName(relation.getStartNodeEntity().getCategory(),
+            relation.getStartNodeEntity().getQualifiedName());
+
+        AbstractNodeEntity endNodeEntity = nodeEntityMapper.findByCategoryAndQualifiedName(relation.getStartNodeEntity().getCategory(),
+            relation.getEndNodeEntity().getQualifiedName());
+
+        if (Objects.isNull(startNodeEntity)) {
+            nodeEntityMapper.create(relation.getStartNodeEntity());
+        }
+
+        if (Objects.isNull(endNodeEntity)) {
+            nodeEntityMapper.create(relation.getEndNodeEntity());
+        }
 
         mapper.create(relation);
 
@@ -107,11 +155,23 @@ public class RelationEntityMapperTest {
         ));
     }
 
+    @Transactional
     @ParameterizedTest
     @MethodSource("relationEntityProvider")
     public void removeAllByStartNodeEntityAndEndNodeEntityAndCategoryTest(RelationEntity relation) {
-        nodeEntityMapper.create(relation.getStartNodeEntity());
-        nodeEntityMapper.create(relation.getEndNodeEntity());
+        AbstractNodeEntity startNodeEntity = nodeEntityMapper.findByCategoryAndQualifiedName(relation.getStartNodeEntity().getCategory(),
+            relation.getStartNodeEntity().getQualifiedName());
+
+        AbstractNodeEntity endNodeEntity = nodeEntityMapper.findByCategoryAndQualifiedName(relation.getStartNodeEntity().getCategory(),
+            relation.getEndNodeEntity().getQualifiedName());
+
+        if (Objects.isNull(startNodeEntity)) {
+            nodeEntityMapper.create(relation.getStartNodeEntity());
+        }
+
+        if (Objects.isNull(endNodeEntity)) {
+            nodeEntityMapper.create(relation.getEndNodeEntity());
+        }
 
         mapper.create(relation);
 
@@ -123,12 +183,30 @@ public class RelationEntityMapperTest {
             ));
     }
 
+    @Transactional
     @ParameterizedTest
     @MethodSource("multiRelationEntityProvider")
     public void findByStartNodeEntityTest(List<RelationEntity> relations) {
         relations.stream().forEach(relation -> {
-            nodeEntityMapper.create(relation.getStartNodeEntity());
-            nodeEntityMapper.create(relation.getEndNodeEntity());
+
+            AbstractNodeEntity startNodeEntity = nodeEntityMapper.findByCategoryAndQualifiedName(relation.getStartNodeEntity().getCategory(),
+                relation.getStartNodeEntity().getQualifiedName());
+
+            AbstractNodeEntity endNodeEntity = nodeEntityMapper.findByCategoryAndQualifiedName(relation.getStartNodeEntity().getCategory(),
+                relation.getEndNodeEntity().getQualifiedName());
+
+            if (Objects.isNull(startNodeEntity)) {
+                nodeEntityMapper.create(relation.getStartNodeEntity());
+            } else {
+                relation.setStartNodeEntity((NodeEntity) startNodeEntity);
+            }
+
+            if (Objects.isNull(endNodeEntity)) {
+                nodeEntityMapper.create(relation.getEndNodeEntity());
+            } else {
+                relation.setEndNodeEntity((NodeEntity) endNodeEntity);
+            }
+
             mapper.create(relation);
         });
 
@@ -141,12 +219,30 @@ public class RelationEntityMapperTest {
         Assertions.assertEquals(expect.toString(), actual.toString());
     }
 
+    @Transactional
     @ParameterizedTest
     @MethodSource("multiRelationEntityProvider")
     public void findByStartNodeEntityAndEndNodeEntityTest(List<RelationEntity> relations) {
         relations.stream().forEach(relation -> {
-            nodeEntityMapper.create(relation.getStartNodeEntity());
-            nodeEntityMapper.create(relation.getEndNodeEntity());
+
+            AbstractNodeEntity startNodeEntity = nodeEntityMapper.findByCategoryAndQualifiedName(relation.getStartNodeEntity().getCategory(),
+                relation.getStartNodeEntity().getQualifiedName());
+
+            AbstractNodeEntity endNodeEntity = nodeEntityMapper.findByCategoryAndQualifiedName(relation.getStartNodeEntity().getCategory(),
+                relation.getEndNodeEntity().getQualifiedName());
+
+            if (Objects.isNull(startNodeEntity)) {
+                nodeEntityMapper.create(relation.getStartNodeEntity());
+            } else {
+                relation.setStartNodeEntity((NodeEntity) startNodeEntity);
+            }
+
+            if (Objects.isNull(endNodeEntity)) {
+                nodeEntityMapper.create(relation.getEndNodeEntity());
+            } else {
+                relation.setEndNodeEntity((NodeEntity) endNodeEntity);
+            }
+
             mapper.create(relation);
         });
 
@@ -159,12 +255,30 @@ public class RelationEntityMapperTest {
         Assertions.assertEquals(expect.toString(), actual.toString());
     }
 
+    @Transactional
     @ParameterizedTest
     @MethodSource("multiRelationEntityProvider")
     public void findByStartNodeEntityAndEndNodeEntityAndCategoryTest(List<RelationEntity> relations) {
         relations.stream().forEach(relation -> {
-            nodeEntityMapper.create(relation.getStartNodeEntity());
-            nodeEntityMapper.create(relation.getEndNodeEntity());
+
+            AbstractNodeEntity startNodeEntity = nodeEntityMapper.findByCategoryAndQualifiedName(relation.getStartNodeEntity().getCategory(),
+                relation.getStartNodeEntity().getQualifiedName());
+
+            AbstractNodeEntity endNodeEntity = nodeEntityMapper.findByCategoryAndQualifiedName(relation.getStartNodeEntity().getCategory(),
+                relation.getEndNodeEntity().getQualifiedName());
+
+            if (Objects.isNull(startNodeEntity)) {
+                nodeEntityMapper.create(relation.getStartNodeEntity());
+            } else {
+                relation.setStartNodeEntity((NodeEntity) startNodeEntity);
+            }
+
+            if (Objects.isNull(endNodeEntity)) {
+                nodeEntityMapper.create(relation.getEndNodeEntity());
+            } else {
+                relation.setEndNodeEntity((NodeEntity) endNodeEntity);
+            }
+
             mapper.create(relation);
         });
 

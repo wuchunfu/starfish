@@ -52,15 +52,15 @@ public interface INodeEntityMapper<I extends Serializable, N extends AbstractNod
 
     /**
      *
-     * @param name
+     * @param qualifiedName
      */
-    void removeAllByName(String name);
+    void removeAllByQualifiedName(String qualifiedName);
 
     /**
      *
      * @param entity
      */
-    void removeAllByName(N entity);
+    void removeAllByQualifiedName(N entity);
 
     /**
      *
@@ -111,10 +111,10 @@ public interface INodeEntityMapper<I extends Serializable, N extends AbstractNod
 
     /**
      *
-     * @param name
+     * @param qualifiedName
      * @return the collection of the instance of N
      */
-    Collection<N> findByName(String name);
+    Collection<N> findByQualifiedName(String qualifiedName);
 
     /**
      *
@@ -126,18 +126,18 @@ public interface INodeEntityMapper<I extends Serializable, N extends AbstractNod
     /**
      *
      * @param category
-     * @param name
+     * @param qualifiedName
      * @return the collection of the instance of N
      */
-    Collection<N> findByCategoryAndName(String category, String name);
+    N findByCategoryAndQualifiedName(String category, String qualifiedName);
 
     /**
      *
-     * @param name
+     * @param qualifiedName
      * @param pageable
      * @return the page of the instance of N
      */
-    Page<N> findByName(String name, Pageable pageable);
+    Page<N> findByQualifiedName(String qualifiedName, Pageable pageable);
 
     /**
      *
@@ -146,15 +146,6 @@ public interface INodeEntityMapper<I extends Serializable, N extends AbstractNod
      * @return the page of the instance of N
      */
     Page<N> findByCategory(String category, Pageable pageable);
-
-    /**
-     *
-     * @param category
-     * @param name
-     * @param pageable
-     * @return the page of the instance of N
-     */
-    Page<N> findByCategoryAndName(String category, String name, Pageable pageable);
 
     /**
      *

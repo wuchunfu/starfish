@@ -4,7 +4,7 @@ DROP TABLE IF EXISTS t_sf_node_entity CASCADE;
 CREATE TABLE t_sf_node_entity
 (
     id int NOT NULL AUTO_INCREMENT,
-    name varchar(100) not NULL,
+    qualified_name varchar(100) not NULL,
     category varchar(100) not null,
     operator int DEFAULT NULL,
     create_time datetime NULL,
@@ -51,3 +51,7 @@ CREATE TABLE t_sf_relation_entity_property
     update_time datetime NULL,
     PRIMARY KEY (id)
 );
+
+
+
+alter table t_sf_node_entity add constraint node_entity_category_qualified_name_unique unique(category, qualified_name);

@@ -10,7 +10,6 @@ import org.junit.jupiter.params.provider.MethodSource;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.data.jpa.domain.Specification;
-import org.springframework.test.annotation.Commit;
 import org.springframework.transaction.annotation.Transactional;
 
 import javax.persistence.criteria.CriteriaBuilder;
@@ -23,8 +22,6 @@ import java.io.IOException;
 import java.util.List;
 import java.util.stream.Stream;
 
-@Commit
-@Transactional
 @SpringBootTest
 public class RelationEntityRepositoryTest {
 
@@ -49,6 +46,7 @@ public class RelationEntityRepositoryTest {
         repository.deleteAll();
     }
 
+    @Transactional
     @ParameterizedTest
     @MethodSource("relationEntityProvider")
     public void saveTest(RelationEntity entity) {
@@ -64,6 +62,7 @@ public class RelationEntityRepositoryTest {
         );
     }
 
+    @Transactional
     @ParameterizedTest
     @MethodSource("relationEntityProvider")
     public void findAllTest(RelationEntity entity) {
@@ -78,6 +77,7 @@ public class RelationEntityRepositoryTest {
 
     }
 
+    @Transactional
     @ParameterizedTest
     @MethodSource("relationEntityProvider")
     public void deleteRelationTest(RelationEntity entity) {
@@ -94,6 +94,7 @@ public class RelationEntityRepositoryTest {
         );
     }
 
+    @Transactional
     @ParameterizedTest
     @MethodSource("relationEntityProvider")
     public void removeByStartNodeEntityAndEndNodeEntityTest(RelationEntity entity) {
@@ -107,6 +108,7 @@ public class RelationEntityRepositoryTest {
         Assertions.assertEquals(list.size(), 1L);
     }
 
+    @Transactional
     @ParameterizedTest
     @MethodSource("relationEntityProvider")
     public void findOneTest(RelationEntity entity) {

@@ -38,8 +38,8 @@ public class NodeEntity extends AbstractNodeEntity<Long, NodeEntityProperty> {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
-    @Column(name = "name", nullable = false)
-    private String name;
+    @Column(name = "qualifiedName", nullable = false)
+    private String qualifiedName;
 
     @Column(name = "category", nullable = false)
     private String category;
@@ -73,7 +73,7 @@ public class NodeEntity extends AbstractNodeEntity<Long, NodeEntityProperty> {
     public String toString() {
         return "NodeEntity("
             + "id=" + id
-            + ",name=" + name
+            + ",qualifiedName=" + qualifiedName
             + ",category=" + category
             + ",properties=" + Joiner.on(",").join(properties)
             + ",operator=" + operator

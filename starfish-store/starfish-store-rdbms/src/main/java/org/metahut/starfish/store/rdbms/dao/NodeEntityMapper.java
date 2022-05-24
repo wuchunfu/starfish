@@ -91,8 +91,8 @@ public class NodeEntityMapper implements INodeEntityMapper<Long, NodeEntity, Nod
     }
 
     @Override
-    public void removeAllByName(String name) {
-        List<NodeEntity> entities = repository.removeByName(name);
+    public void removeAllByQualifiedName(String qualifiedName) {
+        List<NodeEntity> entities = repository.removeByQualifiedName(qualifiedName);
         entities.stream().forEach(entity -> {
             relationEntityRepository.removeByStartNodeEntity(entity);
             relationEntityRepository.removeByEndNodeEntity(entity);
@@ -100,8 +100,8 @@ public class NodeEntityMapper implements INodeEntityMapper<Long, NodeEntity, Nod
     }
 
     @Override
-    public void removeAllByName(NodeEntity entity) {
-        removeAllByName(entity.getName());
+    public void removeAllByQualifiedName(NodeEntity entity) {
+        removeAllByQualifiedName(entity.getQualifiedName());
     }
 
     @Override
@@ -149,11 +149,11 @@ public class NodeEntityMapper implements INodeEntityMapper<Long, NodeEntity, Nod
     }
 
     @Override
-    public List<NodeEntity> findByName(String name) {
+    public List<NodeEntity> findByQualifiedName(String qualifiedName) {
         NodeEntity nodeEntity = new NodeEntity();
-        nodeEntity.setName(name);
+        nodeEntity.setQualifiedName(qualifiedName);
         ExampleMatcher matcher = ExampleMatcher.matching()
-            .withIgnoreCase("name");
+            .withIgnoreCase("qualifiedName");
         Example<NodeEntity> example = Example.of(nodeEntity, matcher);
         return repository.findAll(example);
     }
@@ -169,22 +169,22 @@ public class NodeEntityMapper implements INodeEntityMapper<Long, NodeEntity, Nod
     }
 
     @Override
-    public List<NodeEntity> findByCategoryAndName(String category, String name) {
+    public NodeEntity findByCategoryAndQualifiedName(String category, String qualifiedName) {
         NodeEntity nodeEntity = new NodeEntity();
         nodeEntity.setCategory(category);
-        nodeEntity.setName(name);
+        nodeEntity.setQualifiedName(qualifiedName);
         ExampleMatcher matcher = ExampleMatcher.matching()
-            .withIgnoreCase("category", "name");
+            .withIgnoreCase("category", "qualifiedName");
         Example<NodeEntity> example = Example.of(nodeEntity, matcher);
-        return repository.findAll(example);
+        return repository.findOne(example).orElse(null);
     }
 
     @Override
-    public Page<NodeEntity> findByName(String name, Pageable pageable) {
+    public Page<NodeEntity> findByQualifiedName(String qualifiedName, Pageable pageable) {
         NodeEntity nodeEntity = new NodeEntity();
-        nodeEntity.setName(name);
+        nodeEntity.setQualifiedName(qualifiedName);
         ExampleMatcher matcher = ExampleMatcher.matching()
-            .withIgnoreCase("name");
+            .withIgnoreCase("qualifiedName");
         Example<NodeEntity> example = Example.of(nodeEntity, matcher);
         return repository.findAll(example, pageable);
     }
@@ -195,17 +195,6 @@ public class NodeEntityMapper implements INodeEntityMapper<Long, NodeEntity, Nod
         nodeEntity.setCategory(category);
         ExampleMatcher matcher = ExampleMatcher.matching()
             .withIgnoreCase("category");
-        Example<NodeEntity> example = Example.of(nodeEntity, matcher);
-        return repository.findAll(example, pageable);
-    }
-
-    @Override
-    public Page<NodeEntity> findByCategoryAndName(String category, String name, Pageable pageable) {
-        NodeEntity nodeEntity = new NodeEntity();
-        nodeEntity.setCategory(category);
-        nodeEntity.setName(name);
-        ExampleMatcher matcher = ExampleMatcher.matching()
-            .withIgnoreCase("category", "name");
         Example<NodeEntity> example = Example.of(nodeEntity, matcher);
         return repository.findAll(example, pageable);
     }
