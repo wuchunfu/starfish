@@ -26,6 +26,8 @@ public class CollectorTaskResponseDTO {
 
     private ReleaseStateEnum state;
 
+    private String schedulerFlowCode;
+
     public Long getId() {
         return id;
     }
@@ -80,5 +82,13 @@ public class CollectorTaskResponseDTO {
 
     public void setState(ReleaseStateEnum state) {
         this.state = state;
+    }
+
+    public String getSchedulerFlowCode() {
+        return schedulerFlowCode;
+    }
+
+    public void setSchedulerFlowCode(String schedulerFlowCode) {
+        this.schedulerFlowCode = schedulerFlowCode;
     }
 }

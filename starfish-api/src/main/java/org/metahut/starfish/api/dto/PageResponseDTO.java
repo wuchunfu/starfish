@@ -12,10 +12,19 @@ public class PageResponseDTO<T> {
     private Integer pageSize;
 
     @ApiModelProperty(value = "total")
-    private Integer total;
+    private Long total;
 
     @ApiModelProperty(value = "data")
     private List<T> data;
+
+    public static <T> PageResponseDTO of(Integer pageNo, Integer pageSize, Long total, List<T> data) {
+        PageResponseDTO response = new PageResponseDTO<>();
+        response.setPageNo(pageNo);
+        response.setPageSize(pageSize);
+        response.setTotal(total);
+        response.setData(data);
+        return response;
+    }
 
     public Integer getPageNo() {
         return pageNo;
@@ -33,11 +42,11 @@ public class PageResponseDTO<T> {
         this.pageSize = pageSize;
     }
 
-    public Integer getTotal() {
+    public Long getTotal() {
         return total;
     }
 
-    public void setTotal(Integer total) {
+    public void setTotal(Long total) {
         this.total = total;
     }
 

@@ -12,7 +12,7 @@ import org.metahut.starfish.server.utils.Assert;
 
 import org.springframework.web.bind.annotation.RestController;
 
-import java.util.List;
+import java.util.Collection;
 
 import static org.metahut.starfish.api.enums.Status.COLLECTOR_ADAPTER_TEST_CONNECTION_FAIL;
 
@@ -59,7 +59,7 @@ public class CollectorAdapterControllerImpl implements CollectorAdapterControlle
     }
 
     @Override
-    public ResultEntity<List<CollectorAdapterResponseDTO>> queryList(CollectorAdapterRequestDTO requestDTO) {
+    public ResultEntity<Collection<CollectorAdapterResponseDTO>> queryList(CollectorAdapterRequestDTO requestDTO) {
         return ResultEntity.success(collectorAdapterService.queryList(requestDTO));
     }
 }

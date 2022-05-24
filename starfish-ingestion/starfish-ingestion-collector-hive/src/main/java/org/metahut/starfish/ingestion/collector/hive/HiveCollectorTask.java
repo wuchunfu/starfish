@@ -56,7 +56,8 @@ public class HiveCollectorTask implements ICollectorTask {
     }
 
     private void deleteNonExistentMetadata() {
-        // 查询全部，删除事件
+        // TODO Query the existing metadata in the system and call the Hive interface to determine whether it exists
+
     }
 
     private void generateHiveClusterEntity() {

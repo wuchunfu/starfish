@@ -12,12 +12,12 @@ import org.springframework.stereotype.Component;
 public class InitTypeModel {
     public static void main(String[] args) {
         new SpringApplicationBuilder(InitTypeModel.class)
-                //.profiles("init-type")
+                .profiles("init-type")
                 .run(args);
     }
 
     @Component
-    //@Profile("init-type")
+    @Profile("init-type")
     static class InitTypeModelRunner implements CommandLineRunner {
         private static final Logger logger = LoggerFactory.getLogger(InitTypeModelRunner.class);
 

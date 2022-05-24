@@ -17,7 +17,7 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 
-import java.util.List;
+import java.util.Collection;
 
 @Api(tags = "COLLECTOR_ADAPTER_TAG")
 @RequestMapping("collectorAdapter")
@@ -49,6 +49,6 @@ public interface CollectorAdapterController {
 
     @GetMapping("queryList")
     @ApiOperation(value = "queryList", notes = "QUERY_COLLECTOR_ADAPTER_LIST_NOTES")
-    ResultEntity<List<CollectorAdapterResponseDTO>> queryList(CollectorAdapterRequestDTO requestDTO);
+    ResultEntity<Collection<CollectorAdapterResponseDTO>> queryList(CollectorAdapterRequestDTO requestDTO);
 
 }

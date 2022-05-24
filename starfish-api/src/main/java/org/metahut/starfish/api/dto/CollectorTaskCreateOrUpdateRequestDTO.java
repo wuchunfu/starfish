@@ -11,6 +11,7 @@ public class CollectorTaskCreateOrUpdateRequestDTO {
     @ApiModelProperty(value = "collector task name", required = true)
     private String name;
 
+    @ApiModelProperty(value = "collector description", required = true)
     private String description;
 
     @ApiModelProperty(value = "collector adapter id", required = true)

@@ -16,6 +16,7 @@ import org.metahut.starfish.server.config.IngestionConfiguration;
 import org.metahut.starfish.server.scheduler.SchedulerPluginHelper;
 import org.metahut.starfish.server.service.CollectorTaskService;
 import org.metahut.starfish.service.AbstractMetaDataService;
+import org.metahut.starfish.service.AbstractQueryCondition;
 
 import org.springframework.core.convert.ConversionService;
 import org.springframework.stereotype.Service;
@@ -24,6 +25,8 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
+import static org.metahut.starfish.server.utils.Constants.COLLECTOR_TASK_TYPE_NAME;
+
 @Service
 public class CollectorTaskServiceImpl implements CollectorTaskService {
 
@@ -31,12 +34,12 @@ public class CollectorTaskServiceImpl implements CollectorTaskService {
     private final IngestionConfiguration ingestionConfiguration;
     private final ConversionService conversionService;
 
-    private final AbstractMetaDataService metaDataService;
+    private final AbstractMetaDataService<Long, Object> metaDataService;
 
     public CollectorTaskServiceImpl(SchedulerPluginHelper schedulerPluginHelper,
                                     IngestionConfiguration ingestionConfiguration,
                                     ConversionService conversionService,
-                                    AbstractMetaDataService metaDataService) {
+                                    AbstractMetaDataService<Long, Object> metaDataService) {
         this.schedulerPluginHelper = schedulerPluginHelper;
         this.ingestionConfiguration = ingestionConfiguration;
         this.conversionService = conversionService;
@@ -82,10 +85,12 @@ public class CollectorTaskServiceImpl implements CollectorTaskService {
         String scheduleCode = schedulerPluginHelper.getScheduler().createSchedule(scheduleParameter);
 
         // create collector instance
-        Object typeId = metaDataService.createEntity("typeId", requestDTO.getName(), null);
+        Map<String, Object> convert = conversionService.convert(requestDTO, Map.class);
+        Long entityId = metaDataService.createEntityByTypeName(COLLECTOR_TASK_TYPE_NAME, requestDTO.getName(), convert);
 
-        // return conversionService.convert(save, IngestionCollectorResponseDTO.class);
-        return null;
+        CollectorTaskResponseDTO collectorTaskResponseDTO = new CollectorTaskResponseDTO();
+        collectorTaskResponseDTO.setId(entityId);
+        return collectorTaskResponseDTO;
     }
 
     @Override
@@ -104,11 +109,14 @@ public class CollectorTaskServiceImpl implements CollectorTaskService {
 
     @Override
     public void deleteById(Long id) {
-        String flowCode = "";
+        AbstractQueryCondition<CollectorTaskResponseDTO> condition = new AbstractQueryCondition<>();
+        condition.setResultType(CollectorTaskResponseDTO.class);
+        CollectorTaskResponseDTO instance = metaDataService.instance(id, condition);
         // delete schedule flow instance
-        schedulerPluginHelper.getScheduler().deleteFlowByCode(flowCode);
+        schedulerPluginHelper.getScheduler().deleteFlowByCode(instance.getSchedulerFlowCode());
 
         // delete collector instance
+        metaDataService.deleteEntity(id);
     }
 
     @Override

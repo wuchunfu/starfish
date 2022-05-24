@@ -6,9 +6,6 @@ import io.swagger.annotations.ApiModelProperty;
 @ApiModel(description = "collector adapter create or update request dto")
 public class CollectorAdapterCreateOrUpdateRequestDTO {
 
-    @ApiModelProperty(value = "collector adapter type id", required = true)
-    private Long typeId;
-
     @ApiModelProperty(value = "collector adapter name", required = true)
     private String name;
 
@@ -20,14 +17,6 @@ public class CollectorAdapterCreateOrUpdateRequestDTO {
 
     @ApiModelProperty(value = "collector type", required = true)
     private String type;
-
-    public Long getTypeId() {
-        return typeId;
-    }
-
-    public void setTypeId(Long typeId) {
-        this.typeId = typeId;
-    }
 
     public String getName() {
         return name;

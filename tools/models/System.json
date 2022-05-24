@@ -1,3 +1,92 @@
-CollectorAdapter
-
-CollectorTask
+{
+  "source": {
+    "name": "System",
+    "attributes": null
+  },
+  "types": [
+    {
+      "nameAttributeRel": "name",
+      "name": "CollectorTask",
+      "packagePath": "org.starfish",
+      "attributes": [
+        {
+          "name": "name",
+          "className": "java.lang.String",
+          "relType": "PRIMITIVE",
+          "array": false,
+          "defaultValue": null
+        },
+        {
+          "name": "description",
+          "className": "java.lang.String",
+          "relType": "PRIMITIVE",
+          "array": false,
+          "defaultValue": null
+        },
+        {
+          "name": "adapter",
+          "className": "org.starfish.CollectorAdapter",
+          "relType": "ENTITY",
+          "array": false,
+          "defaultValue": null
+        },
+        {
+          "name": "parameter",
+          "className": "java.lang.String",
+          "relType": "PRIMITIVE",
+          "array": false,
+          "defaultValue": null
+        },
+        {
+          "name": "cron",
+          "className": "java.lang.String",
+          "relType": "PRIMITIVE",
+          "array": false,
+          "defaultValue": null
+        },
+        {
+          "name": "schedulerFlowCode",
+          "className": "java.lang.String",
+          "relType": "PRIMITIVE",
+          "array": false,
+          "defaultValue": null
+        }
+      ]
+    },
+    {
+      "nameAttributeRel": "name",
+      "name": "CollectorAdapter",
+      "packagePath": "org.starfish",
+      "attributes": [
+        {
+          "name": "name",
+          "className": "java.lang.String",
+          "relType": "PRIMITIVE",
+          "array": false,
+          "defaultValue": null
+        },
+        {
+          "name": "parameter",
+          "className": "java.lang.String",
+          "relType": "PRIMITIVE",
+          "array": false,
+          "defaultValue": null
+        },
+        {
+          "name": "description",
+          "className": "java.lang.String",
+          "relType": "PRIMITIVE",
+          "array": false,
+          "defaultValue": null
+        },
+        {
+          "name": "type",
+          "className": "java.lang.String",
+          "relType": "PRIMITIVE",
+          "array": false,
+          "defaultValue": null
+        }
+      ]
+    }
+  ]
+}

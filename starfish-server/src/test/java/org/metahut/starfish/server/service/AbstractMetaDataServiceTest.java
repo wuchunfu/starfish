@@ -1,10 +1,12 @@
-package org.metahut.starfish.service;
+package org.metahut.starfish.server.service;
 
 import org.metahut.starfish.parser.domain.enums.RelType;
 import org.metahut.starfish.parser.domain.instance.Attribute;
 import org.metahut.starfish.parser.domain.instance.Class;
 import org.metahut.starfish.parser.exception.TypeExistsException;
 import org.metahut.starfish.scheduler.dolphinscheduler.JSONUtils;
+import org.metahut.starfish.service.AbstractMetaDataService;
+import org.metahut.starfish.service.AbstractQueryCondition;
 
 import org.junit.jupiter.api.Test;
 import org.slf4j.Logger;

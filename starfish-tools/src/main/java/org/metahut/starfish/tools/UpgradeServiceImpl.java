@@ -3,6 +3,7 @@ package org.metahut.starfish.tools;
 import org.metahut.starfish.api.dto.TypeRequestBatchCreateOrUpdateDTO;
 import org.metahut.starfish.server.service.TypeService;
 import org.metahut.starfish.server.utils.Assert;
+import org.metahut.starfish.server.utils.JSONUtils;
 
 import org.springframework.stereotype.Service;
 import org.springframework.util.ResourceUtils;

@@ -6,7 +6,7 @@ import org.metahut.starfish.api.dto.CollectorAdapterResponseDTO;
 import org.metahut.starfish.api.dto.PageResponseDTO;
 import org.metahut.starfish.ingestion.collector.api.CollectorResult;
 
-import java.util.List;
+import java.util.Collection;
 
 public interface CollectorAdapterService {
     CollectorResult testConnection(String type, String parameter);
@@ -21,5 +21,5 @@ public interface CollectorAdapterService {
 
     PageResponseDTO<CollectorAdapterResponseDTO> queryListPage(CollectorAdapterRequestDTO requestDTO);
 
-    List<CollectorAdapterResponseDTO> queryList(CollectorAdapterRequestDTO requestDTO);
+    Collection<CollectorAdapterResponseDTO> queryList(CollectorAdapterRequestDTO requestDTO);
 }

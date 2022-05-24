@@ -4,7 +4,7 @@ import io.swagger.annotations.ApiModel;
 import io.swagger.annotations.ApiModelProperty;
 
 @ApiModel(description = "collector adapter request dto")
-public class CollectorAdapterRequestDTO {
+public class CollectorAdapterRequestDTO extends PageRequestDTO {
 
     @ApiModelProperty(value = "collector adapter name")
     private String name;
