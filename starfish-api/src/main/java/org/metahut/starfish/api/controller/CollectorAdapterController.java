@@ -37,7 +37,7 @@ public interface CollectorAdapterController {
 
     @DeleteMapping("{id}")
     @ApiOperation(value = "deleteById", notes = "DELETE_COLLECTOR_ADAPTER_BY_ID_NOTES")
-    ResultEntity deleteById(@PathVariable(value = "ide") Long id);
+    ResultEntity deleteById(@PathVariable(value = "id") Long id);
 
     @GetMapping("{id}")
     @ApiOperation(value = "queryDatasourceById", notes = "QUERY_COLLECTOR_ADAPTER_BY_ID_NOTES")

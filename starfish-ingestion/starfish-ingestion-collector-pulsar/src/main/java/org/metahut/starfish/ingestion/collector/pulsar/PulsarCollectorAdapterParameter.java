@@ -9,7 +9,7 @@ public class PulsarCollectorAdapterParameter extends AbstractCollectorParameter 
     private String serverUrl;
     @Override
     public boolean checkParameter() {
-        return StringUtils.isBlank(serverUrl);
+        return StringUtils.isNotBlank(serverUrl);
     }
 
     public String getServerUrl() {
