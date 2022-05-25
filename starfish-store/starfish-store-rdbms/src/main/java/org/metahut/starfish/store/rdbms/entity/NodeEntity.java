@@ -24,6 +24,7 @@ import javax.persistence.OneToMany;
 import javax.persistence.Table;
 
 import java.util.Date;
+import java.util.List;
 import java.util.Map;
 import java.util.Set;
 
@@ -32,7 +33,7 @@ import java.util.Set;
 @Entity
 @Table(name = "t_sf_node_entity")
 @EntityListeners(AuditingEntityListener.class)
-public class NodeEntity extends AbstractNodeEntity<Long, NodeEntityProperty> {
+public class NodeEntity extends AbstractNodeEntity<Long, NodeEntityProperty,NodeEntity, RelationEntity> {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -58,6 +59,14 @@ public class NodeEntity extends AbstractNodeEntity<Long, NodeEntityProperty> {
     @LastModifiedDate
     @Column(name = "update_time")
     private Date updateTime;
+
+    @OneToMany(fetch = FetchType.LAZY,cascade = CascadeType.ALL,orphanRemoval = true)
+    @JoinColumn(name = "start_node_entity_id", foreignKey = @ForeignKey(ConstraintMode.NO_CONSTRAINT))
+    private List<RelationEntity> children;
+
+    @OneToMany(fetch = FetchType.LAZY,cascade = CascadeType.ALL,orphanRemoval = true)
+    @JoinColumn(name = "end_node_entity_id", foreignKey = @ForeignKey(ConstraintMode.NO_CONSTRAINT))
+    private List<RelationEntity> parent;
 
     @Override
     public Map<String, NodeEntityProperty> getKeyedProperties() {

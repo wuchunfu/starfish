@@ -1,12 +1,20 @@
 package org.metahut.starfish.server.service;
 
+import org.metahut.starfish.parser.domain.enums.LinkCategory;
 import org.metahut.starfish.parser.domain.enums.RelType;
+import org.metahut.starfish.parser.domain.enums.TypeCategory;
 import org.metahut.starfish.parser.domain.instance.Attribute;
 import org.metahut.starfish.parser.domain.instance.Class;
 import org.metahut.starfish.parser.exception.TypeExistsException;
 import org.metahut.starfish.scheduler.dolphinscheduler.JSONUtils;
 import org.metahut.starfish.service.AbstractMetaDataService;
+import org.metahut.starfish.service.AbstractNodeService;
 import org.metahut.starfish.service.AbstractQueryCondition;
+import org.metahut.starfish.service.expression.ConditionPiece;
+import org.metahut.starfish.service.expression.SampleExpression;
+import org.metahut.starfish.service.expression.StringExpression;
+import org.metahut.starfish.service.expression.TableType;
+import org.metahut.starfish.store.rdbms.dao.NodeEntityMapper;
 
 import org.junit.jupiter.api.Test;
 import org.slf4j.Logger;
@@ -17,7 +25,10 @@ import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.transaction.annotation.Transactional;
 
+import javax.annotation.Resource;
+
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.Collection;
 import java.util.HashMap;
 import java.util.List;
@@ -110,6 +121,115 @@ class AbstractMetaDataServiceTest {
         map.put("name","1111");
         map.put("password","wor");
         return map;
+    }
+
+    @Resource
+    private NodeEntityMapper nodeEntityMapper;
+
+    @Resource
+    private AbstractNodeService<Long,Object> nodeService;
+
+    private SampleExpression entityCategory() {
+        SampleExpression sampleExpression = new SampleExpression();
+        sampleExpression.setLeftExpression(new StringExpression("category"));
+        sampleExpression.setRightExpression(new StringExpression(TypeCategory.ENTITY.name()));
+        return sampleExpression;
+    }
+
+    private SampleExpression linkRelationshipCategory() {
+        SampleExpression sampleExpression = new SampleExpression();
+        sampleExpression.setLeftExpression(new StringExpression("category"));
+        sampleExpression.setRightExpression(new StringExpression(LinkCategory.RELATIONSHIP.name()));
+        return sampleExpression;
+    }
+
+    private SampleExpression classificationCategory() {
+        SampleExpression sampleExpression = new SampleExpression();
+        sampleExpression.setLeftExpression(new StringExpression("category"));
+        sampleExpression.setRightExpression(new StringExpression(TypeCategory.CLASSIFICATION.name()));
+        return sampleExpression;
+    }
+
+    private SampleExpression typeEntityCategory() {
+        SampleExpression sampleExpression = new SampleExpression();
+        sampleExpression.setLeftExpression(new StringExpression("category"));
+        sampleExpression.setRightExpression(new StringExpression(LinkCategory.TYPE_ENTITY.name()));
+        return sampleExpression;
+    }
+
+    private ConditionPiece properties() {
+        ConditionPiece conditionNext = new ConditionPiece();
+        conditionNext.setTableType(TableType.ENTITY_PROPERTY);
+        SampleExpression sampleExpression1 = new SampleExpression();
+        sampleExpression1.setLeftExpression(new StringExpression("name"));
+        sampleExpression1.setRightExpression(new StringExpression("{\"name\":\"1111\"}"));
+        //conditionNext.setExpressions(Arrays.asList(sampleExpression1));
+        return conditionNext;
+    }
+
+    private ConditionPiece typeCondition() {
+        ConditionPiece conditionNext = new ConditionPiece();
+        conditionNext.setTableType(TableType.ENTITY_PROPERTY);
+        SampleExpression sampleExpression1 = new SampleExpression();
+        sampleExpression1.setLeftExpression(new StringExpression("qualifiedName"));
+        sampleExpression1.setRightExpression(new StringExpression("myTest"));
+        conditionNext.setExpressions(Arrays.asList(sampleExpression1,classificationCategory()));
+        return conditionNext;
+    }
+
+    private ConditionPiece parentTypeRelation() {
+        ConditionPiece conditionNext = new ConditionPiece();
+        conditionNext.setTableType(TableType.RELATION);
+        conditionNext.setExpressions(Arrays.asList(typeEntityCategory()));
+        Map<String,ConditionPiece> map = new HashMap();
+        map.put("startNodeEntity",typeCondition());
+        conditionNext.setNextConditionChain(map);
+        return conditionNext;
+    }
+
+    private ConditionPiece conditionPiece() {
+        ConditionPiece conditionPiece = new ConditionPiece();
+        conditionPiece.setTableType(TableType.ENTITY);
+        SampleExpression sampleExpression = new SampleExpression();
+        sampleExpression.setLeftExpression(new StringExpression("qualifiedName"));
+        sampleExpression.setRightExpression(new StringExpression("1111"));
+        conditionPiece.setExpressions(Arrays.asList(sampleExpression,entityCategory()));
+        Map<String,ConditionPiece> map = new HashMap<>();
+        map.put("properties",properties());
+        map.put("parent",parentTypeRelation());
+        conditionPiece.setNextConditionChain(map);
+        return conditionPiece;
+    }
+
+    private ConditionPiece conditionPiece1() {
+        ConditionPiece conditionPiece = new ConditionPiece();
+        conditionPiece.setTableType(TableType.ENTITY);
+        SampleExpression sampleExpression = new SampleExpression();
+        sampleExpression.setLeftExpression(new StringExpression("qualifiedName"));
+        sampleExpression.setRightExpression(new StringExpression("1111"));
+        conditionPiece.setExpressions(Arrays.asList(sampleExpression));
+        Map<String,ConditionPiece> map = new HashMap<>();
+        ConditionPiece conditionNext = new ConditionPiece();
+        conditionNext.setTableType(TableType.RELATION);
+        SampleExpression sampleExpression1 = new SampleExpression();
+        sampleExpression1.setLeftExpression(new StringExpression("name"));
+        sampleExpression1.setRightExpression(new StringExpression("1111"));
+        //conditionNext.setExpressions(Arrays.asList(sampleExpression1));
+        map.put("properties",conditionNext);
+        conditionPiece.setNextConditionChain(map);
+        return conditionPiece;
+    }
+
+    @Test
+    public void test() {
+        assertDoesNotThrow(() -> {
+            AbstractQueryCondition<Map> condition = new AbstractQueryCondition<>();
+            condition.setResultType(Map.class);
+            condition.setFilters(Arrays.asList(
+                    conditionPiece()
+            ));
+            Collection<Map> query = nodeService.query(condition);
+        });
     }
 
     @Test

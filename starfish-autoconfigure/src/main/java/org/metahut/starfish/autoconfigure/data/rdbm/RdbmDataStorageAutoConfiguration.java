@@ -15,17 +15,17 @@ import org.metahut.starfish.service.AbstractQueryCondition;
 import org.metahut.starfish.service.AbstractRelationService;
 import org.metahut.starfish.service.AbstractSourceService;
 import org.metahut.starfish.service.AbstractTypeService;
+import org.metahut.starfish.service.expression.BinaryExpression;
+import org.metahut.starfish.service.expression.ConditionPiece;
 import org.metahut.starfish.store.rdbms.dao.NodeEntityMapper;
 import org.metahut.starfish.store.rdbms.dao.RelationEntityMapper;
 import org.metahut.starfish.store.rdbms.entity.NodeEntity;
 import org.metahut.starfish.store.rdbms.entity.NodeEntityProperty;
-import org.metahut.starfish.store.rdbms.entity.NodeEntityProperty_;
 import org.metahut.starfish.store.rdbms.entity.NodeEntity_;
 import org.metahut.starfish.store.rdbms.entity.RelationEntity;
 
 import com.fasterxml.jackson.databind.DeserializationFeature;
 import com.fasterxml.jackson.databind.ObjectMapper;
-import org.apache.commons.lang3.StringUtils;
 import org.springframework.boot.autoconfigure.AutoConfigureAfter;
 import org.springframework.boot.autoconfigure.condition.ConditionalOnClass;
 import org.springframework.boot.autoconfigure.condition.ConditionalOnMissingBean;
@@ -38,8 +38,10 @@ import org.springframework.data.domain.Pageable;
 import org.springframework.data.jpa.domain.Specification;
 
 import javax.persistence.criteria.CriteriaBuilder;
+import javax.persistence.criteria.CriteriaQuery;
+import javax.persistence.criteria.Join;
 import javax.persistence.criteria.Predicate;
-import javax.persistence.criteria.SetJoin;
+import javax.persistence.criteria.Root;
 import javax.sql.DataSource;
 
 import java.util.ArrayList;
@@ -127,27 +129,118 @@ public class RdbmDataStorageAutoConfiguration {
         return convert(null,category,head,tail,property);
     }
 
-    private <U> Specification<NodeEntity> convertEntity(AbstractQueryCondition<U> condition, TypeCategory typeCategory, String qualifiedName) {
+    private <U> Specification<NodeEntity> convertEntity(AbstractQueryCondition<U> condition) {
         return (root, query, criteriaBuilder) -> {
+            query.distinct(true);
             List<Predicate> predicates = new ArrayList<>();
-            if (StringUtils.isNotEmpty(qualifiedName)) {
-                predicates.add(criteriaBuilder.equal(root.get(NodeEntity_.QUALIFIED_NAME), qualifiedName));
-            }
-            if (typeCategory != null) {
-                predicates.add(criteriaBuilder.equal(root.get(NodeEntity_.CATEGORY),typeCategory.name()));
-            }
-            SetJoin<NodeEntity, NodeEntityProperty> join = query.from(NodeEntity.class).join(NodeEntity_.properties);
-            Map<String,Object> properties = new HashMap<>();
-            properties.entrySet().stream().forEach(
-                    stringObjectEntry -> {
-                        criteriaBuilder.and(
-                                criteriaBuilder.equal(join.get(NodeEntityProperty_.name),stringObjectEntry.getKey()),
-                                criteriaBuilder.equal(join.get(NodeEntityProperty_.value),stringObjectEntry.getValue())
-                        );
+            predicates.add(criteriaBuilder.equal(root.get(NodeEntity_.CATEGORY),TypeCategory.ENTITY.name()));
+            if (condition.getFilters() != null) {
+                for (ConditionPiece filter : condition.getFilters()) {
+                    List<Predicate> piecePredicates = new ArrayList<>();
+                    CriteriaBuilder builder = criteriaBuilder;
+                    if (filter.getExpressions() != null) {
+                        for (BinaryExpression expression : filter.getExpressions()) {
+                            piecePredicates.add(builder.equal(root.get(expression.getLeftExpression().toString()),expression.getRightExpression().toString()));
+                        }
                     }
-            );
-            return null;
+                    if (filter.getNextConditionChain() != null) {
+                        piecePredicates.addAll(nextConditionHandle(criteriaBuilder, root, query, filter.getNextConditionChain()));
+                    }
+                    if (piecePredicates.size() != 0) {
+                        predicates.add(builder.and(piecePredicates.toArray(new Predicate[piecePredicates.size()])));
+                    }
+                }
+            }
+            return criteriaBuilder.and(predicates.toArray(new Predicate[predicates.size()]));
         };
+    }
+
+    private <T> List<Predicate> nextConditionHandle(CriteriaBuilder criteriaBuilder, Root<T> root, CriteriaQuery<?> query,Map<String,ConditionPiece> conditionPieceMap) {
+        List<Predicate> predicates = new ArrayList<>();
+        if (conditionPieceMap != null) {
+            for (Map.Entry<String, ConditionPiece> entry : conditionPieceMap.entrySet()) {
+                String propertyName = entry.getKey();
+                ConditionPiece nextConditionPiece = entry.getValue();
+                switch (nextConditionPiece.getTableType()) {
+                    case ENTITY:
+                        Join<T, NodeEntity> join1 = root.join(propertyName);
+                        List<BinaryExpression> expressions1 = nextConditionPiece.getExpressions();
+                        if (expressions1 != null) {
+                            for (BinaryExpression expression : expressions1) {
+                                predicates.add(criteriaBuilder.equal(join1.get(expression.getLeftExpression().toString()), expression.getRightExpression().toString()));
+                            }
+                        }
+                        predicates.addAll(nextConditionHandle(criteriaBuilder,join1,query,nextConditionPiece.getNextConditionChain()));
+                        break;
+                    case RELATION:
+                        Join<T, RelationEntity> join2 = root.join(propertyName);
+                        List<BinaryExpression> expressions2 = nextConditionPiece.getExpressions();
+                        if (expressions2 != null) {
+                            for (BinaryExpression expression : expressions2) {
+                                predicates.add(criteriaBuilder.equal(join2.get(expression.getLeftExpression().toString()), expression.getRightExpression().toString()));
+                            }
+                        }
+                        predicates.addAll(nextConditionHandle(criteriaBuilder,join2,query,nextConditionPiece.getNextConditionChain()));
+                        break;
+                    case ENTITY_PROPERTY:
+                        Join<T, NodeEntityProperty> join3 = root.join(propertyName);
+                        List<BinaryExpression> expressions3 = nextConditionPiece.getExpressions();
+                        if (expressions3 != null) {
+                            for (BinaryExpression expression : expressions3) {
+                                predicates.add(criteriaBuilder.equal(join3.get(expression.getLeftExpression().toString()), expression.getRightExpression().toString()));
+                            }
+                        }
+                        predicates.addAll(nextConditionHandle(criteriaBuilder,join3,query,nextConditionPiece.getNextConditionChain()));
+                        break;
+                    default:
+                }
+            }
+        }
+        return predicates;
+    }
+
+    private <X,Y> List<Predicate> nextConditionHandle(CriteriaBuilder criteriaBuilder, Join<X,Y> join, CriteriaQuery<?> query,Map<String,ConditionPiece> conditionPieceMap) {
+        List<Predicate> predicates = new ArrayList<>();
+        if (conditionPieceMap != null) {
+            for (Map.Entry<String, ConditionPiece> entry : conditionPieceMap.entrySet()) {
+                String propertyName = entry.getKey();
+                ConditionPiece nextConditionPiece = entry.getValue();
+                switch (nextConditionPiece.getTableType()) {
+                    case ENTITY:
+                        Join<Y, NodeEntity> join1 = join.join(propertyName);
+                        List<BinaryExpression> expressions1 = nextConditionPiece.getExpressions();
+                        if (expressions1 != null) {
+                            for (BinaryExpression expression : expressions1) {
+                                predicates.add(criteriaBuilder.equal(join1.get(expression.getLeftExpression().toString()), expression.getRightExpression().toString()));
+                            }
+                        }
+                        predicates.addAll(nextConditionHandle(criteriaBuilder,join1,query,nextConditionPiece.getNextConditionChain()));
+                        break;
+                    case RELATION:
+                        Join<Y, RelationEntity> join2 = join.join(propertyName);
+                        List<BinaryExpression> expressions2 = nextConditionPiece.getExpressions();
+                        if (expressions2 != null) {
+                            for (BinaryExpression expression : expressions2) {
+                                predicates.add(criteriaBuilder.equal(join2.get(expression.getLeftExpression().toString()), expression.getRightExpression().toString()));
+                            }
+                        }
+                        predicates.addAll(nextConditionHandle(criteriaBuilder,join2,query,nextConditionPiece.getNextConditionChain()));
+                        break;
+                    case ENTITY_PROPERTY:
+                        Join<Y, NodeEntityProperty> join3 = join.join(propertyName);
+                        List<BinaryExpression> expressions3 = nextConditionPiece.getExpressions();
+                        if (expressions3 != null) {
+                            for (BinaryExpression expression : expressions3) {
+                                predicates.add(criteriaBuilder.equal(join3.get(expression.getLeftExpression().toString()), expression.getRightExpression().toString()));
+                            }
+                        }
+                        predicates.addAll(nextConditionHandle(criteriaBuilder,join3,query,nextConditionPiece.getNextConditionChain()));
+                        break;
+                    default:
+                }
+            }
+        }
+        return predicates;
     }
 
     @Bean
@@ -502,7 +595,9 @@ public class RdbmDataStorageAutoConfiguration {
 
             @Override
             public <U> Collection<U> query(AbstractQueryCondition<U> condition) {
-                return convert(nodeEntityMapper.findByCategory(TypeCategory.ENTITY.name()),condition.getResultType());
+                Specification<NodeEntity> specification = convertEntity(condition);
+                List<NodeEntity> all = nodeEntityMapper.findAll(specification);
+                return convert(all,condition.getResultType());
             }
 
             @Override

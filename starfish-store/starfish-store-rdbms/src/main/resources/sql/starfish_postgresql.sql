@@ -8,7 +8,7 @@ CREATE TABLE t_sf_node_entity (
   operator int DEFAULT NULL,
   create_time timestamp DEFAULT NULL,
   update_time timestamp DEFAULT NULL,
-  PRIMARY KEY (id),
+  PRIMARY KEY (id)
 );
 
 
