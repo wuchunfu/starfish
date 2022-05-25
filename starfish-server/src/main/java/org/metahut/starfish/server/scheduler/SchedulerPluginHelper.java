@@ -3,11 +3,12 @@ package org.metahut.starfish.server.scheduler;
 import org.metahut.starfish.scheduler.api.IScheduler;
 import org.metahut.starfish.scheduler.api.ISchedulerManager;
 
-import org.springframework.stereotype.Component;
+import org.springframework.context.annotation.Bean;
+import org.springframework.context.annotation.Configuration;
 
 import javax.annotation.PreDestroy;
 
-@Component
+@Configuration
 public class SchedulerPluginHelper {
 
     private final ISchedulerManager schedulerManager;
@@ -16,6 +17,7 @@ public class SchedulerPluginHelper {
         this.schedulerManager = schedulerManager;
     }
 
+    @Bean
     public IScheduler getScheduler() {
         return schedulerManager.getScheduler();
     }

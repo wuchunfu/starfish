@@ -7,6 +7,7 @@ import org.metahut.starfish.api.dto.CollectorTaskInstanceResponseDTO;
 import org.metahut.starfish.api.dto.CollectorTaskRequestDTO;
 import org.metahut.starfish.api.dto.CollectorTaskResponseDTO;
 import org.metahut.starfish.api.dto.PageResponseDTO;
+import org.metahut.starfish.scheduler.api.IScheduler;
 import org.metahut.starfish.scheduler.api.parameters.HttpTaskParameter;
 import org.metahut.starfish.scheduler.api.parameters.ScheduleCronParameter;
 import org.metahut.starfish.scheduler.api.parameters.ScheduleParameter;
@@ -29,17 +30,17 @@ import static org.metahut.starfish.server.utils.Constants.COLLECTOR_TASK_TYPE_NA
 @Service
 public class CollectorTaskServiceImpl implements CollectorTaskService {
 
-    private final SchedulerPluginHelper schedulerPluginHelper;
+    private final IScheduler scheduler;
     private final IngestionConfiguration ingestionConfiguration;
     private final ConversionService conversionService;
 
     private final AbstractMetaDataService<Long, Object> metaDataService;
 
-    public CollectorTaskServiceImpl(SchedulerPluginHelper schedulerPluginHelper,
+    public CollectorTaskServiceImpl(IScheduler scheduler,
                                     IngestionConfiguration ingestionConfiguration,
                                     ConversionService conversionService,
                                     AbstractMetaDataService<Long, Object> metaDataService) {
-        this.schedulerPluginHelper = schedulerPluginHelper;
+        this.scheduler = scheduler;
         this.ingestionConfiguration = ingestionConfiguration;
         this.conversionService = conversionService;
         this.metaDataService = metaDataService;
@@ -72,7 +73,7 @@ public class CollectorTaskServiceImpl implements CollectorTaskService {
         taskParameter.setTaskParams(JSONUtils.toJSONString(httpTaskParameter));
 
         // create a schedule flow
-        String flowCode = schedulerPluginHelper.getScheduler().createSingleHttpTask(taskParameter);
+        String flowCode = scheduler.createSingleHttpTask(taskParameter);
 
         // configure a timing expression
         ScheduleParameter scheduleParameter = new ScheduleParameter();
@@ -81,7 +82,7 @@ public class CollectorTaskServiceImpl implements CollectorTaskService {
         scheduleCronParameter.setCron(requestDTO.getCron());
         scheduleParameter.setScheduleCronParameter(scheduleCronParameter);
 
-        String scheduleCode = schedulerPluginHelper.getScheduler().createSchedule(scheduleParameter);
+        String scheduleCode = scheduler.createSchedule(scheduleParameter);
 
         // create collector instance
         Map<String, Object> convert = conversionService.convert(requestDTO, Map.class);
@@ -110,7 +111,7 @@ public class CollectorTaskServiceImpl implements CollectorTaskService {
     public void deleteById(Long id) {
         CollectorTaskResponseDTO instance = metaDataService.instance(id, CollectorTaskResponseDTO.class);
         // delete schedule flow instance
-        schedulerPluginHelper.getScheduler().deleteFlowByCode(instance.getSchedulerFlowCode());
+        scheduler.deleteFlowByCode(instance.getSchedulerFlowCode());
 
         // delete collector instance
         metaDataService.deleteEntity(id);
