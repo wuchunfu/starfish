@@ -18,6 +18,6 @@ public class HiveCollectorAdapterParameter extends AbstractCollectorParameter {
 
     @Override
     public boolean checkParameter() {
-        return StringUtils.isBlank(hiveMetastoreUris);
+        return StringUtils.isNotBlank(hiveMetastoreUris);
     }
 }
