@@ -9,7 +9,6 @@ import org.metahut.starfish.server.collector.CollectorPluginHelper;
 import org.metahut.starfish.server.service.CollectorAdapterService;
 import org.metahut.starfish.server.utils.Assert;
 import org.metahut.starfish.service.AbstractMetaDataService;
-import org.metahut.starfish.service.AbstractQueryCondition;
 
 import org.springframework.core.convert.ConversionService;
 import org.springframework.data.domain.Page;
@@ -70,29 +69,22 @@ public class CollectorAdapterServiceImpl implements CollectorAdapterService {
 
     @Override
     public CollectorAdapterResponseDTO queryById(Long id) {
-        AbstractQueryCondition<CollectorAdapterResponseDTO> condition = new AbstractQueryCondition<>();
-        condition.setResultType(CollectorAdapterResponseDTO.class);
-        return metaDataService.instance(id, condition);
+        return metaDataService.instance(id, CollectorAdapterResponseDTO.class);
     }
 
     @Override
     public PageResponseDTO<CollectorAdapterResponseDTO> queryListPage(CollectorAdapterRequestDTO requestDTO) {
         Pageable pageable = PageRequest.of(requestDTO.getPageNo() - 1, requestDTO.getPageSize());
-        AbstractQueryCondition<CollectorAdapterResponseDTO> condition = new AbstractQueryCondition<>();
-        condition.setResultType(CollectorAdapterResponseDTO.class);
         // TODO Assembly conditions
-
-        Page<CollectorAdapterResponseDTO> page = metaDataService.instancesByName(COLLECTOR_ADAPTER_TYPE_NAME, condition, pageable);
+        Page<CollectorAdapterResponseDTO> page = metaDataService.instancesByName(COLLECTOR_ADAPTER_TYPE_NAME, pageable,CollectorAdapterResponseDTO.class);
         return PageResponseDTO.of(page.getNumber(), page.getSize(), page.getTotalElements(), page.getContent());
     }
 
     @Override
     public Collection<CollectorAdapterResponseDTO> queryList(CollectorAdapterRequestDTO requestDTO) {
-        AbstractQueryCondition<CollectorAdapterResponseDTO> condition = new AbstractQueryCondition<>();
-        condition.setResultType(CollectorAdapterResponseDTO.class);
         // TODO Assembly conditions
 
-        return metaDataService.instancesByName(COLLECTOR_ADAPTER_TYPE_NAME, condition);
+        return metaDataService.instancesByName(COLLECTOR_ADAPTER_TYPE_NAME, CollectorAdapterResponseDTO.class);
     }
 
 }

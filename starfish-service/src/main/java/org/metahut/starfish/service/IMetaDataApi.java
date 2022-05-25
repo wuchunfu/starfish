@@ -34,12 +34,12 @@ interface IMetaDataApi<K,T> {
     /**
      *
      * @param sourceId
-     * @param condition
+     * @param classInfo
      * @param <U>
      * @return
      * @throws AbstractMetaParserException
      */
-    <U> U source(K sourceId,AbstractQueryCondition<U> condition) throws AbstractMetaParserException;
+    <U> U source(K sourceId,java.lang.Class<U> classInfo) throws AbstractMetaParserException;
 
     /**
      * query all source with conditions
@@ -77,73 +77,92 @@ interface IMetaDataApi<K,T> {
     /**
      * find instance by id
      * TODO how about relation
-     * @param condition
+     * @param returnType
      * @param instanceId
      * @param <U>
      * @throws AbstractMetaParserException
      */
-    <U> U instance(K instanceId,AbstractQueryCondition<U> condition) throws AbstractMetaParserException;
+    <U> U instance(K instanceId,java.lang.Class<U> returnType) throws AbstractMetaParserException;
+
+    /**
+     * find instances by condition
+     * @param condition
+     * @param <U>
+     * @return
+     * @throws AbstractMetaParserException
+     */
+    <U> Collection<U> instances(AbstractQueryCondition<U> condition) throws AbstractMetaParserException;
+
+    /**
+     * find instances by condition
+     * @param condition
+     * @param page
+     * @param <U>
+     * @return
+     * @throws AbstractMetaParserException
+     */
+    <U> Page<U> instances(AbstractQueryCondition<U> condition,Pageable page) throws AbstractMetaParserException;
 
     /**
      * query all instances with conditions
      * @param typeId
-     * @param condition
+     * @param returnType
      * @return
      * @throws AbstractMetaParserException
      */
-    <U> Collection<U> instances(K typeId,AbstractQueryCondition<U> condition) throws AbstractMetaParserException;
+    <U> Collection<U> instances(K typeId,java.lang.Class<U> returnType) throws AbstractMetaParserException;
 
     /**
      *
      * @param typeName
-     * @param condition
+     * @param returnType
      * @param <U>
      * @return
      * @throws AbstractMetaParserException
      */
-    <U> Collection<U> instancesByName(String typeName, AbstractQueryCondition<U> condition) throws AbstractMetaParserException;
+    <U> Collection<U> instancesByName(String typeName,java.lang.Class<U> returnType) throws AbstractMetaParserException;
 
     /**
      * query all instances with conditions (page)
      * @param typeId
-     * @param condition
+     * @param returnType
      * @param page
      * @return
      * @throws AbstractMetaParserException
      */
-    <U> Page<U> instances(K typeId,AbstractQueryCondition<U> condition,Pageable page) throws AbstractMetaParserException;
+    <U> Page<U> instances(K typeId,Pageable page,java.lang.Class<U> returnType) throws AbstractMetaParserException;
 
     /**
      *
      * @param typeName
-     * @param condition
+     * @param returnType
      * @param page
      * @param <U>
      * @return
      * @throws AbstractMetaParserException
      */
-    <U> Page<U> instancesByName(String typeName, AbstractQueryCondition<U> condition, Pageable page) throws AbstractMetaParserException;
+    <U> Page<U> instancesByName(String typeName, Pageable page,java.lang.Class<U> returnType) throws AbstractMetaParserException;
 
     /**
      *
      * @param upperInstanceId
      * @param property
-     * @param condition
+     * @param returnType
      * @return
      * @throws AbstractMetaParserException
      */
-    <U> Collection<U> instances(K upperInstanceId,String property,AbstractQueryCondition<U> condition) throws AbstractMetaParserException;
+    <U> Collection<U> instances(K upperInstanceId,String property,java.lang.Class<U> returnType) throws AbstractMetaParserException;
 
     /**
      *
      * @param upperInstanceId
      * @param property
-     * @param condition
+     * @param returnType
      * @param page
      * @return
      * @throws AbstractMetaParserException
      */
-    <U> Page<U> instances(K upperInstanceId,String property,AbstractQueryCondition<U> condition,Pageable page) throws AbstractMetaParserException;
+    <U> Page<U> instances(K upperInstanceId,String property,Pageable page,java.lang.Class<U> returnType) throws AbstractMetaParserException;
 
     /**
      * create a source with properties

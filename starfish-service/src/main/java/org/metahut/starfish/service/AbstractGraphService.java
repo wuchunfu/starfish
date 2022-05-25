@@ -41,30 +41,30 @@ public abstract class AbstractGraphService<K,T> implements IGraphApi<K,T> {
     }
 
     @Override
-    public <U> U node(K instanceId, AbstractQueryCondition<U> condition) throws AbstractMetaParserException {
-        return nodeService().node(instanceId,condition);
+    public <U> U node(K instanceId,Class<U> returnType) throws AbstractMetaParserException {
+        return nodeService().node(instanceId,returnType);
     }
 
     @Override
-    public <U> Collection<U> nodes(Collection<K> instanceIds, AbstractQueryCondition<U> condition) throws AbstractMetaParserException {
-        return nodeService().nodes(instanceIds,condition);
+    public <U> Collection<U> nodes(Collection<K> instanceIds,Class<U> returnType) throws AbstractMetaParserException {
+        return nodeService().nodes(instanceIds,returnType);
     }
 
     @Override
-    public <U> Collection<U> nodes(K upperInstanceId, String property, AbstractQueryCondition<U> condition) throws AbstractMetaParserException {
+    public <U> Collection<U> nodes(K upperInstanceId, String property,Class<U> returnType) throws AbstractMetaParserException {
         Collection<K> instanceIds = relationService().findChildren(upperInstanceId, LinkCategory.RELATIONSHIP, property);
-        return nodeService().nodes(instanceIds,condition);
+        return nodeService().nodes(instanceIds,returnType);
     }
 
     @Override
-    public <U> Page<U> nodes(Collection<K> instanceIds, AbstractQueryCondition<U> condition, Pageable page) throws AbstractMetaParserException {
-        return nodeService().nodes(instanceIds,condition,page);
+    public <U> Page<U> nodes(Collection<K> instanceIds, Pageable page,Class<U> returnType) throws AbstractMetaParserException {
+        return nodeService().nodes(instanceIds,page,returnType);
     }
 
     @Override
-    public <U> Page<U> nodes(K upperInstanceId, String property, AbstractQueryCondition<U> condition, Pageable page) throws AbstractMetaParserException {
+    public <U> Page<U> nodes(K upperInstanceId, String property, Pageable page,Class<U> returnType) throws AbstractMetaParserException {
         Collection<K> instanceIds = relationService().findChildren(upperInstanceId, LinkCategory.RELATIONSHIP, property);
-        return nodeService().nodes(instanceIds,condition,page);
+        return nodeService().nodes(instanceIds,page,returnType);
     }
 
     @Override

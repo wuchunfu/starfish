@@ -438,8 +438,8 @@ public class RdbmDataStorageAutoConfiguration {
             }
 
             @Override
-            public <U> U source(Long sourceId, AbstractQueryCondition<U> condition) {
-                return convert(nodeEntityMapper.findById(sourceId),condition.getResultType());
+            public <U> U source(Long sourceId, java.lang.Class<U> returnType) {
+                return convert(nodeEntityMapper.findById(sourceId),returnType);
             }
 
             @Override
@@ -577,20 +577,20 @@ public class RdbmDataStorageAutoConfiguration {
             }
 
             @Override
-            public <U> U node(Long nodeId, AbstractQueryCondition<U> condition) throws AbstractMetaParserException {
-                return convert(nodeEntityMapper.findById(nodeId),condition.getResultType());
+            public <U> U node(Long nodeId, java.lang.Class<U> returnType) throws AbstractMetaParserException {
+                return convert(nodeEntityMapper.findById(nodeId),returnType);
             }
 
             @Override
-            public <U> Collection<U> nodes(Collection<Long> nodeIds, AbstractQueryCondition<U> condition) throws AbstractMetaParserException {
+            public <U> Collection<U> nodes(Collection<Long> nodeIds, java.lang.Class<U> returnType) throws AbstractMetaParserException {
                 List<NodeEntity> nodeEntities = nodeEntityMapper.findAllById(nodeIds);
-                return convert(nodeEntities,condition.getResultType());
+                return convert(nodeEntities,returnType);
             }
 
             @Override
-            public <U> Page<U> nodes(Collection<Long> nodeIds, AbstractQueryCondition<U> condition, Pageable page) throws AbstractMetaParserException {
+            public <U> Page<U> nodes(Collection<Long> nodeIds, Pageable page, java.lang.Class<U> returnType) throws AbstractMetaParserException {
                 Page<NodeEntity> pageResult = nodeEntityMapper.findAllById(nodeIds, page);
-                return convert(pageResult,condition.getResultType());
+                return convert(pageResult,returnType);
             }
 
             @Override
@@ -629,6 +629,20 @@ public class RdbmDataStorageAutoConfiguration {
             @Override
             public void deleteNodes(Collection<Long> ids) throws AbstractMetaParserException {
                 nodeEntityMapper.removeBatchById(ids);
+            }
+
+            @Override
+            public <U> Collection<U> query(AbstractQueryCondition<U> condition) {
+                Specification<NodeEntity> specification = convertEntity(condition);
+                List<NodeEntity> all = nodeEntityMapper.findAll(specification);
+                return convert(all,condition.getResultType());
+            }
+
+            @Override
+            public <T> Page<T> query(AbstractQueryCondition<T> condition, Pageable pageable) {
+                Specification<NodeEntity> specification = convertEntity(condition);
+                Page<NodeEntity> all = nodeEntityMapper.findAll(specification,pageable);
+                return convert(all,condition.getResultType());
             }
         };
     }

@@ -170,18 +170,18 @@ public abstract class AbstractMetaDataService<K,T> implements IMetaDataApi<K,T> 
     }
 
     @Override
-    public <U> U source(K sourceId, AbstractQueryCondition<U> condition) throws AbstractMetaParserException {
-        return sourceApi().source(sourceId,condition);
+    public <U> U source(K sourceId,java.lang.Class<U> returnType) throws AbstractMetaParserException {
+        return sourceApi().source(sourceId,returnType);
     }
 
     @Override
-    public <U> Collection<U> sources(AbstractQueryCondition<U> condition) throws AbstractMetaParserException {
-        return sourceApi().query(condition);
+    public <U> Collection<U> sources(AbstractQueryCondition<U> returnType) throws AbstractMetaParserException {
+        return sourceApi().query(returnType);
     }
 
     @Override
-    public <U> Page<U> sources(AbstractQueryCondition<U> condition, Pageable page) throws AbstractMetaParserException {
-        return sourceApi().query(condition,page);
+    public <U> Page<U> sources(AbstractQueryCondition<U> returnType, Pageable page) throws AbstractMetaParserException {
+        return sourceApi().query(returnType,page);
     }
 
     @Override
@@ -195,40 +195,50 @@ public abstract class AbstractMetaDataService<K,T> implements IMetaDataApi<K,T> 
     }
 
     @Override
-    public <U> U instance(K instanceId, AbstractQueryCondition<U> condition) throws AbstractMetaParserException {
-        return graphApi().node(instanceId,condition);
+    public <U> U instance(K instanceId,java.lang.Class<U> returnType) throws AbstractMetaParserException {
+        return graphApi().node(instanceId,returnType);
     }
 
     @Override
-    public <U> Collection<U> instances(K typeId, AbstractQueryCondition<U> condition) throws AbstractMetaParserException {
+    public <U> Collection<U> instances(AbstractQueryCondition<U> condition) throws AbstractMetaParserException {
+        return graphApi().query(condition);
+    }
+
+    @Override
+    public <U> Page<U> instances(AbstractQueryCondition<U> condition, Pageable page) throws AbstractMetaParserException {
+        return graphApi().query(condition,page);
+    }
+
+    @Override
+    public <U> Collection<U> instances(K typeId,java.lang.Class<U> returnType) throws AbstractMetaParserException {
         Collection<K> instanceIds = linkApi().findChildren(typeId, LinkCategory.TYPE_ENTITY);
-        return graphApi().nodes(instanceIds,condition);
+        return graphApi().nodes(instanceIds,returnType);
     }
 
     @Override
-    public <U> Collection<U> instancesByName(String typeName, AbstractQueryCondition<U> condition) throws AbstractMetaParserException {
-        return instances(typeApi().getIdByName(typeName),condition);
+    public <U> Collection<U> instancesByName(String typeName,java.lang.Class<U> returnType) throws AbstractMetaParserException {
+        return instances(typeApi().getIdByName(typeName),returnType);
     }
 
     @Override
-    public <U> Page<U> instances(K typeId, AbstractQueryCondition<U> condition, Pageable page) throws AbstractMetaParserException {
+    public <U> Page<U> instances(K typeId, Pageable page,java.lang.Class<U> returnType) throws AbstractMetaParserException {
         Collection<K> instanceIds = linkApi().findChildren(typeId, LinkCategory.TYPE_ENTITY);
-        return graphApi().nodes(instanceIds,condition,page);
+        return graphApi().nodes(instanceIds,page,returnType);
     }
 
     @Override
-    public <U> Page<U> instancesByName(String typeName, AbstractQueryCondition<U> condition, Pageable page) throws AbstractMetaParserException {
-        return instances(typeApi().getIdByName(typeName),condition,page);
+    public <U> Page<U> instancesByName(String typeName, Pageable page,java.lang.Class<U> returnType) throws AbstractMetaParserException {
+        return instances(typeApi().getIdByName(typeName),page,returnType);
     }
 
     @Override
-    public <U> Collection<U> instances(K upperInstanceId, String property, AbstractQueryCondition<U> condition) throws AbstractMetaParserException {
-        return graphApi().nodes(upperInstanceId,property,condition);
+    public <U> Collection<U> instances(K upperInstanceId, String property,java.lang.Class<U> returnType) throws AbstractMetaParserException {
+        return graphApi().nodes(upperInstanceId,property,returnType);
     }
 
     @Override
-    public <U> Page<U> instances(K upperInstanceId, String property, AbstractQueryCondition<U> condition, Pageable page) throws AbstractMetaParserException {
-        return graphApi().nodes(upperInstanceId,property,condition,page);
+    public <U> Page<U> instances(K upperInstanceId, String property, Pageable page,java.lang.Class<U> returnType) throws AbstractMetaParserException {
+        return graphApi().nodes(upperInstanceId,property,page,returnType);
     }
 
     @Override

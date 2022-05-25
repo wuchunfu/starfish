@@ -13,15 +13,15 @@ import java.util.Map;
  */
 interface IGraphApi<K,T> extends AbstractQueryService {
 
-    <U> U node(K instanceId,AbstractQueryCondition<U> condition) throws AbstractMetaParserException;
+    <U> U node(K instanceId,java.lang.Class<U> returnType) throws AbstractMetaParserException;
 
-    <U> Collection<U> nodes(Collection<K> instanceIds,AbstractQueryCondition<U> condition) throws AbstractMetaParserException;
+    <U> Collection<U> nodes(Collection<K> instanceIds,java.lang.Class<U> returnType) throws AbstractMetaParserException;
 
-    <U> Collection<U> nodes(K upperInstanceId,String property,AbstractQueryCondition<U> condition) throws AbstractMetaParserException;
+    <U> Collection<U> nodes(K upperInstanceId,String property,java.lang.Class<U> returnType) throws AbstractMetaParserException;
 
-    <U> Page<U> nodes(Collection<K> instanceIds,AbstractQueryCondition<U> condition, Pageable page) throws AbstractMetaParserException;
+    <U> Page<U> nodes(Collection<K> instanceIds, Pageable page,java.lang.Class<U> returnType) throws AbstractMetaParserException;
 
-    <U> Page<U> nodes(K upperInstanceId,String property,AbstractQueryCondition<U> condition, Pageable page) throws AbstractMetaParserException;
+    <U> Page<U> nodes(K upperInstanceId,String property, Pageable page,java.lang.Class<U> returnType) throws AbstractMetaParserException;
 
     K createNode(String name,Map<String,T> properties) throws AbstractMetaParserException;
 

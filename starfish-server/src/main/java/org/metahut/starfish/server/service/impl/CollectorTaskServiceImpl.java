@@ -16,7 +16,6 @@ import org.metahut.starfish.server.config.IngestionConfiguration;
 import org.metahut.starfish.server.scheduler.SchedulerPluginHelper;
 import org.metahut.starfish.server.service.CollectorTaskService;
 import org.metahut.starfish.service.AbstractMetaDataService;
-import org.metahut.starfish.service.AbstractQueryCondition;
 
 import org.springframework.core.convert.ConversionService;
 import org.springframework.stereotype.Service;
@@ -109,9 +108,7 @@ public class CollectorTaskServiceImpl implements CollectorTaskService {
 
     @Override
     public void deleteById(Long id) {
-        AbstractQueryCondition<CollectorTaskResponseDTO> condition = new AbstractQueryCondition<>();
-        condition.setResultType(CollectorTaskResponseDTO.class);
-        CollectorTaskResponseDTO instance = metaDataService.instance(id, condition);
+        CollectorTaskResponseDTO instance = metaDataService.instance(id, CollectorTaskResponseDTO.class);
         // delete schedule flow instance
         schedulerPluginHelper.getScheduler().deleteFlowByCode(instance.getSchedulerFlowCode());
 

@@ -228,7 +228,7 @@ class AbstractMetaDataServiceTest {
             condition.setFilters(Arrays.asList(
                     conditionPiece()
             ));
-            Collection<Map> query = nodeService.query(condition);
+            nodeService.query(condition);
         });
     }
 
@@ -276,9 +276,7 @@ class AbstractMetaDataServiceTest {
             Long typeId = metaDataService.createType(sourceId,classInfo(),null);
             Map<String, Object> instanceInfo = instanceInfo();
             Long entityId = metaDataService.createEntity(typeId, String.valueOf(instanceInfo.get("name")), instanceInfo);
-            AbstractQueryCondition<Instance> condition = new AbstractQueryCondition<>();
-            condition.setResultType(Instance.class);
-            Instance instance = metaDataService.instance(entityId, condition);
+            Instance instance = metaDataService.instance(entityId, Instance.class);
             assertTrue(instance.getName().equals(String.valueOf(instanceInfo.get("name"))));
         });
     }
@@ -292,9 +290,7 @@ class AbstractMetaDataServiceTest {
             Long typeId = metaDataService.createType(sourceId,classInfo(),null);
             Map<String, Object> instanceInfo = instanceInfo();
             Long entityId = metaDataService.createEntity(typeId, String.valueOf(instanceInfo.get("name")), instanceInfo);
-            AbstractQueryCondition<Instance> condition = new AbstractQueryCondition<>();
-            condition.setResultType(Instance.class);
-            Collection<Instance> instance = metaDataService.instances(typeId, condition);
+            Collection<Instance> instance = metaDataService.instances(typeId, Instance.class);
             assertTrue(instance.size() == 1);
             assertTrue(Long.compare(instance.stream().findFirst().get().getId(),entityId) == 0);
         });
@@ -309,9 +305,7 @@ class AbstractMetaDataServiceTest {
             Long typeId = metaDataService.createType(sourceId,classInfo(),null);
             Map<String, Object> instanceInfo = instanceInfo();
             Long entityId = metaDataService.createEntity(typeId, String.valueOf(instanceInfo.get("name")), instanceInfo);
-            AbstractQueryCondition<Instance> condition = new AbstractQueryCondition<>();
-            condition.setResultType(Instance.class);
-            Collection<Instance> instance = metaDataService.instancesByName(classInfo().fullClassName(), condition);
+            Collection<Instance> instance = metaDataService.instancesByName(classInfo().fullClassName(), Instance.class);
             assertTrue(instance.size() == 1);
             assertTrue(Long.compare(instance.stream().findFirst().get().getId(),entityId) == 0);
         });
@@ -371,9 +365,7 @@ class AbstractMetaDataServiceTest {
             map.put("name","123");
             Long sourceId = metaDataService.createSource("test",map);
             metaDataService.updateSource(sourceId,"testNew",null);
-            AbstractQueryCondition<Source> condition = new AbstractQueryCondition<>();
-            condition.setResultType(Source.class);
-            Source source = metaDataService.source(sourceId,condition);
+            Source source = metaDataService.source(sourceId,Source.class);
             assertTrue("testNew".equals(source.getName()));
             logger.info("{}",sourceId);
         });
@@ -405,9 +397,7 @@ class AbstractMetaDataServiceTest {
             Long entityId = metaDataService.createEntity(typeId, String.valueOf(instanceInfo.get("name")), instanceInfo);
             instanceInfo.put("name","nameNew");
             metaDataService.updateEntity(entityId, String.valueOf(instanceInfo.get("name")), instanceInfo);
-            AbstractQueryCondition<Instance> condition = new AbstractQueryCondition<>();
-            condition.setResultType(Instance.class);
-            Instance instance = metaDataService.instance(entityId, condition);
+            Instance instance = metaDataService.instance(entityId, Instance.class);
             assertTrue(instance.getName().equals("nameNew"));
         });
     }

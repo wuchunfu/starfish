@@ -41,5 +41,5 @@ interface ISourceApi<K,T> extends AbstractQueryService {
     @Deprecated
     K getIdByName(String name) throws AbstractMetaParserException;
 
-    <U> U source(K sourceId, AbstractQueryCondition<U> condition);
+    <U> U source(K sourceId,java.lang.Class<U> returnType);
 }
