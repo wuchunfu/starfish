@@ -5,7 +5,6 @@ import org.springframework.boot.autoconfigure.SpringBootApplication;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.data.jpa.repository.config.EnableJpaAuditing;
-import org.springframework.orm.hibernate5.support.OpenSessionInViewFilter;
 import org.springframework.orm.jpa.support.OpenEntityManagerInViewFilter;
 import org.springframework.scheduling.annotation.EnableAsync;
 
@@ -24,8 +23,4 @@ public class ServerApplication {
         return new OpenEntityManagerInViewFilter();
     }
 
-    @Bean
-    public OpenSessionInViewFilter openSessionInViewFilter() {
-        return new OpenSessionInViewFilter();
-    }
 }
