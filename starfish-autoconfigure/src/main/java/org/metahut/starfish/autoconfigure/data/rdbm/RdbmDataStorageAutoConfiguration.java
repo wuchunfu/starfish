@@ -1,9 +1,6 @@
 package org.metahut.starfish.autoconfigure.data.rdbm;
 
 import org.metahut.starfish.parser.domain.KeyWord;
-import org.metahut.starfish.parser.domain.enums.Category;
-import org.metahut.starfish.parser.domain.enums.LinkCategory;
-import org.metahut.starfish.parser.domain.enums.TypeCategory;
 import org.metahut.starfish.parser.domain.instance.Class;
 import org.metahut.starfish.parser.exception.AbstractMetaParserException;
 import org.metahut.starfish.parser.exception.StarFishMetaDataOperatingException;
@@ -12,19 +9,22 @@ import org.metahut.starfish.service.AbstractGraphService;
 import org.metahut.starfish.service.AbstractLinkService;
 import org.metahut.starfish.service.AbstractMetaDataService;
 import org.metahut.starfish.service.AbstractNodeService;
-import org.metahut.starfish.service.AbstractQueryCondition;
 import org.metahut.starfish.service.AbstractRelationService;
 import org.metahut.starfish.service.AbstractSourceService;
 import org.metahut.starfish.service.AbstractTypeService;
-import org.metahut.starfish.service.expression.BinaryExpression;
-import org.metahut.starfish.service.expression.ConditionPiece;
-import org.metahut.starfish.service.expression.EachPointer;
 import org.metahut.starfish.store.rdbms.dao.NodeEntityMapper;
 import org.metahut.starfish.store.rdbms.dao.RelationEntityMapper;
 import org.metahut.starfish.store.rdbms.entity.NodeEntity;
 import org.metahut.starfish.store.rdbms.entity.NodeEntityProperty;
 import org.metahut.starfish.store.rdbms.entity.NodeEntity_;
 import org.metahut.starfish.store.rdbms.entity.RelationEntity;
+import org.metahut.starfish.unit.AbstractQueryCondition;
+import org.metahut.starfish.unit.enums.Category;
+import org.metahut.starfish.unit.enums.LinkCategory;
+import org.metahut.starfish.unit.enums.TypeCategory;
+import org.metahut.starfish.unit.expression.BinaryExpression;
+import org.metahut.starfish.unit.expression.ConditionPiece;
+import org.metahut.starfish.unit.expression.EachPointer;
 
 import com.fasterxml.jackson.databind.DeserializationFeature;
 import com.fasterxml.jackson.databind.ObjectMapper;

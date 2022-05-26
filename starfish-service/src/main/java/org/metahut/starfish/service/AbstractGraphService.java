@@ -1,10 +1,11 @@
 package org.metahut.starfish.service;
 
-import org.metahut.starfish.parser.domain.enums.LinkCategory;
 import org.metahut.starfish.parser.domain.instance.Graph;
 import org.metahut.starfish.parser.domain.instance.Node;
 import org.metahut.starfish.parser.domain.instance.Relation;
 import org.metahut.starfish.parser.exception.AbstractMetaParserException;
+import org.metahut.starfish.unit.AbstractQueryCondition;
+import org.metahut.starfish.unit.enums.LinkCategory;
 
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;

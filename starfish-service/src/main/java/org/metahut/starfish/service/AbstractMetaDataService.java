@@ -1,7 +1,6 @@
 package org.metahut.starfish.service;
 
 import org.metahut.starfish.parser.antlr4.json.JsonExtensionVisitor;
-import org.metahut.starfish.parser.domain.enums.LinkCategory;
 import org.metahut.starfish.parser.domain.enums.RelType;
 import org.metahut.starfish.parser.domain.instance.Attribute;
 import org.metahut.starfish.parser.domain.instance.BatchInstanceBody;
@@ -14,6 +13,8 @@ import org.metahut.starfish.parser.exception.TypeExistsException;
 import org.metahut.starfish.parser.exception.TypeNameRepeatException;
 import org.metahut.starfish.parser.exception.TypeNotPresentException;
 import org.metahut.starfish.parser.exception.TypeValidException;
+import org.metahut.starfish.unit.AbstractQueryCondition;
+import org.metahut.starfish.unit.enums.LinkCategory;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
 import org.apache.commons.lang3.StringUtils;

@@ -1,22 +1,22 @@
 package org.metahut.starfish.server.service;
 
-import org.metahut.starfish.parser.domain.enums.LinkCategory;
 import org.metahut.starfish.parser.domain.enums.RelType;
-import org.metahut.starfish.parser.domain.enums.TypeCategory;
 import org.metahut.starfish.parser.domain.instance.Attribute;
 import org.metahut.starfish.parser.domain.instance.Class;
 import org.metahut.starfish.parser.exception.TypeExistsException;
 import org.metahut.starfish.scheduler.dolphinscheduler.JSONUtils;
 import org.metahut.starfish.service.AbstractMetaDataService;
 import org.metahut.starfish.service.AbstractNodeService;
-import org.metahut.starfish.service.AbstractQueryCondition;
-import org.metahut.starfish.service.expression.ConditionPiece;
-import org.metahut.starfish.service.expression.EachPointer;
-import org.metahut.starfish.service.expression.RelationType;
-import org.metahut.starfish.service.expression.SampleExpression;
-import org.metahut.starfish.service.expression.StringExpression;
-import org.metahut.starfish.service.expression.TableType;
 import org.metahut.starfish.store.rdbms.dao.NodeEntityMapper;
+import org.metahut.starfish.unit.AbstractQueryCondition;
+import org.metahut.starfish.unit.enums.LinkCategory;
+import org.metahut.starfish.unit.enums.RelationType;
+import org.metahut.starfish.unit.enums.TableType;
+import org.metahut.starfish.unit.enums.TypeCategory;
+import org.metahut.starfish.unit.expression.ConditionPiece;
+import org.metahut.starfish.unit.expression.EachPointer;
+import org.metahut.starfish.unit.expression.EqualExpression;
+import org.metahut.starfish.unit.expression.StringExpression;
 
 import org.junit.jupiter.api.Test;
 import org.slf4j.Logger;
@@ -131,40 +131,40 @@ class AbstractMetaDataServiceTest {
     @Resource
     private AbstractNodeService<Long,Object> nodeService;
 
-    private SampleExpression entityCategory() {
-        SampleExpression sampleExpression = new SampleExpression();
-        sampleExpression.setLeftExpression(new StringExpression("category"));
-        sampleExpression.setRightExpression(new StringExpression(TypeCategory.ENTITY.name()));
-        return sampleExpression;
+    private EqualExpression entityCategory() {
+        EqualExpression equalExpression = new EqualExpression();
+        equalExpression.setLeftExpression(new StringExpression("category"));
+        equalExpression.setRightExpression(new StringExpression(TypeCategory.ENTITY.name()));
+        return equalExpression;
     }
 
-    private SampleExpression linkRelationshipCategory() {
-        SampleExpression sampleExpression = new SampleExpression();
-        sampleExpression.setLeftExpression(new StringExpression("category"));
-        sampleExpression.setRightExpression(new StringExpression(LinkCategory.RELATIONSHIP.name()));
-        return sampleExpression;
+    private EqualExpression linkRelationshipCategory() {
+        EqualExpression equalExpression = new EqualExpression();
+        equalExpression.setLeftExpression(new StringExpression("category"));
+        equalExpression.setRightExpression(new StringExpression(LinkCategory.RELATIONSHIP.name()));
+        return equalExpression;
     }
 
-    private SampleExpression classificationCategory() {
-        SampleExpression sampleExpression = new SampleExpression();
-        sampleExpression.setLeftExpression(new StringExpression("category"));
-        sampleExpression.setRightExpression(new StringExpression(TypeCategory.CLASSIFICATION.name()));
-        return sampleExpression;
+    private EqualExpression classificationCategory() {
+        EqualExpression equalExpression = new EqualExpression();
+        equalExpression.setLeftExpression(new StringExpression("category"));
+        equalExpression.setRightExpression(new StringExpression(TypeCategory.CLASSIFICATION.name()));
+        return equalExpression;
     }
 
-    private SampleExpression typeEntityCategory() {
-        SampleExpression sampleExpression = new SampleExpression();
-        sampleExpression.setLeftExpression(new StringExpression("category"));
-        sampleExpression.setRightExpression(new StringExpression(LinkCategory.TYPE_ENTITY.name()));
-        return sampleExpression;
+    private EqualExpression typeEntityCategory() {
+        EqualExpression equalExpression = new EqualExpression();
+        equalExpression.setLeftExpression(new StringExpression("category"));
+        equalExpression.setRightExpression(new StringExpression(LinkCategory.TYPE_ENTITY.name()));
+        return equalExpression;
     }
 
     private ConditionPiece properties() {
         ConditionPiece conditionNext = new ConditionPiece();
         conditionNext.setTableType(TableType.ENTITY_PROPERTY);
-        SampleExpression sampleExpression1 = new SampleExpression();
-        sampleExpression1.setLeftExpression(new StringExpression("name"));
-        sampleExpression1.setRightExpression(new StringExpression("{\"name\":\"1111\"}"));
+        EqualExpression equalExpression1 = new EqualExpression();
+        equalExpression1.setLeftExpression(new StringExpression("name"));
+        equalExpression1.setRightExpression(new StringExpression("{\"name\":\"1111\"}"));
         //conditionNext.setExpressions(Arrays.asList(sampleExpression1));
         return conditionNext;
     }
@@ -172,10 +172,10 @@ class AbstractMetaDataServiceTest {
     private ConditionPiece typeCondition() {
         ConditionPiece conditionNext = new ConditionPiece();
         conditionNext.setTableType(TableType.ENTITY);
-        SampleExpression sampleExpression1 = new SampleExpression();
-        sampleExpression1.setLeftExpression(new StringExpression("qualifiedName"));
-        sampleExpression1.setRightExpression(new StringExpression("myTest"));
-        conditionNext.setExpressions(Arrays.asList(sampleExpression1,classificationCategory()));
+        EqualExpression equalExpression1 = new EqualExpression();
+        equalExpression1.setLeftExpression(new StringExpression("qualifiedName"));
+        equalExpression1.setRightExpression(new StringExpression("myTest"));
+        conditionNext.setExpressions(Arrays.asList(equalExpression1,classificationCategory()));
         return conditionNext;
     }
 
@@ -192,10 +192,10 @@ class AbstractMetaDataServiceTest {
     private ConditionPiece conditionPiece() {
         ConditionPiece conditionPiece = new ConditionPiece();
         conditionPiece.setTableType(TableType.ENTITY);
-        SampleExpression sampleExpression = new SampleExpression();
-        sampleExpression.setLeftExpression(new StringExpression("qualifiedName"));
-        sampleExpression.setRightExpression(new StringExpression("1111"));
-        conditionPiece.setExpressions(Arrays.asList(sampleExpression,entityCategory()));
+        EqualExpression equalExpression = new EqualExpression();
+        equalExpression.setLeftExpression(new StringExpression("qualifiedName"));
+        equalExpression.setRightExpression(new StringExpression("1111"));
+        conditionPiece.setExpressions(Arrays.asList(equalExpression,entityCategory()));
         Map<String,ConditionPiece> map = new HashMap<>();
         map.put("properties",properties());
         map.put("parent",parentTypeRelation());
@@ -206,16 +206,16 @@ class AbstractMetaDataServiceTest {
     private ConditionPiece conditionPiece1() {
         ConditionPiece conditionPiece = new ConditionPiece();
         conditionPiece.setTableType(TableType.ENTITY);
-        SampleExpression sampleExpression = new SampleExpression();
-        sampleExpression.setLeftExpression(new StringExpression("qualifiedName"));
-        sampleExpression.setRightExpression(new StringExpression("1111"));
-        conditionPiece.setExpressions(Arrays.asList(sampleExpression));
+        EqualExpression equalExpression = new EqualExpression();
+        equalExpression.setLeftExpression(new StringExpression("qualifiedName"));
+        equalExpression.setRightExpression(new StringExpression("1111"));
+        conditionPiece.setExpressions(Arrays.asList(equalExpression));
         Map<String,ConditionPiece> map = new HashMap<>();
         ConditionPiece conditionNext = new ConditionPiece();
         conditionNext.setTableType(TableType.RELATION);
-        SampleExpression sampleExpression1 = new SampleExpression();
-        sampleExpression1.setLeftExpression(new StringExpression("name"));
-        sampleExpression1.setRightExpression(new StringExpression("1111"));
+        EqualExpression equalExpression1 = new EqualExpression();
+        equalExpression1.setLeftExpression(new StringExpression("name"));
+        equalExpression1.setRightExpression(new StringExpression("1111"));
         //conditionNext.setExpressions(Arrays.asList(sampleExpression1));
         map.put("properties",conditionNext);
         conditionPiece.setNextConditionChain(map);

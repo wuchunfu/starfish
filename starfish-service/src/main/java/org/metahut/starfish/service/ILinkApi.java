@@ -1,7 +1,7 @@
 package org.metahut.starfish.service;
 
-import org.metahut.starfish.parser.domain.enums.LinkCategory;
 import org.metahut.starfish.parser.exception.AbstractMetaParserException;
+import org.metahut.starfish.unit.enums.LinkCategory;
 
 import java.util.Collection;
 import java.util.Map;

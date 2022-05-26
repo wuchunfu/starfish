@@ -28,6 +28,10 @@
     <artifactId>starfish-parser</artifactId>
 
     <dependencies>
+        <dependency>
+            <groupId>org.metahut.starfish</groupId>
+            <artifactId>starfish-unit</artifactId>
+        </dependency>
 
         <dependency>
             <groupId>org.codehaus.janino</groupId>

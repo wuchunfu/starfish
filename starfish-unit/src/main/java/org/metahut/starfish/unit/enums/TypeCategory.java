@@ -1,4 +1,4 @@
-package org.metahut.starfish.parser.domain.enums;
+package org.metahut.starfish.unit.enums;
 
 /**
  * 主要是关系

@@ -1,4 +1,4 @@
-package org.metahut.starfish.service.expression;
+package org.metahut.starfish.unit.expression;
 
 public class LikeExpression extends BinaryExpression {
     private boolean not = false;

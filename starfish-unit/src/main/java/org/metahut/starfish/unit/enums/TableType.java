@@ -1,4 +1,4 @@
-package org.metahut.starfish.service.expression;
+package org.metahut.starfish.unit.enums;
 
 public enum TableType {
     /**

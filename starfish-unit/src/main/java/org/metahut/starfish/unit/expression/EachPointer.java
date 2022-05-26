@@ -1,6 +1,7 @@
-package org.metahut.starfish.service.expression;
+package org.metahut.starfish.unit.expression;
 
-import org.metahut.starfish.parser.domain.enums.Category;
+import org.metahut.starfish.unit.enums.Category;
+import org.metahut.starfish.unit.enums.RelationType;
 
 import java.util.Map;
 

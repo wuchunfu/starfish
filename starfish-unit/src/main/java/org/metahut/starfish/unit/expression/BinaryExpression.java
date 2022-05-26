@@ -1,6 +1,6 @@
-package org.metahut.starfish.service.expression;
+package org.metahut.starfish.unit.expression;
 
-public abstract class BinaryExpression {
+public abstract class BinaryExpression implements Expression {
     private Expression leftExpression;
     private Expression rightExpression;
     public abstract String getStringExpression();

@@ -1,5 +1,7 @@
 package org.metahut.starfish.parser.domain.enums;
 
+import org.metahut.starfish.unit.enums.LinkCategory;
+
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.Test;
 

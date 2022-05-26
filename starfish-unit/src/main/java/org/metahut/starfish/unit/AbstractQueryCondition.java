@@ -1,7 +1,7 @@
-package org.metahut.starfish.service;
+package org.metahut.starfish.unit;
 
-import org.metahut.starfish.service.expression.ConditionPiece;
-import org.metahut.starfish.service.expression.EachPointer;
+import org.metahut.starfish.unit.expression.ConditionPiece;
+import org.metahut.starfish.unit.expression.EachPointer;
 
 import java.util.List;
 import java.util.Map;
@@ -16,7 +16,7 @@ public class AbstractQueryCondition<U> {
     /**
      * key :propertyName
      */
-    private Map<String,EachPointer> eachPointers;
+    private Map<String, EachPointer> eachPointers;
 
     private List<ConditionPiece> filters;
 

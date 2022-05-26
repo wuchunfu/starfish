@@ -1,5 +1,7 @@
 package org.metahut.starfish.service;
 
+import org.metahut.starfish.unit.AbstractQueryCondition;
+
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.data.domain.Page;

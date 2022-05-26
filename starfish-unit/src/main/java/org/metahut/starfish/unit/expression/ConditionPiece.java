@@ -1,4 +1,6 @@
-package org.metahut.starfish.service.expression;
+package org.metahut.starfish.unit.expression;
+
+import org.metahut.starfish.unit.enums.TableType;
 
 import java.util.List;
 import java.util.Map;
@@ -36,4 +38,5 @@ public class ConditionPiece {
     public void setNextConditionChain(Map<String, ConditionPiece> nextConditionChain) {
         this.nextConditionChain = nextConditionChain;
     }
+
 }

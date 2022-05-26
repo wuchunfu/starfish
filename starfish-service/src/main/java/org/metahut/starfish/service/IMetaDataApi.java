@@ -4,6 +4,7 @@ import org.metahut.starfish.parser.domain.instance.BatchInstanceBody;
 import org.metahut.starfish.parser.domain.instance.BatchTypeBody;
 import org.metahut.starfish.parser.domain.instance.Class;
 import org.metahut.starfish.parser.exception.AbstractMetaParserException;
+import org.metahut.starfish.unit.AbstractQueryCondition;
 
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
