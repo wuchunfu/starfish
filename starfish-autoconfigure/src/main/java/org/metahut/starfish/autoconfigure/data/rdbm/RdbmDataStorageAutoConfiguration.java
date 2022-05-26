@@ -1,6 +1,7 @@
 package org.metahut.starfish.autoconfigure.data.rdbm;
 
 import org.metahut.starfish.parser.domain.KeyWord;
+import org.metahut.starfish.parser.domain.enums.Category;
 import org.metahut.starfish.parser.domain.enums.LinkCategory;
 import org.metahut.starfish.parser.domain.enums.TypeCategory;
 import org.metahut.starfish.parser.domain.instance.Class;
@@ -17,6 +18,7 @@ import org.metahut.starfish.service.AbstractSourceService;
 import org.metahut.starfish.service.AbstractTypeService;
 import org.metahut.starfish.service.expression.BinaryExpression;
 import org.metahut.starfish.service.expression.ConditionPiece;
+import org.metahut.starfish.service.expression.EachPointer;
 import org.metahut.starfish.store.rdbms.dao.NodeEntityMapper;
 import org.metahut.starfish.store.rdbms.dao.RelationEntityMapper;
 import org.metahut.starfish.store.rdbms.entity.NodeEntity;
@@ -26,6 +28,7 @@ import org.metahut.starfish.store.rdbms.entity.RelationEntity;
 
 import com.fasterxml.jackson.databind.DeserializationFeature;
 import com.fasterxml.jackson.databind.ObjectMapper;
+import org.apache.commons.lang3.StringUtils;
 import org.springframework.boot.autoconfigure.AutoConfigureAfter;
 import org.springframework.boot.autoconfigure.condition.ConditionalOnClass;
 import org.springframework.boot.autoconfigure.condition.ConditionalOnMissingBean;
@@ -63,9 +66,77 @@ import java.util.stream.Collectors;
 @AutoConfigureAfter({DataSourceAutoConfiguration.class})
 public class RdbmDataStorageAutoConfiguration {
 
-    private <T> T convert(NodeEntity nodeEntity,java.lang.Class<T> classInfo) {
+    private <T> T convert(NodeEntity nodeEntity,java.lang.Class<T> classInfo,Map<String,EachPointer> eachPointers) {
         ObjectMapper objectMapper = new ObjectMapper();
         objectMapper.configure(DeserializationFeature.FAIL_ON_UNKNOWN_PROPERTIES,false);
+        Map<String,Object> result = forEach(nodeEntity,eachPointers);
+        return objectMapper.convertValue(result,classInfo);
+    }
+
+    private Map<String,Object> forEach(NodeEntity nodeEntity,Map<String,EachPointer> eachPointers) {
+        Map<String,Object> resultMap = toMap(nodeEntity);
+        if (eachPointers != null) {
+            for (Map.Entry<String, EachPointer> entry : eachPointers.entrySet()) {
+                forEach(resultMap,nodeEntity,entry);
+            }
+        }
+        return resultMap;
+    }
+
+    //TODO how to know children or child  without query typeInfo or other support
+    private void forEach(Map<String,Object> map,NodeEntity nodeEntity,Map.Entry<String, EachPointer> eachPointerEntry) {
+        List<Map<String,Object>> container = new ArrayList<>();
+        EachPointer eachPointer = eachPointerEntry.getValue();
+        if (eachPointer != null) {
+            if (eachPointer.getRelationType() != null) {
+                List<RelationEntity> relations;
+                switch (eachPointer.getRelationType()) {
+                    case PARENT:
+                        relations = nodeEntity.getParent();
+                        if (relations != null) {
+                            for (RelationEntity relation : relations) {
+                                NodeEntity startNodeEntity = relation.getStartNodeEntity();
+                                if (startNodeEntity != null && valid(relation,eachPointerEntry.getKey(),eachPointer.getCategory())) {
+                                    Map<String, Object> next = forEach(startNodeEntity,eachPointer.getEachPointers());
+                                    container.add(next);
+                                }
+                            }
+                        }
+                        break;
+                    case CHILD:
+                        relations = nodeEntity.getChildren();
+                        if (relations != null) {
+                            for (RelationEntity relation : relations) {
+                                NodeEntity endNodeEntity = relation.getEndNodeEntity();
+                                if (endNodeEntity != null && valid(relation,eachPointerEntry.getKey(),eachPointer.getCategory())) {
+                                    Map<String, Object> next = forEach(endNodeEntity,eachPointer.getEachPointers());
+                                    container.add(next);
+                                }
+                            }
+                        }
+                        break;
+                    default:
+                        //do nothing
+                }
+
+            }
+        }
+        if (!container.isEmpty()) {
+            map.put(eachPointerEntry.getKey(),container);
+        }
+    }
+
+    private boolean valid(RelationEntity relation,String name, Category category) {
+        if (category != null && !relation.getCategory().equals(category.name())) {
+            return false;
+        }
+        if (StringUtils.isNotEmpty(name) && !relation.getName().equals(name)) {
+            return false;
+        }
+        return true;
+    }
+
+    private Map<String,Object> toMap(NodeEntity nodeEntity) {
         Map<String,Object> map = new HashMap<>();
         if (nodeEntity.getProperties() != null) {
             nodeEntity.getProperties().stream().forEach(
@@ -74,19 +145,19 @@ public class RdbmDataStorageAutoConfiguration {
         }
         map.put("name",nodeEntity.getQualifiedName());
         map.put("id",nodeEntity.getId());
-        return objectMapper.convertValue(map,classInfo);
+        return map;
     }
 
-    private <T> Collection<T> convert(Collection<NodeEntity> nodeEntities,java.lang.Class<T> classInfo) {
+    private <T> Collection<T> convert(Collection<NodeEntity> nodeEntities,java.lang.Class<T> classInfo,Map<String,EachPointer> eachPointers) {
         return nodeEntities
                 .stream()
-                .map(nodeEntity -> convert(nodeEntity,classInfo))
+                .map(nodeEntity -> convert(nodeEntity,classInfo,eachPointers))
                 .collect(Collectors.toCollection(ArrayList::new));
     }
 
-    private <T> Page<T> convert(Page<NodeEntity> pageResult,java.lang.Class<T> classInfo) {
+    private <T> Page<T> convert(Page<NodeEntity> pageResult,java.lang.Class<T> classInfo,Map<String,EachPointer> eachPointers) {
         return new PageImpl<>(pageResult.get()
-                .map(nodeEntity -> convert(nodeEntity,classInfo))
+                .map(nodeEntity -> convert(nodeEntity,classInfo,eachPointers))
                 .collect(Collectors.toCollection(ArrayList::new)),pageResult.getPageable(),pageResult.getTotalElements());
     }
 
@@ -129,13 +200,13 @@ public class RdbmDataStorageAutoConfiguration {
         return convert(null,category,head,tail,property);
     }
 
-    private <U> Specification<NodeEntity> convertEntity(AbstractQueryCondition<U> condition) {
+    private <U> Specification<NodeEntity> convertEntity(List<ConditionPiece> conditionPieces) {
         return (root, query, criteriaBuilder) -> {
             query.distinct(true);
             List<Predicate> predicates = new ArrayList<>();
             predicates.add(criteriaBuilder.equal(root.get(NodeEntity_.CATEGORY),TypeCategory.ENTITY.name()));
-            if (condition.getFilters() != null) {
-                for (ConditionPiece filter : condition.getFilters()) {
+            if (conditionPieces != null) {
+                for (ConditionPiece filter : conditionPieces) {
                     List<Predicate> piecePredicates = new ArrayList<>();
                     CriteriaBuilder builder = criteriaBuilder;
                     if (filter.getExpressions() != null) {
@@ -439,17 +510,17 @@ public class RdbmDataStorageAutoConfiguration {
 
             @Override
             public <U> U source(Long sourceId, java.lang.Class<U> returnType) {
-                return convert(nodeEntityMapper.findById(sourceId),returnType);
+                return convert(nodeEntityMapper.findById(sourceId),returnType,null);
             }
 
             @Override
             public <T> Collection<T> query(AbstractQueryCondition<T> condition) {
-                return convert(nodeEntityMapper.findByCategory(TypeCategory.SOURCE.name()),condition.getResultType());
+                return convert(nodeEntityMapper.findByCategory(TypeCategory.SOURCE.name()),condition.getResultType(),condition.getEachPointers());
             }
 
             @Override
             public <T> Page<T> query(AbstractQueryCondition<T> condition, Pageable pageable) {
-                return convert(nodeEntityMapper.findByCategory(TypeCategory.SOURCE.name(),pageable),condition.getResultType());
+                return convert(nodeEntityMapper.findByCategory(TypeCategory.SOURCE.name(),pageable),condition.getResultType(),condition.getEachPointers());
             }
         };
     }
@@ -472,12 +543,12 @@ public class RdbmDataStorageAutoConfiguration {
 
             @Override
             public <T> Collection<T> query(AbstractQueryCondition<T> condition) {
-                return convert(nodeEntityMapper.findByCategory(TypeCategory.CLASSIFICATION.name()), condition.getResultType());
+                return convert(nodeEntityMapper.findByCategory(TypeCategory.CLASSIFICATION.name()), condition.getResultType(),condition.getEachPointers());
             }
 
             @Override
             public <T> Page<T> query(AbstractQueryCondition<T> condition, Pageable pageable) {
-                return convert(nodeEntityMapper.findByCategory(TypeCategory.CLASSIFICATION.name(),pageable), condition.getResultType());
+                return convert(nodeEntityMapper.findByCategory(TypeCategory.CLASSIFICATION.name(),pageable), condition.getResultType(),condition.getEachPointers());
             }
 
             @Override
@@ -578,31 +649,31 @@ public class RdbmDataStorageAutoConfiguration {
 
             @Override
             public <U> U node(Long nodeId, java.lang.Class<U> returnType) throws AbstractMetaParserException {
-                return convert(nodeEntityMapper.findById(nodeId),returnType);
+                return convert(nodeEntityMapper.findById(nodeId),returnType,null);
             }
 
             @Override
             public <U> Collection<U> nodes(Collection<Long> nodeIds, java.lang.Class<U> returnType) throws AbstractMetaParserException {
                 List<NodeEntity> nodeEntities = nodeEntityMapper.findAllById(nodeIds);
-                return convert(nodeEntities,returnType);
+                return convert(nodeEntities,returnType,null);
             }
 
             @Override
             public <U> Page<U> nodes(Collection<Long> nodeIds, Pageable page, java.lang.Class<U> returnType) throws AbstractMetaParserException {
                 Page<NodeEntity> pageResult = nodeEntityMapper.findAllById(nodeIds, page);
-                return convert(pageResult,returnType);
+                return convert(pageResult,returnType,null);
             }
 
             @Override
             public <U> Collection<U> query(AbstractQueryCondition<U> condition) {
-                Specification<NodeEntity> specification = convertEntity(condition);
+                Specification<NodeEntity> specification = convertEntity(condition.getFilters());
                 List<NodeEntity> all = nodeEntityMapper.findAll(specification);
-                return convert(all,condition.getResultType());
+                return convert(all,condition.getResultType(),condition.getEachPointers());
             }
 
             @Override
             public <T> Page<T> query(AbstractQueryCondition<T> condition, Pageable pageable) {
-                return convert(nodeEntityMapper.findByCategory(TypeCategory.ENTITY.name(),pageable),condition.getResultType());
+                return convert(nodeEntityMapper.findByCategory(TypeCategory.ENTITY.name(),pageable),condition.getResultType(),condition.getEachPointers());
             }
         };
     }
@@ -633,16 +704,16 @@ public class RdbmDataStorageAutoConfiguration {
 
             @Override
             public <U> Collection<U> query(AbstractQueryCondition<U> condition) {
-                Specification<NodeEntity> specification = convertEntity(condition);
+                Specification<NodeEntity> specification = convertEntity(condition.getFilters());
                 List<NodeEntity> all = nodeEntityMapper.findAll(specification);
-                return convert(all,condition.getResultType());
+                return convert(all,condition.getResultType(),condition.getEachPointers());
             }
 
             @Override
             public <T> Page<T> query(AbstractQueryCondition<T> condition, Pageable pageable) {
-                Specification<NodeEntity> specification = convertEntity(condition);
+                Specification<NodeEntity> specification = convertEntity(condition.getFilters());
                 Page<NodeEntity> all = nodeEntityMapper.findAll(specification,pageable);
-                return convert(all,condition.getResultType());
+                return convert(all,condition.getResultType(),condition.getEachPointers());
             }
         };
     }

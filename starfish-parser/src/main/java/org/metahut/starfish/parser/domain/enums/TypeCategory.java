@@ -18,7 +18,7 @@ package org.metahut.starfish.parser.domain.enums;
  *  Entity      :     name: ?          category: HiveTable
  *  RELATIONSHIP:     name: ?          category: ?
  */
-public enum TypeCategory {
+public enum TypeCategory implements Category {
     /**
      * the beginner of typeCategory
      */

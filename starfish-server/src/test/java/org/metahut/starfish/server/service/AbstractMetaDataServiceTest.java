@@ -11,6 +11,8 @@ import org.metahut.starfish.service.AbstractMetaDataService;
 import org.metahut.starfish.service.AbstractNodeService;
 import org.metahut.starfish.service.AbstractQueryCondition;
 import org.metahut.starfish.service.expression.ConditionPiece;
+import org.metahut.starfish.service.expression.EachPointer;
+import org.metahut.starfish.service.expression.RelationType;
 import org.metahut.starfish.service.expression.SampleExpression;
 import org.metahut.starfish.service.expression.StringExpression;
 import org.metahut.starfish.service.expression.TableType;
@@ -169,7 +171,7 @@ class AbstractMetaDataServiceTest {
 
     private ConditionPiece typeCondition() {
         ConditionPiece conditionNext = new ConditionPiece();
-        conditionNext.setTableType(TableType.ENTITY_PROPERTY);
+        conditionNext.setTableType(TableType.ENTITY);
         SampleExpression sampleExpression1 = new SampleExpression();
         sampleExpression1.setLeftExpression(new StringExpression("qualifiedName"));
         sampleExpression1.setRightExpression(new StringExpression("myTest"));
@@ -220,6 +222,27 @@ class AbstractMetaDataServiceTest {
         return conditionPiece;
     }
 
+    private EachPointer sourceEachPointer() {
+        EachPointer eachPointer = new EachPointer();
+        eachPointer.setCategory(LinkCategory.SOURCE_ENTITY);
+        eachPointer.setRelationType(RelationType.PARENT);
+        return eachPointer;
+    }
+
+    private EachPointer typeEachPointer() {
+        EachPointer eachPointer = new EachPointer();
+        eachPointer.setCategory(LinkCategory.TYPE_ENTITY);
+        eachPointer.setRelationType(RelationType.PARENT);
+        return eachPointer;
+    }
+
+    private Map<String, EachPointer> eachPointerMap() {
+        Map<String, EachPointer> map = new HashMap<>();
+        map.put(LinkCategory.SOURCE_ENTITY.name(),sourceEachPointer());
+        map.put(LinkCategory.TYPE_ENTITY.name(),typeEachPointer());
+        return map;
+    }
+
     @Test
     public void test() {
         assertDoesNotThrow(() -> {
@@ -228,7 +251,9 @@ class AbstractMetaDataServiceTest {
             condition.setFilters(Arrays.asList(
                     conditionPiece()
             ));
-            nodeService.query(condition);
+            condition.setEachPointers(eachPointerMap());
+            Collection<Map> query = nodeService.query(condition);
+            logger.info("{}",query);
         });
     }
 

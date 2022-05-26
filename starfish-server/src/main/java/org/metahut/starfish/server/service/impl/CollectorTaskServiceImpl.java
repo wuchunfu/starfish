@@ -14,7 +14,6 @@ import org.metahut.starfish.scheduler.api.parameters.ScheduleParameter;
 import org.metahut.starfish.scheduler.api.parameters.TaskParameter;
 import org.metahut.starfish.scheduler.dolphinscheduler.JSONUtils;
 import org.metahut.starfish.server.config.IngestionConfiguration;
-import org.metahut.starfish.server.scheduler.SchedulerPluginHelper;
 import org.metahut.starfish.server.service.CollectorTaskService;
 import org.metahut.starfish.service.AbstractMetaDataService;
 

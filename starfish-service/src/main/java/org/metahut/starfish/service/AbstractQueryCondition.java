@@ -1,8 +1,10 @@
 package org.metahut.starfish.service;
 
 import org.metahut.starfish.service.expression.ConditionPiece;
+import org.metahut.starfish.service.expression.EachPointer;
 
 import java.util.List;
+import java.util.Map;
 
 /**
  *
@@ -10,6 +12,11 @@ import java.util.List;
 public class AbstractQueryCondition<U> {
 
     private Class<U> resultType;
+
+    /**
+     * key :propertyName
+     */
+    private Map<String,EachPointer> eachPointers;
 
     private List<ConditionPiece> filters;
 
@@ -27,5 +34,13 @@ public class AbstractQueryCondition<U> {
 
     public void setFilters(List<ConditionPiece> filters) {
         this.filters = filters;
+    }
+
+    public Map<String, EachPointer> getEachPointers() {
+        return eachPointers;
+    }
+
+    public void setEachPointers(Map<String, EachPointer> eachPointers) {
+        this.eachPointers = eachPointers;
     }
 }
