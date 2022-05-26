@@ -10,8 +10,6 @@ import org.metahut.starfish.unit.expression.ConditionPiece;
 import org.metahut.starfish.unit.expression.EachPointer;
 import org.metahut.starfish.unit.expression.Expression;
 
-import io.swagger.annotations.ApiModel;
-import io.swagger.annotations.ApiModelProperty;
 import org.apache.commons.lang3.StringUtils;
 
 import java.util.ArrayList;
@@ -21,46 +19,56 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
-@ApiModel(description = "collector task request dto")
-public class CollectorTaskRequestDTO {
-
-    @ApiModelProperty(value = "collector adapter name")
-    private String adapterName;
-
-    @ApiModelProperty(value = "collector adapter type")
-    private String type;
-
-    @ApiModelProperty(value = "collector task name")
-    private String name;
-
-    @ApiModelProperty(value = "update begin time")
+/**
+ *
+ */
+public class HiveTableQueryDTO extends PageRequestDTO {
+    private String hiveClusterName;
+    private String hiveDbName;
+    private String hiveTableName;
+    private Date createBeginTime;
+    private Date createEndTime;
     private Date updateBeginTime;
-
-    @ApiModelProperty(value = "update end time")
     private Date updateEndTime;
 
-    public String getAdapterName() {
-        return adapterName;
+    public String getHiveClusterName() {
+        return hiveClusterName;
     }
 
-    public void setAdapterName(String adapterName) {
-        this.adapterName = adapterName;
+    public void setHiveClusterName(String hiveClusterName) {
+        this.hiveClusterName = hiveClusterName;
     }
 
-    public String getType() {
-        return type;
+    public String getHiveDbName() {
+        return hiveDbName;
     }
 
-    public void setType(String type) {
-        this.type = type;
+    public void setHiveDbName(String hiveDbName) {
+        this.hiveDbName = hiveDbName;
     }
 
-    public String getName() {
-        return name;
+    public String getHiveTableName() {
+        return hiveTableName;
     }
 
-    public void setName(String name) {
-        this.name = name;
+    public void setHiveTableName(String hiveTableName) {
+        this.hiveTableName = hiveTableName;
+    }
+
+    public Date getCreateBeginTime() {
+        return createBeginTime;
+    }
+
+    public void setCreateBeginTime(Date createBeginTime) {
+        this.createBeginTime = createBeginTime;
+    }
+
+    public Date getCreateEndTime() {
+        return createEndTime;
+    }
+
+    public void setCreateEndTime(Date createEndTime) {
+        this.createEndTime = createEndTime;
     }
 
     public Date getUpdateBeginTime() {
@@ -79,9 +87,9 @@ public class CollectorTaskRequestDTO {
         this.updateEndTime = updateEndTime;
     }
 
-    public AbstractQueryCondition<Map> toQueryCondition() {
-        AbstractQueryCondition<Map> condition = new AbstractQueryCondition<>();
-        condition.setResultType(Map.class);
+    public AbstractQueryCondition<HiveTableResponseDTO> toQueryCondition() {
+        AbstractQueryCondition<HiveTableResponseDTO> condition = new AbstractQueryCondition<>();
+        condition.setResultType(HiveTableResponseDTO.class);
         condition.setFilters(Arrays.asList(collectorTaskPiece()));
         condition.setEachPointers(eachPointerMap());
         return condition;
@@ -91,8 +99,14 @@ public class CollectorTaskRequestDTO {
         Map<String, EachPointer> map = new HashMap<>();
         EachPointer eachPointer = new EachPointer();
         eachPointer.setCategory(TypeCategory.ENTITY);
-        eachPointer.setRelationType(RelationType.CHILD);
-        map.put("adapter",eachPointer);
+        eachPointer.setRelationType(RelationType.PARENT);
+        map.put("tables",eachPointer);
+        EachPointer dbPointer = new EachPointer();
+        dbPointer.setCategory(TypeCategory.ENTITY);
+        dbPointer.setRelationType(RelationType.PARENT);
+        Map<String, EachPointer> map1 = new HashMap<>();
+        map1.put("dbs",dbPointer);
+        eachPointer.setEachPointers(map1);
         return map;
     }
 
@@ -107,10 +121,10 @@ public class CollectorTaskRequestDTO {
         List<BinaryExpression> expressions = new ArrayList<>();
         Map<String,ConditionPiece> map = new HashMap<>();
         map.putAll(rel1());
-        if (StringUtils.isNotEmpty(this.name)) {
+        if (StringUtils.isNotEmpty(this.hiveTableName)) {
             map.putAll(rel0());
         }
-        if (StringUtils.isNotEmpty(adapterName) && StringUtils.isNotEmpty(type)) {
+        if (StringUtils.isNotEmpty(hiveDbName) && StringUtils.isNotEmpty(hiveClusterName)) {
             map.putAll(rel3());
         }
         conditionPiece.setExpressions(expressions);
@@ -127,7 +141,7 @@ public class CollectorTaskRequestDTO {
     private ConditionPiece propertyNamePiece() {
         ConditionPiece conditionPiece = new ConditionPiece();
         conditionPiece.setTableType(TableType.ENTITY_PROPERTY);
-        conditionPiece.setExpressions(Expression.keyValueEqual("name",this.name));
+        conditionPiece.setExpressions(Expression.keyValueLike("name",this.hiveTableName));
         return conditionPiece;
     }
 
@@ -154,20 +168,20 @@ public class CollectorTaskRequestDTO {
     private ConditionPiece collectorTaskTypePiece() {
         ConditionPiece conditionPiece = new ConditionPiece();
         conditionPiece.setTableType(TableType.ENTITY);
-        conditionPiece.setExpressions(Expression.entity("org.starfish.CollectorTask"));
+        conditionPiece.setExpressions(Expression.entity("org.starfish.HiveTable"));
         return conditionPiece;
     }
 
     private Map<String,ConditionPiece> rel3() {
         Map<String,ConditionPiece> result = new HashMap<>();
-        result.put("children",entityRel());
+        result.put("parent",entityRel());
         return result;
     }
 
     private ConditionPiece entityRel() {
         ConditionPiece conditionPiece = new ConditionPiece();
         conditionPiece.setTableType(TableType.RELATION);
-        conditionPiece.setExpressions(Expression.rel(LinkCategory.RELATIONSHIP,"adapter"));
+        conditionPiece.setExpressions(Expression.rel(LinkCategory.RELATIONSHIP,"tables"));
         conditionPiece.setNextConditionChain(rel4());
         return conditionPiece;
     }
@@ -181,48 +195,55 @@ public class CollectorTaskRequestDTO {
     private ConditionPiece collectorAdapterPiece() {
         ConditionPiece conditionPiece = new ConditionPiece();
         conditionPiece.setTableType(TableType.ENTITY);
-        if (StringUtils.isNotEmpty(this.adapterName)) {
-            conditionPiece.setExpressions(Expression.entity(adapterName));
-        }
-        if (StringUtils.isNotEmpty(this.type)) {
-            conditionPiece.setNextConditionChain(rel5());
-        }
+        conditionPiece.setNextConditionChain(rel5());
         return conditionPiece;
     }
 
-    private Map<String,ConditionPiece> rel5() {
+    private Map<String, ConditionPiece> rel5() {
         Map<String,ConditionPiece> result = new HashMap<>();
         result.put("properties",propertyPiece());
-        result.put("parent",adapterRelPiece());
+        result.put("parent", hiveDbRelPiece());
         return result;
     }
 
     private ConditionPiece propertyPiece() {
         ConditionPiece conditionPiece = new ConditionPiece();
         conditionPiece.setTableType(TableType.ENTITY_PROPERTY);
-        conditionPiece.setExpressions(Expression.keyValueEqual("type",this.type));
+        conditionPiece.setExpressions(Expression.keyValueLike("name",this.hiveDbName));
         return conditionPiece;
     }
 
-    private ConditionPiece adapterRelPiece() {
+    private ConditionPiece hiveDbRelPiece() {
         ConditionPiece conditionPiece = new ConditionPiece();
         conditionPiece.setTableType(TableType.RELATION);
-        conditionPiece.setExpressions(Expression.rel(LinkCategory.TYPE_ENTITY,LinkCategory.TYPE_ENTITY.name()));
+        conditionPiece.setExpressions(Expression.rel(LinkCategory.RELATIONSHIP,"cluster"));
         conditionPiece.setNextConditionChain(rel6());
         return conditionPiece;
     }
 
     private Map<String,ConditionPiece> rel6() {
         Map<String,ConditionPiece> result = new HashMap<>();
-        result.put("startNodeEntity",adapterPiece());
+        result.put("endNodeEntity",adapterPiece());
         return result;
     }
 
     private ConditionPiece adapterPiece() {
         ConditionPiece conditionPiece = new ConditionPiece();
         conditionPiece.setTableType(TableType.ENTITY);
-        conditionPiece.setExpressions(Expression.entity("org.starfish.CollectorAdapter"));
-        conditionPiece.setNextConditionChain(rel6());
+        conditionPiece.setNextConditionChain(rel7());
+        return conditionPiece;
+    }
+
+    private Map<String,ConditionPiece> rel7() {
+        Map<String,ConditionPiece> result = new HashMap<>();
+        result.put("properties",clusterPropertyPiece());
+        return result;
+    }
+
+    private ConditionPiece clusterPropertyPiece() {
+        ConditionPiece conditionPiece = new ConditionPiece();
+        conditionPiece.setTableType(TableType.ENTITY_PROPERTY);
+        conditionPiece.setExpressions(Expression.keyValueLike("name",this.hiveClusterName));
         return conditionPiece;
     }
 }

@@ -22,6 +22,7 @@ import org.metahut.starfish.unit.AbstractQueryCondition;
 import org.metahut.starfish.unit.enums.Category;
 import org.metahut.starfish.unit.enums.LinkCategory;
 import org.metahut.starfish.unit.enums.TypeCategory;
+import org.metahut.starfish.unit.expression.BetweenAndExpression;
 import org.metahut.starfish.unit.expression.BinaryExpression;
 import org.metahut.starfish.unit.expression.ConditionPiece;
 import org.metahut.starfish.unit.expression.EachPointer;
@@ -256,6 +257,11 @@ public class RdbmDataStorageAutoConfiguration {
                                     } else {
                                         piecePredicates.add(builder.isTrue(root.get(expression.getLeftExpression().toString())));
                                     }
+                                } else if (binaryExpression instanceof BetweenAndExpression) {
+                                    BetweenAndExpression expression = (BetweenAndExpression)binaryExpression;
+                                    piecePredicates.add(builder.between(root.get(expression.getLeftExpression().toString()),
+                                            expression.getRightExpression().getLeftExpression().toString(),
+                                            expression.getRightExpression().getRightExpression().toString()));
                                 }
                             }
                         }

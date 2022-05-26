@@ -35,9 +35,22 @@ public interface Expression {
         return result;
     }
 
-    static List<BinaryExpression> keyValue(String key,String value) {
+    static List<BinaryExpression> keyValueEqual(String key,String value) {
         List<BinaryExpression> result = new ArrayList<>();
         EqualExpression keyExpression = new EqualExpression();
+        keyExpression.setLeftExpression(new StringExpression(NAME));
+        keyExpression.setRightExpression(new StringExpression(key));
+        EqualExpression valueExpression = new EqualExpression();
+        valueExpression.setLeftExpression(new StringExpression(VALUE));
+        valueExpression.setRightExpression(new StringExpression(value));
+        result.add(valueExpression);
+        result.add(keyExpression);
+        return result;
+    }
+
+    static List<BinaryExpression> keyValueLike(String key,String value) {
+        List<BinaryExpression> result = new ArrayList<>();
+        LikeExpression keyExpression = new LikeExpression();
         keyExpression.setLeftExpression(new StringExpression(NAME));
         keyExpression.setRightExpression(new StringExpression(key));
         EqualExpression valueExpression = new EqualExpression();
