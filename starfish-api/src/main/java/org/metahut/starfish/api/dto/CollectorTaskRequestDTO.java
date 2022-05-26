@@ -113,7 +113,7 @@ public class CollectorTaskRequestDTO {
             map.putAll(rel3());
         }
         conditionPiece.setExpressions(expressions);
-        conditionPiece.setNextConditionChain(rel1());
+        conditionPiece.setNextConditionChain(map);
         return conditionPiece;
     }
 
@@ -127,7 +127,6 @@ public class CollectorTaskRequestDTO {
         ConditionPiece conditionPiece = new ConditionPiece();
         conditionPiece.setTableType(TableType.ENTITY_PROPERTY);
         conditionPiece.setExpressions(Expression.keyValue("name",this.name));
-        conditionPiece.setNextConditionChain(rel2());
         return conditionPiece;
     }
 
@@ -155,7 +154,6 @@ public class CollectorTaskRequestDTO {
         ConditionPiece conditionPiece = new ConditionPiece();
         conditionPiece.setTableType(TableType.ENTITY);
         conditionPiece.setExpressions(Expression.entity("org.starfish.CollectorTask"));
-        conditionPiece.setNextConditionChain(rel2());
         return conditionPiece;
     }
 
@@ -202,7 +200,6 @@ public class CollectorTaskRequestDTO {
         ConditionPiece conditionPiece = new ConditionPiece();
         conditionPiece.setTableType(TableType.ENTITY_PROPERTY);
         conditionPiece.setExpressions(Expression.keyValue("type",this.type));
-        conditionPiece.setNextConditionChain(rel2());
         return conditionPiece;
     }
 

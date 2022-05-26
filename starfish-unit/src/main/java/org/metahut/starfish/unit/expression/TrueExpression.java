@@ -1,6 +1,10 @@
 package org.metahut.starfish.unit.expression;
 
-public class LikeExpression extends BinaryExpression<StringExpression,StringExpression> {
+
+/**
+ *
+ */
+public class TrueExpression extends BinaryExpression<StringExpression,StringExpression> {
     private boolean not = false;
     private Expression escapeExpression = null;
     private boolean caseInsensitive = false;
@@ -15,7 +19,6 @@ public class LikeExpression extends BinaryExpression<StringExpression,StringExpr
 
     @Override
     public String getStringExpression() {
-        return caseInsensitive ? "ILIKE" : "LIKE";
+        return not ? "is false" : "is true";
     }
-
 }

@@ -25,6 +25,12 @@ import org.metahut.starfish.unit.enums.TypeCategory;
 import org.metahut.starfish.unit.expression.BinaryExpression;
 import org.metahut.starfish.unit.expression.ConditionPiece;
 import org.metahut.starfish.unit.expression.EachPointer;
+import org.metahut.starfish.unit.expression.EmptyExpression;
+import org.metahut.starfish.unit.expression.EqualExpression;
+import org.metahut.starfish.unit.expression.InExpression;
+import org.metahut.starfish.unit.expression.LikeExpression;
+import org.metahut.starfish.unit.expression.NullExpression;
+import org.metahut.starfish.unit.expression.TrueExpression;
 
 import com.fasterxml.jackson.databind.DeserializationFeature;
 import com.fasterxml.jackson.databind.ObjectMapper;
@@ -210,8 +216,48 @@ public class RdbmDataStorageAutoConfiguration {
                     List<Predicate> piecePredicates = new ArrayList<>();
                     CriteriaBuilder builder = criteriaBuilder;
                     if (filter.getExpressions() != null) {
-                        for (BinaryExpression expression : filter.getExpressions()) {
-                            piecePredicates.add(builder.equal(root.get(expression.getLeftExpression().toString()),expression.getRightExpression().toString()));
+                        for (BinaryExpression binaryExpression : filter.getExpressions()) {
+                            if (binaryExpression != null) {
+                                if (binaryExpression instanceof EqualExpression) {
+                                    EqualExpression expression = (EqualExpression)binaryExpression;
+                                    piecePredicates.add(builder.equal(root.get(expression.getLeftExpression().toString()), expression.getRightExpression().toString()));
+                                } else if (binaryExpression instanceof InExpression) {
+                                    InExpression expression = (InExpression)binaryExpression;
+                                    Predicate predicate = root.get(expression.getLeftExpression().toString()).in(expression.getRightExpression().getValues().toArray());
+                                    if (expression.isNot()) {
+                                        predicate = builder.not(predicate);
+                                    }
+                                    piecePredicates.add(predicate);
+                                } else if (binaryExpression instanceof LikeExpression) {
+                                    LikeExpression expression = (LikeExpression)binaryExpression;
+                                    if (expression.isNot()) {
+                                        piecePredicates.add(builder.notLike(root.get(expression.getLeftExpression().toString()), "%" + expression.getRightExpression().toString() + "%"));
+                                    } else {
+                                        piecePredicates.add(builder.like(root.get(expression.getLeftExpression().toString()), "%" + expression.getRightExpression().toString() + "%"));
+                                    }
+                                } else if (binaryExpression instanceof NullExpression) {
+                                    NullExpression expression = (NullExpression)binaryExpression;
+                                    if (expression.isNot()) {
+                                        piecePredicates.add(builder.isNotNull(root.get(expression.getLeftExpression().toString())));
+                                    } else {
+                                        piecePredicates.add(builder.isNull(root.get(expression.getLeftExpression().toString())));
+                                    }
+                                } else if (binaryExpression instanceof EmptyExpression) {
+                                    EmptyExpression expression = (EmptyExpression)binaryExpression;
+                                    if (expression.isNot()) {
+                                        piecePredicates.add(builder.isNotEmpty(root.get(expression.getLeftExpression().toString())));
+                                    } else {
+                                        piecePredicates.add(builder.isEmpty(root.get(expression.getLeftExpression().toString())));
+                                    }
+                                } else if (binaryExpression instanceof TrueExpression) {
+                                    TrueExpression expression = (TrueExpression)binaryExpression;
+                                    if (expression.isNot()) {
+                                        piecePredicates.add(builder.isFalse(root.get(expression.getLeftExpression().toString())));
+                                    } else {
+                                        piecePredicates.add(builder.isTrue(root.get(expression.getLeftExpression().toString())));
+                                    }
+                                }
+                            }
                         }
                     }
                     if (filter.getNextConditionChain() != null) {
