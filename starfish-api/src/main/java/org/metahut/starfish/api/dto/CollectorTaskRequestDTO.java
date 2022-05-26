@@ -81,7 +81,7 @@ public class CollectorTaskRequestDTO {
 
     public AbstractQueryCondition<Map> toQueryCondition() {
         AbstractQueryCondition<Map> condition = new AbstractQueryCondition<>();
-        condition.setFilters(Arrays.asList(collectorAdapterPiece()));
+        condition.setFilters(Arrays.asList(collectorTaskPiece()));
         condition.setEachPointers(eachPointerMap());
         return condition;
     }
@@ -104,16 +104,30 @@ public class CollectorTaskRequestDTO {
         ConditionPiece conditionPiece = new ConditionPiece();
         conditionPiece.setTableType(TableType.ENTITY);
         List<BinaryExpression> expressions = new ArrayList<>();
-        if (StringUtils.isNotEmpty(this.name)) {
-            expressions.addAll(Expression.entity(this.name));
-        }
         Map<String,ConditionPiece> map = new HashMap<>();
         map.putAll(rel1());
+        if (StringUtils.isNotEmpty(this.name)) {
+            map.putAll(rel0());
+        }
         if (StringUtils.isNotEmpty(adapterName) && StringUtils.isNotEmpty(type)) {
             map.putAll(rel3());
         }
         conditionPiece.setExpressions(expressions);
         conditionPiece.setNextConditionChain(rel1());
+        return conditionPiece;
+    }
+
+    private Map<String,ConditionPiece> rel0() {
+        Map<String,ConditionPiece> result = new HashMap<>();
+        result.put("properties",propertyNamePiece());
+        return result;
+    }
+
+    private ConditionPiece propertyNamePiece() {
+        ConditionPiece conditionPiece = new ConditionPiece();
+        conditionPiece.setTableType(TableType.ENTITY_PROPERTY);
+        conditionPiece.setExpressions(Expression.keyValue("name",this.name));
+        conditionPiece.setNextConditionChain(rel2());
         return conditionPiece;
     }
 
