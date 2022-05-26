@@ -8,9 +8,10 @@ import java.util.Objects;
 
 public class HiveCollectorManager implements ICollectorManager {
 
+    public static final String TYPE = "Hive";
     @Override
     public String getType() {
-        return "Hive";
+        return TYPE;
     }
 
     @Override

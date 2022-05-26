@@ -17,6 +17,13 @@
           "defaultValue":null
         },
         {
+          "name":"type",
+          "className":"java.lang.String",
+          "relType":"PRIMITIVE",
+          "array":false,
+          "defaultValue":null
+        },
+        {
           "name":"description",
           "className":"java.lang.String",
           "relType":"PRIMITIVE",

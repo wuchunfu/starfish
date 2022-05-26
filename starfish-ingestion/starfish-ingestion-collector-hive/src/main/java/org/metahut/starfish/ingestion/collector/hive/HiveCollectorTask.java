@@ -2,6 +2,7 @@ package org.metahut.starfish.ingestion.collector.hive;
 
 import org.metahut.starfish.ingestion.collector.api.CollectorResult;
 import org.metahut.starfish.ingestion.collector.api.ICollectorTask;
+import org.metahut.starfish.ingestion.collector.hive.models.HiveCluster;
 import org.metahut.starfish.ingestion.common.MetaClient;
 import org.metahut.starfish.message.api.IMessageProducer;
 
@@ -11,16 +12,21 @@ import java.util.List;
 import java.util.Objects;
 import java.util.Properties;
 
+import static org.metahut.starfish.ingestion.collector.hive.HiveCollectorManager.TYPE;
+
 public class HiveCollectorTask implements ICollectorTask {
 
     private final HiveCollectorAdapter adapter;
     private final IMessageProducer producer;
     private final IMetaStoreClient metaStoreClient;
 
+    private final HiveCollectorTaskParameter parameter;
+
     public HiveCollectorTask(HiveCollectorAdapter adapter, HiveCollectorTaskParameter parameter) {
         this.adapter = adapter;
-        metaStoreClient = this.adapter.getMetaClient();
-        producer = MetaClient.getInstance().getMessageProducer();
+        this.metaStoreClient = this.adapter.getMetaClient();
+        this.producer = MetaClient.getInstance().getMessageProducer();
+        this.parameter = parameter;
     }
 
     @Override
@@ -61,6 +67,11 @@ public class HiveCollectorTask implements ICollectorTask {
     }
 
     private void generateHiveClusterEntity() {
+        HiveCluster hiveCluster = new HiveCluster();
+        hiveCluster.setName(this.parameter.getClusterName());
+        hiveCluster.setType(TYPE);
+
+
 
     }
 
