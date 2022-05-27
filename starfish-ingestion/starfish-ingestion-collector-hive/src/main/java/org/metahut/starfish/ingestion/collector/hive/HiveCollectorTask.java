@@ -82,7 +82,8 @@ public class HiveCollectorTask implements ICollectorTask {
 
         String qualifiedName = generateName(TYPE_NAME_CLUSTER, this.parameter.getClusterName());
         EntityHeader entityHeader = EntityHeader.of(TYPE_NAME_CLUSTER, qualifiedName);
-        return EntityRow.of(RowKind.UPSERT, entityHeader, hiveCluster);
+        //TODO
+        return EntityRow.of(RowKind.UPSERT, entityHeader, null);
     }
 
     private void generateHiveDBEntities() {
@@ -106,7 +107,8 @@ public class HiveCollectorTask implements ICollectorTask {
 
         String qualifiedName = generateName(TYPE_NAME_CLUSTER, this.parameter.getClusterName());
         EntityHeader entityHeader = EntityHeader.of(TYPE_NAME_DB, qualifiedName);
-        EntityRow<HiveDB> of = EntityRow.of(RowKind.UPSERT, entityHeader, hiveDB);
+        //TODO
+        EntityRow<HiveDB> of = EntityRow.of(RowKind.UPSERT, entityHeader, null);
 
         RelationRow.of(RowKind.UPSERT, entityHeader,null, RELATION_PROPERTY_DB_CLUSTER);
     }

@@ -8,6 +8,9 @@ import org.metahut.starfish.parser.domain.instance.BatchTypeBody;
 import org.metahut.starfish.parser.domain.instance.Class;
 import org.metahut.starfish.parser.domain.instance.InstanceAnalysisStruct;
 import org.metahut.starfish.parser.exception.AbstractMetaParserException;
+import org.metahut.starfish.parser.exception.InstanceExistsException;
+import org.metahut.starfish.parser.exception.InstanceNotPresentException;
+import org.metahut.starfish.parser.exception.InstanceRepeatException;
 import org.metahut.starfish.parser.exception.SourceNameNotPresentException;
 import org.metahut.starfish.parser.exception.TypeExistsException;
 import org.metahut.starfish.parser.exception.TypeNameRepeatException;
@@ -15,6 +18,9 @@ import org.metahut.starfish.parser.exception.TypeNotPresentException;
 import org.metahut.starfish.parser.exception.TypeValidException;
 import org.metahut.starfish.unit.AbstractQueryCondition;
 import org.metahut.starfish.unit.enums.LinkCategory;
+import org.metahut.starfish.unit.expression.ConditionPiece;
+import org.metahut.starfish.unit.row.EntityRow;
+import org.metahut.starfish.unit.row.RowData;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
 import org.apache.commons.lang3.StringUtils;
@@ -30,6 +36,7 @@ import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
 import java.util.Optional;
+import java.util.Set;
 import java.util.stream.Collectors;
 
 /**
@@ -159,6 +166,63 @@ public abstract class AbstractMetaDataService<K,T> implements IMetaDataApi<K,T> 
         return sourceId;
     }
 
+    @Override
+    public void batchCreateOrUpdate(RowData<T> rowData) throws AbstractMetaParserException {
+        for (EntityRow entity : rowData.getEntities()) {
+            AbstractQueryCondition<Map> condition = new AbstractQueryCondition<>();
+            condition.setResultType(Map.class);
+            condition.setFilters(Arrays.asList(ConditionPiece.entityWithType(entity.getHeader().getTypeName())));
+            Set<K> instanceIds = graphApi().query(condition).stream().map(map -> (K)map.get("id")).collect(Collectors.toSet());
+            Map<String,T> properties = entity.getProperties();
+            switch (entity.getRowKind()) {
+                case UPDATE:
+                    if (instanceIds == null) {
+                        throw new InstanceNotPresentException("Type:" + entity.getHeader().getTypeName() + ",Name:" + entity.getHeader().getQualifiedName());
+                    }
+                    if (instanceIds.size() > 1) {
+                        throw new InstanceRepeatException("Type:" + entity.getHeader().getTypeName()
+                                + ",Name:" + entity.getHeader().getQualifiedName()
+                                + "ids:" + instanceIds.toString());
+                    }
+                    updateEntity(instanceIds.stream().findFirst().get(),entity.getHeader().getQualifiedName(),properties);
+                    break;
+                case CREATE:
+                    if (instanceIds != null && instanceIds.size() != 0) {
+                        throw new InstanceExistsException("Type:" + entity.getHeader().getTypeName() + ",Name:" + entity.getHeader().getQualifiedName());
+                    }
+                    K typeId = typeApi().getIdByName(entity.getHeader().getTypeName());
+                    createEntity(typeId,entity.getHeader().getQualifiedName(),properties);
+                    break;
+                case DELETE:
+                    if (instanceIds == null) {
+                        throw new InstanceNotPresentException("Type:" + entity.getHeader().getTypeName() + ",Name:" + entity.getHeader().getQualifiedName());
+                    }
+                    if (instanceIds.size() > 1) {
+                        throw new InstanceRepeatException("Type:" + entity.getHeader().getTypeName()
+                                + ",Name:" + entity.getHeader().getQualifiedName()
+                                + "ids:" + instanceIds.toString());
+                    }
+                    deleteEntity(instanceIds);
+                    break;
+                case UPSERT:
+                    if (instanceIds.size() > 1) {
+                        throw new InstanceRepeatException("Type:" + entity.getHeader().getTypeName()
+                                + ",Name:" + entity.getHeader().getQualifiedName()
+                                + "ids:" + instanceIds.toString());
+                    }
+                    if (instanceIds == null || instanceIds.size() == 0) {
+                        K typeid = typeApi().getIdByName(entity.getHeader().getTypeName());
+                        createEntity(typeid,entity.getHeader().getQualifiedName(),properties);
+                    } else {
+                        updateEntity(instanceIds.stream().findFirst().get(),entity.getHeader().getQualifiedName(),properties);
+                    }
+                    break;
+                default:
+            }
+        }
+        //TODO
+    }
+
     private void store(String typeName,String json,Map<K,Class> types) {
         InstanceAnalysisStruct<K,T> analysis = JsonExtensionVisitor.analysis(json, typeName, types);
         for (InstanceAnalysisStruct.Instance<K,T> instance : analysis.getInstances().values()) {
@@ -217,7 +281,7 @@ public abstract class AbstractMetaDataService<K,T> implements IMetaDataApi<K,T> 
     }
 
     @Override
-    public <U> Collection<U> instancesByName(String typeName,java.lang.Class<U> returnType) throws AbstractMetaParserException {
+    public <U> Collection<U> instancesByTypeName(String typeName,java.lang.Class<U> returnType) throws AbstractMetaParserException {
         return instances(typeApi().getIdByName(typeName),returnType);
     }
 
@@ -228,7 +292,7 @@ public abstract class AbstractMetaDataService<K,T> implements IMetaDataApi<K,T> 
     }
 
     @Override
-    public <U> Page<U> instancesByName(String typeName, Pageable page,java.lang.Class<U> returnType) throws AbstractMetaParserException {
+    public <U> Page<U> instancesByTypeName(String typeName, Pageable page,java.lang.Class<U> returnType) throws AbstractMetaParserException {
         return instances(typeApi().getIdByName(typeName),page,returnType);
     }
 

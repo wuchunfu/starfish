@@ -2,23 +2,25 @@ package org.metahut.starfish.unit.row;
 
 import org.metahut.starfish.unit.enums.RowKind;
 
+import java.util.Map;
+
 public class EntityRow<T> {
 
     private RowKind rowKind;
 
     private EntityHeader header;
-    private T properties;
+    private Map<String,T> properties;
 
     public EntityRow() {
     }
 
-    public EntityRow(RowKind rowKind, EntityHeader header, T properties) {
+    public EntityRow(RowKind rowKind, EntityHeader header, Map<String,T> properties) {
         this.rowKind = rowKind;
         this.header = header;
         this.properties = properties;
     }
 
-    public static <T> EntityRow<T> of(RowKind rowKind, EntityHeader header, T properties) {
+    public static <T> EntityRow<T> of(RowKind rowKind, EntityHeader header, Map<String,T> properties) {
         return new EntityRow<>(rowKind, header, properties);
     }
 
@@ -38,11 +40,11 @@ public class EntityRow<T> {
         this.header = header;
     }
 
-    public T getProperties() {
+    public Map<String,T> getProperties() {
         return properties;
     }
 
-    public void setProperties(T properties) {
+    public void setProperties(Map<String,T> properties) {
         this.properties = properties;
     }
 }

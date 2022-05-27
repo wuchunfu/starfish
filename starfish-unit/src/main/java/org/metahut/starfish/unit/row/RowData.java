@@ -1,18 +1,19 @@
 package org.metahut.starfish.unit.row;
 
 import java.util.Collection;
+import java.util.Map;
 
-public class RowData {
+public class RowData<T> {
 
-    private Collection<EntityRow> entities;
+    private Collection<EntityRow<Map<String,T>>> entities;
 
     private Collection<RelationRow> relations;
 
-    public Collection<EntityRow> getEntities() {
+    public Collection<EntityRow<Map<String,T>>> getEntities() {
         return entities;
     }
 
-    public void setEntities(Collection<EntityRow> entities) {
+    public void setEntities(Collection<EntityRow<Map<String,T>>> entities) {
         this.entities = entities;
     }
 

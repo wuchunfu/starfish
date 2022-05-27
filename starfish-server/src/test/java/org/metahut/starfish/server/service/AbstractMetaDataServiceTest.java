@@ -330,7 +330,7 @@ class AbstractMetaDataServiceTest {
             Long typeId = metaDataService.createType(sourceId,classInfo(),null);
             Map<String, Object> instanceInfo = instanceInfo();
             Long entityId = metaDataService.createEntity(typeId, String.valueOf(instanceInfo.get("name")), instanceInfo);
-            Collection<Instance> instance = metaDataService.instancesByName(classInfo().fullClassName(), Instance.class);
+            Collection<Instance> instance = metaDataService.instancesByTypeName(classInfo().fullClassName(), Instance.class);
             assertTrue(instance.size() == 1);
             assertTrue(Long.compare(instance.stream().findFirst().get().getId(),entityId) == 0);
         });

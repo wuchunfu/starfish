@@ -32,12 +32,12 @@ public class EntityControllerImpl implements EntityController {
 
     @Override
     public ResultEntity<Collection<HiveClusterQueryDTO>> hiveClusters() {
-        return ResultEntity.success(abstractMetaDataService.instancesByName("org.starfish.HiveTable",HiveClusterQueryDTO.class));
+        return ResultEntity.success(abstractMetaDataService.instancesByTypeName("org.starfish.HiveTable",HiveClusterQueryDTO.class));
     }
 
     @Override
     public ResultEntity<Collection<HiveDBQueryDTO>> hiveDbs() {
-        return ResultEntity.success(abstractMetaDataService.instancesByName("org.starfish.HiveDB",HiveDBQueryDTO.class));
+        return ResultEntity.success(abstractMetaDataService.instancesByTypeName("org.starfish.HiveDB",HiveDBQueryDTO.class));
     }
 
     @Override

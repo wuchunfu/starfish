@@ -75,13 +75,16 @@ public class CollectorAdapterServiceImpl implements CollectorAdapterService {
     @Override
     public PageResponseDTO<CollectorAdapterResponseDTO> queryListPage(CollectorAdapterRequestDTO requestDTO) {
         Pageable pageable = PageRequest.of(requestDTO.getPageNo() - 1, requestDTO.getPageSize());
-        Page<CollectorAdapterResponseDTO> page = metaDataService.instances(requestDTO.toQueryCondition(), pageable);
+        // TODO Assembly conditions
+        Page<CollectorAdapterResponseDTO> page = metaDataService.instancesByTypeName(COLLECTOR_ADAPTER_TYPE_NAME, pageable,CollectorAdapterResponseDTO.class);
         return PageResponseDTO.of(page.getNumber(), page.getSize(), page.getTotalElements(), page.getContent());
     }
 
     @Override
     public Collection<CollectorAdapterResponseDTO> queryList(CollectorAdapterRequestDTO requestDTO) {
-        return metaDataService.instances(requestDTO.toQueryCondition());
+        // TODO Assembly conditions
+
+        return metaDataService.instancesByTypeName(COLLECTOR_ADAPTER_TYPE_NAME, CollectorAdapterResponseDTO.class);
     }
 
 }

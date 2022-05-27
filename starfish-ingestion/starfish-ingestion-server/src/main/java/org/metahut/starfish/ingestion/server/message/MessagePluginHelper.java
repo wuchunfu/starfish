@@ -22,8 +22,8 @@ import org.metahut.starfish.message.api.IMessageConsumer;
 import org.metahut.starfish.message.api.IMessageManager;
 import org.metahut.starfish.message.api.MessageException;
 import org.metahut.starfish.message.api.MessageType;
-
 import org.metahut.starfish.service.AbstractMetaDataService;
+
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.scheduling.annotation.Async;

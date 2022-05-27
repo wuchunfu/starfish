@@ -5,6 +5,7 @@ import org.metahut.starfish.parser.domain.instance.BatchTypeBody;
 import org.metahut.starfish.parser.domain.instance.Class;
 import org.metahut.starfish.parser.exception.AbstractMetaParserException;
 import org.metahut.starfish.unit.AbstractQueryCondition;
+import org.metahut.starfish.unit.row.RowData;
 
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
@@ -31,6 +32,14 @@ interface IMetaDataApi<K,T> {
      * @throws AbstractMetaParserException
      */
     K batchInstances(BatchInstanceBody batchInstanceBody) throws AbstractMetaParserException;
+
+    /**
+     * batch create or update by qualifyName and typeName
+     * @param rowData
+     * @return
+     * @throws AbstractMetaParserException
+     */
+    void batchCreateOrUpdate(RowData<T> rowData) throws AbstractMetaParserException;
 
     /**
      *
@@ -121,7 +130,7 @@ interface IMetaDataApi<K,T> {
      * @return
      * @throws AbstractMetaParserException
      */
-    <U> Collection<U> instancesByName(String typeName,java.lang.Class<U> returnType) throws AbstractMetaParserException;
+    <U> Collection<U> instancesByTypeName(String typeName,java.lang.Class<U> returnType) throws AbstractMetaParserException;
 
     /**
      * query all instances with conditions (page)
@@ -142,7 +151,7 @@ interface IMetaDataApi<K,T> {
      * @return
      * @throws AbstractMetaParserException
      */
-    <U> Page<U> instancesByName(String typeName, Pageable page,java.lang.Class<U> returnType) throws AbstractMetaParserException;
+    <U> Page<U> instancesByTypeName(String typeName, Pageable page,java.lang.Class<U> returnType) throws AbstractMetaParserException;
 
     /**
      *
