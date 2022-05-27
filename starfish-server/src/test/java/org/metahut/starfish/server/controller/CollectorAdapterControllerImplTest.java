@@ -162,6 +162,6 @@ class CollectorAdapterControllerImplTest extends WebApplicationTest {
         Collection<CollectorAdapterResponseDTO> data = listResult.getData();
         Assertions.assertEquals(1, data.size());
         CollectorAdapterResponseDTO collectorAdapterResponseDTO2 = data.stream().findFirst().get();
-        Assertions.assertEquals(collectorAdapterCreateOrUpdateRequestDTO.getName(), collectorAdapterResponseDTO2.getName());
+        Assertions.assertEquals("hive adapter", collectorAdapterResponseDTO2.getName());
     }
 }

@@ -1,8 +1,8 @@
 package org.metahut.starfish.store.rdbms.entity;
 
 import org.metahut.starfish.store.model.AbstractEntityProperty;
+import org.metahut.starfish.store.rdbms.type.JsonStringTypeSupportString;
 
-import com.vladmihalcea.hibernate.type.json.JsonStringType;
 import lombok.Getter;
 import lombok.Setter;
 import org.hibernate.annotations.NotFound;
@@ -33,7 +33,7 @@ import java.util.Date;
 @Entity
 @Table(name = "t_sf_relation_entity_property")
 @EntityListeners(AuditingEntityListener.class)
-@TypeDef(name = "json", typeClass = JsonStringType.class)
+@TypeDef(name = "json", typeClass = JsonStringTypeSupportString.class)
 public class RelationEntityProperty extends AbstractEntityProperty<Long, Object, RelationEntity> {
 
     @Id

@@ -106,7 +106,7 @@ public class CollectorAdapterRequestDTO extends PageRequestDTO {
     private ConditionPiece collectorTaskTypePiece() {
         ConditionPiece conditionPiece = new ConditionPiece();
         conditionPiece.setTableType(TableType.ENTITY);
-        conditionPiece.setExpressions(Expression.entity("org.starfish.CollectorAdapter"));
+        conditionPiece.setExpressions(Expression.type("org.starfish.CollectorAdapter"));
         return conditionPiece;
     }
 

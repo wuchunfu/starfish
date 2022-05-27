@@ -35,6 +35,21 @@ public interface Expression {
         return result;
     }
 
+    static List<BinaryExpression> type(String name) {
+        List<BinaryExpression> result = new ArrayList<>();
+        EqualExpression equalExpression = new EqualExpression();
+        equalExpression.setLeftExpression(new StringExpression(CATEGORY));
+        equalExpression.setRightExpression(new StringExpression(TypeCategory.CLASSIFICATION.name()));
+        if (name != null && !"".equals(name)) {
+            EqualExpression nameExpression = new EqualExpression();
+            nameExpression.setLeftExpression(new StringExpression(QUALIFIED_NAME));
+            nameExpression.setRightExpression(new StringExpression(name));
+            result.add(nameExpression);
+        }
+        result.add(equalExpression);
+        return result;
+    }
+
     static List<BinaryExpression> keyValueEqual(String key,String value) {
         List<BinaryExpression> result = new ArrayList<>();
         EqualExpression keyExpression = new EqualExpression();
