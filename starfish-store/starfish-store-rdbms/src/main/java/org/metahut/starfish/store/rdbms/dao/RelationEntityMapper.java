@@ -214,6 +214,12 @@ public class RelationEntityMapper implements IRelationEntityMapper<Long, Relatio
     }
 
     @Override
+    public RelationEntity findByStartNodeEntityAndEndNodeEntityAndCategoryAndName(NodeEntity startNodeEntity, NodeEntity endNodeEntity, String category, String name) {
+        return repository.findByStartNodeEntityIdAndEndNodeEntityIdAndCategoryAndName(startNodeEntity.getId(), endNodeEntity.getId(), category,name);
+
+    }
+
+    @Override
     public Page<RelationEntity> findByName(String name, Pageable pageable) {
         RelationEntity entity = new RelationEntity();
         entity.setName(name);

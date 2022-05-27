@@ -467,17 +467,25 @@ public class RdbmDataStorageAutoConfiguration {
                 //TODO typeName
                 NodeEntity head = nodeEntityMapper.findById(headId);
                 NodeEntity tail = nodeEntityMapper.findById(tailId);
-                RelationEntity relationEntity = new RelationEntity();
-                relationEntity.setCategory(linkCategory.name());
-                relationEntity.setStartNodeEntity(head);
-                relationEntity.setEndNodeEntity(tail);
-                relationEntity.setName(property);
-                relationEntityMapper.create(relationEntity);
+                RelationEntity relation = relationEntityMapper.findByStartNodeEntityAndEndNodeEntityAndCategoryAndName(head, tail, linkCategory.name(), property);
+                if (relation == null) {
+                    RelationEntity relationEntity = new RelationEntity();
+                    relationEntity.setCategory(linkCategory.name());
+                    relationEntity.setStartNodeEntity(head);
+                    relationEntity.setEndNodeEntity(tail);
+                    relationEntity.setName(property);
+                    relationEntityMapper.create(relationEntity);
+                }
             }
 
             @Override
-            public void crack(Long headId, Long tailId, String property) throws StarFishMetaDataOperatingException {
-
+            public void crack(Long headId, Long tailId,LinkCategory linkCategory, String property) throws StarFishMetaDataOperatingException {
+                NodeEntity head = nodeEntityMapper.findById(headId);
+                NodeEntity tail = nodeEntityMapper.findById(tailId);
+                RelationEntity relation = relationEntityMapper.findByStartNodeEntityAndEndNodeEntityAndCategoryAndName(head, tail, linkCategory.name(), property);
+                if (relation != null) {
+                    relationEntityMapper.remove(relation);
+                }
             }
 
             @Override

@@ -102,7 +102,7 @@ public abstract class AbstractGraphService<K,T> implements IGraphApi<K,T> {
 
     @Override
     public void crack(K headId, K tailId, String property) throws AbstractMetaParserException {
-        relationService().crack(headId,tailId,property);
+        relationService().crack(headId,tailId,LinkCategory.RELATIONSHIP,property);
     }
 
     @Override

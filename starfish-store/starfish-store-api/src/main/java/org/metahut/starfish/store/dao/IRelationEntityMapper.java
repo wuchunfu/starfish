@@ -222,6 +222,15 @@ public interface IRelationEntityMapper<I extends Serializable, R extends Abstrac
 
     /**
      *
+     * @param startNodeEntity
+     * @param endNodeEntity
+     * @param category
+     * @return
+     */
+    R findByStartNodeEntityAndEndNodeEntityAndCategoryAndName(N startNodeEntity, N endNodeEntity, String category,String name);
+
+    /**
+     *
      * @param name
      * @param pageable
      * @return the page of the instance of R

@@ -20,6 +20,7 @@ import org.metahut.starfish.unit.AbstractQueryCondition;
 import org.metahut.starfish.unit.enums.LinkCategory;
 import org.metahut.starfish.unit.expression.ConditionPiece;
 import org.metahut.starfish.unit.row.EntityRow;
+import org.metahut.starfish.unit.row.RelationRow;
 import org.metahut.starfish.unit.row.RowData;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
@@ -168,59 +169,102 @@ public abstract class AbstractMetaDataService<K,T> implements IMetaDataApi<K,T> 
 
     @Override
     public void batchCreateOrUpdate(RowData<T> rowData) throws AbstractMetaParserException {
-        for (EntityRow entity : rowData.getEntities()) {
-            AbstractQueryCondition<Map> condition = new AbstractQueryCondition<>();
-            condition.setResultType(Map.class);
-            condition.setFilters(Arrays.asList(ConditionPiece.entityWithType(entity.getHeader().getTypeName())));
-            Set<K> instanceIds = graphApi().query(condition).stream().map(map -> (K)map.get("id")).collect(Collectors.toSet());
-            Map<String,T> properties = entity.getProperties();
-            switch (entity.getRowKind()) {
-                case UPDATE:
-                    if (instanceIds == null) {
-                        throw new InstanceNotPresentException("Type:" + entity.getHeader().getTypeName() + ",Name:" + entity.getHeader().getQualifiedName());
-                    }
-                    if (instanceIds.size() > 1) {
-                        throw new InstanceRepeatException("Type:" + entity.getHeader().getTypeName()
-                                + ",Name:" + entity.getHeader().getQualifiedName()
-                                + "ids:" + instanceIds.toString());
-                    }
-                    updateEntity(instanceIds.stream().findFirst().get(),entity.getHeader().getQualifiedName(),properties);
-                    break;
-                case CREATE:
-                    if (instanceIds != null && instanceIds.size() != 0) {
-                        throw new InstanceExistsException("Type:" + entity.getHeader().getTypeName() + ",Name:" + entity.getHeader().getQualifiedName());
-                    }
-                    K typeId = typeApi().getIdByName(entity.getHeader().getTypeName());
-                    createEntity(typeId,entity.getHeader().getQualifiedName(),properties);
-                    break;
-                case DELETE:
-                    if (instanceIds == null) {
-                        throw new InstanceNotPresentException("Type:" + entity.getHeader().getTypeName() + ",Name:" + entity.getHeader().getQualifiedName());
-                    }
-                    if (instanceIds.size() > 1) {
-                        throw new InstanceRepeatException("Type:" + entity.getHeader().getTypeName()
-                                + ",Name:" + entity.getHeader().getQualifiedName()
-                                + "ids:" + instanceIds.toString());
-                    }
-                    deleteEntity(instanceIds);
-                    break;
-                case UPSERT:
-                    if (instanceIds.size() > 1) {
-                        throw new InstanceRepeatException("Type:" + entity.getHeader().getTypeName()
-                                + ",Name:" + entity.getHeader().getQualifiedName()
-                                + "ids:" + instanceIds.toString());
-                    }
-                    if (instanceIds == null || instanceIds.size() == 0) {
-                        K typeid = typeApi().getIdByName(entity.getHeader().getTypeName());
-                        createEntity(typeid,entity.getHeader().getQualifiedName(),properties);
-                    } else {
-                        updateEntity(instanceIds.stream().findFirst().get(),entity.getHeader().getQualifiedName(),properties);
-                    }
-                    break;
-                default:
+        if (rowData.getEntities() != null) {
+            for (EntityRow entity : rowData.getEntities()) {
+                AbstractQueryCondition<Map> condition = new AbstractQueryCondition<>();
+                condition.setResultType(Map.class);
+                condition.setFilters(Arrays.asList(ConditionPiece.entityWithType(entity.getHeader().getTypeName())));
+                Set<K> instanceIds = graphApi().query(condition).stream().map(map -> (K) map.get("id")).collect(Collectors.toSet());
+                Map<String, T> properties = entity.getProperties();
+                switch (entity.getRowKind()) {
+                    case UPDATE:
+                        if (instanceIds == null) {
+                            throw new InstanceNotPresentException("Type:" + entity.getHeader().getTypeName() + ",Name:" + entity.getHeader().getQualifiedName());
+                        }
+                        if (instanceIds.size() > 1) {
+                            throw new InstanceRepeatException("Type:" + entity.getHeader().getTypeName()
+                                    + ",Name:" + entity.getHeader().getQualifiedName()
+                                    + "ids:" + instanceIds.toString());
+                        }
+                        updateEntity(instanceIds.stream().findFirst().get(), entity.getHeader().getQualifiedName(), properties);
+                        break;
+                    case CREATE:
+                        if (instanceIds != null && instanceIds.size() != 0) {
+                            throw new InstanceExistsException("Type:" + entity.getHeader().getTypeName() + ",Name:" + entity.getHeader().getQualifiedName());
+                        }
+                        K typeId = typeApi().getIdByName(entity.getHeader().getTypeName());
+                        createEntity(typeId, entity.getHeader().getQualifiedName(), properties);
+                        break;
+                    case DELETE:
+                        if (instanceIds == null) {
+                            throw new InstanceNotPresentException("Type:" + entity.getHeader().getTypeName() + ",Name:" + entity.getHeader().getQualifiedName());
+                        }
+                        if (instanceIds.size() > 1) {
+                            throw new InstanceRepeatException("Type:" + entity.getHeader().getTypeName()
+                                    + ",Name:" + entity.getHeader().getQualifiedName()
+                                    + "ids:" + instanceIds.toString());
+                        }
+                        deleteEntity(instanceIds);
+                        break;
+                    case UPSERT:
+                        if (instanceIds.size() > 1) {
+                            throw new InstanceRepeatException("Type:" + entity.getHeader().getTypeName()
+                                    + ",Name:" + entity.getHeader().getQualifiedName()
+                                    + "ids:" + instanceIds.toString());
+                        }
+                        if (instanceIds == null || instanceIds.size() == 0) {
+                            K typeid = typeApi().getIdByName(entity.getHeader().getTypeName());
+                            createEntity(typeid, entity.getHeader().getQualifiedName(), properties);
+                        } else {
+                            updateEntity(instanceIds.stream().findFirst().get(), entity.getHeader().getQualifiedName(), properties);
+                        }
+                        break;
+                    default:
+                }
             }
         }
-        //TODO
+        if (rowData.getRelations() != null) {
+            for (RelationRow relation : rowData.getRelations()) {
+                if (relation.getRowKind() == null) {
+                    continue;
+                }
+                AbstractQueryCondition<Map> condition1 = new AbstractQueryCondition<>();
+                condition1.setResultType(Map.class);
+                condition1.setFilters(Arrays.asList(ConditionPiece.entityWithType(relation.getStartNode().getTypeName())));
+                Set<K> headIds = graphApi().query(condition1).stream().map(map -> (K) map.get("id")).collect(Collectors.toSet());
+                if (headIds == null) {
+                    throw new InstanceNotPresentException("Type:" + relation.getStartNode().getTypeName() + ",Name:" + relation.getStartNode().getQualifiedName());
+                }
+                if (headIds.size() > 1) {
+                    throw new InstanceRepeatException("Type:" + relation.getStartNode().getTypeName()
+                            + ",Name:" + relation.getStartNode().getQualifiedName()
+                            + "ids:" + headIds.toString());
+                }
+                AbstractQueryCondition<Map> condition2 = new AbstractQueryCondition<>();
+                condition2.setResultType(Map.class);
+                condition2.setFilters(Arrays.asList(ConditionPiece.entityWithType(relation.getStartNode().getTypeName())));
+                Set<K> tailIds = graphApi().query(condition2).stream().map(map -> (K) map.get("id")).collect(Collectors.toSet());
+                if (tailIds == null) {
+                    throw new InstanceNotPresentException("Type:" + relation.getStartNode().getTypeName() + ",Name:" + relation.getStartNode().getQualifiedName());
+                }
+                if (tailIds.size() > 1) {
+                    throw new InstanceRepeatException("Type:" + relation.getStartNode().getTypeName()
+                            + ",Name:" + relation.getStartNode().getQualifiedName()
+                            + "ids:" + headIds.toString());
+                }
+                switch (relation.getRowKind()) {
+                    case UPSERT:
+                    case UPDATE:
+                    case CREATE:
+                        link(headIds.stream().findFirst().get(),tailIds.stream().findFirst().get(),relation.getProperty());
+                        break;
+                    case DELETE:
+                        crack(headIds.stream().findFirst().get(),tailIds.stream().findFirst().get(),relation.getProperty());
+                        break;
+                    default:
+                }
+            }
+        }
     }
 
     private void store(String typeName,String json,Map<K,Class> types) {

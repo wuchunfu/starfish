@@ -27,7 +27,7 @@ public interface IRelationApi<K,T> extends AbstractQueryService {
      * @param property
      * @throws StarFishMetaDataOperatingException
      */
-    void crack(K headId,K tailId,String property) throws StarFishMetaDataOperatingException;
+    void crack(K headId,K tailId,LinkCategory linkCategory,String property) throws StarFishMetaDataOperatingException;
 
     // delete
     /**
