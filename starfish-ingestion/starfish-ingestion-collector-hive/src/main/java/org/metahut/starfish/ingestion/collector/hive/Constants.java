@@ -14,5 +14,17 @@ public class Constants {
     public static final String RELATION_PROPERTY_CLUSTER_DB = "dbs";
     public static final String RELATION_PROPERTY_DB_CLUSTER = "cluster";
 
+    public static final String RELATION_PROPERTY_DB_TABLE = "tables";
+
+    public static final String RELATION_PROPERTY_TABLE_DB = "db";
+
+    public static final String RELATION_PROPERTY_TABLE_COLUMN = "columns";
+
+    public static final String RELATION_PROPERTY_TABLE_PARTITION_KEY = "partitionKeys";
+
+    public static final String RELATION_PROPERTY_COLUMN_TABLE = "table";
+
+    public static final String PROPERTY_TABLE_COMMENT = "comment";
+
 
 }

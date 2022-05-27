@@ -108,6 +108,13 @@
           "defaultValue":null
         },
         {
+          "name":"comment",
+          "className":"java.lang.String",
+          "relType":"PRIMITIVE",
+          "array":false,
+          "defaultValue":null
+        },
+        {
           "name":"db",
           "className":"org.starfish.HiveDB",
           "relType":"ENTITY",
@@ -144,7 +151,7 @@
         },
         {
           "name":"partitionKeys",
-          "className":"java.util.List",
+          "className":"org.starfish.HiveColumn",
           "relType":"PRIMITIVE",
           "array":true,
           "defaultValue":null
@@ -166,13 +173,6 @@
         {
           "name":"createTime",
           "className":"int",
-          "relType":"PRIMITIVE",
-          "array":false,
-          "defaultValue":null
-        },
-        {
-          "name":"ownerType",
-          "className":"org.apache.hadoop.hive.metastore.api.PrincipalType",
           "relType":"PRIMITIVE",
           "array":false,
           "defaultValue":null

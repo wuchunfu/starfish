@@ -3,12 +3,14 @@ package org.metahut.starfish.ingestion.collector.hive.models;
 public class HiveTable {
 
     private String name;
+
+    private String comment;
     private String description;
     private String owner;
+    private Integer createTime;
     private Integer lastAccessTime;
     private String tableType;
     private Boolean temporary;
-    private Integer createTime;
 
     public String getName() {
         return name;
@@ -16,6 +18,14 @@ public class HiveTable {
 
     public void setName(String name) {
         this.name = name;
+    }
+
+    public String getComment() {
+        return comment;
+    }
+
+    public void setComment(String comment) {
+        this.comment = comment;
     }
 
     public String getDescription() {

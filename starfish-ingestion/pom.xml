@@ -38,15 +38,9 @@
 
     <dependencyManagement>
         <dependencies>
-
             <dependency>
                 <groupId>org.metahut.starfish</groupId>
                 <artifactId>starfish-ingestion-common</artifactId>
-                <version>${project.version}</version>
-            </dependency>
-            <dependency>
-                <groupId>org.metahut.starfish</groupId>
-                <artifactId>starfish-parser</artifactId>
                 <version>${project.version}</version>
             </dependency>
         </dependencies>
