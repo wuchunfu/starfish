@@ -128,7 +128,8 @@ class CollectorAdapterControllerImplTest extends WebApplicationTest {
         ResponseEntity<String> responseEntity = restTemplate.getForEntity(builder.build().encode().toUri(), String.class);
         Assertions.assertTrue(responseEntity.getStatusCode().is2xxSuccessful());
         ResultEntity<PageResponseDTO<CollectorAdapterCreateOrUpdateRequestDTO>> pageResult = JSONUtils.parseObject(responseEntity.getBody()
-                , new TypeReference<ResultEntity<PageResponseDTO<CollectorAdapterCreateOrUpdateRequestDTO>>>() {});
+                , new TypeReference<ResultEntity<PageResponseDTO<CollectorAdapterCreateOrUpdateRequestDTO>>>() {
+                });
         Assertions.assertTrue(pageResult.isSuccess());
         PageResponseDTO<CollectorAdapterCreateOrUpdateRequestDTO> data = pageResult.getData();
         Assertions.assertEquals(2, data.getTotal());
@@ -144,20 +145,23 @@ class CollectorAdapterControllerImplTest extends WebApplicationTest {
         CollectorAdapterResponseDTO collectorAdapterResponseDTO = createAdapters(collectorAdapterCreateOrUpdateRequestDTO);
 
         CollectorAdapterCreateOrUpdateRequestDTO collectorAdapterCreateOrUpdateRequestDTO1 = new CollectorAdapterCreateOrUpdateRequestDTO();
-        collectorAdapterCreateOrUpdateRequestDTO.setDescription("this is a pulsar adapter");
-        collectorAdapterCreateOrUpdateRequestDTO.setName("Pulsar adapter");
-        collectorAdapterCreateOrUpdateRequestDTO.setParameter("{\"serverUrl\":\"http://pulsar-idc-qa.zpidc.com:8080\"}");
-        collectorAdapterCreateOrUpdateRequestDTO.setType("Pulsar");
-        CollectorAdapterResponseDTO collectorAdapterResponseDTO1 = createAdapters(collectorAdapterCreateOrUpdateRequestDTO);
+        collectorAdapterCreateOrUpdateRequestDTO1.setDescription("this is a pulsar adapter");
+        collectorAdapterCreateOrUpdateRequestDTO1.setName("Pulsar adapter");
+        collectorAdapterCreateOrUpdateRequestDTO1.setParameter("{\"serverUrl\":\"http://pulsar-idc-qa.zpidc.com:8080\"}");
+        collectorAdapterCreateOrUpdateRequestDTO1.setType("Pulsar");
+        CollectorAdapterResponseDTO collectorAdapterResponseDTO1 = createAdapters(collectorAdapterCreateOrUpdateRequestDTO1);
 
         String url = this.base + REST_FUNCTION_URL_PREFIX + "queryList";
-        UriComponentsBuilder builder = UriComponentsBuilder.fromHttpUrl(url);
+        UriComponentsBuilder builder = UriComponentsBuilder.fromHttpUrl(url).queryParam("name", "hive adapter");
         ResponseEntity<String> responseEntity = restTemplate.getForEntity(builder.build().encode().toUri(), String.class);
         Assertions.assertTrue(responseEntity.getStatusCode().is2xxSuccessful());
-        ResultEntity<Collection<CollectorAdapterCreateOrUpdateRequestDTO>> listResult = JSONUtils.parseObject(responseEntity.getBody()
-                , new TypeReference<ResultEntity<Collection<CollectorAdapterCreateOrUpdateRequestDTO>>>() {});
+        ResultEntity<Collection<CollectorAdapterResponseDTO>> listResult = JSONUtils.parseObject(responseEntity.getBody()
+                , new TypeReference<ResultEntity<Collection<CollectorAdapterResponseDTO>>>() {
+                });
         Assertions.assertTrue(listResult.isSuccess());
-        Collection<CollectorAdapterCreateOrUpdateRequestDTO> data = listResult.getData();
-        Assertions.assertEquals(2, data.size());
+        Collection<CollectorAdapterResponseDTO> data = listResult.getData();
+        Assertions.assertEquals(1, data.size());
+        CollectorAdapterResponseDTO collectorAdapterResponseDTO2 = data.stream().findFirst().get();
+        Assertions.assertEquals(collectorAdapterCreateOrUpdateRequestDTO.getName(), collectorAdapterResponseDTO2.getName());
     }
 }

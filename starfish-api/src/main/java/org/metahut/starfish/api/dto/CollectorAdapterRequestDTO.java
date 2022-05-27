@@ -9,6 +9,7 @@ import org.metahut.starfish.unit.expression.Expression;
 
 import io.swagger.annotations.ApiModel;
 import io.swagger.annotations.ApiModelProperty;
+import org.apache.commons.lang3.StringUtils;
 
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -16,10 +17,9 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
-import static org.metahut.starfish.api.Constants.COLLECTOR_ADAPTER_TYPE_NAME;
-
 @ApiModel(description = "collector adapter request dto")
-public class CollectorAdapterRequestDTO extends PageRequestDTO {
+public class
+CollectorAdapterRequestDTO extends PageRequestDTO {
 
     @ApiModelProperty(value = "collector adapter name")
     private String name;
@@ -32,57 +32,6 @@ public class CollectorAdapterRequestDTO extends PageRequestDTO {
 
     @ApiModelProperty(value = "collector adapter type")
     private String type;
-
-    public AbstractQueryCondition<CollectorAdapterResponseDTO> toQueryCondition() {
-        AbstractQueryCondition<CollectorAdapterResponseDTO> condition = new AbstractQueryCondition<>();
-        condition.setResultType(CollectorAdapterResponseDTO.class);
-        condition.setFilters(Arrays.asList(collectorTaskPiece()));
-        return condition;
-    }
-
-    /**
-     * ENTITY
-     *      name
-     * @return
-     */
-    private ConditionPiece collectorTaskPiece() {
-        ConditionPiece conditionPiece = new ConditionPiece();
-        conditionPiece.setTableType(TableType.ENTITY);
-        List<BinaryExpression> expressions = new ArrayList<>();
-        Map<String,ConditionPiece> map = new HashMap<>();
-        map.putAll(rel1());
-
-        conditionPiece.setExpressions(expressions);
-        conditionPiece.setNextConditionChain(map);
-        return conditionPiece;
-    }
-
-    private Map<String,ConditionPiece> rel1() {
-        Map<String,ConditionPiece> result = new HashMap<>();
-        result.put("parent",typeEntityRelationPiece());
-        return result;
-    }
-
-    private ConditionPiece typeEntityRelationPiece() {
-        ConditionPiece conditionPiece = new ConditionPiece();
-        conditionPiece.setTableType(TableType.RELATION);
-        conditionPiece.setExpressions(Expression.rel(LinkCategory.TYPE_ENTITY,LinkCategory.TYPE_ENTITY.name()));
-        conditionPiece.setNextConditionChain(rel2());
-        return conditionPiece;
-    }
-
-    private Map<String,ConditionPiece> rel2() {
-        Map<String,ConditionPiece> result = new HashMap<>();
-        result.put("startNodeEntity",collectorTaskTypePiece());
-        return result;
-    }
-
-    private ConditionPiece collectorTaskTypePiece() {
-        ConditionPiece conditionPiece = new ConditionPiece();
-        conditionPiece.setTableType(TableType.ENTITY);
-        conditionPiece.setExpressions(Expression.entity(COLLECTOR_ADAPTER_TYPE_NAME));
-        return conditionPiece;
-    }
 
     public String getName() {
         return name;
@@ -115,4 +64,67 @@ public class CollectorAdapterRequestDTO extends PageRequestDTO {
     public void setType(String type) {
         this.type = type;
     }
+
+    public AbstractQueryCondition<CollectorAdapterResponseDTO> toQueryCondition() {
+        AbstractQueryCondition<CollectorAdapterResponseDTO> condition = new AbstractQueryCondition<>();
+        condition.setResultType(CollectorAdapterResponseDTO.class);
+        condition.setFilters(Arrays.asList(collectorAdapterPiece()));
+        return condition;
+    }
+
+    private ConditionPiece collectorAdapterPiece() {
+        ConditionPiece conditionPiece = new ConditionPiece();
+        conditionPiece.setTableType(TableType.ENTITY);
+        List<BinaryExpression> expressions = new ArrayList<>();
+        Map<String, ConditionPiece> map = new HashMap<>();
+        map.putAll(rel1());
+        conditionPiece.setExpressions(expressions);
+        conditionPiece.setNextConditionChain(map);
+        return conditionPiece;
+    }
+
+    private Map<String, ConditionPiece> rel1() {
+        Map<String, ConditionPiece> result = new HashMap<>();
+        result.put("parent", typeEntityRelationPiece());
+        result.put("properties", propertyPiece());
+        return result;
+    }
+
+    private ConditionPiece typeEntityRelationPiece() {
+        ConditionPiece conditionPiece = new ConditionPiece();
+        conditionPiece.setTableType(TableType.RELATION);
+        conditionPiece.setExpressions(Expression.rel(LinkCategory.TYPE_ENTITY, LinkCategory.TYPE_ENTITY.name()));
+        conditionPiece.setNextConditionChain(rel2());
+        return conditionPiece;
+    }
+
+    private Map<String, ConditionPiece> rel2() {
+        Map<String, ConditionPiece> result = new HashMap<>();
+        result.put("startNodeEntity", collectorTaskTypePiece());
+        return result;
+    }
+
+    private ConditionPiece collectorTaskTypePiece() {
+        ConditionPiece conditionPiece = new ConditionPiece();
+        conditionPiece.setTableType(TableType.ENTITY);
+        conditionPiece.setExpressions(Expression.entity("org.starfish.CollectorAdapter"));
+        return conditionPiece;
+    }
+
+    private ConditionPiece propertyPiece() {
+        ConditionPiece conditionPiece = new ConditionPiece();
+        conditionPiece.setTableType(TableType.ENTITY_PROPERTY);
+        conditionPiece.setExpressions(new ArrayList());
+        if (StringUtils.isNotBlank(this.name)) {
+            conditionPiece.getExpressions().addAll(Expression.keyValueLike("name", this.name));
+        }
+        if (StringUtils.isNotBlank(this.type)) {
+            conditionPiece.getExpressions().addAll(Expression.keyValueEqual("type", this.type));
+        }
+        if (StringUtils.isNotBlank(this.description)) {
+            conditionPiece.getExpressions().addAll(Expression.keyValueLike("description", this.description));
+        }
+        return conditionPiece;
+    }
+
 }

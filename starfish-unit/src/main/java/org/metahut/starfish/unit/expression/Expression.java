@@ -50,10 +50,10 @@ public interface Expression {
 
     static List<BinaryExpression> keyValueLike(String key,String value) {
         List<BinaryExpression> result = new ArrayList<>();
-        LikeExpression keyExpression = new LikeExpression();
+        EqualExpression keyExpression = new EqualExpression();
         keyExpression.setLeftExpression(new StringExpression(NAME));
         keyExpression.setRightExpression(new StringExpression(key));
-        EqualExpression valueExpression = new EqualExpression();
+        LikeExpression valueExpression = new LikeExpression();
         valueExpression.setLeftExpression(new StringExpression(VALUE));
         valueExpression.setRightExpression(new StringExpression(value));
         result.add(valueExpression);

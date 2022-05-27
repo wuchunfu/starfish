@@ -1,6 +1,7 @@
 package org.metahut.starfish.server.converter;
 
 import org.junit.jupiter.api.Assertions;
+import org.junit.jupiter.api.Disabled;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
@@ -9,6 +10,7 @@ import org.springframework.core.convert.ConversionService;
 import java.util.Map;
 
 @SpringBootTest
+@Disabled
 public class BeanToMapConverterTest {
 
     @Autowired

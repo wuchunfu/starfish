@@ -35,8 +35,8 @@ import java.util.Map;
 @Entity
 @Table(name = "t_sf_node_entity_property")
 @EntityListeners(AuditingEntityListener.class)
-@TypeDef(name = "json", typeClass = JsonType.class)
-public class NodeEntityProperty extends AbstractEntityProperty<Long, Object, NodeEntity> {
+//@TypeDef(name = "json", typeClass = JsonType.class)
+public class NodeEntityProperty extends AbstractEntityProperty<Long, String, NodeEntity> {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -50,9 +50,8 @@ public class NodeEntityProperty extends AbstractEntityProperty<Long, Object, Nod
     @Column(name = "name", nullable = false)
     private String name;
 
-    @Type(type = "json")
-    @Column(name = "property_value", columnDefinition = "json")
-    private Object value;
+    @Column(name = "property_value")
+    private String value;
 
     @Column(name = "operator")
     private Integer operator;
@@ -66,17 +65,17 @@ public class NodeEntityProperty extends AbstractEntityProperty<Long, Object, Nod
     private Date updateTime;
 
     @Override
-    public void setValue(Object value) {
+    public void setValue(String value) {
         Map<String, Object> wrappedMap = new LinkedHashMap<>();
         wrappedMap.put(name, value);
-        this.value = wrappedMap;
+        this.value = wrappedMap.toString();
     }
 
     @Override
-    public Object getValue() {
-        if (this.value instanceof Map) {
-            return ((Map<?, ?>) this.value).get(name);
-        }
+    public String getValue() {
+        //if (this.value instanceof Map) {
+        //    return ((Map<?, ?>) this.value).get(name);
+        //}
         return this.value;
     }
 

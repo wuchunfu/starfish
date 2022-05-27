@@ -83,8 +83,7 @@ public class CollectorAdapterServiceImpl implements CollectorAdapterService {
     @Override
     public Collection<CollectorAdapterResponseDTO> queryList(CollectorAdapterRequestDTO requestDTO) {
         // TODO Assembly conditions
-
-        return metaDataService.instancesByTypeName(COLLECTOR_ADAPTER_TYPE_NAME, CollectorAdapterResponseDTO.class);
+        return metaDataService.instances(requestDTO.toQueryCondition());
     }
 
 }

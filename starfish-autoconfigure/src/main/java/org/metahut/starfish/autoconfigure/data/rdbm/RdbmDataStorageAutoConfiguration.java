@@ -181,7 +181,7 @@ public class RdbmDataStorageAutoConfiguration {
                         NodeEntityProperty entityProperty = new NodeEntityProperty();
                         entityProperty.setName(entry.getKey());
                         entityProperty.setEntity(nodeEntity);
-                        entityProperty.setValue(entry.getValue());
+                        entityProperty.setValue(entry.getValue().toString());
                         return entityProperty;
                     })
                     .collect(Collectors.toSet()));
@@ -596,7 +596,7 @@ public class RdbmDataStorageAutoConfiguration {
                 }
                 NodeEntityProperty classProperty = new NodeEntityProperty();
                 classProperty.setName(KeyWord.CLASS.getValue());
-                classProperty.setValue(classInfo);
+                classProperty.setValue(classInfo.toString());
                 classProperty.setEntity(nodeEntity);
                 nodeEntity.getProperties().add(classProperty);
             }

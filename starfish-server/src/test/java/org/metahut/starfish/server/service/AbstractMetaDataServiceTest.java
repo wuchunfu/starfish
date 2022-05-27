@@ -18,6 +18,7 @@ import org.metahut.starfish.unit.expression.EachPointer;
 import org.metahut.starfish.unit.expression.EqualExpression;
 import org.metahut.starfish.unit.expression.StringExpression;
 
+import org.junit.jupiter.api.Disabled;
 import org.junit.jupiter.api.Test;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -46,6 +47,7 @@ import static org.junit.jupiter.api.Assertions.assertTrue;
  */
 @Transactional
 @SpringBootTest
+@Disabled
 class AbstractMetaDataServiceTest {
 
     private Logger logger = LoggerFactory.getLogger(AbstractMetaDataServiceTest.class);
