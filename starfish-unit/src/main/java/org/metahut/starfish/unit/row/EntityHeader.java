@@ -6,6 +6,19 @@ public class EntityHeader {
     private Long id;
     private String qualifiedName;
 
+    public EntityHeader() {
+    }
+
+    public EntityHeader(String typeName, Long id, String qualifiedName) {
+        this.typeName = typeName;
+        this.id = id;
+        this.qualifiedName = qualifiedName;
+    }
+
+    public static EntityHeader of(String typeName, String qualifiedName) {
+        return new EntityHeader(typeName, null, qualifiedName);
+    }
+
     public String getTypeName() {
         return typeName;
     }

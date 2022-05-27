@@ -3,7 +3,6 @@ package org.metahut.starfish.scheduler.dolphinscheduler;
 import org.metahut.starfish.scheduler.api.IScheduler;
 import org.metahut.starfish.scheduler.api.SchedulerException;
 import org.metahut.starfish.scheduler.api.SchedulerProperties;
-import org.metahut.starfish.scheduler.api.SchedulerResult;
 import org.metahut.starfish.scheduler.api.parameters.HttpTaskParameter;
 import org.metahut.starfish.scheduler.api.parameters.ScheduleCronParameter;
 import org.metahut.starfish.scheduler.api.parameters.ScheduleParameter;
@@ -32,7 +31,6 @@ import java.time.LocalDateTime;
 import java.time.ZoneId;
 import java.util.ArrayList;
 import java.util.Date;
-import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.Objects;
@@ -50,65 +48,6 @@ public class DolphinScheduler implements IScheduler {
         this.client = client;
         this.properties = properties;
     }
-
-    // TODO  @Deprecated start
-    static final HashMap<String, String> formTaskMap = new HashMap<>();
-    static final HashMap<String, String> onLineMap = new HashMap<>();
-    static HashMap<String, String> schedulerMap = new HashMap<>();
-    static HashMap<String, String> putMap = new HashMap<>();
-    static HashMap<String, String> putScheduleMap = new HashMap<>();
-
-    static {
-        formTaskMap.put("taskDefinitionJson", "[{\"code\":5028755940768,\"name\":\"test_http1\",\"version\":1,\"description\":"
-                + "\"\",\"delayTime\":0,\"taskType\":\"HTTP\",\"taskParams\":{\"localParams\":[],\"httpParams\":[],\"url\":\"http:1\""
-                + ",\"httpMethod\":\"GET\",\"httpCheckCondition\":\"STATUS_CODE_DEFAULT\",\"condition\":\"\",\"connectTimeout\":60000,"
-                + "\"socketTimeout\":60000,\"dependence\":{},\"conditionResult\":{\"successNode\":[],\"failedNode\":[]},\"waitStartTimeout\":{},"
-                + "\"switchResult\":{}},\"flag\":\"YES\",\"taskPriority\":\"MEDIUM\",\"workerGroup\":\"default\",\"failRetryTimes\":0,"
-                + "\"failRetryInterval\":1,\"timeoutFlag\":\"CLOSE\",\"timeoutNotifyStrategy\":null,\"timeout\":0,\"environmentCode\":-1}]");
-        formTaskMap
-                .put("locations", "[{\"taskCode\":5028755940768,\"x\":115,\"y\":270.0000305175781}]");
-        formTaskMap.put("name", "test_http2");
-        formTaskMap.put("taskRelationJson",
-                "[{\"name\":\"\",\"preTaskCode\":0,\"preTaskVersion\":0,\"postTaskCode\":5028755940768,\"postTaskVersion\":0,\"conditionType\":0,\"conditionParams\":{}}]");
-        formTaskMap.put("tenantCode", "default");
-        formTaskMap.put("description", "aa1");
-        formTaskMap.put("globalParams", "[]");
-        formTaskMap.put("timeout", "0");
-
-        onLineMap.put("name", "aa2");
-        onLineMap.put("releaseState", "ONLINE");
-
-        schedulerMap.put("schedule",
-                "{\"startTime\":\"2022-03-30 00:00:00\",\"endTime\":\"2122-03-30 00:00:00\",\"crontab\":\"0 0 * * * ? *\",\"timezoneId\":\"Asia/Shanghai\"}");
-
-        putMap.put("name", "test_http3");
-        putMap.put("locations",
-                "[{\"taskCode\":5028755940768,\"x\":120,\"y\":270},{\"taskCode\":5028755940768,\"x\":120,\"y\":416.0000305175781}]");
-        putMap.put("taskDefinitionJson",
-                "[{\"code\":5028755940768,\"name\":\"test_http1\",\"version\":1,"
-                        + "\"description\":\"\",\"delayTime\":0,\"taskType\":\"HTTP\","
-                        + "\"taskParams\":{\"localParams\":[],\"httpParams\":[],\"url\""
-                        + ":\"http:1\",\"httpMethod\":\"GET\",\"httpCheckCondition\":"
-                        + "\"STATUS_CODE_DEFAULT\",\"condition\":\"\",\"connectTimeout\""
-                        + ":60000,\"socketTimeout\":60000,\"dependence\":{},"
-                        + "\"conditionResult\":{\"successNode\":[],\"failedNode\":[]},\"waitStartTimeout\":{},\"switchResult\":{}},"
-                        + "\"flag\":\"YES\",\"taskPriority\":\"MEDIUM\",\"workerGroup\":\"default\",\"failRetryTimes\":0,\"failRetryInterval\":1,"
-                        + "\"timeoutFlag\":\"CLOSE\",\"timeoutNotifyStrategy\":null,\"timeout\":0,\"environmentCode\":-1}]");
-        putMap.put("taskRelationJson", "[{\"name\":\"\",\"preTaskCode\":0,\"preTaskVersion\":0,\"postTaskCode\":5028755940768,\"postTaskVersion\":1,\"conditionType\":0,\"conditionParams\":{}}]");
-        putMap.put("tenantCode", "algdataonline");
-        putMap.put("description", "aa1");
-
-        putScheduleMap.put("environmentCode", "");
-        putScheduleMap.put("failureStrategy", "CONTINUE");
-        putScheduleMap.put("processInstancePriority", "MEDIUM");
-        putScheduleMap.put("schedule",
-                "{\"startTime\":\"2022-03-30 00:00:00\",\"endTime\":\"2122-03-30 00:00:00\",\"crontab\":\"0 0 * * * ? *\",\"timezoneId\":\"Asia/Shanghai\"}");
-        putScheduleMap.put("warningType", "NONE");
-        putScheduleMap.put("warningGroupId", "1");
-        putScheduleMap.put("workerGroup", "default");
-
-    }
-    // TODO  @Deprecated end
 
     @Override
     public List<String> previewSchedule(ScheduleCronParameter scheduleCronParameter) {
@@ -338,20 +277,6 @@ public class DolphinScheduler implements IScheduler {
         }
     }
 
-    public void updateSingleHttpTask(TaskParameter taskParameter) {
-
-    }
-
-    private void queryFlowByCode(String flowCode) {
-        String url = MessageFormat.format("/projects/{0}/process-definition/{1}", properties.getProjectCode(), flowCode);
-        try {
-            String resultJson = get(url);
-
-        } catch (IOException e) {
-            throw new SchedulerException("dolphin scheduler call queryFlowByCode method exception", e);
-        }
-    }
-
     @Override
     public void deleteFlowByCode(String flowCode) {
         String url = MessageFormat.format("/projects/{0}/process-definition/{1}", properties.getProjectCode(), flowCode);
@@ -369,99 +294,19 @@ public class DolphinScheduler implements IScheduler {
 
     }
 
-    // TODO @Deprecated start
-    public Object queryTaskDefinitionPageList() {
-        String url = "http://dolphinscheduler.dev.zhaopin.com/dolphinscheduler/projects/4996418468000/process-definition?pageNo=1&pageSize=10&&searchVal=";
-        DolphinResult result = null;
-        try {
-            String json = get(url);
-            result = JSONUtils.parseObject(json, DolphinResult.class);
-            if (Objects.isNull(result) || HTTP_SUCCESS != result.getCode()) {
-                return new SchedulerResult(false, "don't get anything of task definitions");
-            }
-        } catch (IOException e) {
-            e.printStackTrace();
-        }
-        return result;
-    }
-
-    public Object queryTaskDefinitionByCode() {
-        String url = "http://dolphinscheduler.dev.zhaopin.com/dolphinscheduler/projects/4996418468000/process-definition/5028876785952";
-        DolphinResult result = null;
-        String cronJson = null;
-        DolphinResult cronResult = null;
-        try {
-            String json = get(url);
-            result = JSONUtils.parseObject(json, DolphinResult.class);
-            if (Objects.isNull(result) || HTTP_SUCCESS != result.getCode()) {
-                return new SchedulerResult(false, "don't get anything of task definition detail");
-            }
-            //获取定时管理
-            schedulerMap
-                    .put("processDefinitionCode", "5017950541088");
-            cronJson = get(
-                    "http://dolphinscheduler.dev.zhaopin.com/dolphinscheduler/projects/4996418468000/schedules?processDefinitionCode=5028876785952&searchVal=&pageNo=1&pageSize=10");
-            cronResult = JSONUtils.parseObject(cronJson, DolphinResult.class);
-            result.setData(result.getData().toString() + cronResult.getData().toString());
-        } catch (IOException e) {
-            e.printStackTrace();
-        }
-        return result;
-    }
-
-    public String queryTaskInstanceDetailLogs() {
-        String url = MessageFormat.format("/log/detail?taskInstanceId={0}&skipLineNum={1}&limit={2}", properties.getProjectCode(), "", "");
+    public void queryFlowByCode(String flowCode) {
+        String url = MessageFormat.format("/projects/{0}/process-definition/{1}", properties.getProjectCode(), flowCode);
         try {
             String resultJson = get(url);
-            DolphinResult<String> result = JSONUtils.parseObject(resultJson, new TypeReference<DolphinResult<String>>() {
-            });
-            checkResult(result, "queryTaskInstanceLogs");
-            return result.getData();
+
         } catch (IOException e) {
-            throw new SchedulerException("dolphin scheduler call queryTaskInstanceLogs method exception", e);
+            throw new SchedulerException("dolphin scheduler call queryFlowByCode method exception", e);
         }
     }
 
-    public Object queryTaskInstanceLogs() {
-        String url = "http://dolphinscheduler.dev.zhaopin.com/dolphinscheduler/projects/4996418468000/task-instances?"
-                + "pageSize=10&pageNo=1&searchVal=&processInstanceId=&host=&stateType=&startDate=&endDate=&executorName=&processInstanceName=";
-        DolphinResult result = null;
-        try {
-            String json = get(url);
-            result = JSONUtils.parseObject(json, DolphinResult.class);
-            if (Objects.isNull(result) || HTTP_SUCCESS != result.getCode()) {
-                return new SchedulerResult(false, "don't get anything of task definitions' logs");
-            }
-        } catch (IOException e) {
-            e.printStackTrace();
-        }
-        return result;
-    }
+    public void queryFlowInstanceListPage() {
 
-    public Object updateTaskDefinition() {
-        String url = "http://dolphinscheduler.dev.zhaopin.com/dolphinscheduler/projects/4996418468000/process-definition/5028876785952";
-        DolphinResult result = null;
-        String cronJson = null;
-        DolphinResult cronResult = null;
-        //try {
-        // String json = put(url, putMap);
-        // result = JSONUtils.parseObject(json, DolphinResult.class);
-        if (Objects.isNull(result) || HTTP_SUCCESS != result.getCode()) {
-            return new SchedulerResult(false, "delete processdefinition is error");
-        }
-        schedulerMap
-                .put("processDefinitionCode", "5017950541088");
-        //cronJson = put(
-        //        "http://dolphinscheduler.dev.zhaopin.com/dolphinscheduler/projects/4996418468000/schedules/28",
-        //        putScheduleMap);
-        cronResult = JSONUtils.parseObject(cronJson, DolphinResult.class);
-        //} catch (IOException e) {
-        //    e.printStackTrace();
-        //}
-        return cronResult;
     }
-
-    // TODO @Deprecated end
 
     // -----------------------------------------------------------------------------------------------------------------
 

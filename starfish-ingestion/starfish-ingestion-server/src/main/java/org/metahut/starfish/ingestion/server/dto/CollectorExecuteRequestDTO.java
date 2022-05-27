@@ -2,33 +2,23 @@ package org.metahut.starfish.ingestion.server.dto;
 
 public class CollectorExecuteRequestDTO {
 
-    private String name;
+    private Long id;
 
-    private Long adapterId;
+    private String qualifiedName;
 
-    private String parameter;
-
-    public String getName() {
-        return name;
+    public Long getId() {
+        return id;
     }
 
-    public void setName(String name) {
-        this.name = name;
+    public void setId(Long id) {
+        this.id = id;
     }
 
-    public Long getAdapterId() {
-        return adapterId;
+    public String getQualifiedName() {
+        return qualifiedName;
     }
 
-    public void setAdapterId(Long adapterId) {
-        this.adapterId = adapterId;
-    }
-
-    public String getParameter() {
-        return parameter;
-    }
-
-    public void setParameter(String parameter) {
-        this.parameter = parameter;
+    public void setQualifiedName(String qualifiedName) {
+        this.qualifiedName = qualifiedName;
     }
 }

@@ -19,8 +19,8 @@ import org.springframework.stereotype.Service;
 import java.util.Collection;
 import java.util.Map;
 
+import static org.metahut.starfish.api.Constants.COLLECTOR_ADAPTER_TYPE_NAME;
 import static org.metahut.starfish.api.enums.Status.COLLECTOR_ADAPTER_TEST_CONNECTION_FAIL;
-import static org.metahut.starfish.server.utils.Constants.COLLECTOR_ADAPTER_TYPE_NAME;
 
 @Service
 public class CollectorAdapterServiceImpl implements CollectorAdapterService {
@@ -75,16 +75,13 @@ public class CollectorAdapterServiceImpl implements CollectorAdapterService {
     @Override
     public PageResponseDTO<CollectorAdapterResponseDTO> queryListPage(CollectorAdapterRequestDTO requestDTO) {
         Pageable pageable = PageRequest.of(requestDTO.getPageNo() - 1, requestDTO.getPageSize());
-        // TODO Assembly conditions
-        Page<CollectorAdapterResponseDTO> page = metaDataService.instancesByName(COLLECTOR_ADAPTER_TYPE_NAME, pageable,CollectorAdapterResponseDTO.class);
+        Page<CollectorAdapterResponseDTO> page = metaDataService.instances(requestDTO.toQueryCondition(), pageable);
         return PageResponseDTO.of(page.getNumber(), page.getSize(), page.getTotalElements(), page.getContent());
     }
 
     @Override
     public Collection<CollectorAdapterResponseDTO> queryList(CollectorAdapterRequestDTO requestDTO) {
-        // TODO Assembly conditions
-
-        return metaDataService.instancesByName(COLLECTOR_ADAPTER_TYPE_NAME, CollectorAdapterResponseDTO.class);
+        return metaDataService.instances(requestDTO.toQueryCondition());
     }
 
 }

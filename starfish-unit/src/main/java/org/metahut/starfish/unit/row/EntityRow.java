@@ -9,6 +9,19 @@ public class EntityRow<T> {
     private EntityHeader header;
     private T properties;
 
+    public EntityRow() {
+    }
+
+    public EntityRow(RowKind rowKind, EntityHeader header, T properties) {
+        this.rowKind = rowKind;
+        this.header = header;
+        this.properties = properties;
+    }
+
+    public static <T> EntityRow<T> of(RowKind rowKind, EntityHeader header, T properties) {
+        return new EntityRow<>(rowKind, header, properties);
+    }
+
     public RowKind getRowKind() {
         return rowKind;
     }

@@ -23,6 +23,7 @@ import org.metahut.starfish.message.api.IMessageManager;
 import org.metahut.starfish.message.api.MessageException;
 import org.metahut.starfish.message.api.MessageType;
 
+import org.metahut.starfish.service.AbstractMetaDataService;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.scheduling.annotation.Async;
@@ -43,8 +44,11 @@ public class MessagePluginHelper {
 
     private final IMessageManager messageManager;
 
-    public MessagePluginHelper(IMessageManager messageManager) {
+    private final AbstractMetaDataService<Long, Object> metaDataService;
+
+    public MessagePluginHelper(IMessageManager messageManager, AbstractMetaDataService<Long, Object> metaDataService) {
         this.messageManager = messageManager;
+        this.metaDataService = metaDataService;
     }
 
     public IMessageManager getMessageManager() {

@@ -1,6 +1,7 @@
 package org.metahut.starfish.api.controller;
 
 import org.metahut.starfish.api.dto.CollectorTaskCreateOrUpdateRequestDTO;
+import org.metahut.starfish.api.dto.CollectorTaskCreateOrUpdateRequestDTO.Update;
 import org.metahut.starfish.api.dto.CollectorTaskInstanceLogResponseDTO;
 import org.metahut.starfish.api.dto.CollectorTaskInstanceRequestDTO;
 import org.metahut.starfish.api.dto.CollectorTaskInstanceResponseDTO;
@@ -11,6 +12,7 @@ import org.metahut.starfish.api.dto.ResultEntity;
 
 import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiOperation;
+import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
@@ -19,21 +21,22 @@ import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 
-import java.util.List;
+import java.util.Collection;
 
 @Api(tags = "COLLECTOR_TASK_TAG")
 @RequestMapping("collectorTask")
+@Validated
 public interface CollectorTaskController {
 
     // ---- collector task definition
 
     @PostMapping
     @ApiOperation(value = "create", notes = "CREATE_COLLECTOR_TASK_NOTES")
-    ResultEntity<CollectorTaskResponseDTO> create(@RequestBody CollectorTaskCreateOrUpdateRequestDTO requestDTO);
+    ResultEntity<CollectorTaskResponseDTO> create(@RequestBody @Validated CollectorTaskCreateOrUpdateRequestDTO requestDTO);
 
     @PutMapping("{id}")
     @ApiOperation(value = "update", notes = "UPDATE_COLLECTOR_TASK_NOTES")
-    ResultEntity<CollectorTaskResponseDTO> update(@PathVariable(value = "id") Long id, @RequestBody CollectorTaskCreateOrUpdateRequestDTO requestDTO);
+    ResultEntity<CollectorTaskResponseDTO> update(@PathVariable(value = "id") Long id, @RequestBody @Validated({Update.class}) CollectorTaskCreateOrUpdateRequestDTO requestDTO);
 
     @DeleteMapping("{id}")
     @ApiOperation(value = "deleteById", notes = "DELETE_COLLECTOR_TASK_BY_ID_NOTES")
@@ -49,7 +52,7 @@ public interface CollectorTaskController {
 
     @GetMapping("queryList")
     @ApiOperation(value = "queryList", notes = "QUERY_COLLECTOR_TASK_LIST_NOTES")
-    ResultEntity<List<CollectorTaskResponseDTO>> queryList(CollectorTaskRequestDTO requestDTO);
+    ResultEntity<Collection<CollectorTaskResponseDTO>> queryList(CollectorTaskRequestDTO requestDTO);
 
     // ---- collector task instance
 

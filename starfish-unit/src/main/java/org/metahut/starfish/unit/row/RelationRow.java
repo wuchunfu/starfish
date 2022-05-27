@@ -11,6 +11,20 @@ public class RelationRow {
 
     private String property;
 
+    public RelationRow() {
+    }
+
+    public RelationRow(RowKind rowKind, EntityHeader startNode, EntityHeader endNode, String property) {
+        this.rowKind = rowKind;
+        this.startNode = startNode;
+        this.endNode = endNode;
+        this.property = property;
+    }
+
+    public static RelationRow of(RowKind rowKind, EntityHeader startNode, EntityHeader endNode, String property) {
+        return new RelationRow(rowKind, startNode, endNode, property);
+    }
+
     public RowKind getRowKind() {
         return rowKind;
     }

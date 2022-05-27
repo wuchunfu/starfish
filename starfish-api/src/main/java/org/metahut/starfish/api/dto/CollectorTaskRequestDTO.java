@@ -21,8 +21,10 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
+import static org.metahut.starfish.api.Constants.COLLECTOR_TASK_TYPE_NAME;
+
 @ApiModel(description = "collector task request dto")
-public class CollectorTaskRequestDTO {
+public class CollectorTaskRequestDTO extends PageRequestDTO {
 
     @ApiModelProperty(value = "collector adapter name")
     private String adapterName;
@@ -79,9 +81,9 @@ public class CollectorTaskRequestDTO {
         this.updateEndTime = updateEndTime;
     }
 
-    public AbstractQueryCondition<Map> toQueryCondition() {
-        AbstractQueryCondition<Map> condition = new AbstractQueryCondition<>();
-        condition.setResultType(Map.class);
+    public AbstractQueryCondition<CollectorTaskResponseDTO> toQueryCondition() {
+        AbstractQueryCondition<CollectorTaskResponseDTO> condition = new AbstractQueryCondition<>();
+        condition.setResultType(CollectorTaskResponseDTO.class);
         condition.setFilters(Arrays.asList(collectorTaskPiece()));
         condition.setEachPointers(eachPointerMap());
         return condition;
@@ -154,7 +156,7 @@ public class CollectorTaskRequestDTO {
     private ConditionPiece collectorTaskTypePiece() {
         ConditionPiece conditionPiece = new ConditionPiece();
         conditionPiece.setTableType(TableType.ENTITY);
-        conditionPiece.setExpressions(Expression.entity("org.starfish.CollectorTask"));
+        conditionPiece.setExpressions(Expression.entity(COLLECTOR_TASK_TYPE_NAME));
         return conditionPiece;
     }
 

@@ -13,7 +13,7 @@ import org.metahut.starfish.server.service.CollectorTaskService;
 
 import org.springframework.web.bind.annotation.RestController;
 
-import java.util.List;
+import java.util.Collection;
 
 @RestController
 public class CollectorTaskControllerImpl implements CollectorTaskController {
@@ -51,7 +51,7 @@ public class CollectorTaskControllerImpl implements CollectorTaskController {
     }
 
     @Override
-    public ResultEntity<List<CollectorTaskResponseDTO>> queryList(CollectorTaskRequestDTO requestDTO) {
+    public ResultEntity<Collection<CollectorTaskResponseDTO>> queryList(CollectorTaskRequestDTO requestDTO) {
         return ResultEntity.success(collectorTaskService.queryList(requestDTO));
     }
 

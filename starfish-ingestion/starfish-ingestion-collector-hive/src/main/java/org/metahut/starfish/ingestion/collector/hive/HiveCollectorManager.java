@@ -6,12 +6,14 @@ import org.metahut.starfish.ingestion.common.JSONUtils;
 
 import java.util.Objects;
 
+import static org.metahut.starfish.ingestion.collector.hive.Constants.COLLECTOR_TYPE;
+
 public class HiveCollectorManager implements ICollectorManager {
 
     public static final String TYPE = "Hive";
     @Override
     public String getType() {
-        return TYPE;
+        return COLLECTOR_TYPE;
     }
 
     @Override

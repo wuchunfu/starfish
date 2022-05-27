@@ -5,25 +5,38 @@ import org.metahut.starfish.api.enums.ReleaseStateEnum;
 import io.swagger.annotations.ApiModel;
 import io.swagger.annotations.ApiModelProperty;
 
+import javax.validation.constraints.NotEmpty;
+import javax.validation.constraints.NotNull;
+
 @ApiModel(description = "collector task request dto")
 public class CollectorTaskCreateOrUpdateRequestDTO {
 
     @ApiModelProperty(value = "collector task name", required = true)
+    @NotEmpty(message = "{parameter.not.null}")
     private String name;
 
     @ApiModelProperty(value = "collector description", required = true)
     private String description;
 
     @ApiModelProperty(value = "collector adapter id", required = true)
+    @NotNull(message = "{parameter.not.null}")
     private Long adapterId;
 
     @ApiModelProperty(value = "collector task plugin parameter", required = true)
     private String parameter;
 
     @ApiModelProperty(value = "cron expression", required = true)
+    @NotEmpty(message = "{parameter.not.null}")
     private String cron;
 
+    @NotEmpty(message = "{parameter.not.null}", groups = Update.class)
+    private String schedulerFlowCode;
+
     private ReleaseStateEnum state;
+
+    public interface Update {
+
+    }
 
     public String getName() {
         return name;
@@ -71,5 +84,13 @@ public class CollectorTaskCreateOrUpdateRequestDTO {
 
     public void setState(ReleaseStateEnum state) {
         this.state = state;
+    }
+
+    public String getSchedulerFlowCode() {
+        return schedulerFlowCode;
+    }
+
+    public void setSchedulerFlowCode(String schedulerFlowCode) {
+        this.schedulerFlowCode = schedulerFlowCode;
     }
 }
