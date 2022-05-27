@@ -26,6 +26,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
+import org.springframework.test.annotation.Commit;
 import org.springframework.transaction.annotation.Transactional;
 
 import javax.annotation.Resource;
@@ -309,6 +310,7 @@ class AbstractMetaDataServiceTest {
     }
 
     @Test
+    @Commit
     void instances() {
         assertDoesNotThrow(() -> {
             Map<String,Object> map = new HashMap<>();

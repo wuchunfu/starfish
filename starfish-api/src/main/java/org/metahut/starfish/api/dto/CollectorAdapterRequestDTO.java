@@ -18,8 +18,7 @@ import java.util.List;
 import java.util.Map;
 
 @ApiModel(description = "collector adapter request dto")
-public class
-CollectorAdapterRequestDTO extends PageRequestDTO {
+public class CollectorAdapterRequestDTO extends PageRequestDTO {
 
     @ApiModelProperty(value = "collector adapter name")
     private String name;

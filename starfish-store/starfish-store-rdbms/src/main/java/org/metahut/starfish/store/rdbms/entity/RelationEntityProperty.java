@@ -2,7 +2,7 @@ package org.metahut.starfish.store.rdbms.entity;
 
 import org.metahut.starfish.store.model.AbstractEntityProperty;
 
-import com.vladmihalcea.hibernate.type.json.JsonType;
+import com.vladmihalcea.hibernate.type.json.JsonStringType;
 import lombok.Getter;
 import lombok.Setter;
 import org.hibernate.annotations.NotFound;
@@ -27,16 +27,14 @@ import javax.persistence.ManyToOne;
 import javax.persistence.Table;
 
 import java.util.Date;
-import java.util.LinkedHashMap;
-import java.util.Map;
 
 @Setter
 @Getter
 @Entity
 @Table(name = "t_sf_relation_entity_property")
 @EntityListeners(AuditingEntityListener.class)
-//@TypeDef(name = "json", typeClass = JsonType.class)
-public class RelationEntityProperty extends AbstractEntityProperty<Long, String, RelationEntity> {
+@TypeDef(name = "json", typeClass = JsonStringType.class)
+public class RelationEntityProperty extends AbstractEntityProperty<Long, Object, RelationEntity> {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -50,8 +48,9 @@ public class RelationEntityProperty extends AbstractEntityProperty<Long, String,
     @Column(name = "name", nullable = false)
     private String name;
 
+    @Type(type = "json")
     @Column(name = "property_value")
-    private String value;
+    private Object value;
 
     @Column(name = "operator")
     private Integer operator;
@@ -63,22 +62,6 @@ public class RelationEntityProperty extends AbstractEntityProperty<Long, String,
     @LastModifiedDate
     @Column(name = "update_time")
     private Date updateTime;
-
-    @Override
-    public void setValue(String value) {
-        Map<String, Object> wrappedMap = new LinkedHashMap<>();
-        wrappedMap.put(name, value);
-        this.value = wrappedMap.toString();
-    }
-
-    @Override
-    public String getValue() {
-        //if (this.value instanceof LinkedHashMap) {
-        //    return ((LinkedHashMap<?, ?>) this.value).get(name);
-        //}
-        return this.value;
-    }
-
 
     @Override
     public String toString() {
