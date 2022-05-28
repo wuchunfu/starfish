@@ -29,3 +29,8 @@ starfish:
           topic-name: my-topic
           schema: STRING
           producer-name: meta
+      consumers:
+        metaConsumer:
+          topic-name: my-topic
+          schema: STRING
+          subscription-name: subscription

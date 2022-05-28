@@ -22,6 +22,7 @@ import org.apache.hadoop.hive.metastore.api.Table;
 import org.apache.thrift.TException;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.springframework.util.CollectionUtils;
 
 import java.util.List;
 import java.util.Objects;
@@ -32,6 +33,7 @@ import static org.metahut.starfish.ingestion.collector.hive.Constants.RELATION_P
 import static org.metahut.starfish.ingestion.collector.hive.Constants.RELATION_PROPERTY_COLUMN_TABLE;
 import static org.metahut.starfish.ingestion.collector.hive.Constants.RELATION_PROPERTY_DB_CLUSTER;
 import static org.metahut.starfish.ingestion.collector.hive.Constants.RELATION_PROPERTY_DB_TABLE;
+import static org.metahut.starfish.ingestion.collector.hive.Constants.RELATION_PROPERTY_TABLE_COLUMN;
 import static org.metahut.starfish.ingestion.collector.hive.Constants.RELATION_PROPERTY_TABLE_DB;
 import static org.metahut.starfish.ingestion.collector.hive.Constants.RELATION_PROPERTY_TABLE_PARTITION_KEY;
 import static org.metahut.starfish.ingestion.collector.hive.Constants.TYPE_NAME_CLUSTER;
@@ -39,6 +41,7 @@ import static org.metahut.starfish.ingestion.collector.hive.Constants.TYPE_NAME_
 import static org.metahut.starfish.ingestion.collector.hive.Constants.TYPE_NAME_DB;
 import static org.metahut.starfish.ingestion.collector.hive.Constants.TYPE_NAME_TABLE;
 import static org.metahut.starfish.ingestion.common.EntityUtils.generateName;
+
 
 public class HiveCollectorTask implements ICollectorTask {
 
@@ -112,14 +115,19 @@ public class HiveCollectorTask implements ICollectorTask {
 
     private void generateHiveDBEntities(EntityHeader clusterHeader) {
         try {
-            RowData rowData = new RowData();
             List<String> allDatabases = metaStoreClient.getAllDatabases();
+            if (CollectionUtils.isEmpty(allDatabases)) {
+                return;
+            }
+            
+            RowData rowData = new RowData();
             for (String dbName : allDatabases) {
                 EntityHeader entityHeader = generateHiveDBEntity(clusterHeader, dbName);
 
                 // HiveCluster -> dbs -> HiveDB
                 rowData.getRelations().add(RelationRow.of(RowKind.UPSERT, clusterHeader, entityHeader, RELATION_PROPERTY_CLUSTER_DB));
             }
+            
             sendMessage(rowData);
         } catch (TException e) {
             // TODO exception handler
@@ -147,20 +155,25 @@ public class HiveCollectorTask implements ICollectorTask {
 
         // generate HiveTable entity
         generateHiveTableEntities(entityHeader, dbName);
-
         return entityHeader;
     }
 
     private void generateHiveTableEntities(EntityHeader dbHeader, String dbName) {
         try {
-            RowData rowData = new RowData();
             List<String> allTables = metaStoreClient.getAllTables(dbName);
+            if (CollectionUtils.isEmpty(allTables)) {
+                return;
+            }
+            
+            RowData rowData = new RowData();
             for (String tableName : allTables) {
                 EntityHeader entityHeader = generateHiveTableEntity(dbHeader, dbName, tableName);
                 // HiveDB -> tables -> HiveTable
                 rowData.getRelations().add(RelationRow.of(RowKind.UPSERT, dbHeader, entityHeader, RELATION_PROPERTY_DB_TABLE));
             }
+            
             sendMessage(rowData);
+
         } catch (TException e) {
             throw new RuntimeException(e);
         }
@@ -187,7 +200,6 @@ public class HiveCollectorTask implements ICollectorTask {
 
             // HiveTable --> db --> HiveDB
             rowData.getRelations().add(RelationRow.of(RowKind.UPSERT, entityHeader, dbHeader, RELATION_PROPERTY_TABLE_DB));
-
             generateHiveColumnEntities(rowData, entityHeader, table);
 
             return entityHeader;
@@ -213,7 +225,7 @@ public class HiveCollectorTask implements ICollectorTask {
             EntityHeader entityHeader = generateHiveColumnEntity(rowData, tableHeader, col);
 
             // HiveTable --> columns --> HiveColumn
-            rowData.getRelations().add(RelationRow.of(RowKind.UPSERT, tableHeader, entityHeader, RELATION_PROPERTY_TABLE_PARTITION_KEY));
+            rowData.getRelations().add(RelationRow.of(RowKind.UPSERT, tableHeader, entityHeader,RELATION_PROPERTY_TABLE_COLUMN));
         }
 
     }
@@ -231,7 +243,6 @@ public class HiveCollectorTask implements ICollectorTask {
 
         // HiveColumn --> table --> HiveTable
         rowData.getRelations().add(RelationRow.of(RowKind.UPSERT, entityHeader, tableHeader, RELATION_PROPERTY_COLUMN_TABLE));
-
         return entityHeader;
     }
 

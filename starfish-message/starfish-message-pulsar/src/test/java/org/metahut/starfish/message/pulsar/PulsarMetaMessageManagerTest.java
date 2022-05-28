@@ -69,7 +69,7 @@ class PulsarMetaMessageManagerTest {
         Map<String, MessageProperties.PulsarConsumer> consumerMap = new HashMap<>();
         MessageProperties.PulsarConsumer pulsarConsumer = new MessageProperties.PulsarConsumer();
         pulsarConsumer.setTopicName("my-topic");
-        pulsarConsumer.setSubscriptionName("my-subscription");
+        pulsarConsumer.setSubscriptionName("subscription");
         consumerMap.put(PULSAR_CONSUMER_1_NAME, pulsarConsumer);
         pulsar.setConsumers(consumerMap);
 

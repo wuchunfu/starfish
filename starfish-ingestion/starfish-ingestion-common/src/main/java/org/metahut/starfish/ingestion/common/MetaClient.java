@@ -67,11 +67,11 @@ public class MetaClient {
                     logger.error("message init exception, message:{}", e);
                 }
 
-                if (Objects.nonNull(messageManager)) {
+                if (Objects.isNull(messageManager)) {
                     throw new RuntimeException("meta message manager create exception");
                 }
                 producer = messageManager.getProducer(MESSAGE_PRODUCER);
-                if (Objects.nonNull(producer)) {
+                if (Objects.isNull(producer)) {
                     throw new RuntimeException("meta message producer create exception");
                 }
                 break;

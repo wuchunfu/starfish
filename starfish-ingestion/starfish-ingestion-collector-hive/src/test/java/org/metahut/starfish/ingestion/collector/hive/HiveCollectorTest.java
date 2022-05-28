@@ -1,5 +1,7 @@
 package org.metahut.starfish.ingestion.collector.hive;
 
+import org.metahut.starfish.ingestion.collector.api.CollectorResult;
+
 import org.apache.hadoop.conf.Configuration;
 import org.apache.hadoop.hive.metastore.IMetaStoreClient;
 import org.apache.hadoop.hive.metastore.api.Database;
@@ -30,6 +32,7 @@ public class HiveCollectorTest {
 
     final String typeUrl = "http://localhost:8801/metaData/batchType";
     final String instanceUrl = "http://localhost:8801/metaData/batchInstance";
+
     @Test
     public void testHive3Client() {
         try {
@@ -111,6 +114,7 @@ public class HiveCollectorTest {
     //    Assertions.assertNotNull(result);
     //}
 
+
     public static String doPostJson(String url, String params) {
         try {
             HttpClientBuilder httpClientBuilder = HttpClientBuilder.create();
@@ -138,4 +142,12 @@ public class HiveCollectorTest {
         }
     }
 
+
+    @Test
+    public void testHiveCollectorTask() {
+        CollectorResult result = new HiveCollectorManager()
+                .generateTaskInstance("{\"hiveMetastoreUris\":\"thrift://172.21.100.231:9083\"}", "{\"clusterName\":\"hive\"}")
+                .execute();
+        Assertions.assertEquals(true, result.getState());
+    }
 }
