@@ -58,7 +58,7 @@ public interface CollectorTaskController {
 
     @ApiOperation(value = "queryInstanceListPage", notes = "QUERY_COLLECTOR_TASK_INSTANCE_PAGE_NOTES")
     @GetMapping("instance/queryListPage")
-    ResultEntity<CollectorTaskInstanceResponseDTO> queryInstanceListPage(CollectorTaskInstanceRequestDTO requestDTO);
+    ResultEntity<PageResponseDTO<CollectorTaskInstanceResponseDTO>> queryInstanceListPage(CollectorTaskInstanceRequestDTO requestDTO);
 
     @ApiOperation(value = "queryInstanceLog", notes = "QUERY_COLLECTOR_TASK_INSTANCE_LOG_NOTES")
     @GetMapping("instance/log/{id}")

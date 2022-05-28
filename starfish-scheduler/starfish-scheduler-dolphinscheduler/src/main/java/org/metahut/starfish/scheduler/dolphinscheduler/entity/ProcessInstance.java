@@ -1,6 +1,5 @@
 package org.metahut.starfish.scheduler.dolphinscheduler.entity;
 
-import com.fasterxml.jackson.annotation.JsonFormat;
 import lombok.Data;
 
 import java.util.Date;
@@ -37,13 +36,11 @@ public class ProcessInstance {
     /**
      * start time
      */
-    @JsonFormat(pattern = "yyyy-MM-dd HH:mm:ss",timezone = "GMT+8")
     private Date startTime;
 
     /**
      * end time
      */
-    @JsonFormat(pattern = "yyyy-MM-dd HH:mm:ss",timezone = "GMT+8")
     private Date endTime;
 
     /**
@@ -99,13 +96,11 @@ public class ProcessInstance {
     /**
      * schedule time
      */
-    @JsonFormat(pattern = "yyyy-MM-dd HH:mm:ss",timezone = "GMT+8")
     private Date scheduleTime;
 
     /**
      * command start time
      */
-    @JsonFormat(pattern = "yyyy-MM-dd HH:mm:ss",timezone = "GMT+8")
     private Date commandStartTime;
 
     /**
@@ -202,7 +197,6 @@ public class ProcessInstance {
     /**
      * re-start time
      */
-    @JsonFormat(pattern = "yyyy-MM-dd HH:mm:ss",timezone = "GMT+8")
     private Date restartTime;
 
     /**

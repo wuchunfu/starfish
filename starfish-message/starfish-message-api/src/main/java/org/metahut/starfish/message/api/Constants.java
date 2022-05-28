@@ -23,7 +23,7 @@ public class Constants {
 
     }
 
-    public static final String MESSAGE_CONFIG_PREFIX = "starfish";
+    public static final String MESSAGE_CONFIG_PREFIX = "starfish.message";
 
     public static final String MESSAGE_META_EVENT = "starfishMetaEvent";
 

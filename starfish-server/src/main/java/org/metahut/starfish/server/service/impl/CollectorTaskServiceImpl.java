@@ -161,7 +161,7 @@ public class CollectorTaskServiceImpl implements CollectorTaskService {
     }
 
     @Override
-    public CollectorTaskInstanceResponseDTO queryInstanceListPage(CollectorTaskInstanceRequestDTO requestDTO) {
+    public PageResponseDTO<CollectorTaskInstanceResponseDTO> queryInstanceListPage(CollectorTaskInstanceRequestDTO requestDTO) {
         return null;
     }
 

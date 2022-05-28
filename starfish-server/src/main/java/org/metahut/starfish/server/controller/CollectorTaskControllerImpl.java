@@ -56,7 +56,7 @@ public class CollectorTaskControllerImpl implements CollectorTaskController {
     }
 
     @Override
-    public ResultEntity<CollectorTaskInstanceResponseDTO> queryInstanceListPage(CollectorTaskInstanceRequestDTO requestDTO) {
+    public ResultEntity<PageResponseDTO<CollectorTaskInstanceResponseDTO>> queryInstanceListPage(CollectorTaskInstanceRequestDTO requestDTO) {
         return ResultEntity.success(collectorTaskService.queryInstanceListPage(requestDTO));
     }
 

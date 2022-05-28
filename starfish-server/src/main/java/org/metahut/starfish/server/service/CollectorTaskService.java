@@ -23,7 +23,7 @@ public interface CollectorTaskService {
 
     Collection<CollectorTaskResponseDTO> queryList(CollectorTaskRequestDTO requestDTO);
 
-    CollectorTaskInstanceResponseDTO queryInstanceListPage(CollectorTaskInstanceRequestDTO requestDTO);
+    PageResponseDTO<CollectorTaskInstanceResponseDTO> queryInstanceListPage(CollectorTaskInstanceRequestDTO requestDTO);
 
     CollectorTaskInstanceLogResponseDTO queryInstanceLog(String instanceId);
 }

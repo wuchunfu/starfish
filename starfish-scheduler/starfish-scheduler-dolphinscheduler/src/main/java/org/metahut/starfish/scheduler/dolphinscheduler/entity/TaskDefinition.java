@@ -1,6 +1,5 @@
 package org.metahut.starfish.scheduler.dolphinscheduler.entity;
 
-import com.fasterxml.jackson.annotation.JsonFormat;
 import lombok.Data;
 
 import java.util.Date;
@@ -109,13 +108,11 @@ public class TaskDefinition {
     /**
      * create time
      */
-    @JsonFormat(pattern = "yyyy-MM-dd HH:mm:ss",timezone = "GMT+8")
     private Date createTime;
 
     /**
      * update time
      */
-    @JsonFormat(pattern = "yyyy-MM-dd HH:mm:ss",timezone = "GMT+8")
     private Date updateTime;
 
     /**

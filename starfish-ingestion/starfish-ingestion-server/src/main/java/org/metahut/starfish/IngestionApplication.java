@@ -15,14 +15,12 @@
  * limitations under the License.
  */
 
-package org.metahut.starfish.ingestion.server;
+package org.metahut.starfish;
 
 import org.springframework.boot.autoconfigure.SpringBootApplication;
 import org.springframework.boot.builder.SpringApplicationBuilder;
-import org.springframework.context.annotation.ComponentScan;
 
 @SpringBootApplication
-@ComponentScan("org.metahut.starfish")
 public class IngestionApplication {
 
     public static void main(String[] args) {
