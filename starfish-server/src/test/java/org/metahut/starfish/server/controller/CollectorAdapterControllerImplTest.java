@@ -55,13 +55,13 @@ class CollectorAdapterControllerImplTest extends WebApplicationTest {
         collectorAdapterCreateOrUpdateRequestDTO.setType("Hive");
         CollectorAdapterResponseDTO collectorAdapterResponseDTO = createAdapters(collectorAdapterCreateOrUpdateRequestDTO);
 
-        collectorAdapterResponseDTO.setDescription("this is a new hive adapter");
-        collectorAdapterResponseDTO.setParameter("{\"hiveMetastoreUris\":\"thrift://172.21.100.231:9083\"}");
-        collectorAdapterResponseDTO.setName("a updated hive adapter");
-        collectorAdapterResponseDTO.setType("Hive");
+        //collectorAdapterResponseDTO.setDescription("this is a new hive adapter");
+        //collectorAdapterResponseDTO.setParameter("{\"hiveMetastoreUris\":\"thrift://172.21.100.231:9083\"}");
+        //collectorAdapterResponseDTO.setName("a updated hive adapter");
+        //collectorAdapterResponseDTO.setType("Hive");
 
         String url = this.base + REST_FUNCTION_URL_PREFIX + "/" + collectorAdapterResponseDTO.getId();
-        HttpEntity httpEntity = new HttpEntity(collectorAdapterResponseDTO);
+        HttpEntity httpEntity = new HttpEntity(collectorAdapterCreateOrUpdateRequestDTO);
         ResponseEntity<String> responseEntity = restTemplate.exchange(url, HttpMethod.PUT, httpEntity, String.class);
         ResultEntity<CollectorAdapterResponseDTO> update = JSONUtils.parseObject(responseEntity.getBody(), new TypeReference<ResultEntity<CollectorAdapterResponseDTO>>() {
         });

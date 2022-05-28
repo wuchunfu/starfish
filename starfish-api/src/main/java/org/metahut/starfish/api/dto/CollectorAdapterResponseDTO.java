@@ -3,6 +3,8 @@ package org.metahut.starfish.api.dto;
 import io.swagger.annotations.ApiModel;
 import io.swagger.annotations.ApiModelProperty;
 
+import java.util.Map;
+
 @ApiModel(description = "collector adapter response dto")
 public class CollectorAdapterResponseDTO {
 
@@ -16,7 +18,7 @@ public class CollectorAdapterResponseDTO {
     private String type;
 
     @ApiModelProperty(value = "collector adapter parameter to connect")
-    private String parameter;
+    private Map<String,Object> parameter;
 
     @ApiModelProperty(value = "collector adapter description")
     private String description;
@@ -45,11 +47,11 @@ public class CollectorAdapterResponseDTO {
         this.type = type;
     }
 
-    public String getParameter() {
+    public Map<String,Object> getParameter() {
         return parameter;
     }
 
-    public void setParameter(String parameter) {
+    public void setParameter(Map<String,Object> parameter) {
         this.parameter = parameter;
     }
 

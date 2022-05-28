@@ -15,7 +15,6 @@ import org.hibernate.usertype.DynamicParameterizedType;
 import java.lang.reflect.Type;
 import java.util.Properties;
 
-
 public class JsonStringTypeSupportString extends AbstractHibernateType<Object> implements DynamicParameterizedType {
     public static final JsonStringTypeSupportString INSTANCE = new JsonStringTypeSupportString();
 

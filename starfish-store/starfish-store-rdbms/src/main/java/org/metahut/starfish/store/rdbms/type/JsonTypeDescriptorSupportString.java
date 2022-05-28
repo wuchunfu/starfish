@@ -29,10 +29,19 @@ public class JsonTypeDescriptorSupportString extends JsonTypeDescriptor {
     }
 
     @Override
+    public Object fromString(String string) {
+        try {
+            return super.fromString(string);
+        } catch (Exception exception) {
+            return string;
+        }
+    }
+
+    @Override
     public <X> X unwrap(Object value, Class<X> type, WrapperOptions options) {
         try {
             return super.unwrap(value, type, options);
-        } catch (Exception e) {
+        } catch (Exception exception) {
             return (X) value;
         }
     }
