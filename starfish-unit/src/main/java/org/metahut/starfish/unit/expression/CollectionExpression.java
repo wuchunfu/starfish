@@ -5,7 +5,7 @@ import java.util.List;
 /**
  *
  */
-public class CollectionExpression implements Expression {
+public class CollectionExpression extends AbstractValuesExpression<String> {
 
     private List<String> values;
 
@@ -13,7 +13,8 @@ public class CollectionExpression implements Expression {
         this.values = values;
     }
 
-    public List<String> getValues() {
+    @Override
+    public List<String> getValue() {
         return values;
     }
 
@@ -21,8 +22,4 @@ public class CollectionExpression implements Expression {
         this.values = values;
     }
 
-    @Override
-    public String toString() {
-        return null;
-    }
 }

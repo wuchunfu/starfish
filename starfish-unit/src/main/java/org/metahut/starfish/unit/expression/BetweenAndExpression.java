@@ -3,17 +3,17 @@ package org.metahut.starfish.unit.expression;
 /**
  *
  */
-public class BetweenAndExpression extends BinaryExpression<StringExpression,AndExpression> {
+public class BetweenAndExpression extends BinaryExpression<StringExpression, StringPairExpression> {
 
-    private AndExpression rightExpression;
+    private StringPairExpression rightExpression;
 
     @Override
-    public AndExpression getRightExpression() {
+    public StringPairExpression getRightExpression() {
         return rightExpression;
     }
 
     @Override
-    public void setRightExpression(AndExpression rightExpression) {
+    public void setRightExpression(StringPairExpression rightExpression) {
         this.rightExpression = rightExpression;
     }
 

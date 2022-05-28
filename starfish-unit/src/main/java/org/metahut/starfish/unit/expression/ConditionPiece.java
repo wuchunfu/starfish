@@ -15,6 +15,10 @@ public class ConditionPiece {
 
     private List<BinaryExpression> expressions;
 
+    /**
+     * String : property
+     * join ->  join
+     */
     private Map<String,ConditionPiece> nextConditionChain;
 
     public TableType getTableType() {

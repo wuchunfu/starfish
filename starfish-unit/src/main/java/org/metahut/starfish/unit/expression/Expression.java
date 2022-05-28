@@ -4,6 +4,7 @@ import org.metahut.starfish.unit.enums.Category;
 import org.metahut.starfish.unit.enums.TypeCategory;
 
 import java.util.ArrayList;
+import java.util.Date;
 import java.util.List;
 
 public interface Expression {
@@ -73,6 +74,78 @@ public interface Expression {
         valueExpression.setRightExpression(new StringExpression(value));
         result.add(valueExpression);
         result.add(keyExpression);
+        return result;
+    }
+
+    static List<BinaryExpression> keyValueDateBetweenAnd(String key,Date beginTime, Date endTime) {
+        List<BinaryExpression> result = new ArrayList<>();
+        EqualExpression keyExpression = new EqualExpression();
+        keyExpression.setLeftExpression(new StringExpression(NAME));
+        keyExpression.setRightExpression(new StringExpression(key));
+        DateBetweenAndExpression betweenAndExpression = new DateBetweenAndExpression();
+        betweenAndExpression.setLeftExpression(new StringExpression(VALUE));
+        DatePairExpression datePairExpression = new DatePairExpression();
+        betweenAndExpression.setRightExpression(datePairExpression);
+        datePairExpression.setLeftExpression(new DateExpression(beginTime));
+        datePairExpression.setRightExpression(new DateExpression(endTime));
+        result.add(keyExpression);
+        result.add(betweenAndExpression);
+        return result;
+    }
+
+    static List<BinaryExpression> keyValueDateGreaterThan(String key,Date date) {
+        List<BinaryExpression> result = new ArrayList<>();
+        EqualExpression keyExpression = new EqualExpression();
+        keyExpression.setLeftExpression(new StringExpression(NAME));
+        keyExpression.setRightExpression(new StringExpression(key));
+        GreaterThanExpression<Date> valueExpression = new GreaterThanExpression();
+        valueExpression.setLeftExpression(new StringExpression(VALUE));
+        DateExpression dateExpression = new DateExpression(date);
+        valueExpression.setRightExpression(dateExpression);
+        result.add(keyExpression);
+        result.add(valueExpression);
+        return result;
+    }
+
+    static List<BinaryExpression> keyValueDateLessThan(String key,Date date) {
+        List<BinaryExpression> result = new ArrayList<>();
+        EqualExpression keyExpression = new EqualExpression();
+        keyExpression.setLeftExpression(new StringExpression(NAME));
+        keyExpression.setRightExpression(new StringExpression(key));
+        LessThanExpression<Date> valueExpression = new LessThanExpression();
+        valueExpression.setLeftExpression(new StringExpression(VALUE));
+        DateExpression dateExpression = new DateExpression(date);
+        valueExpression.setRightExpression(dateExpression);
+        result.add(keyExpression);
+        result.add(valueExpression);
+        return result;
+    }
+
+    static List<BinaryExpression> keyValueDateGreaterThanOrEqualTo(String key,Date date) {
+        List<BinaryExpression> result = new ArrayList<>();
+        EqualExpression keyExpression = new EqualExpression();
+        keyExpression.setLeftExpression(new StringExpression(NAME));
+        keyExpression.setRightExpression(new StringExpression(key));
+        GreaterThanOrEqualToExpression<Date> valueExpression = new GreaterThanOrEqualToExpression();
+        valueExpression.setLeftExpression(new StringExpression(VALUE));
+        DateExpression dateExpression = new DateExpression(date);
+        valueExpression.setRightExpression(dateExpression);
+        result.add(keyExpression);
+        result.add(valueExpression);
+        return result;
+    }
+
+    static List<BinaryExpression> keyValueDateLessThanOrEqualTo(String key,Date date) {
+        List<BinaryExpression> result = new ArrayList<>();
+        EqualExpression keyExpression = new EqualExpression();
+        keyExpression.setLeftExpression(new StringExpression(NAME));
+        keyExpression.setRightExpression(new StringExpression(key));
+        LessThanOrEqualToExpression<Date> valueExpression = new LessThanOrEqualToExpression();
+        valueExpression.setLeftExpression(new StringExpression(VALUE));
+        DateExpression dateExpression = new DateExpression(date);
+        valueExpression.setRightExpression(dateExpression);
+        result.add(keyExpression);
+        result.add(valueExpression);
         return result;
     }
 

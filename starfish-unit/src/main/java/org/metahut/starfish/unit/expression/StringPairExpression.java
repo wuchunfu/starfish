@@ -3,7 +3,7 @@ package org.metahut.starfish.unit.expression;
 /**
  *
  */
-public class AndExpression extends LogicExpression {
+public class StringPairExpression extends BinaryExpression<StringExpression,StringExpression> {
 
     @Override
     public String getStringExpression() {

@@ -3,7 +3,7 @@ package org.metahut.starfish.unit.expression;
 /**
  *
  */
-public class InExpression extends BinaryExpression<StringExpression,CollectionExpression> {
+public class InExpression extends BinaryExpression<StringExpression,AbstractValuesExpression> {
 
     private boolean not = false;
     private Expression escapeExpression = null;

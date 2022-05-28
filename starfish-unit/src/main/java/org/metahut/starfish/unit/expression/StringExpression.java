@@ -3,7 +3,7 @@ package org.metahut.starfish.unit.expression;
 /**
  *
  */
-public class StringExpression implements Expression {
+public class StringExpression extends AbstractValueExpression<String> {
 
     private String value;
 
@@ -11,12 +11,9 @@ public class StringExpression implements Expression {
         this.value = value;
     }
 
+    @Override
     public String getValue() {
         return value;
-    }
-
-    public void setValue(String value) {
-        this.value = value;
     }
 
     @Override

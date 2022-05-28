@@ -10,6 +10,7 @@ import org.metahut.starfish.unit.expression.ConditionPiece;
 import org.metahut.starfish.unit.expression.EachPointer;
 import org.metahut.starfish.unit.expression.Expression;
 
+import org.apache.commons.lang3.ObjectUtils;
 import org.apache.commons.lang3.StringUtils;
 
 import java.util.ArrayList;
@@ -121,11 +122,33 @@ public class HiveTableQueryDTO extends PageRequestDTO {
         List<BinaryExpression> expressions = new ArrayList<>();
         Map<String,ConditionPiece> map = new HashMap<>();
         map.putAll(rel1());
-        if (StringUtils.isNotEmpty(this.hiveTableName)) {
+        if (ObjectUtils.allNotNull(hiveClusterName,createBeginTime,createEndTime,updateBeginTime,updateEndTime)) {
             map.putAll(rel0());
         }
         if (StringUtils.isNotEmpty(hiveDbName) && StringUtils.isNotEmpty(hiveClusterName)) {
             map.putAll(rel3());
+        }
+        if (this.createBeginTime != null) {
+            if (this.createEndTime != null) {
+                expressions.addAll(Expression.keyValueDateBetweenAnd("createTime", this.createBeginTime,this.createEndTime));
+            } else {
+                expressions.addAll(Expression.keyValueDateGreaterThanOrEqualTo("createTime",this.createBeginTime));
+            }
+        } else {
+            if (this.createEndTime != null) {
+                expressions.addAll(Expression.keyValueDateLessThanOrEqualTo("createTime",this.createEndTime));
+            }
+        }
+        if (this.updateBeginTime != null) {
+            if (this.updateEndTime != null) {
+                expressions.addAll(Expression.keyValueDateBetweenAnd("createTime", this.updateBeginTime,this.updateEndTime));
+            } else {
+                expressions.addAll(Expression.keyValueDateGreaterThanOrEqualTo("createTime",this.updateBeginTime));
+            }
+        } else {
+            if (this.updateEndTime != null) {
+                expressions.addAll(Expression.keyValueDateLessThanOrEqualTo("createTime",this.updateEndTime));
+            }
         }
         conditionPiece.setExpressions(expressions);
         conditionPiece.setNextConditionChain(map);

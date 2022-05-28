@@ -44,7 +44,7 @@ public class EntityRow<T> {
         return properties;
     }
 
-    public void setProperties(Map<String,T> properties) {
+    public void setProperties(Map properties) {
         this.properties = properties;
     }
 }

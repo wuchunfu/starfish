@@ -1,5 +1,6 @@
 package org.metahut.starfish.api.dto;
 
+import java.util.Date;
 import java.util.List;
 
 /**
@@ -18,6 +19,10 @@ public class HiveTableResponseDTO {
     private List<String> partitionKeys;
 
     private String tableType;
+
+    private Date createTime;
+
+    private Date updateTime;
 
     private HiveDBResponseDTO db;
 
@@ -77,6 +82,22 @@ public class HiveTableResponseDTO {
 
     public void setTableType(String tableType) {
         this.tableType = tableType;
+    }
+
+    public Date getCreateTime() {
+        return createTime;
+    }
+
+    public void setCreateTime(Date createTime) {
+        this.createTime = createTime;
+    }
+
+    public Date getUpdateTime() {
+        return updateTime;
+    }
+
+    public void setUpdateTime(Date updateTime) {
+        this.updateTime = updateTime;
     }
 
     public HiveDBResponseDTO getDb() {

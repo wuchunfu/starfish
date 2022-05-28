@@ -22,15 +22,22 @@ import org.metahut.starfish.unit.AbstractQueryCondition;
 import org.metahut.starfish.unit.enums.Category;
 import org.metahut.starfish.unit.enums.LinkCategory;
 import org.metahut.starfish.unit.enums.TypeCategory;
+import org.metahut.starfish.unit.expression.AndExpression;
 import org.metahut.starfish.unit.expression.BetweenAndExpression;
 import org.metahut.starfish.unit.expression.BinaryExpression;
 import org.metahut.starfish.unit.expression.ConditionPiece;
+import org.metahut.starfish.unit.expression.DateBetweenAndExpression;
 import org.metahut.starfish.unit.expression.EachPointer;
 import org.metahut.starfish.unit.expression.EmptyExpression;
 import org.metahut.starfish.unit.expression.EqualExpression;
+import org.metahut.starfish.unit.expression.GreaterThanExpression;
+import org.metahut.starfish.unit.expression.GreaterThanOrEqualToExpression;
 import org.metahut.starfish.unit.expression.InExpression;
+import org.metahut.starfish.unit.expression.LessThanExpression;
+import org.metahut.starfish.unit.expression.LessThanOrEqualToExpression;
 import org.metahut.starfish.unit.expression.LikeExpression;
 import org.metahut.starfish.unit.expression.NullExpression;
+import org.metahut.starfish.unit.expression.OrExpression;
 import org.metahut.starfish.unit.expression.TrueExpression;
 
 import com.fasterxml.jackson.databind.DeserializationFeature;
@@ -76,6 +83,8 @@ public class RdbmDataStorageAutoConfiguration {
     private <T> T convert(NodeEntity nodeEntity,java.lang.Class<T> classInfo,Map<String,EachPointer> eachPointers) {
         ObjectMapper objectMapper = new ObjectMapper();
         objectMapper.configure(DeserializationFeature.FAIL_ON_UNKNOWN_PROPERTIES,false);
+        objectMapper.configure(DeserializationFeature.ACCEPT_SINGLE_VALUE_AS_ARRAY,true);
+        objectMapper.configure(DeserializationFeature.UNWRAP_SINGLE_VALUE_ARRAYS,true);
         Map<String,Object> result = forEach(nodeEntity,eachPointers);
         return objectMapper.convertValue(result,classInfo);
     }
@@ -152,6 +161,8 @@ public class RdbmDataStorageAutoConfiguration {
         }
         map.put("name",nodeEntity.getQualifiedName());
         map.put("id",nodeEntity.getId());
+        map.put("createTime",nodeEntity.getCreateTime());
+        map.put("updateTime",nodeEntity.getUpdateTime());
         return map;
     }
 
@@ -215,54 +226,11 @@ public class RdbmDataStorageAutoConfiguration {
             if (conditionPieces != null) {
                 for (ConditionPiece filter : conditionPieces) {
                     List<Predicate> piecePredicates = new ArrayList<>();
-                    CriteriaBuilder builder = criteriaBuilder;
                     if (filter.getExpressions() != null) {
                         for (BinaryExpression binaryExpression : filter.getExpressions()) {
-                            if (binaryExpression != null) {
-                                if (binaryExpression instanceof EqualExpression) {
-                                    EqualExpression expression = (EqualExpression)binaryExpression;
-                                    piecePredicates.add(builder.equal(root.get(expression.getLeftExpression().toString()), expression.getRightExpression().toString()));
-                                } else if (binaryExpression instanceof InExpression) {
-                                    InExpression expression = (InExpression)binaryExpression;
-                                    Predicate predicate = root.get(expression.getLeftExpression().toString()).in(expression.getRightExpression().getValues().toArray());
-                                    if (expression.isNot()) {
-                                        predicate = builder.not(predicate);
-                                    }
-                                    piecePredicates.add(predicate);
-                                } else if (binaryExpression instanceof LikeExpression) {
-                                    LikeExpression expression = (LikeExpression)binaryExpression;
-                                    if (expression.isNot()) {
-                                        piecePredicates.add(builder.notLike(root.get(expression.getLeftExpression().toString()), "%" + expression.getRightExpression().toString() + "%"));
-                                    } else {
-                                        piecePredicates.add(builder.like(root.get(expression.getLeftExpression().toString()), "%" + expression.getRightExpression().toString() + "%"));
-                                    }
-                                } else if (binaryExpression instanceof NullExpression) {
-                                    NullExpression expression = (NullExpression)binaryExpression;
-                                    if (expression.isNot()) {
-                                        piecePredicates.add(builder.isNotNull(root.get(expression.getLeftExpression().toString())));
-                                    } else {
-                                        piecePredicates.add(builder.isNull(root.get(expression.getLeftExpression().toString())));
-                                    }
-                                } else if (binaryExpression instanceof EmptyExpression) {
-                                    EmptyExpression expression = (EmptyExpression)binaryExpression;
-                                    if (expression.isNot()) {
-                                        piecePredicates.add(builder.isNotEmpty(root.get(expression.getLeftExpression().toString())));
-                                    } else {
-                                        piecePredicates.add(builder.isEmpty(root.get(expression.getLeftExpression().toString())));
-                                    }
-                                } else if (binaryExpression instanceof TrueExpression) {
-                                    TrueExpression expression = (TrueExpression)binaryExpression;
-                                    if (expression.isNot()) {
-                                        piecePredicates.add(builder.isFalse(root.get(expression.getLeftExpression().toString())));
-                                    } else {
-                                        piecePredicates.add(builder.isTrue(root.get(expression.getLeftExpression().toString())));
-                                    }
-                                } else if (binaryExpression instanceof BetweenAndExpression) {
-                                    BetweenAndExpression expression = (BetweenAndExpression)binaryExpression;
-                                    piecePredicates.add(builder.between(root.get(expression.getLeftExpression().toString()),
-                                            expression.getRightExpression().getLeftExpression().toString(),
-                                            expression.getRightExpression().getRightExpression().toString()));
-                                }
+                            Predicate predicate = handlerExpression(criteriaBuilder, root, binaryExpression);
+                            if (predicate != null) {
+                                piecePredicates.add(predicate);
                             }
                         }
                     }
@@ -270,12 +238,115 @@ public class RdbmDataStorageAutoConfiguration {
                         piecePredicates.addAll(nextConditionHandle(criteriaBuilder, root, query, filter.getNextConditionChain()));
                     }
                     if (piecePredicates.size() != 0) {
-                        predicates.add(builder.and(piecePredicates.toArray(new Predicate[piecePredicates.size()])));
+                        predicates.add(criteriaBuilder.and(piecePredicates.toArray(new Predicate[piecePredicates.size()])));
                     }
                 }
             }
             return criteriaBuilder.and(predicates.toArray(new Predicate[predicates.size()]));
         };
+    }
+
+    private <T> Predicate handlerExpression(CriteriaBuilder builder, Root<T> root, BinaryExpression binaryExpression) {
+        if (binaryExpression != null) {
+            if (binaryExpression instanceof EqualExpression) {
+                EqualExpression expression = (EqualExpression)binaryExpression;
+                return builder.equal(root.get(expression.getLeftExpression().toString()), expression.getRightExpression().getValue());
+            } else if (binaryExpression instanceof InExpression) {
+                InExpression expression = (InExpression)binaryExpression;
+                Predicate predicate = root.get(expression.getLeftExpression().toString()).in(expression.getRightExpression().getValue());
+                if (expression.isNot()) {
+                    predicate = builder.not(predicate);
+                }
+                return predicate;
+            } else if (binaryExpression instanceof LikeExpression) {
+                LikeExpression expression = (LikeExpression)binaryExpression;
+                if (expression.isNot()) {
+                    return builder.notLike(root.get(expression.getLeftExpression().toString()), "%" + expression.getRightExpression().getValue() + "%");
+                } else {
+                    return builder.like(root.get(expression.getLeftExpression().toString()), "%" + expression.getRightExpression().getValue() + "%");
+                }
+            } else if (binaryExpression instanceof NullExpression) {
+                NullExpression expression = (NullExpression)binaryExpression;
+                if (expression.isNot()) {
+                    return builder.isNotNull(root.get(expression.getLeftExpression().toString()));
+                } else {
+                    return builder.isNull(root.get(expression.getLeftExpression().toString()));
+                }
+            } else if (binaryExpression instanceof EmptyExpression) {
+                EmptyExpression expression = (EmptyExpression)binaryExpression;
+                if (expression.isNot()) {
+                    return builder.isNotEmpty(root.get(expression.getLeftExpression().toString()));
+                } else {
+                    return builder.isEmpty(root.get(expression.getLeftExpression().toString()));
+                }
+            } else if (binaryExpression instanceof TrueExpression) {
+                TrueExpression expression = (TrueExpression)binaryExpression;
+                if (expression.isNot()) {
+                    return builder.isFalse(root.get(expression.getLeftExpression().toString()));
+                } else {
+                    return builder.isTrue(root.get(expression.getLeftExpression().toString()));
+                }
+            } else if (binaryExpression instanceof BetweenAndExpression) {
+                BetweenAndExpression expression = (BetweenAndExpression)binaryExpression;
+                return builder.between(root.get(expression.getLeftExpression().toString()),
+                        expression.getRightExpression().getLeftExpression().getValue(),
+                        expression.getRightExpression().getRightExpression().getValue());
+            } else if (binaryExpression instanceof DateBetweenAndExpression) {
+                DateBetweenAndExpression expression = (DateBetweenAndExpression)binaryExpression;
+                return builder.between(root.get(expression.getLeftExpression().toString()),
+                        expression.getRightExpression().getLeftExpression().getValue(),
+                        expression.getRightExpression().getRightExpression().getValue());
+            } else if (binaryExpression instanceof GreaterThanExpression) {
+                GreaterThanExpression expression = (GreaterThanExpression)binaryExpression;
+                return builder.greaterThan(root.get(expression.getLeftExpression().toString()),expression.getRightExpression().getValue());
+            } else if (binaryExpression instanceof GreaterThanOrEqualToExpression) {
+                GreaterThanOrEqualToExpression expression = (GreaterThanOrEqualToExpression)binaryExpression;
+                return builder.greaterThanOrEqualTo(root.get(expression.getLeftExpression().toString()),expression.getRightExpression().getValue());
+            } else if (binaryExpression instanceof LessThanExpression) {
+                LessThanExpression expression = (LessThanExpression)binaryExpression;
+                return builder.lessThan(root.get(expression.getLeftExpression().toString()),expression.getRightExpression().getValue());
+            } else if (binaryExpression instanceof LessThanOrEqualToExpression) {
+                LessThanOrEqualToExpression expression = (LessThanOrEqualToExpression)binaryExpression;
+                return builder.lessThanOrEqualTo(root.get(expression.getLeftExpression().toString()),expression.getRightExpression().getValue());
+            } else if (binaryExpression instanceof AndExpression) {
+                AndExpression expression = (AndExpression)binaryExpression;
+                List<Predicate> predicates = new ArrayList<>();
+                Predicate predicate = handlerExpression(builder,root,expression.getLeftExpression());
+                if (predicate != null) {
+                    predicates.add(predicate);
+                }
+                if (expression.getRightExpression() != null && expression.getRightExpression().getExpressionList() != null) {
+                    for (BinaryExpression expressionPiece : expression.getRightExpression().getExpressionList()) {
+                        Predicate temp = handlerExpression(builder,root,expressionPiece);
+                        if (temp != null) {
+                            predicates.add(temp);
+                        }
+                    }
+                }
+                if (predicates.size() > 0) {
+                    return builder.and(predicates.toArray(new Predicate[predicates.size()]));
+                }
+            } else if (binaryExpression instanceof OrExpression) {
+                OrExpression expression = (OrExpression)binaryExpression;
+                List<Predicate> predicates = new ArrayList<>();
+                Predicate predicate = handlerExpression(builder,root,expression.getLeftExpression());
+                if (predicate != null) {
+                    predicates.add(predicate);
+                }
+                if (expression.getRightExpression() != null && expression.getRightExpression().getExpressionList() != null) {
+                    for (BinaryExpression expressionPiece : expression.getRightExpression().getExpressionList()) {
+                        Predicate temp = handlerExpression(builder,root,expressionPiece);
+                        if (temp != null) {
+                            predicates.add(temp);
+                        }
+                    }
+                }
+                if (predicates.size() > 0) {
+                    return builder.or(predicates.toArray(new Predicate[predicates.size()]));
+                }
+            }
+        }
+        return null;
     }
 
     private <T> List<Predicate> nextConditionHandle(CriteriaBuilder criteriaBuilder, Root<T> root, CriteriaQuery<?> query,Map<String,ConditionPiece> conditionPieceMap) {
