@@ -1,8 +1,12 @@
 package org.metahut.starfish.scheduler.dolphinscheduler;
 
+import org.metahut.starfish.scheduler.api.PageResponse;
 import org.metahut.starfish.scheduler.api.SchedulerProperties;
 import org.metahut.starfish.scheduler.api.SchedulerTypeEnum;
+import org.metahut.starfish.scheduler.api.entity.FlowDefinition;
+import org.metahut.starfish.scheduler.api.entity.FlowInstance;
 import org.metahut.starfish.scheduler.api.parameters.HttpTaskParameter;
+import org.metahut.starfish.scheduler.api.parameters.PageRequest;
 import org.metahut.starfish.scheduler.api.parameters.ScheduleCronParameter;
 import org.metahut.starfish.scheduler.api.parameters.TaskParameter;
 
@@ -24,20 +28,22 @@ public class DolphinSchedulerTest {
 
     private DolphinScheduler scheduler;
 
-    private static final String SERVICE_URL = "http://dolphinscheduler.dev.zhaopin.com/dolphinscheduler";
+    private static final String SERVICE_URL = "http://localhost:8080/dolphinscheduler";
     private static final String TOKEN = "c6258d4a509df0f1b89f77fb552d8ddf";
     private static final String PROJECT_CODE = "4996418468000";
+
+    public static final String TASK_NAME = "hive-collector-task";
 
     @BeforeEach
     public void before() {
         SchedulerProperties schedulerProperties = new SchedulerProperties();
         schedulerProperties.setType(SchedulerTypeEnum.dolphinscheduler);
 
-        SchedulerProperties.DolphinScheduler dolphinProperties = new SchedulerProperties.DolphinScheduler();
-        dolphinProperties.setServiceUrl(SERVICE_URL);
-        dolphinProperties.setToken(TOKEN);
-        dolphinProperties.setProjectCode(PROJECT_CODE);
-        //schedulerProperties.setDolphinScheduler(dolphinProperties);
+        SchedulerProperties.DolphinScheduler dolphinSchedulerConfig = new SchedulerProperties.DolphinScheduler();
+        dolphinSchedulerConfig.setServiceUrl(SERVICE_URL);
+        dolphinSchedulerConfig.setToken(TOKEN);
+        dolphinSchedulerConfig.setProjectCode(PROJECT_CODE);
+        schedulerProperties.setDolphinScheduler(dolphinSchedulerConfig);
 
         scheduler = new DolphinSchedulerManager(schedulerProperties).getScheduler();
 
@@ -66,12 +72,12 @@ public class DolphinSchedulerTest {
     public void testCreateSingleHttpTask() {
         TaskParameter taskParameter = new TaskParameter();
 
-        taskParameter.setName("http-test-1");
+        taskParameter.setName(TASK_NAME);
         taskParameter.setDescription("http test");
         taskParameter.setTaskType("HTTP");
         HttpTaskParameter httpTaskParameter = new HttpTaskParameter();
 
-        httpTaskParameter.setUrl("http://localhost:8080");
+        httpTaskParameter.setUrl(SERVICE_URL);
         httpTaskParameter.setMethod("POST");
         // http body
         Map<String, String> bodyMap = new HashMap<>();
@@ -85,4 +91,22 @@ public class DolphinSchedulerTest {
 
         Assertions.assertNotNull(flowCode);
     }
+
+    @Test
+    public void testQueryFlowByCode() {
+        FlowDefinition flowDefinition = scheduler.queryFlowByCode("5657947648672");
+        Assertions.assertEquals(flowDefinition.getName(), TASK_NAME);
+    }
+
+    @Test
+    public void testQueryFlowInstanceListPage() {
+        PageRequest pageRequest = new PageRequest();
+        pageRequest.setPageNo(1);
+        pageRequest.setPageSize(10);
+
+        PageResponse<FlowInstance> pageResponse = scheduler.queryFlowInstanceListPage(pageRequest);
+
+        Assertions.assertDoesNotThrow(() -> scheduler.queryFlowInstanceListPage(pageRequest));
+    }
+
 }

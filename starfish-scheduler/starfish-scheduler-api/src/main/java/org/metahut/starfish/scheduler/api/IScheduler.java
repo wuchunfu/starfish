@@ -17,6 +17,9 @@
 
 package org.metahut.starfish.scheduler.api;
 
+import org.metahut.starfish.scheduler.api.entity.FlowDefinition;
+import org.metahut.starfish.scheduler.api.entity.FlowInstance;
+import org.metahut.starfish.scheduler.api.parameters.PageRequest;
 import org.metahut.starfish.scheduler.api.parameters.ScheduleCronParameter;
 import org.metahut.starfish.scheduler.api.parameters.ScheduleParameter;
 import org.metahut.starfish.scheduler.api.parameters.TaskParameter;
@@ -35,4 +38,7 @@ public interface IScheduler extends AutoCloseable {
 
     void deleteFlowByCode(String flowCode);
 
+    FlowDefinition queryFlowByCode(String flowCode);
+
+    PageResponse<FlowInstance> queryFlowInstanceListPage(PageRequest pageRequest);
 }

@@ -25,7 +25,7 @@ public class DolphinSchedulerManager implements ISchedulerManager {
         ConnectionPool connectionPool = new ConnectionPool(50, 60, TimeUnit.SECONDS);
         builder.connectionPool(connectionPool);
         OkHttpClient client = builder.build();
-        dolphinScheduler = new DolphinScheduler(client, properties.getDolphinscheduler());
+        dolphinScheduler = new DolphinScheduler(client, properties.getDolphinScheduler());
     }
 
     @Override

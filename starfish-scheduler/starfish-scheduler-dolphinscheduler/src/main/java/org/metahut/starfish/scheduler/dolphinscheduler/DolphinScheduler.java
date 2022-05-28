@@ -1,13 +1,19 @@
 package org.metahut.starfish.scheduler.dolphinscheduler;
 
 import org.metahut.starfish.scheduler.api.IScheduler;
+import org.metahut.starfish.scheduler.api.PageResponse;
 import org.metahut.starfish.scheduler.api.SchedulerException;
 import org.metahut.starfish.scheduler.api.SchedulerProperties;
+import org.metahut.starfish.scheduler.api.entity.FlowDefinition;
+import org.metahut.starfish.scheduler.api.entity.FlowInstance;
 import org.metahut.starfish.scheduler.api.parameters.HttpTaskParameter;
+import org.metahut.starfish.scheduler.api.parameters.PageRequest;
 import org.metahut.starfish.scheduler.api.parameters.ScheduleCronParameter;
 import org.metahut.starfish.scheduler.api.parameters.ScheduleParameter;
 import org.metahut.starfish.scheduler.api.parameters.TaskParameter;
+import org.metahut.starfish.scheduler.dolphinscheduler.entity.ComplexProcessDefinition;
 import org.metahut.starfish.scheduler.dolphinscheduler.entity.ProcessDefinition;
+import org.metahut.starfish.scheduler.dolphinscheduler.entity.ProcessInstance;
 import org.metahut.starfish.scheduler.dolphinscheduler.entity.Schedule;
 import org.metahut.starfish.scheduler.dolphinscheduler.enums.ReleaseState;
 import org.metahut.starfish.scheduler.dolphinscheduler.parameter.HttpParameter;
@@ -24,6 +30,8 @@ import okhttp3.OkHttpClient;
 import okhttp3.Request;
 import okhttp3.RequestBody;
 import okhttp3.Response;
+import org.apache.commons.lang3.StringUtils;
+import org.springframework.beans.BeanUtils;
 
 import java.io.IOException;
 import java.text.MessageFormat;
@@ -264,8 +272,7 @@ public class DolphinScheduler implements IScheduler {
         try {
             // create task instance and flow instance
             String resultJson = post(url, body);
-            DolphinResult<ProcessDefinition> result = JSONUtils.parseObject(resultJson, new TypeReference<DolphinResult<ProcessDefinition>>() {
-            });
+            DolphinResult<ProcessDefinition> result = JSONUtils.parseObject(resultJson, new TypeReference<DolphinResult<ProcessDefinition>>() {});
             checkResult(result, "createSingleHttpTask");
 
             long flowCode = result.getData().getCode();
@@ -291,21 +298,60 @@ public class DolphinScheduler implements IScheduler {
         } catch (IOException e) {
             throw new SchedulerException("dolphin scheduler call deleteFlowByCode method exception", e);
         }
-
     }
 
-    public void queryFlowByCode(String flowCode) {
+    @Override
+    public FlowDefinition queryFlowByCode(String flowCode) {
         String url = MessageFormat.format("/projects/{0}/process-definition/{1}", properties.getProjectCode(), flowCode);
         try {
             String resultJson = get(url);
 
+            DolphinResult<ComplexProcessDefinition> result = JSONUtils.parseObject(
+                resultJson, new TypeReference<DolphinResult<ComplexProcessDefinition>>() {});
+
+            ComplexProcessDefinition complexProcessDefinition = result.getData();
+            FlowDefinition flowDefinition = new FlowDefinition();
+            BeanUtils.copyProperties(complexProcessDefinition.getProcessDefinition(), flowDefinition);
+
+            return flowDefinition;
         } catch (IOException e) {
             throw new SchedulerException("dolphin scheduler call queryFlowByCode method exception", e);
         }
     }
 
-    public void queryFlowInstanceListPage() {
+    @Override
+    public PageResponse<FlowInstance> queryFlowInstanceListPage(PageRequest pageRequest) {
+        String url = MessageFormat.format("/projects/{0}/process-instances??searchVal={1}&pageSize={2}&pageNo={3}",
+            properties.getProjectCode(),
+            StringUtils.isNotBlank(pageRequest.getSearchVal()) ? pageRequest.getSearchVal() : "",
+            pageRequest.getPageSize(),
+            pageRequest.getPageNo());
 
+        try {
+            String resultJson = get(url);
+            DolphinResult<DolphinPageInfo<ProcessInstance>> result = JSONUtils.parseObject(
+                resultJson, new TypeReference<DolphinResult<DolphinPageInfo<ProcessInstance>>>() {});
+
+            DolphinPageInfo<ProcessInstance> pageInfo = result.getData();
+
+            PageResponse<FlowInstance> pageResponse = new PageResponse<>();
+
+            pageResponse.setPageNo(pageInfo.getCurrentPage());
+            pageResponse.setPageSize(pageInfo.getPageSize());
+            pageResponse.setTotal(Integer.toUnsignedLong(pageInfo.getTotal()));
+            List<FlowInstance> flowInstanceList = new ArrayList<>();
+            pageResponse.setData(flowInstanceList);
+
+            pageInfo.getTotalList().forEach(processInstance -> {
+                FlowInstance flowInstance = new FlowInstance();
+                BeanUtils.copyProperties(processInstance, flowInstance);
+                flowInstance.setFlowCode(processInstance.getProcessDefinitionCode());
+                flowInstanceList.add(flowInstance);
+            });
+            return pageResponse;
+        } catch (IOException e) {
+            throw new SchedulerException("dolphin scheduler call queryFlowInstanceListPage method exception", e);
+        }
     }
 
     // -----------------------------------------------------------------------------------------------------------------
