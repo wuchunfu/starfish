@@ -114,7 +114,6 @@ public class HiveCollectorTest {
     //    Assertions.assertNotNull(result);
     //}
 
-
     public static String doPostJson(String url, String params) {
         try {
             HttpClientBuilder httpClientBuilder = HttpClientBuilder.create();
@@ -141,7 +140,6 @@ public class HiveCollectorTest {
             throw new RuntimeException(ex);
         }
     }
-
 
     @Test
     public void testHiveCollectorTask() {

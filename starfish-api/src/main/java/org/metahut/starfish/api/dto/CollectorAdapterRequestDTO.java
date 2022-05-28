@@ -115,13 +115,13 @@ public class CollectorAdapterRequestDTO extends PageRequestDTO {
         conditionPiece.setTableType(TableType.ENTITY_PROPERTY);
         conditionPiece.setExpressions(new ArrayList());
         if (StringUtils.isNotBlank(this.name)) {
-            conditionPiece.getExpressions().addAll(Expression.keyValueLike("name", this.name));
+            conditionPiece.getExpressions().add(Expression.and(Expression.keyValueLike("name", this.name)));
         }
         if (StringUtils.isNotBlank(this.type)) {
-            conditionPiece.getExpressions().addAll(Expression.keyValueEqual("type", this.type));
+            conditionPiece.getExpressions().add(Expression.and(Expression.keyValueEqual("type", this.type)));
         }
         if (StringUtils.isNotBlank(this.description)) {
-            conditionPiece.getExpressions().addAll(Expression.keyValueLike("description", this.description));
+            conditionPiece.getExpressions().add(Expression.and(Expression.keyValueLike("description", this.description)));
         }
         return conditionPiece;
     }

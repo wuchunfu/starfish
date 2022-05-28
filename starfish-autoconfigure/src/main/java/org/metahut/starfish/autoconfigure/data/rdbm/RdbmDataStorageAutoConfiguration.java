@@ -56,6 +56,7 @@ import org.springframework.data.jpa.domain.Specification;
 
 import javax.persistence.criteria.CriteriaBuilder;
 import javax.persistence.criteria.CriteriaQuery;
+import javax.persistence.criteria.From;
 import javax.persistence.criteria.Join;
 import javax.persistence.criteria.Predicate;
 import javax.persistence.criteria.Root;
@@ -246,7 +247,7 @@ public class RdbmDataStorageAutoConfiguration {
         };
     }
 
-    private <T> Predicate handlerExpression(CriteriaBuilder builder, Root<T> root, BinaryExpression binaryExpression) {
+    private <X,T> Predicate handlerExpression(CriteriaBuilder builder, From<X,T> root, BinaryExpression binaryExpression) {
         if (binaryExpression != null) {
             if (binaryExpression instanceof EqualExpression) {
                 EqualExpression expression = (EqualExpression)binaryExpression;
@@ -361,7 +362,7 @@ public class RdbmDataStorageAutoConfiguration {
                         List<BinaryExpression> expressions1 = nextConditionPiece.getExpressions();
                         if (expressions1 != null) {
                             for (BinaryExpression expression : expressions1) {
-                                predicates.add(criteriaBuilder.equal(join1.get(expression.getLeftExpression().toString()), expression.getRightExpression().toString()));
+                                predicates.add(handlerExpression(criteriaBuilder,join1,expression));
                             }
                         }
                         predicates.addAll(nextConditionHandle(criteriaBuilder,join1,query,nextConditionPiece.getNextConditionChain()));
@@ -371,20 +372,20 @@ public class RdbmDataStorageAutoConfiguration {
                         List<BinaryExpression> expressions2 = nextConditionPiece.getExpressions();
                         if (expressions2 != null) {
                             for (BinaryExpression expression : expressions2) {
-                                predicates.add(criteriaBuilder.equal(join2.get(expression.getLeftExpression().toString()), expression.getRightExpression().toString()));
+                                predicates.add(handlerExpression(criteriaBuilder,join2,expression));
                             }
                         }
                         predicates.addAll(nextConditionHandle(criteriaBuilder,join2,query,nextConditionPiece.getNextConditionChain()));
                         break;
                     case ENTITY_PROPERTY:
-                        Join<T, NodeEntityProperty> join3 = root.join(propertyName);
                         List<BinaryExpression> expressions3 = nextConditionPiece.getExpressions();
                         if (expressions3 != null) {
                             for (BinaryExpression expression : expressions3) {
-                                predicates.add(criteriaBuilder.equal(join3.get(expression.getLeftExpression().toString()), expression.getRightExpression().toString()));
+                                Join<T, NodeEntityProperty> join3 = root.join(propertyName);
+                                predicates.add(handlerExpression(criteriaBuilder,join3,expression));
+                                predicates.addAll(nextConditionHandle(criteriaBuilder,join3,query,nextConditionPiece.getNextConditionChain()));
                             }
                         }
-                        predicates.addAll(nextConditionHandle(criteriaBuilder,join3,query,nextConditionPiece.getNextConditionChain()));
                         break;
                     default:
                 }

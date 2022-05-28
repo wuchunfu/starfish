@@ -77,6 +77,13 @@ public interface Expression {
         return result;
     }
 
+    static BinaryExpression and(List<BinaryExpression> expressions) {
+        AndExpression andExpression = new AndExpression();
+        andExpression.setLeftExpression(expressions.remove(0));
+        andExpression.setRightExpression(new BinaryExpressions(expressions));
+        return andExpression;
+    }
+
     static List<BinaryExpression> keyValueDateBetweenAnd(String key,Date beginTime, Date endTime) {
         List<BinaryExpression> result = new ArrayList<>();
         EqualExpression keyExpression = new EqualExpression();

@@ -19,6 +19,9 @@ spring:
   jpa:
     properties:
       hibernate:
+        show_sql: true
+        use_sql_comments: true
+        format_sql: true
         hbm2ddl:
           auto: update
     show-sql: true

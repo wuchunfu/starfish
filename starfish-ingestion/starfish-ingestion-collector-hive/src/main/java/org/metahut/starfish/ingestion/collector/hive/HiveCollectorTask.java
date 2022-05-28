@@ -42,7 +42,6 @@ import static org.metahut.starfish.ingestion.collector.hive.Constants.TYPE_NAME_
 import static org.metahut.starfish.ingestion.collector.hive.Constants.TYPE_NAME_TABLE;
 import static org.metahut.starfish.ingestion.common.EntityUtils.generateName;
 
-
 public class HiveCollectorTask implements ICollectorTask {
 
     private static final Logger LOGGER = LoggerFactory.getLogger(HiveCollectorTask.class);
@@ -119,7 +118,7 @@ public class HiveCollectorTask implements ICollectorTask {
             if (CollectionUtils.isEmpty(allDatabases)) {
                 return;
             }
-            
+
             RowData rowData = new RowData();
             for (String dbName : allDatabases) {
                 EntityHeader entityHeader = generateHiveDBEntity(clusterHeader, dbName);
@@ -127,7 +126,7 @@ public class HiveCollectorTask implements ICollectorTask {
                 // HiveCluster -> dbs -> HiveDB
                 rowData.getRelations().add(RelationRow.of(RowKind.UPSERT, clusterHeader, entityHeader, RELATION_PROPERTY_CLUSTER_DB));
             }
-            
+
             sendMessage(rowData);
         } catch (TException e) {
             // TODO exception handler
@@ -164,14 +163,14 @@ public class HiveCollectorTask implements ICollectorTask {
             if (CollectionUtils.isEmpty(allTables)) {
                 return;
             }
-            
+
             RowData rowData = new RowData();
             for (String tableName : allTables) {
                 EntityHeader entityHeader = generateHiveTableEntity(dbHeader, dbName, tableName);
                 // HiveDB -> tables -> HiveTable
                 rowData.getRelations().add(RelationRow.of(RowKind.UPSERT, dbHeader, entityHeader, RELATION_PROPERTY_DB_TABLE));
             }
-            
+
             sendMessage(rowData);
 
         } catch (TException e) {

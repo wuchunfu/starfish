@@ -8,6 +8,10 @@ import java.util.List;
 public class BinaryExpressions implements Expression {
     private List<BinaryExpression> expressionList;
 
+    public BinaryExpressions(List<BinaryExpression> expressionList) {
+        this.expressionList = expressionList;
+    }
+
     public List<BinaryExpression> getExpressionList() {
         return expressionList;
     }

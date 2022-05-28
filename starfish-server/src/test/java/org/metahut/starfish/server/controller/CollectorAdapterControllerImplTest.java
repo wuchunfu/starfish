@@ -1,6 +1,8 @@
 package org.metahut.starfish.server.controller;
 
+import org.metahut.starfish.api.controller.CollectorAdapterController;
 import org.metahut.starfish.api.dto.CollectorAdapterCreateOrUpdateRequestDTO;
+import org.metahut.starfish.api.dto.CollectorAdapterRequestDTO;
 import org.metahut.starfish.api.dto.CollectorAdapterResponseDTO;
 import org.metahut.starfish.api.dto.PageResponseDTO;
 import org.metahut.starfish.api.dto.ResultEntity;
@@ -10,6 +12,7 @@ import com.fasterxml.jackson.core.type.TypeReference;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.Disabled;
 import org.junit.jupiter.api.Test;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpEntity;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpMethod;
@@ -137,19 +140,19 @@ class CollectorAdapterControllerImplTest extends WebApplicationTest {
 
     @Test
     void queryList() {
-        CollectorAdapterCreateOrUpdateRequestDTO collectorAdapterCreateOrUpdateRequestDTO = new CollectorAdapterCreateOrUpdateRequestDTO();
-        collectorAdapterCreateOrUpdateRequestDTO.setDescription("this is a hive adapter");
-        collectorAdapterCreateOrUpdateRequestDTO.setName("hive adapter");
-        collectorAdapterCreateOrUpdateRequestDTO.setParameter("{\"hiveMetastoreUris\":\"thrift://172.21.100.231:9083\"}");
-        collectorAdapterCreateOrUpdateRequestDTO.setType("Hive");
-        CollectorAdapterResponseDTO collectorAdapterResponseDTO = createAdapters(collectorAdapterCreateOrUpdateRequestDTO);
-
-        CollectorAdapterCreateOrUpdateRequestDTO collectorAdapterCreateOrUpdateRequestDTO1 = new CollectorAdapterCreateOrUpdateRequestDTO();
-        collectorAdapterCreateOrUpdateRequestDTO1.setDescription("this is a pulsar adapter");
-        collectorAdapterCreateOrUpdateRequestDTO1.setName("Pulsar adapter");
-        collectorAdapterCreateOrUpdateRequestDTO1.setParameter("{\"serverUrl\":\"http://pulsar-idc-qa.zpidc.com:8080\"}");
-        collectorAdapterCreateOrUpdateRequestDTO1.setType("Pulsar");
-        CollectorAdapterResponseDTO collectorAdapterResponseDTO1 = createAdapters(collectorAdapterCreateOrUpdateRequestDTO1);
+        //CollectorAdapterCreateOrUpdateRequestDTO collectorAdapterCreateOrUpdateRequestDTO = new CollectorAdapterCreateOrUpdateRequestDTO();
+        //collectorAdapterCreateOrUpdateRequestDTO.setDescription("this is a hive adapter");
+        //collectorAdapterCreateOrUpdateRequestDTO.setName("hive adapter");
+        //collectorAdapterCreateOrUpdateRequestDTO.setParameter("{\"hiveMetastoreUris\":\"thrift://172.21.100.231:9083\"}");
+        //collectorAdapterCreateOrUpdateRequestDTO.setType("Hive");
+        //CollectorAdapterResponseDTO collectorAdapterResponseDTO = createAdapters(collectorAdapterCreateOrUpdateRequestDTO);
+        //
+        //CollectorAdapterCreateOrUpdateRequestDTO collectorAdapterCreateOrUpdateRequestDTO1 = new CollectorAdapterCreateOrUpdateRequestDTO();
+        //collectorAdapterCreateOrUpdateRequestDTO1.setDescription("this is a pulsar adapter");
+        //collectorAdapterCreateOrUpdateRequestDTO1.setName("Pulsar adapter");
+        //collectorAdapterCreateOrUpdateRequestDTO1.setParameter("{\"serverUrl\":\"http://pulsar-idc-qa.zpidc.com:8080\"}");
+        //collectorAdapterCreateOrUpdateRequestDTO1.setType("Pulsar");
+        //CollectorAdapterResponseDTO collectorAdapterResponseDTO1 = createAdapters(collectorAdapterCreateOrUpdateRequestDTO1);
 
         String url = this.base + REST_FUNCTION_URL_PREFIX + "queryList";
         UriComponentsBuilder builder = UriComponentsBuilder.fromHttpUrl(url).queryParam("name", "hive adapter");
@@ -163,5 +166,16 @@ class CollectorAdapterControllerImplTest extends WebApplicationTest {
         Assertions.assertEquals(1, data.size());
         CollectorAdapterResponseDTO collectorAdapterResponseDTO2 = data.stream().findFirst().get();
         Assertions.assertEquals("hive adapter", collectorAdapterResponseDTO2.getName());
+    }
+
+    @Autowired
+    private CollectorAdapterController controller;
+
+    @Test
+    public void test() {
+        CollectorAdapterRequestDTO dto = new CollectorAdapterRequestDTO();
+        dto.setName("hive adapter");
+        dto.setDescription("this is a hive adapter");
+        controller.queryList(dto);
     }
 }
