@@ -164,7 +164,7 @@ public class HiveTableQueryDTO extends PageRequestDTO {
     private ConditionPiece propertyNamePiece() {
         ConditionPiece conditionPiece = new ConditionPiece();
         conditionPiece.setTableType(TableType.ENTITY_PROPERTY);
-        conditionPiece.setExpressions(Expression.keyValueLike("name",this.hiveTableName));
+        conditionPiece.setExpressions(Arrays.asList(Expression.and(Expression.keyValueLike("name",this.hiveTableName))));
         return conditionPiece;
     }
 
@@ -232,7 +232,7 @@ public class HiveTableQueryDTO extends PageRequestDTO {
     private ConditionPiece propertyPiece() {
         ConditionPiece conditionPiece = new ConditionPiece();
         conditionPiece.setTableType(TableType.ENTITY_PROPERTY);
-        conditionPiece.setExpressions(Expression.keyValueLike("name",this.hiveDbName));
+        conditionPiece.setExpressions(Arrays.asList(Expression.and(Expression.keyValueLike("name",this.hiveDbName))));
         return conditionPiece;
     }
 
@@ -266,7 +266,7 @@ public class HiveTableQueryDTO extends PageRequestDTO {
     private ConditionPiece clusterPropertyPiece() {
         ConditionPiece conditionPiece = new ConditionPiece();
         conditionPiece.setTableType(TableType.ENTITY_PROPERTY);
-        conditionPiece.setExpressions(Expression.keyValueLike("name",this.hiveClusterName));
+        conditionPiece.setExpressions(Arrays.asList(Expression.and(Expression.keyValueLike("name",this.hiveClusterName))));
         return conditionPiece;
     }
 }

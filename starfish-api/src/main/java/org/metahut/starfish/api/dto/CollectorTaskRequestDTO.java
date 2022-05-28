@@ -129,7 +129,7 @@ public class CollectorTaskRequestDTO extends PageRequestDTO {
     private ConditionPiece propertyNamePiece() {
         ConditionPiece conditionPiece = new ConditionPiece();
         conditionPiece.setTableType(TableType.ENTITY_PROPERTY);
-        conditionPiece.setExpressions(Expression.keyValueEqual("name",this.name));
+        conditionPiece.setExpressions(Arrays.asList(Expression.and(Expression.keyValueEqual("name",this.name))));
         return conditionPiece;
     }
 
@@ -202,7 +202,7 @@ public class CollectorTaskRequestDTO extends PageRequestDTO {
     private ConditionPiece propertyPiece() {
         ConditionPiece conditionPiece = new ConditionPiece();
         conditionPiece.setTableType(TableType.ENTITY_PROPERTY);
-        conditionPiece.setExpressions(Expression.keyValueEqual("type",this.type));
+        conditionPiece.setExpressions(Arrays.asList(Expression.and(Expression.keyValueEqual("type",this.type))));
         return conditionPiece;
     }
 

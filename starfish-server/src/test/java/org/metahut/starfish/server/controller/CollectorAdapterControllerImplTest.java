@@ -140,19 +140,19 @@ class CollectorAdapterControllerImplTest extends WebApplicationTest {
 
     @Test
     void queryList() {
-        //CollectorAdapterCreateOrUpdateRequestDTO collectorAdapterCreateOrUpdateRequestDTO = new CollectorAdapterCreateOrUpdateRequestDTO();
-        //collectorAdapterCreateOrUpdateRequestDTO.setDescription("this is a hive adapter");
-        //collectorAdapterCreateOrUpdateRequestDTO.setName("hive adapter");
-        //collectorAdapterCreateOrUpdateRequestDTO.setParameter("{\"hiveMetastoreUris\":\"thrift://172.21.100.231:9083\"}");
-        //collectorAdapterCreateOrUpdateRequestDTO.setType("Hive");
-        //CollectorAdapterResponseDTO collectorAdapterResponseDTO = createAdapters(collectorAdapterCreateOrUpdateRequestDTO);
-        //
-        //CollectorAdapterCreateOrUpdateRequestDTO collectorAdapterCreateOrUpdateRequestDTO1 = new CollectorAdapterCreateOrUpdateRequestDTO();
-        //collectorAdapterCreateOrUpdateRequestDTO1.setDescription("this is a pulsar adapter");
-        //collectorAdapterCreateOrUpdateRequestDTO1.setName("Pulsar adapter");
-        //collectorAdapterCreateOrUpdateRequestDTO1.setParameter("{\"serverUrl\":\"http://pulsar-idc-qa.zpidc.com:8080\"}");
-        //collectorAdapterCreateOrUpdateRequestDTO1.setType("Pulsar");
-        //CollectorAdapterResponseDTO collectorAdapterResponseDTO1 = createAdapters(collectorAdapterCreateOrUpdateRequestDTO1);
+        CollectorAdapterCreateOrUpdateRequestDTO collectorAdapterCreateOrUpdateRequestDTO = new CollectorAdapterCreateOrUpdateRequestDTO();
+        collectorAdapterCreateOrUpdateRequestDTO.setDescription("this is a hive adapter");
+        collectorAdapterCreateOrUpdateRequestDTO.setName("hive adapter");
+        collectorAdapterCreateOrUpdateRequestDTO.setParameter("{\"hiveMetastoreUris\":\"thrift://172.21.100.231:9083\"}");
+        collectorAdapterCreateOrUpdateRequestDTO.setType("Hive");
+        CollectorAdapterResponseDTO collectorAdapterResponseDTO = createAdapters(collectorAdapterCreateOrUpdateRequestDTO);
+
+        CollectorAdapterCreateOrUpdateRequestDTO collectorAdapterCreateOrUpdateRequestDTO1 = new CollectorAdapterCreateOrUpdateRequestDTO();
+        collectorAdapterCreateOrUpdateRequestDTO1.setDescription("this is a pulsar adapter");
+        collectorAdapterCreateOrUpdateRequestDTO1.setName("Pulsar adapter");
+        collectorAdapterCreateOrUpdateRequestDTO1.setParameter("{\"serverUrl\":\"http://pulsar-idc-qa.zpidc.com:8080\"}");
+        collectorAdapterCreateOrUpdateRequestDTO1.setType("Pulsar");
+        CollectorAdapterResponseDTO collectorAdapterResponseDTO1 = createAdapters(collectorAdapterCreateOrUpdateRequestDTO1);
 
         String url = this.base + REST_FUNCTION_URL_PREFIX + "queryList";
         UriComponentsBuilder builder = UriComponentsBuilder.fromHttpUrl(url).queryParam("name", "hive adapter");

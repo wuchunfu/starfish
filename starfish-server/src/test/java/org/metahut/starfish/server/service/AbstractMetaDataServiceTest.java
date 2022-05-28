@@ -216,10 +216,6 @@ class AbstractMetaDataServiceTest {
         Map<String,ConditionPiece> map = new HashMap<>();
         ConditionPiece conditionNext = new ConditionPiece();
         conditionNext.setTableType(TableType.RELATION);
-        EqualExpression equalExpression1 = new EqualExpression();
-        equalExpression1.setLeftExpression(new StringExpression("name"));
-        equalExpression1.setRightExpression(new StringExpression("1111"));
-        //conditionNext.setExpressions(Arrays.asList(sampleExpression1));
         map.put("properties",conditionNext);
         conditionPiece.setNextConditionChain(map);
         return conditionPiece;
