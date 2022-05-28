@@ -1,6 +1,6 @@
 package org.metahut.starfish.server.service.impl;
 
-import org.metahut.starfish.api.dto.ScheduleCronRequestDTO;
+import org.metahut.starfish.api.dto.SchedulerCronRequestDTO;
 import org.metahut.starfish.scheduler.api.IScheduler;
 import org.metahut.starfish.scheduler.api.parameters.ScheduleCronParameter;
 import org.metahut.starfish.server.service.SchedulerService;
@@ -19,12 +19,12 @@ public class SchedulerServiceImpl implements SchedulerService {
     }
 
     @Override
-    public Collection<String> previewSchedule(ScheduleCronRequestDTO scheduleCronRequestDTO) {
+    public Collection<String> previewSchedule(SchedulerCronRequestDTO schedulerCronRequestDTO) {
         ScheduleCronParameter parameter = new ScheduleCronParameter();
-        parameter.setCron(scheduleCronRequestDTO.getCron());
-        parameter.setStartTime(scheduleCronRequestDTO.getStartTime());
-        parameter.setEndTime(scheduleCronRequestDTO.getEndTime());
-        parameter.setTimezoneId(scheduleCronRequestDTO.getTimezoneId());
+        parameter.setCron(schedulerCronRequestDTO.getCron());
+        parameter.setStartTime(schedulerCronRequestDTO.getStartTime());
+        parameter.setEndTime(schedulerCronRequestDTO.getEndTime());
+        parameter.setTimezoneId(schedulerCronRequestDTO.getTimezoneId());
         return scheduler.previewSchedule(parameter);
     }
 

@@ -9,6 +9,7 @@ public class EntityRow<T> {
     private RowKind rowKind;
 
     private EntityHeader header;
+
     private Map<String,T> properties;
 
     public EntityRow() {

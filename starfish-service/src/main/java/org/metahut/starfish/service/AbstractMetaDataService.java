@@ -175,7 +175,7 @@ public abstract class AbstractMetaDataService<K,T> implements IMetaDataApi<K,T> 
                 condition.setResultType(Map.class);
                 condition.setFilters(Arrays.asList(ConditionPiece.entityWithType(entity.getHeader().getTypeName())));
                 Set<K> instanceIds = graphApi().query(condition).stream().map(map -> (K) map.get("id")).collect(Collectors.toSet());
-                Map<String, T> properties = entity.getProperties();
+                Map<String, T> properties = null;
                 switch (entity.getRowKind()) {
                     case UPDATE:
                         if (instanceIds == null) {

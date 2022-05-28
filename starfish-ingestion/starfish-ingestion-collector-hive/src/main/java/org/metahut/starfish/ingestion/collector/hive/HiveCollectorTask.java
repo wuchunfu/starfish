@@ -15,6 +15,7 @@ import org.metahut.starfish.unit.enums.RowKind;
 import org.metahut.starfish.unit.row.EntityHeader;
 import org.metahut.starfish.unit.row.RelationRow;
 
+import org.apache.commons.collections4.CollectionUtils;
 import org.apache.hadoop.hive.metastore.IMetaStoreClient;
 import org.apache.hadoop.hive.metastore.api.Database;
 import org.apache.hadoop.hive.metastore.api.FieldSchema;
@@ -22,7 +23,6 @@ import org.apache.hadoop.hive.metastore.api.Table;
 import org.apache.thrift.TException;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-import org.springframework.util.CollectionUtils;
 
 import java.util.List;
 import java.util.Objects;

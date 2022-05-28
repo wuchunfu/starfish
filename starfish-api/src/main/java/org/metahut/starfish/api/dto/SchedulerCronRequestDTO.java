@@ -4,7 +4,7 @@ import javax.validation.constraints.NotEmpty;
 
 import java.util.Date;
 
-public class ScheduleCronRequestDTO {
+public class SchedulerCronRequestDTO {
 
     private Date startTime;
     private Date endTime;

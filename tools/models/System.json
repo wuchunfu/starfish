@@ -5,7 +5,6 @@
   },
   "types": [
     {
-      "nameAttributeRel": "name",
       "name": "CollectorTask",
       "packagePath": "org.starfish",
       "attributes": [
@@ -54,7 +53,6 @@
       ]
     },
     {
-      "nameAttributeRel": "name",
       "name": "CollectorAdapter",
       "packagePath": "org.starfish",
       "attributes": [

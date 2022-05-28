@@ -2,7 +2,7 @@ package org.metahut.starfish.server.controller;
 
 import org.metahut.starfish.api.controller.SchedulerController;
 import org.metahut.starfish.api.dto.ResultEntity;
-import org.metahut.starfish.api.dto.ScheduleCronRequestDTO;
+import org.metahut.starfish.api.dto.SchedulerCronRequestDTO;
 import org.metahut.starfish.server.service.SchedulerService;
 
 import org.springframework.web.bind.annotation.RestController;
@@ -17,8 +17,8 @@ public class SchedulerControllerImpl implements SchedulerController {
     }
 
     @Override
-    public ResultEntity previewSchedule(ScheduleCronRequestDTO scheduleCronRequestDTO) {
-        return ResultEntity.success(schedulerService.previewSchedule(scheduleCronRequestDTO));
+    public ResultEntity previewSchedule(SchedulerCronRequestDTO schedulerCronRequestDTO) {
+        return ResultEntity.success(schedulerService.previewSchedule(schedulerCronRequestDTO));
     }
 
     // 创建单个Http任务

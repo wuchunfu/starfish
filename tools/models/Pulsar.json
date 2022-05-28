@@ -5,7 +5,6 @@
   },
   "types": [
     {
-      "nameAttributeRel": "name",
       "name": "PulsarCluster",
       "packagePath": "org.starfish",
       "attributes": [
@@ -24,36 +23,22 @@
           "defaultValue": null
         },
         {
-          "name": "serviceUrlTls",
+          "name": "listenerName",
           "className": "java.lang.String",
           "relType": "PRIMITIVE",
           "array": false,
           "defaultValue": null
         },
         {
-          "name": "brokerServiceUrl",
+          "name": "description",
           "className": "java.lang.String",
           "relType": "PRIMITIVE",
           "array": false,
           "defaultValue": null
         },
         {
-          "name": "brokerServiceUrlTls",
-          "className": "java.lang.String",
-          "relType": "PRIMITIVE",
-          "array": false,
-          "defaultValue": null
-        },
-        {
-          "name": "proxyServiceUrl",
-          "className": "java.lang.String",
-          "relType": "PRIMITIVE",
-          "array": false,
-          "defaultValue": null
-        },
-        {
-          "name": "topics",
-          "className": "org.starfish.PulsarTopic",
+          "name": "allowedTenants",
+          "className": "org.starfish.PulsarTenant",
           "relType": "ENTITY",
           "array": true,
           "defaultValue": null
@@ -61,7 +46,60 @@
       ]
     },
     {
-      "nameAttributeRel": "name",
+      "name": "PulsarTenant",
+      "packagePath": "org.starfish",
+      "attributes": [
+        {
+          "name": "name",
+          "className": "java.lang.String",
+          "relType": "PRIMITIVE",
+          "array": false,
+          "defaultValue": null
+        },
+        {
+          "name": "allowedClusters",
+          "className": "org.starfish.PulsarCluster",
+          "relType": "ENTITY",
+          "array": true,
+          "defaultValue": null
+        },
+        {
+          "name": "namespaces",
+          "className": "org.starfish.PulsarNamespace",
+          "relType": "ENTITY",
+          "array": true,
+          "defaultValue": null
+        }
+      ]
+    },
+    {
+      "name": "PulsarNamespace",
+      "packagePath": "org.starfish",
+      "attributes": [
+        {
+          "name": "name",
+          "className": "java.lang.String",
+          "relType": "PRIMITIVE",
+          "array": false,
+          "defaultValue": null
+        },
+        {
+          "name": "tenant",
+          "className": "org.starfish.PulsarTenant",
+          "relType": "ENTITY",
+          "array": false,
+          "defaultValue": null
+        },
+        {
+          "name": "messageTTL",
+          "className": "java.lang.Integer",
+          "relType": "PRIMITIVE",
+          "array": false,
+          "defaultValue": null
+        }
+      ]
+    },
+    {
       "name": "PulsarTopic",
       "packagePath": "org.starfish",
       "attributes": [
@@ -73,15 +111,161 @@
           "defaultValue": null
         },
         {
-          "name": "persistent",
-          "className": "boolean",
+          "name": "storageSize",
+          "className": "java.lang.Long",
           "relType": "PRIMITIVE",
           "array": false,
           "defaultValue": null
         },
         {
-          "name": "cluster",
-          "className": "org.starfish.PulsarCluster",
+          "name": "backlogSize",
+          "className": "java.lang.Long",
+          "relType": "PRIMITIVE",
+          "array": false,
+          "defaultValue": null
+        },
+
+        {
+          "name": "namespace",
+          "className": "org.starfish.PulsarNamespace",
+          "relType": "ENTITY",
+          "array": false,
+          "defaultValue": null
+        },
+        {
+          "name": "schemas",
+          "className": "org.starfish.PulsarSchema",
+          "relType": "ENTITY",
+          "array": true,
+          "defaultValue": null
+        },
+        {
+          "name": "publishers",
+          "className": "org.starfish.PulsarPublisher",
+          "relType": "ENTITY",
+          "array": true,
+          "defaultValue": null
+        }
+      ]
+    },
+    {
+      "name": "PulsarSchema",
+      "packagePath": "org.starfish",
+      "attributes": [
+        {
+          "name": "name",
+          "className": "java.lang.String",
+          "relType": "PRIMITIVE",
+          "array": false,
+          "defaultValue": null
+        },
+        {
+          "name": "type",
+          "className": "java.lang.String",
+          "relType": "PRIMITIVE",
+          "array": false,
+          "defaultValue": null
+        },
+        {
+          "name": "definition",
+          "className": "java.lang.String",
+          "relType": "PRIMITIVE",
+          "array": false,
+          "defaultValue": null
+        },
+        {
+          "name": "schema",
+          "className": "java.lang.String",
+          "relType": "PRIMITIVE",
+          "array": false,
+          "defaultValue": null
+        },
+        {
+          "name": "topic",
+          "className": "org.starfish.PulsarTopic",
+          "relType": "ENTITY",
+          "array": false,
+          "defaultValue": null
+        }
+      ]
+    },
+    {
+      "name": "PulsarPublisher",
+      "packagePath": "org.starfish",
+      "attributes": [
+        {
+          "name": "accessMode",
+          "className": "java.lang.String",
+          "relType": "PRIMITIVE",
+          "array": false,
+          "defaultValue": null
+        },
+        {
+          "name": "msgRateIn",
+          "className": "java.lang.Double",
+          "relType": "PRIMITIVE",
+          "array": false,
+          "defaultValue": null
+        },
+        {
+          "name": "msgThroughputIn",
+          "className": "java.lang.Double",
+          "relType": "PRIMITIVE",
+          "array": false,
+          "defaultValue": null
+        },
+        {
+          "name": "averageMsgSize",
+          "className": "java.lang.Double",
+          "relType": "PRIMITIVE",
+          "array": false,
+          "defaultValue": null
+        },
+        {
+          "name": "chunkedMessageRate",
+          "className": "java.lang.Double",
+          "relType": "PRIMITIVE",
+          "array": false,
+          "defaultValue": null
+        },
+        {
+          "name": "producerId",
+          "className": "java.lang.Long",
+          "relType": "PRIMITIVE",
+          "array": false,
+          "defaultValue": null
+        },
+        {
+          "name": "producerName",
+          "className": "java.lang.String",
+          "relType": "PRIMITIVE",
+          "array": false,
+          "defaultValue": null
+        },
+        {
+          "name": "address",
+          "className": "java.lang.String",
+          "relType": "PRIMITIVE",
+          "array": false,
+          "defaultValue": null
+        },
+        {
+          "name": "connectedSince",
+          "className": "java.lang.String",
+          "relType": "PRIMITIVE",
+          "array": false,
+          "defaultValue": null
+        },
+        {
+          "name": "clientVersion",
+          "className": "java.lang.String",
+          "relType": "PRIMITIVE",
+          "array": false,
+          "defaultValue": null
+        },
+        {
+          "name": "topic",
+          "className": "org.starfish.PulsarTopic",
           "relType": "ENTITY",
           "array": false,
           "defaultValue": null
