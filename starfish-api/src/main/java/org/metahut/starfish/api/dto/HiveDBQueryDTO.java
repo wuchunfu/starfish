@@ -1,33 +1,26 @@
 package org.metahut.starfish.api.dto;
 
+import io.swagger.annotations.ApiModelProperty;
+
 /**
  *
  */
-public class HiveDBQueryDTO {
+public class HiveDBQueryDTO extends PageRequestDTO {
+
+    @ApiModelProperty(value = "hive db name")
     private String name;
+
+    @ApiModelProperty(value = "hive db description")
     private String description;
+
+    @ApiModelProperty(value = "hive db owner")
     private String owner;
+
+    @ApiModelProperty(value = "hive db location")
     private String location;
+
+    @ApiModelProperty(value = "hive db parameters")
     private String parameters;
-
-    private Long pageSize;
-    private Long pageNo;
-
-    public Long getPageSize() {
-        return pageSize;
-    }
-
-    public void setPageSize(Long pageSize) {
-        this.pageSize = pageSize;
-    }
-
-    public Long getPageNo() {
-        return pageNo;
-    }
-
-    public void setPageNo(Long pageNo) {
-        this.pageNo = pageNo;
-    }
 
     public String getName() {
         return name;

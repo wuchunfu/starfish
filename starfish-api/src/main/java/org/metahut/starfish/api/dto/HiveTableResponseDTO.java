@@ -1,39 +1,56 @@
 package org.metahut.starfish.api.dto;
 
+import io.swagger.annotations.ApiModel;
+import io.swagger.annotations.ApiModelProperty;
+
 import java.util.Date;
 import java.util.List;
 
 /**
  *
  */
+@ApiModel(description = "hive table response dto")
 public class HiveTableResponseDTO {
 
+    @ApiModelProperty(value = "hive table id")
+    private Long id;
+
+    @ApiModelProperty(value = "hive table name")
     private String name;
 
+    @ApiModelProperty(value = "hive table description")
     private String description;
 
+    @ApiModelProperty(value = "hive table owner")
     private String owner;
 
+    @ApiModelProperty(value = "hive table last access time")
     private String lastAccessTime;
 
+    @ApiModelProperty(value = "hive table partition keys")
     private List<String> partitionKeys;
 
+    @ApiModelProperty(value = "hive table type")
     private String tableType;
 
+    @ApiModelProperty(value = "hive table create time")
     private Date createTime;
 
+    @ApiModelProperty(value = "hive table update time")
     private Date updateTime;
 
+    @ApiModelProperty(value = "hive table db")
     private HiveDBResponseDTO db;
 
+    @ApiModelProperty(value = "hive table columns")
     private List<HiveColumnResponseDTO> columns;
 
-    public List<HiveColumnResponseDTO> getColumns() {
-        return columns;
+    public Long getId() {
+        return id;
     }
 
-    public void setColumns(List<HiveColumnResponseDTO> columns) {
-        this.columns = columns;
+    public void setId(Long id) {
+        this.id = id;
     }
 
     public String getName() {
@@ -106,5 +123,13 @@ public class HiveTableResponseDTO {
 
     public void setDb(HiveDBResponseDTO db) {
         this.db = db;
+    }
+
+    public void setColumns(List<HiveColumnResponseDTO> columns) {
+        this.columns = columns;
+    }
+
+    public List<HiveColumnResponseDTO> getColumns() {
+        return columns;
     }
 }

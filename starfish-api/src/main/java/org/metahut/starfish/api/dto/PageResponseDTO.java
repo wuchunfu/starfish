@@ -5,6 +5,7 @@ import io.swagger.annotations.ApiModelProperty;
 import java.util.List;
 
 public class PageResponseDTO<T> {
+
     @ApiModelProperty(value = "page number")
     private Integer pageNo;
 

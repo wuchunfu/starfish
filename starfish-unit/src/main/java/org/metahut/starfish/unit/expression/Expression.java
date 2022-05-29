@@ -17,6 +17,20 @@ public interface Expression {
 
     String VALUE = "value";
 
+    String ID = "id";
+
+    String UPDATE_TIME = "updateTime";
+
+    String CREATE_TIME = "createTime";
+
+    String PROPERTIES = "properties";
+
+    String PARENT = "parent";
+
+    String START_NODE_ENTITY = "startNodeEntity";
+
+    String END_NODE_ENTITY = "endNodeEntity";
+
     static List<BinaryExpression> entity() {
         return entity(null);
     }

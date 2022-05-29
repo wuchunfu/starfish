@@ -30,6 +30,7 @@ import org.metahut.starfish.unit.expression.DateBetweenAndExpression;
 import org.metahut.starfish.unit.expression.EachPointer;
 import org.metahut.starfish.unit.expression.EmptyExpression;
 import org.metahut.starfish.unit.expression.EqualExpression;
+import org.metahut.starfish.unit.expression.Expression;
 import org.metahut.starfish.unit.expression.GreaterThanExpression;
 import org.metahut.starfish.unit.expression.GreaterThanOrEqualToExpression;
 import org.metahut.starfish.unit.expression.InExpression;
@@ -160,10 +161,10 @@ public class RdbmDataStorageAutoConfiguration {
                     nodeEntityProperty -> map.put(nodeEntityProperty.getName(), nodeEntityProperty.getValue())
             );
         }
-        map.put("name",nodeEntity.getQualifiedName());
-        map.put("id",nodeEntity.getId());
-        map.put("createTime",nodeEntity.getCreateTime());
-        map.put("updateTime",nodeEntity.getUpdateTime());
+        map.put(Expression.QUALIFIED_NAME,nodeEntity.getQualifiedName());
+        map.put(Expression.ID,nodeEntity.getId());
+        map.put(Expression.CREATE_TIME,nodeEntity.getCreateTime());
+        map.put(Expression.UPDATE_TIME,nodeEntity.getUpdateTime());
         return map;
     }
 

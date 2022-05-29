@@ -10,6 +10,8 @@ import org.metahut.starfish.unit.expression.ConditionPiece;
 import org.metahut.starfish.unit.expression.EachPointer;
 import org.metahut.starfish.unit.expression.Expression;
 
+import io.swagger.annotations.ApiModel;
+import io.swagger.annotations.ApiModelProperty;
 import org.apache.commons.lang3.StringUtils;
 
 import java.util.ArrayList;
@@ -24,13 +26,28 @@ import static org.metahut.starfish.api.Constants.HIVE_TABLE_TYPE_NAME;
 /**
  *
  */
+@ApiModel("hive table page query dto")
 public class HiveTableQueryDTO extends PageRequestDTO {
+
+    @ApiModelProperty(value = "hive cluster name")
     private String hiveClusterName;
+
+    @ApiModelProperty(value = "hive db name")
     private String hiveDbName;
+
+    @ApiModelProperty(value = "hive table name")
     private String hiveTableName;
+
+    @ApiModelProperty(value = "hive create begin time")
     private Date createBeginTime;
+
+    @ApiModelProperty(value = "hive create end time")
     private Date createEndTime;
+
+    @ApiModelProperty(value = "hive update begin time")
     private Date updateBeginTime;
+
+    @ApiModelProperty(value = "hive update end time")
     private Date updateEndTime;
 
     public String getHiveClusterName() {
@@ -131,24 +148,24 @@ public class HiveTableQueryDTO extends PageRequestDTO {
         }
         if (this.createBeginTime != null) {
             if (this.createEndTime != null) {
-                expressions.addAll(Expression.keyValueDateBetweenAnd("createTime", this.createBeginTime,this.createEndTime));
+                expressions.addAll(Expression.keyValueDateBetweenAnd(Expression.CREATE_TIME, this.createBeginTime,this.createEndTime));
             } else {
-                expressions.addAll(Expression.keyValueDateGreaterThanOrEqualTo("createTime",this.createBeginTime));
+                expressions.addAll(Expression.keyValueDateGreaterThanOrEqualTo(Expression.CREATE_TIME,this.createBeginTime));
             }
         } else {
             if (this.createEndTime != null) {
-                expressions.addAll(Expression.keyValueDateLessThanOrEqualTo("createTime",this.createEndTime));
+                expressions.addAll(Expression.keyValueDateLessThanOrEqualTo(Expression.CREATE_TIME,this.createEndTime));
             }
         }
         if (this.updateBeginTime != null) {
             if (this.updateEndTime != null) {
-                expressions.addAll(Expression.keyValueDateBetweenAnd("updateTime", this.updateBeginTime,this.updateEndTime));
+                expressions.addAll(Expression.keyValueDateBetweenAnd(Expression.UPDATE_TIME, this.updateBeginTime,this.updateEndTime));
             } else {
-                expressions.addAll(Expression.keyValueDateGreaterThanOrEqualTo("updateTime",this.updateBeginTime));
+                expressions.addAll(Expression.keyValueDateGreaterThanOrEqualTo(Expression.UPDATE_TIME,this.updateBeginTime));
             }
         } else {
             if (this.updateEndTime != null) {
-                expressions.addAll(Expression.keyValueDateLessThanOrEqualTo("updateTime",this.updateEndTime));
+                expressions.addAll(Expression.keyValueDateLessThanOrEqualTo(Expression.UPDATE_TIME,this.updateEndTime));
             }
         }
         conditionPiece.setExpressions(expressions);
@@ -158,20 +175,20 @@ public class HiveTableQueryDTO extends PageRequestDTO {
 
     private Map<String,ConditionPiece> rel0() {
         Map<String,ConditionPiece> result = new HashMap<>();
-        result.put("properties",propertyNamePiece());
+        result.put(Expression.PROPERTIES,propertyNamePiece());
         return result;
     }
 
     private ConditionPiece propertyNamePiece() {
         ConditionPiece conditionPiece = new ConditionPiece();
         conditionPiece.setTableType(TableType.ENTITY_PROPERTY);
-        conditionPiece.setExpressions(Arrays.asList(Expression.and(Expression.keyValueLike("name",this.hiveTableName))));
+        conditionPiece.setExpressions(Arrays.asList(Expression.and(Expression.keyValueLike(Expression.NAME,this.hiveTableName))));
         return conditionPiece;
     }
 
     private Map<String,ConditionPiece> rel1() {
         Map<String,ConditionPiece> result = new HashMap<>();
-        result.put("parent",typeEntityRelationPiece());
+        result.put(Expression.PARENT,typeEntityRelationPiece());
         return result;
     }
 
@@ -185,7 +202,7 @@ public class HiveTableQueryDTO extends PageRequestDTO {
 
     private Map<String,ConditionPiece> rel2() {
         Map<String,ConditionPiece> result = new HashMap<>();
-        result.put("startNodeEntity",collectorTaskTypePiece());
+        result.put(Expression.START_NODE_ENTITY,collectorTaskTypePiece());
         return result;
     }
 
@@ -198,7 +215,7 @@ public class HiveTableQueryDTO extends PageRequestDTO {
 
     private Map<String,ConditionPiece> rel3() {
         Map<String,ConditionPiece> result = new HashMap<>();
-        result.put("parent",entityRel());
+        result.put(Expression.PARENT,entityRel());
         return result;
     }
 
@@ -212,7 +229,7 @@ public class HiveTableQueryDTO extends PageRequestDTO {
 
     private Map<String,ConditionPiece> rel4() {
         Map<String,ConditionPiece> result = new HashMap<>();
-        result.put("endNodeEntity",collectorAdapterPiece());
+        result.put(Expression.END_NODE_ENTITY,collectorAdapterPiece());
         return result;
     }
 
@@ -225,15 +242,15 @@ public class HiveTableQueryDTO extends PageRequestDTO {
 
     private Map<String, ConditionPiece> rel5() {
         Map<String,ConditionPiece> result = new HashMap<>();
-        result.put("properties",propertyPiece());
-        result.put("parent", hiveDbRelPiece());
+        result.put(Expression.PROPERTIES,propertyPiece());
+        result.put(Expression.PARENT, hiveDbRelPiece());
         return result;
     }
 
     private ConditionPiece propertyPiece() {
         ConditionPiece conditionPiece = new ConditionPiece();
         conditionPiece.setTableType(TableType.ENTITY_PROPERTY);
-        conditionPiece.setExpressions(Arrays.asList(Expression.and(Expression.keyValueLike("name",this.hiveDbName))));
+        conditionPiece.setExpressions(Arrays.asList(Expression.and(Expression.keyValueLike(Expression.NAME,this.hiveDbName))));
         return conditionPiece;
     }
 
@@ -247,7 +264,7 @@ public class HiveTableQueryDTO extends PageRequestDTO {
 
     private Map<String,ConditionPiece> rel6() {
         Map<String,ConditionPiece> result = new HashMap<>();
-        result.put("endNodeEntity",adapterPiece());
+        result.put(Expression.END_NODE_ENTITY,adapterPiece());
         return result;
     }
 
@@ -260,14 +277,14 @@ public class HiveTableQueryDTO extends PageRequestDTO {
 
     private Map<String,ConditionPiece> rel7() {
         Map<String,ConditionPiece> result = new HashMap<>();
-        result.put("properties",clusterPropertyPiece());
+        result.put(Expression.PROPERTIES,clusterPropertyPiece());
         return result;
     }
 
     private ConditionPiece clusterPropertyPiece() {
         ConditionPiece conditionPiece = new ConditionPiece();
         conditionPiece.setTableType(TableType.ENTITY_PROPERTY);
-        conditionPiece.setExpressions(Arrays.asList(Expression.and(Expression.keyValueLike("name",this.hiveClusterName))));
+        conditionPiece.setExpressions(Arrays.asList(Expression.and(Expression.keyValueLike(Expression.NAME,this.hiveClusterName))));
         return conditionPiece;
     }
 }

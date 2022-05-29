@@ -5,10 +5,13 @@ import io.swagger.annotations.ApiModelProperty;
 
 @ApiModel(description = "metaData response dto")
 public class MetaDataResponseDTO extends PageResponseDTO {
+
     @ApiModelProperty(value = "datasource type")
     private String type;
+
     @ApiModelProperty(value = "datasource instance parameter")
     private String parameter;
+
     @ApiModelProperty(value = "metaData version")
     private String version;
 

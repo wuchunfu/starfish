@@ -1,8 +1,8 @@
 package org.metahut.starfish.api.controller;
 
 import org.metahut.starfish.api.dto.EntityQueryDTO;
-import org.metahut.starfish.api.dto.HiveClusterQueryDTO;
-import org.metahut.starfish.api.dto.HiveDBQueryDTO;
+import org.metahut.starfish.api.dto.HiveClusterResponseDTO;
+import org.metahut.starfish.api.dto.HiveDBResponseDTO;
 import org.metahut.starfish.api.dto.HiveTableQueryDTO;
 import org.metahut.starfish.api.dto.HiveTableResponseDTO;
 import org.metahut.starfish.api.dto.PageResponseDTO;
@@ -27,9 +27,11 @@ import java.util.Map;
 public interface EntityController {
 
     @PostMapping("queryByTypeNameAndCondition")
+    @ApiOperation(value = "queryByTypeNameAndCondition", notes = "QUERY_NODE_BY_TYPENAME_AND_CONDITION")
     ResultEntity<Collection<Map>> queryByTypeNameAndCondition(TypeNameQueryCondition typeNameQueryCondition);
 
     @GetMapping("queryByTypeNameAndConditionWithPage")
+    @ApiOperation(value = "queryByTypeNameAndConditionWithPage", notes = "QUERY_NODE_BY_TYPENAME_AND_CONDITION_WITH_PAGE")
     ResultEntity<PageResponseDTO<Map>> queryByTypeNameAndConditionWithPage(TypeNameQueryConditionWithPage condition);
 
     @GetMapping("querySample")
@@ -37,18 +39,23 @@ public interface EntityController {
     ResultEntity<EntityQueryDTO> querySample(EntityQueryDTO entityQueryDTO);
 
     @GetMapping("hiveClusters")
-    ResultEntity<Collection<HiveClusterQueryDTO>> hiveClusters();
+    @ApiOperation(value = "hiveClusters", notes = "ALL_HIVE_CLUSTER_INFOS")
+    ResultEntity<Collection<HiveClusterResponseDTO>> hiveClusters();
 
     @GetMapping("hiveDbs")
-    ResultEntity<Collection<HiveDBQueryDTO>> hiveDbs();
+    @ApiOperation(value = "hiveDbs", notes = "ALL_HIVE_DB_INFOS")
+    ResultEntity<Collection<HiveDBResponseDTO>> hiveDbs();
 
-    @GetMapping("tables")
-    ResultEntity<PageResponseDTO<HiveTableResponseDTO>> tables(HiveTableQueryDTO hiveTableQueryDTO);
+    @GetMapping("hiveTables")
+    @ApiOperation(value = "hiveTables", notes = "HIVE_TABLES_WITH_PAGE")
+    ResultEntity<PageResponseDTO<HiveTableResponseDTO>> hiveTables(HiveTableQueryDTO hiveTableQueryDTO);
 
     @GetMapping("pulsarClusters")
+    @ApiOperation(value = "pulsarClusters", notes = "ALL_PULSAR_CLUSTER_INFOS")
     ResultEntity<Collection<PulsarClusterResponseDTO>> pulsarClusters();
 
     @GetMapping("pulsarTopics")
-    ResultEntity<PageResponseDTO<PulsarTopicResponseDTO>> topics(PulsarTopicQueryDTO pulsarTopicQueryDTO);
+    @ApiOperation(value = "pulsarTopics", notes = "PULSAR_TOPIC_WITH_PAGE")
+    ResultEntity<PageResponseDTO<PulsarTopicResponseDTO>> pulsarTopics(PulsarTopicQueryDTO pulsarTopicQueryDTO);
 
 }

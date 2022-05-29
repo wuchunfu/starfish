@@ -71,7 +71,7 @@ public class JsonExtensionVisitor<K,T> extends JsonBaseVisitor {
                 InstanceAnalysisStruct.Instance<K,T> instance = new InstanceAnalysisStruct.Instance<>();
                 instance.setProperties(stackBlock.getProperties());
                 instance.setPath(stackBlock.path());
-                instance.setName(getNameFromEntity(currentStack.getClassInfo().getValue(), stackBlock.getProperties()));
+                instance.setQualifiedName(getNameFromEntity(currentStack.getClassInfo().getValue(), stackBlock.getProperties()));
                 instance.setTypeId(currentStack.getClassInfo().getKey());
                 this.analysisResultStruct.getInstances().put(stackBlock.path(), instance);
             }

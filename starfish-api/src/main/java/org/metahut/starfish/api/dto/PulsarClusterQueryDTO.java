@@ -1,20 +1,30 @@
 package org.metahut.starfish.api.dto;
 
+import io.swagger.annotations.ApiModel;
+import io.swagger.annotations.ApiModelProperty;
+
 /**
  *
  */
+@ApiModel(description = "pulsar cluster query dto")
 public class PulsarClusterQueryDTO {
 
+    @ApiModelProperty(value = "pulsar cluster name")
     private String name;
 
+    @ApiModelProperty(value = "pulsar cluster service url")
     private String serviceUrl;
 
+    @ApiModelProperty(value = "pulsar cluster service url tls")
     private String serviceUrlTls;
 
+    @ApiModelProperty(value = "pulsar cluster broker service url")
     private String brokerServiceUrl;
 
+    @ApiModelProperty(value = "pulsar cluster broker service url tls")
     private String brokerServiceUrlTls;
 
+    @ApiModelProperty(value = "pulsar cluster proxy service url")
     private String proxyServiceUrl;
 
     public String getName() {

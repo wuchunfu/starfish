@@ -2,8 +2,8 @@ package org.metahut.starfish.server.controller;
 
 import org.metahut.starfish.api.controller.EntityController;
 import org.metahut.starfish.api.dto.EntityQueryDTO;
-import org.metahut.starfish.api.dto.HiveClusterQueryDTO;
-import org.metahut.starfish.api.dto.HiveDBQueryDTO;
+import org.metahut.starfish.api.dto.HiveClusterResponseDTO;
+import org.metahut.starfish.api.dto.HiveDBResponseDTO;
 import org.metahut.starfish.api.dto.HiveTableQueryDTO;
 import org.metahut.starfish.api.dto.HiveTableResponseDTO;
 import org.metahut.starfish.api.dto.PageResponseDTO;
@@ -48,7 +48,6 @@ public class EntityControllerImpl implements EntityController {
         AbstractQueryCondition<Map> condition = typeNameQueryCondition;
         if (condition.getFilters() == null) {
             condition.setFilters(new ArrayList<>());
-
         }
         condition.getFilters().add(ConditionPiece.entityWithType(typeNameQueryCondition.getTypeName()));
         return ResultEntity.success(abstractMetaDataService.instances(condition));
@@ -59,7 +58,6 @@ public class EntityControllerImpl implements EntityController {
         AbstractQueryCondition<Map> condition = typeNameQueryCondition;
         if (condition.getFilters() == null) {
             condition.setFilters(new ArrayList<>());
-
         }
         condition.getFilters().add(ConditionPiece.entityWithType(typeNameQueryCondition.getTypeName()));
         Page<Map> result = abstractMetaDataService.instances(condition,PageRequest.of(typeNameQueryCondition.getPageNo() - 1, typeNameQueryCondition.getPageNo()));
@@ -67,17 +65,17 @@ public class EntityControllerImpl implements EntityController {
     }
 
     @Override
-    public ResultEntity<Collection<HiveClusterQueryDTO>> hiveClusters() {
-        return ResultEntity.success(abstractMetaDataService.instancesByTypeName(HIVE_TABLE_TYPE_NAME,HiveClusterQueryDTO.class));
+    public ResultEntity<Collection<HiveClusterResponseDTO>> hiveClusters() {
+        return ResultEntity.success(abstractMetaDataService.instancesByTypeName(HIVE_TABLE_TYPE_NAME,HiveClusterResponseDTO.class));
     }
 
     @Override
-    public ResultEntity<Collection<HiveDBQueryDTO>> hiveDbs() {
-        return ResultEntity.success(abstractMetaDataService.instancesByTypeName(HIVE_DB_TYPE_NAME,HiveDBQueryDTO.class));
+    public ResultEntity<Collection<HiveDBResponseDTO>> hiveDbs() {
+        return ResultEntity.success(abstractMetaDataService.instancesByTypeName(HIVE_DB_TYPE_NAME,HiveDBResponseDTO.class));
     }
 
     @Override
-    public ResultEntity<PageResponseDTO<HiveTableResponseDTO>> tables(HiveTableQueryDTO hiveTableQueryDTO) {
+    public ResultEntity<PageResponseDTO<HiveTableResponseDTO>> hiveTables(HiveTableQueryDTO hiveTableQueryDTO) {
         Pageable pageable = PageRequest.of(hiveTableQueryDTO.getPageNo() - 1, hiveTableQueryDTO.getPageSize());
         Page<HiveTableResponseDTO> instances = abstractMetaDataService.instances(hiveTableQueryDTO.toQueryCondition(), pageable);
         PageResponseDTO<HiveTableResponseDTO> result = new PageResponseDTO<>();
@@ -95,7 +93,7 @@ public class EntityControllerImpl implements EntityController {
     }
 
     @Override
-    public ResultEntity<PageResponseDTO<PulsarTopicResponseDTO>> topics(PulsarTopicQueryDTO pulsarTopicQueryDTO) {
+    public ResultEntity<PageResponseDTO<PulsarTopicResponseDTO>> pulsarTopics(PulsarTopicQueryDTO pulsarTopicQueryDTO) {
         Pageable pageable = PageRequest.of(pulsarTopicQueryDTO.getPageNo() - 1, pulsarTopicQueryDTO.getPageSize());
         Page<PulsarTopicResponseDTO> instances = abstractMetaDataService.instances(pulsarTopicQueryDTO.toCondition(), pageable);
         PageResponseDTO<PulsarTopicResponseDTO> result = new PageResponseDTO<>();

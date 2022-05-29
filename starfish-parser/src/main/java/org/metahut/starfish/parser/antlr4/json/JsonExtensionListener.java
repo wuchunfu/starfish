@@ -82,7 +82,7 @@ public class JsonExtensionListener<K,T> extends JsonBaseListener {
             InstanceAnalysisStruct.Instance<K,T> instance = new InstanceAnalysisStruct.Instance<>();
             instance.setProperties(stackBlock.getProperties());
             instance.setPath(currentStack.getPath());
-            instance.setName(getNameFromEntity(currentStack.getClassInfo().getValue(), stackBlock.getProperties()));
+            instance.setQualifiedName(getNameFromEntity(currentStack.getClassInfo().getValue(), stackBlock.getProperties()));
             instance.setTypeId(currentStack.getClassInfo().getKey());
             this.analysisResultStruct.getInstances().put(currentStack.getPath(),instance);
         }

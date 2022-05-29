@@ -10,12 +10,16 @@ public class MetaDataVersionResponseDTO extends PageResponseDTO {
 
     @ApiModelProperty(value = "metaData type")
     private String metaDataType;
+
     @ApiModelProperty(value = "metaData update logs")
     private String updateDetails;
+
     @ApiModelProperty(value = "metaData update time")
     private Date updateTime;
+
     @ApiModelProperty(value = " metaData version")
     private String version;
+
     @ApiModelProperty(value = "update metaData staff")
     private String operator;
 

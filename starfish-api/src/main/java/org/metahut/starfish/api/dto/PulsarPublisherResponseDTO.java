@@ -1,29 +1,62 @@
 package org.metahut.starfish.api.dto;
 
+import io.swagger.annotations.ApiModel;
+import io.swagger.annotations.ApiModelProperty;
+
+import java.util.Date;
+
 /**
  *
  */
+@ApiModel(description = "pulsar publisher response dto")
 public class PulsarPublisherResponseDTO {
 
+    @ApiModelProperty(value = "pulsar publisher id")
+    private Long id;
+
+    @ApiModelProperty(value = "pulsar publisher access mode")
     private String accessMode;
 
+    @ApiModelProperty(value = "pulsar publisher message rate in")
     private Double msgRateIn;
 
+    @ApiModelProperty(value = "pulsar publisher message throughput in")
     private Double msgThroughputIn;
 
+    @ApiModelProperty(value = "pulsar publisher average message size")
     private Double averageMsgSize;
 
+    @ApiModelProperty(value = "pulsar publisher chunked message rate")
     private Double chunkedMessageRate;
 
+    @ApiModelProperty(value = "pulsar publisher producer id")
     private Long producerId;
 
+    @ApiModelProperty(value = "pulsar publisher producer name")
     private String producerName;
 
+    @ApiModelProperty(value = "pulsar publisher address")
     private String address;
 
+    @ApiModelProperty(value = "pulsar publisher connected since")
     private String connectedSince;
 
+    @ApiModelProperty(value = "pulsar publisher client version")
     private String clientVersion;
+
+    @ApiModelProperty(value = "pulsar publisher create time")
+    private Date createTime;
+
+    @ApiModelProperty(value = "pulsar publisher update time")
+    private Date updateTime;
+
+    public Long getId() {
+        return id;
+    }
+
+    public void setId(Long id) {
+        this.id = id;
+    }
 
     public String getAccessMode() {
         return accessMode;
@@ -103,5 +136,21 @@ public class PulsarPublisherResponseDTO {
 
     public void setClientVersion(String clientVersion) {
         this.clientVersion = clientVersion;
+    }
+
+    public Date getCreateTime() {
+        return createTime;
+    }
+
+    public void setCreateTime(Date createTime) {
+        this.createTime = createTime;
+    }
+
+    public Date getUpdateTime() {
+        return updateTime;
+    }
+
+    public void setUpdateTime(Date updateTime) {
+        this.updateTime = updateTime;
     }
 }

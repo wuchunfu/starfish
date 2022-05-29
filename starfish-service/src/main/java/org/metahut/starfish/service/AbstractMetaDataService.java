@@ -270,7 +270,7 @@ public abstract class AbstractMetaDataService<K,T> implements IMetaDataApi<K,T> 
     private void store(String typeName,String json,Map<K,Class> types) {
         InstanceAnalysisStruct<K,T> analysis = JsonExtensionVisitor.analysis(json, typeName, types);
         for (InstanceAnalysisStruct.Instance<K,T> instance : analysis.getInstances().values()) {
-            K entityId = createEntity(instance.getTypeId(), instance.getName(), instance.getProperties());
+            K entityId = createEntity(instance.getTypeId(), instance.getQualifiedName(), instance.getProperties());
             instance.setId(entityId);
         }
         for (InstanceAnalysisStruct.Link<K, T> link : analysis.getLinks()) {

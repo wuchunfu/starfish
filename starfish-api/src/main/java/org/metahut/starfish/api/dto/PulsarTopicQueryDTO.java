@@ -10,6 +10,8 @@ import org.metahut.starfish.unit.expression.ConditionPiece;
 import org.metahut.starfish.unit.expression.EachPointer;
 import org.metahut.starfish.unit.expression.Expression;
 
+import io.swagger.annotations.ApiModel;
+import io.swagger.annotations.ApiModelProperty;
 import org.apache.commons.lang3.StringUtils;
 
 import java.util.ArrayList;
@@ -24,22 +26,31 @@ import static org.metahut.starfish.api.Constants.HIVE_TABLE_TYPE_NAME;
 /**
  *
  */
+@ApiModel(description = "pulsar topic page query dto")
 public class PulsarTopicQueryDTO extends PageRequestDTO {
 
+    @ApiModelProperty(value = "pulsar topic name")
     private String topicName;
 
+    @ApiModelProperty(value = "pulsar cluster name")
     private String clusterName;
 
+    @ApiModelProperty(value = "pulsar publisher name")
     private String publisherName;
 
+    @ApiModelProperty(value = "pulsar publisher team name")
     private String publisherTeam;
 
+    @ApiModelProperty(value = "pulsar topic create begin time")
     private Date createBeginTime;
 
+    @ApiModelProperty(value = "pulsar topic create end time")
     private Date createEndTime;
 
+    @ApiModelProperty(value = "pulsar topic update begin time")
     private Date updateBeginTime;
 
+    @ApiModelProperty(value = "pulsar topic update end time")
     private Date updateEndTime;
 
     public String getTopicName() {

@@ -31,7 +31,7 @@ public class InstanceAnalysisStruct<K,T> {
     public static class Instance<K,T> {
         private K id;
         private K typeId;
-        private String name;
+        private String qualifiedName;
         private Map<String,T> properties;
         private String path;
 
@@ -51,12 +51,12 @@ public class InstanceAnalysisStruct<K,T> {
             this.typeId = typeId;
         }
 
-        public String getName() {
-            return name;
+        public String getQualifiedName() {
+            return qualifiedName;
         }
 
-        public void setName(String name) {
-            this.name = name;
+        public void setQualifiedName(String qualifiedName) {
+            this.qualifiedName = qualifiedName;
         }
 
         public Map<String, T> getProperties() {
