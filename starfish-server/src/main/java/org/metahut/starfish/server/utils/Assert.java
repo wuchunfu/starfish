@@ -32,7 +32,7 @@ public class Assert {
         }
     }
 
-    public static void throwException(Status status, @Nullable Object[] args, Throwable cause) {
-        throw new BusinessException(status, args, cause);
+    public static void throwException(Throwable cause, Status status, @Nullable Object... args) {
+        throw new BusinessException(cause, status, args);
     }
 }

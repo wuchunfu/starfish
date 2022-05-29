@@ -40,6 +40,14 @@
             <directoryMode>0755</directoryMode>
         </fileSet>
 
+        <fileSet>
+            <directory>${basedir}/../starfish-ingestion-common/src/main/resources</directory>
+            <includes>
+                <include>**/*.yaml</include>
+            </includes>
+            <outputDirectory>config</outputDirectory>
+        </fileSet>
+
     </fileSets>
     <dependencySets>
         <dependencySet>

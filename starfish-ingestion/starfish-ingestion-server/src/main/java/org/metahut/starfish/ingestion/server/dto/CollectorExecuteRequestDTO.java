@@ -9,8 +9,6 @@ import org.metahut.starfish.unit.expression.ConditionPiece;
 import org.metahut.starfish.unit.expression.EachPointer;
 import org.metahut.starfish.unit.expression.Expression;
 
-import org.apache.commons.lang3.StringUtils;
-
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.HashMap;
@@ -59,9 +57,6 @@ public class CollectorExecuteRequestDTO {
         List<BinaryExpression> expressions = new ArrayList<>();
         if (id != null) {
             expressions.add(Expression.id(id));
-        }
-        if (StringUtils.isNotEmpty(qualifiedName)) {
-            expressions.add(Expression.qualifiedName(qualifiedName));
         }
         conditionPiece.setExpressions(expressions);
         return conditionPiece;

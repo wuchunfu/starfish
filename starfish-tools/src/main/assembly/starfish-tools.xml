@@ -41,7 +41,7 @@
 
         <fileSet>
             <directory>${basedir}/../tools/models</directory>
-            <outputDirectory>models</outputDirectory>
+            <outputDirectory>tools/models</outputDirectory>
         </fileSet>
     </fileSets>
     <dependencySets>

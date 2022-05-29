@@ -37,7 +37,7 @@ public class UpgradeServiceImpl implements UpgradeService {
                     .map(Path::toFile)
                     .collect(Collectors.toList());
         } catch (IOException e) {
-            Assert.throwException(INIT_TYPE_MODEL_TO_LOAD_FILE_FAIL, null, e);
+            Assert.throwException(e, INIT_TYPE_MODEL_TO_LOAD_FILE_FAIL);
         }
 
         files.forEach(file -> {

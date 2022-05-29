@@ -10,18 +10,18 @@ public class BusinessException extends RuntimeException {
 
     private Object[] args;
 
-    public BusinessException(Status status, @Nullable Object[] args) {
+    public BusinessException(Status status, @Nullable Object... args) {
         super(status.getMessage());
         this.code = status.getCode();
         this.args = args;
     }
 
-    public BusinessException(Status status, Throwable cause) {
+    public BusinessException(Throwable cause, Status status) {
         super(status.getMessage(), cause);
         this.code = status.getCode();
     }
 
-    public BusinessException(Status status, @Nullable Object[] args, Throwable cause) {
+    public BusinessException(Throwable cause, Status status, @Nullable Object... args) {
         super(status.getMessage(), cause);
         this.code = status.getCode();
         this.args = args;

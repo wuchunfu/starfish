@@ -10,6 +10,7 @@ import org.metahut.starfish.service.AbstractMetaDataService;
 
 import org.springframework.stereotype.Service;
 
+import java.text.MessageFormat;
 import java.util.Optional;
 
 @Service
@@ -30,11 +31,13 @@ public class CollectorServiceImpl implements CollectorService {
 
         Optional<CollectorTaskEntity> first = metaDataService.instances(requestDTO.toCondition()).stream().findFirst();
 
-        if (first.isPresent()) {
-            CollectorTaskEntity instance = first.get();
-            ICollectorTask collector = collectorPluginHelper.generateTaskInstance(instance.getAdapter().getType(), instance.getAdapter().getParameter(), instance.getParameter());
-            return collector.execute();
+        if (!first.isPresent()) {
+            return new CollectorResult(false, MessageFormat.format("collector task entity not exists, id:{0}", requestDTO.getId()));
         }
-        throw new RuntimeException();
+
+        CollectorTaskEntity instance = first.get();
+        ICollectorTask collector = collectorPluginHelper.generateTaskInstance(instance.getAdapter().getType(), instance.getAdapter().getParameter(), instance.getParameter());
+        return collector.execute();
+
     }
 }
