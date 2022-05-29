@@ -91,6 +91,20 @@ public interface Expression {
         return result;
     }
 
+    static BinaryExpression id(Long id) {
+        EqualExpression idExpression = new EqualExpression();
+        idExpression.setLeftExpression(new StringExpression(Expression.ID));
+        idExpression.setRightExpression(new LongExpression(id));
+        return idExpression;
+    }
+
+    static BinaryExpression qualifiedName(String qualifiedName) {
+        EqualExpression qualifiedNameExpression = new EqualExpression();
+        qualifiedNameExpression.setLeftExpression(new StringExpression(Expression.QUALIFIED_NAME));
+        qualifiedNameExpression.setRightExpression(new StringExpression(qualifiedName));
+        return qualifiedNameExpression;
+    }
+
     static BinaryExpression and(List<BinaryExpression> expressions) {
         AndExpression andExpression = new AndExpression();
         andExpression.setLeftExpression(expressions.remove(0));

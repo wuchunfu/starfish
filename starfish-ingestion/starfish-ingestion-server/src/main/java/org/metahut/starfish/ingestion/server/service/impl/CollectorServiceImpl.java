@@ -10,6 +10,8 @@ import org.metahut.starfish.service.AbstractMetaDataService;
 
 import org.springframework.stereotype.Service;
 
+import java.util.Optional;
+
 @Service
 public class CollectorServiceImpl implements CollectorService {
 
@@ -26,9 +28,13 @@ public class CollectorServiceImpl implements CollectorService {
 
         // collector_name, description, datasourceId, collector_params, crontab, scheduler_flow_code，scheduler_cron_code???, state
 
-        CollectorTaskEntity instance = metaDataService.instance(requestDTO.getId(), CollectorTaskEntity.class);
+        Optional<CollectorTaskEntity> first = metaDataService.instances(requestDTO.toCondition()).stream().findFirst();
 
-        ICollectorTask collector = collectorPluginHelper.generateTaskInstance(instance.getAdapter().getType(), instance.getAdapter().getParameter(), instance.getParameter());
-        return collector.execute();
+        if (first.isPresent()) {
+            CollectorTaskEntity instance = first.get();
+            ICollectorTask collector = collectorPluginHelper.generateTaskInstance(instance.getAdapter().getType(), instance.getAdapter().getParameter(), instance.getParameter());
+            return collector.execute();
+        }
+        throw new RuntimeException();
     }
 }

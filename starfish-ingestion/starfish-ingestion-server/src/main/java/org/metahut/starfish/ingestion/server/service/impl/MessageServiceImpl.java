@@ -32,7 +32,6 @@ public class MessageServiceImpl implements MessageService {
         this.metaDataService = metaDataService;
     }
 
-
     @Async("taskExecutor")
     @Override
     public void toMetaEventConsumer() {

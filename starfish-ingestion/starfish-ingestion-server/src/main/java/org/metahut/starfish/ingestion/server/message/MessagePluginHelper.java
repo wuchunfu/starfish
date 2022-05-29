@@ -16,6 +16,7 @@
  */
 
 package org.metahut.starfish.ingestion.server.message;
+
 import org.metahut.starfish.message.api.IMessageManager;
 
 import org.springframework.stereotype.Component;
