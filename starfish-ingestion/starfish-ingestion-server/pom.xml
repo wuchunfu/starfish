@@ -52,6 +52,15 @@
             <artifactId>starfish-autoconfigure</artifactId>
         </dependency>
 
+        <!--   Such plug-in modules need to be optimized and deleted, rather than directly introduced in this way     -->
+        <dependency>
+            <groupId>org.metahut.starfish</groupId>
+            <artifactId>starfish-message-pulsar</artifactId>
+            <version>${project.version}</version>
+        </dependency>
+
+        <!--   Such plug-in modules need to be optimized and deleted, rather than directly introduced in this way     -->
+
         <dependency>
             <groupId>org.springframework.boot</groupId>
             <artifactId>spring-boot-starter-web</artifactId>
@@ -73,5 +82,39 @@
             <scope>test</scope>
         </dependency>
     </dependencies>
+
+    <build>
+        <plugins>
+            <plugin>
+                <groupId>org.apache.maven.plugins</groupId>
+                <artifactId>maven-jar-plugin</artifactId>
+                <configuration>
+                    <excludes>
+                        <exclude>*.yaml</exclude>
+                        <exclude>*.xml</exclude>
+                    </excludes>
+                </configuration>
+            </plugin>
+            <plugin>
+                <artifactId>maven-assembly-plugin</artifactId>
+                <executions>
+                    <execution>
+                        <id>starfish-ingestion-server</id>
+                        <phase>package</phase>
+                        <goals>
+                            <goal>single</goal>
+                        </goals>
+                        <configuration>
+                            <finalName>ingestion-server</finalName>
+                            <descriptors>
+                                <descriptor>src/main/assembly/starfish-ingestion-server.xml</descriptor>
+                            </descriptors>
+                            <appendAssemblyId>false</appendAssemblyId>
+                        </configuration>
+                    </execution>
+                </executions>
+            </plugin>
+        </plugins>
+    </build>
 
 </project>

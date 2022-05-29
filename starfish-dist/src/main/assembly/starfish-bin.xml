@@ -27,5 +27,38 @@
 
     <fileSets>
 
+        <fileSet>
+            <directory>${basedir}/../starfish-server/target/api-server</directory>
+            <outputDirectory>api-server</outputDirectory>
+        </fileSet>
+
+        <fileSet>
+            <directory>${basedir}/../starfish-ingestion/starfish-ingestion-server/target/ingestion-server</directory>
+            <outputDirectory>ingestion-server</outputDirectory>
+        </fileSet>
+
+        <fileSet>
+            <directory>${basedir}/../starfish-tools/target/tools</directory>
+            <outputDirectory>tools</outputDirectory>
+        </fileSet>
+
+        <fileSet>
+            <directory>${basedir}/../starfish-standalone-server/target/standalone-server</directory>
+            <outputDirectory>standalone-server</outputDirectory>
+            <excludes>
+                <exclude>libs/</exclude>
+                <exclude>bin/</exclude>
+                <exclude>dist-bin/</exclude>
+            </excludes>
+        </fileSet>
+        <fileSet>
+            <directory>${basedir}/../starfish-standalone-server/target/standalone-server/libs/standalone-server</directory>
+            <outputDirectory>standalone-server/libs/standalone-server</outputDirectory>
+        </fileSet>
+        <fileSet>
+            <directory>${basedir}/../starfish-standalone-server/target/standalone-server/dist-bin</directory>
+            <outputDirectory>standalone-server/bin</outputDirectory>
+        </fileSet>
+
     </fileSets>
 </assembly>

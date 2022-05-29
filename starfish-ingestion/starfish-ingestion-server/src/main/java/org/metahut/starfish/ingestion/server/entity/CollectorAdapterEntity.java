@@ -1,5 +1,7 @@
 package org.metahut.starfish.ingestion.server.entity;
 
+import org.metahut.starfish.ingestion.server.utils.JSONUtils;
+
 public class CollectorAdapterEntity {
 
     private Long id;
@@ -8,7 +10,7 @@ public class CollectorAdapterEntity {
 
     private String type;
 
-    private String parameter;
+    private Object parameter;
 
     private String description;
 
@@ -37,10 +39,10 @@ public class CollectorAdapterEntity {
     }
 
     public String getParameter() {
-        return parameter;
+        return JSONUtils.toJSONString(this.parameter);
     }
 
-    public void setParameter(String parameter) {
+    public void setParameter(Object parameter) {
         this.parameter = parameter;
     }
 

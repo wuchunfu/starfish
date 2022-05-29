@@ -28,8 +28,60 @@
     <artifactId>starfish-dist</artifactId>
 
     <properties>
-        <maven.compiler.source>8</maven.compiler.source>
-        <maven.compiler.target>8</maven.compiler.target>
+        <maven.deploy.skip>true</maven.deploy.skip>
     </properties>
+
+    <dependencies>
+        <dependency>
+            <groupId>org.metahut.starfish</groupId>
+            <artifactId>starfish-server</artifactId>
+            <version>${project.version}</version>
+        </dependency>
+
+        <dependency>
+            <groupId>org.metahut.starfish</groupId>
+            <artifactId>starfish-ingestion-server</artifactId>
+            <version>${project.version}</version>
+        </dependency>
+
+        <dependency>
+            <groupId>org.metahut.starfish</groupId>
+            <artifactId>starfish-tools</artifactId>
+            <version>${project.version}</version>
+        </dependency>
+    </dependencies>
+
+    <profiles>
+        <profile>
+            <id>release</id>
+            <build>
+                <plugins>
+                    <plugin>
+                        <artifactId>maven-assembly-plugin</artifactId>
+                        <executions>
+                            <execution>
+                                <id>starfish-bin</id>
+                                <phase>package</phase>
+                                <goals>
+                                    <goal>single</goal>
+                                </goals>
+
+                                <configuration>
+                                    <descriptors>
+                                        <descriptor>src/main/assembly/starfish-bin.xml</descriptor>
+                                    </descriptors>
+                                    <appendAssemblyId>true</appendAssemblyId>
+                                </configuration>
+                            </execution>
+                        </executions>
+                    </plugin>
+                </plugins>
+            </build>
+        </profile>
+    </profiles>
+
+    <build>
+        <finalName>starfish-${project.version}</finalName>
+    </build>
 
 </project>

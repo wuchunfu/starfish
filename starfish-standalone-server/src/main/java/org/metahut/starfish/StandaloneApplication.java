@@ -21,9 +21,9 @@ import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
 
 @SpringBootApplication
-public class StandaloneServer {
+public class StandaloneApplication {
 
     public static void main(String[] args) {
-        SpringApplication.run(StandaloneServer.class, args);
+        SpringApplication.run(StandaloneApplication.class, args);
     }
 }

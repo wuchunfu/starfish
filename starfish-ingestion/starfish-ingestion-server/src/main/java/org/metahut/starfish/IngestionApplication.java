@@ -17,13 +17,28 @@
 
 package org.metahut.starfish;
 
+import org.metahut.starfish.ingestion.server.service.MessageService;
+
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
+
+import javax.annotation.PostConstruct;
 
 @SpringBootApplication
 public class IngestionApplication {
 
     public static void main(String[] args) {
         SpringApplication.run(IngestionApplication.class, args);
+    }
+
+    private final MessageService messageService;
+
+    public IngestionApplication(MessageService messageService) {
+        this.messageService = messageService;
+    }
+
+    @PostConstruct
+    public void metaEventMessageHandler() {
+        messageService.toMetaEventConsumer();
     }
 }

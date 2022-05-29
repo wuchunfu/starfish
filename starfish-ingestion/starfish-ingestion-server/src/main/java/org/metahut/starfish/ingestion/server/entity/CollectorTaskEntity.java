@@ -1,5 +1,7 @@
 package org.metahut.starfish.ingestion.server.entity;
 
+import org.metahut.starfish.ingestion.server.utils.JSONUtils;
+
 public class CollectorTaskEntity {
 
     private Long id;
@@ -10,7 +12,7 @@ public class CollectorTaskEntity {
 
     private CollectorAdapterEntity adapter;
 
-    private String parameter;
+    private Object parameter;
 
     private String cron;
 
@@ -49,10 +51,10 @@ public class CollectorTaskEntity {
     }
 
     public String getParameter() {
-        return parameter;
+        return JSONUtils.toJSONString(this.parameter);
     }
 
-    public void setParameter(String parameter) {
+    public void setParameter(Object parameter) {
         this.parameter = parameter;
     }
 
