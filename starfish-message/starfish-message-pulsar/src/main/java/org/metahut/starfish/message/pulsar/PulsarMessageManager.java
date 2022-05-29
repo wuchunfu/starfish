@@ -71,9 +71,14 @@ public class PulsarMessageManager implements IMessageManager {
             client = PulsarClient.builder()
                     .serviceUrl(pulsarProperties.getServiceUrl())
                     .build();
-            this.setProducers(pulsarProperties.getProducers());
-            this.setConsumers(pulsarProperties.getConsumers());
 
+            if (Objects.nonNull(pulsarProperties.getProducers())) {
+                this.setProducers(pulsarProperties.getProducers());
+            }
+
+            if (Objects.nonNull(pulsarProperties.getConsumers())) {
+                this.setConsumers(pulsarProperties.getConsumers());
+            }
         } catch (PulsarClientException e) {
             throw new MessageException("Pulsar create client exception", e);
         }

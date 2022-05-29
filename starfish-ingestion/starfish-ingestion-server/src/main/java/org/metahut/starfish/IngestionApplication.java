@@ -17,15 +17,13 @@
 
 package org.metahut.starfish;
 
+import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
-import org.springframework.boot.builder.SpringApplicationBuilder;
 
 @SpringBootApplication
 public class IngestionApplication {
 
     public static void main(String[] args) {
-        new SpringApplicationBuilder(IngestionApplication.class)
-                .profiles("ingestion")
-                .run(args);
+        SpringApplication.run(IngestionApplication.class, args);
     }
 }

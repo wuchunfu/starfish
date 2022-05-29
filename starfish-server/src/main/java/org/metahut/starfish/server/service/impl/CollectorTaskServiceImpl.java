@@ -16,6 +16,7 @@ import org.metahut.starfish.scheduler.dolphinscheduler.JSONUtils;
 import org.metahut.starfish.server.config.IngestionConfiguration;
 import org.metahut.starfish.server.service.CollectorTaskService;
 import org.metahut.starfish.service.AbstractMetaDataService;
+import org.metahut.starfish.unit.EntityNameGentrator;
 
 import org.apache.commons.lang3.StringUtils;
 import org.springframework.core.convert.ConversionService;
@@ -29,6 +30,7 @@ import java.util.HashMap;
 import java.util.Map;
 
 import static org.metahut.starfish.api.Constants.COLLECTOR_TASK_TYPE_NAME;
+import static org.metahut.starfish.api.Constants.RELATION_PROPERTY_COLLECTOR_TASK_ADAPTER;
 
 @Service
 public class CollectorTaskServiceImpl implements CollectorTaskService {
@@ -54,10 +56,10 @@ public class CollectorTaskServiceImpl implements CollectorTaskService {
     @Override
     public CollectorTaskResponseDTO create(CollectorTaskCreateOrUpdateRequestDTO requestDTO) {
 
-        String qualifiedName = "";
+        String qualifiedName = EntityNameGentrator.generateName(COLLECTOR_TASK_TYPE_NAME, requestDTO.getName());
         // create collector instance
         Map<String, Object> convert = conversionService.convert(requestDTO, Map.class);
-        Long entityId = metaDataService.createEntityByTypeName(COLLECTOR_TASK_TYPE_NAME, requestDTO.getName(), convert);
+        Long entityId = metaDataService.createEntityByTypeName(COLLECTOR_TASK_TYPE_NAME, qualifiedName, convert);
 
         String schedulerFlowCode = requestDTO.getSchedulerFlowCode();
         if (StringUtils.isBlank(schedulerFlowCode)) {
@@ -88,14 +90,17 @@ public class CollectorTaskServiceImpl implements CollectorTaskService {
             ScheduleParameter scheduleParameter = new ScheduleParameter();
             scheduleParameter.setFlowCode(flowCode);
             ScheduleCronParameter scheduleCronParameter = new ScheduleCronParameter();
-            scheduleCronParameter.setCron(requestDTO.getCron());
+            scheduleCronParameter.setCrontab(requestDTO.getCron());
             scheduleParameter.setScheduleCronParameter(scheduleCronParameter);
 
             schedulerFlowCode = scheduler.createSchedule(scheduleParameter);
         }
 
+        //TODO The update method needs to be optimized to support partial update
+        convert.put("schedulerFlowCode", schedulerFlowCode);
+
         // update scheduler flow code in the collector task instance
-        metaDataService.updateEntity(entityId, qualifiedName, null);
+        metaDataService.updateEntity(entityId, qualifiedName, convert);
 
         CollectorTaskResponseDTO collectorTaskResponseDTO = new CollectorTaskResponseDTO();
         collectorTaskResponseDTO.setId(entityId);
@@ -110,9 +115,9 @@ public class CollectorTaskServiceImpl implements CollectorTaskService {
         // compare before and after update
         if (!instance.getAdapter().getId().equals(requestDTO.getAdapterId())) {
             // add relation
-            metaDataService.link(id, requestDTO.getAdapterId(), "adapter");
+            metaDataService.link(id, requestDTO.getAdapterId(), RELATION_PROPERTY_COLLECTOR_TASK_ADAPTER);
             // delete relation
-            metaDataService.crack(id, instance.getAdapter().getId(), "adapter");
+            metaDataService.crack(id, instance.getAdapter().getId(), RELATION_PROPERTY_COLLECTOR_TASK_ADAPTER);
         }
 
         // determine if the schedule cron instance needs to be updated
@@ -120,13 +125,16 @@ public class CollectorTaskServiceImpl implements CollectorTaskService {
             ScheduleParameter scheduleParameter = new ScheduleParameter();
             scheduleParameter.setFlowCode(instance.getSchedulerFlowCode());
             ScheduleCronParameter scheduleCronParameter = new ScheduleCronParameter();
-            scheduleCronParameter.setCron(requestDTO.getCron());
+            scheduleCronParameter.setCrontab(requestDTO.getCron());
             scheduleParameter.setScheduleCronParameter(scheduleCronParameter);
             scheduler.updateSchedule(scheduleParameter);
         }
 
+        String qualifiedName = EntityNameGentrator.generateName(COLLECTOR_TASK_TYPE_NAME, requestDTO.getName());
+
+        Map<String, Object> convert = conversionService.convert(requestDTO, Map.class);
         // update collector instance
-        metaDataService.updateEntity(id, "", null);
+        metaDataService.updateEntity(id, qualifiedName, convert);
 
         CollectorTaskResponseDTO collectorTaskResponseDTO = new CollectorTaskResponseDTO();
         collectorTaskResponseDTO.setId(id);

@@ -33,7 +33,7 @@ import java.util.ServiceLoader;
 import java.util.Set;
 
 @Component
-public class CollectorPluginHelper {
+public class CollectorPluginParameterHelper {
 
     private static final Map<String, ICollectorManager> COLLECTOR_MANAGER_MAP = new HashMap<>();
 

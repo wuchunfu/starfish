@@ -21,7 +21,7 @@ import java.util.concurrent.TimeUnit;
 
 import static org.metahut.starfish.ingestion.common.Constants.INGESTION_CONFIG_FILE;
 import static org.metahut.starfish.ingestion.common.Constants.META_CONFIG_PREFIX;
-import static org.metahut.starfish.message.api.Constants.MESSAGE_PRODUCER;
+import static org.metahut.starfish.message.api.Constants.MESSAGE_PRODUCER_MAP_KEY_META;
 
 public class MetaClient {
 
@@ -70,7 +70,7 @@ public class MetaClient {
                 if (Objects.isNull(messageManager)) {
                     throw new RuntimeException("meta message manager create exception");
                 }
-                producer = messageManager.getProducer(MESSAGE_PRODUCER);
+                producer = messageManager.getProducer(MESSAGE_PRODUCER_MAP_KEY_META);
                 if (Objects.isNull(producer)) {
                     throw new RuntimeException("meta message producer create exception");
                 }

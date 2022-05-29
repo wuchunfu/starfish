@@ -22,15 +22,11 @@ starfish:
     token: 123-1
   message:
     type: pulsar
+    meta-event-topic: &meta-event-topic my-topic
     pulsar:
       service-url: http://pulsar-idc-qa.zpidc.com:8080
       producers:
-        metaProducer:
-          topic-name: my-topic
+        starfishMetaEvent:
+          topic-name: *meta-event-topic
           schema: STRING
           producer-name: meta
-      consumers:
-        metaConsumer:
-          topic-name: my-topic
-          schema: STRING
-          subscription-name: subscription

@@ -61,7 +61,7 @@ public class DolphinSchedulerTest {
     @Test
     public void testPreviewSchedule() {
         ScheduleCronParameter parameter = new ScheduleCronParameter();
-        parameter.setCron("0 30 * * * ?");
+        parameter.setCrontab("0 30 * * * ?");
         parameter.setStartTime(new Date());
         parameter.setEndTime(Date.from(LocalDateTime.now().plusDays(2).atZone(ZoneId.systemDefault()).toInstant()));
         List<String> strings = scheduler.previewSchedule(parameter);

@@ -57,7 +57,7 @@ import static org.metahut.starfish.ingestion.collector.pulsar.Constants.TYPE_NAM
 import static org.metahut.starfish.ingestion.collector.pulsar.Constants.TYPE_NAME_SCHEMA;
 import static org.metahut.starfish.ingestion.collector.pulsar.Constants.TYPE_NAME_TENANT;
 import static org.metahut.starfish.ingestion.collector.pulsar.Constants.TYPE_NAME_TOPIC;
-import static org.metahut.starfish.ingestion.common.EntityUtils.generateName;
+import static org.metahut.starfish.unit.EntityNameGentrator.generateName;
 
 public class PulsarCollectorTask implements ICollectorTask {
 

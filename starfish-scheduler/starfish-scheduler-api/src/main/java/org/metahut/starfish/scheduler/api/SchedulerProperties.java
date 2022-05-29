@@ -27,7 +27,7 @@ import java.util.Objects;
 public class SchedulerProperties {
 
     private SchedulerTypeEnum type;
-    private DolphinScheduler dolphinScheduler = new DolphinScheduler();
+    private DolphinScheduler dolphinscheduler = new DolphinScheduler();
 
     public static class DolphinScheduler {
         private String serviceUrl;
@@ -98,11 +98,11 @@ public class SchedulerProperties {
         this.type = type;
     }
 
-    public DolphinScheduler getDolphinScheduler() {
-        return dolphinScheduler;
+    public DolphinScheduler getDolphinscheduler() {
+        return dolphinscheduler;
     }
 
-    public void setDolphinScheduler(DolphinScheduler dolphinScheduler) {
-        this.dolphinScheduler = dolphinScheduler;
+    public void setDolphinscheduler(DolphinScheduler dolphinscheduler) {
+        this.dolphinscheduler = dolphinscheduler;
     }
 }

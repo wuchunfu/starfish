@@ -3,19 +3,24 @@ package org.metahut.starfish.api.dto;
 import io.swagger.annotations.ApiModel;
 import io.swagger.annotations.ApiModelProperty;
 
+import javax.validation.constraints.NotEmpty;
+
 @ApiModel(description = "collector adapter create or update request dto")
 public class CollectorAdapterCreateOrUpdateRequestDTO {
 
     @ApiModelProperty(value = "collector adapter name", required = true)
+    @NotEmpty(message = "{parameter.not.null}")
     private String name;
 
     @ApiModelProperty(value = "collector adapter parameter to connect", required = true)
+    @NotEmpty(message = "{parameter.not.null}")
     private String parameter;
 
     @ApiModelProperty(value = "collector adapter description")
     private String description;
 
     @ApiModelProperty(value = "collector type", required = true)
+    @NotEmpty(message = "{parameter.not.null}")
     private String type;
 
     public String getName() {

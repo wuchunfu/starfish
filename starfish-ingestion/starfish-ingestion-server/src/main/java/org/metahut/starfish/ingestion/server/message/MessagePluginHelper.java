@@ -38,7 +38,7 @@ import javax.annotation.PreDestroy;
 import java.util.List;
 import java.util.Objects;
 
-import static org.metahut.starfish.message.api.Constants.MESSAGE_META_EVENT;
+import static org.metahut.starfish.message.api.Constants.MESSAGE_CONSUMER_MAP_KEY_META;
 
 @Component
 public class MessagePluginHelper {
@@ -60,15 +60,15 @@ public class MessagePluginHelper {
 
     @PostConstruct
     private void autoConsumer() {
-        autoMetaEventConsumer();
+        //autoMetaEventConsumer();
     }
 
-    @Async
+    @Async("taskExecutor")
     public void autoMetaEventConsumer() {
         if (MessageType.none == messageManager.getType()) {
             return;
         }
-        IMessageConsumer consumer = messageManager.getConsumer(MESSAGE_META_EVENT);
+        IMessageConsumer consumer = messageManager.getConsumer(MESSAGE_CONSUMER_MAP_KEY_META);
         if (Objects.isNull(consumer)) {
             throw new NullPointerException("meta event consumer is null");
         }
@@ -82,7 +82,7 @@ public class MessagePluginHelper {
                 }
                 // TODO Store to metadata
 
-            } catch (MessageException | JsonProcessingException e) {
+            } catch (Throwable e) {
                 // TODO How to consume or handle exceptions
                 logger.error(e.getMessage(), e);
             }

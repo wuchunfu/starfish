@@ -20,7 +20,7 @@ package org.metahut.starfish.ingestion.server.controller;
 import org.metahut.starfish.ingestion.collector.api.CollectorResult;
 import org.metahut.starfish.ingestion.server.dto.CollectorExecuteRequestDTO;
 import org.metahut.starfish.ingestion.server.dto.ResultEntity;
-import org.metahut.starfish.ingestion.server.service.CollectorTaskService;
+import org.metahut.starfish.ingestion.server.service.CollectorService;
 
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
@@ -28,18 +28,18 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
 @RestController
-@RequestMapping("collectorTask")
-public class CollectorTaskController {
+@RequestMapping("collector")
+public class CollectorController {
 
-    private CollectorTaskService collectorTaskService;
+    private CollectorService collectorService;
 
-    public CollectorTaskController(CollectorTaskService collectorTaskService) {
-        this.collectorTaskService = collectorTaskService;
+    public CollectorController(CollectorService collectorService) {
+        this.collectorService = collectorService;
     }
 
     @PostMapping("execute")
     public ResultEntity execute(@RequestBody CollectorExecuteRequestDTO collectorExecuteRequestDTO) {
-        CollectorResult result = collectorTaskService.execute(collectorExecuteRequestDTO);
+        CollectorResult result = collectorService.execute(collectorExecuteRequestDTO);
         return result.getState() ? ResultEntity.success() : ResultEntity.of(10000, result.getMessage());
     }
 }

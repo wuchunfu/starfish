@@ -6,9 +6,7 @@ import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.data.jpa.repository.config.EnableJpaAuditing;
 import org.springframework.orm.jpa.support.OpenEntityManagerInViewFilter;
-import org.springframework.scheduling.annotation.EnableAsync;
 
-@EnableAsync
 @EnableJpaAuditing
 @SpringBootApplication
 @Configuration

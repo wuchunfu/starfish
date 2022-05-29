@@ -3,7 +3,7 @@ package org.metahut.starfish.server.service.impl;
 import org.metahut.starfish.api.dto.SelectItemRequestDTO;
 import org.metahut.starfish.api.dto.SelectItemResponseDTO;
 import org.metahut.starfish.api.enums.SelectItemNameEnum;
-import org.metahut.starfish.server.collector.CollectorPluginHelper;
+import org.metahut.starfish.server.collector.CollectorPluginParameterHelper;
 import org.metahut.starfish.server.service.SelectItemService;
 
 import org.apache.commons.collections.CollectionUtils;
@@ -27,11 +27,11 @@ public class SelectItemServiceImpl implements SelectItemService {
     private static final Logger logger = LoggerFactory.getLogger(SelectItemServiceImpl.class);
 
     private final MessageSource messageSource;
-    private final CollectorPluginHelper collectorPluginHelper;
+    private final CollectorPluginParameterHelper collectorPluginParameterHelper;
 
-    public SelectItemServiceImpl(MessageSource messageSource, CollectorPluginHelper collectorPluginHelper) {
+    public SelectItemServiceImpl(MessageSource messageSource, CollectorPluginParameterHelper collectorPluginParameterHelper) {
         this.messageSource = messageSource;
-        this.collectorPluginHelper = collectorPluginHelper;
+        this.collectorPluginParameterHelper = collectorPluginParameterHelper;
     }
 
     @Override
@@ -55,7 +55,7 @@ public class SelectItemServiceImpl implements SelectItemService {
     }
 
     public List<SelectItemResponseDTO> queryCollectorTypeItem() {
-        return collectorPluginHelper.getAllTypes().stream()
+        return collectorPluginParameterHelper.getAllTypes().stream()
                 .map(value -> toSelectItem(value, value)).collect(Collectors.toList());
     }
 

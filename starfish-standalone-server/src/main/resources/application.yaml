@@ -29,8 +29,9 @@ server:
 
 spring:
   application:
-    name: starfish-standalone
+    name: starfish-api
   jackson:
+    date-format: yyyy-MM-dd HH:mm:ss
     time-zone: GMT+8
   servlet:
     multipart:
@@ -42,6 +43,24 @@ spring:
   mvc:
     pathmatch:
       matching-strategy: ant_path_matcher
+    format:
+      date: yyyy-MM-dd HH:mm:ss
+  datasource:
+    type: com.zaxxer.hikari.HikariDataSource
+    driver-class-name: org.h2.Driver
+    url: jdbc:h2:mem:starfish;MODE=MySQL;DB_CLOSE_DELAY=-1;DATABASE_TO_LOWER=true;
+    username: sa
+    password: ""
+  sql:
+    init:
+      schema-locations: "classpath:sql/starfish_h2.sql"
+  jpa:
+    hibernate:
+      ddl-auto: update
+    show-sql: true
+
+knife4j:
+  enable: true
 
 starfish:
   scheduler:
@@ -49,11 +68,46 @@ starfish:
     dolphinscheduler:
       service-url: http://dolphinscheduler.dev.zhaopin.com/dolphinscheduler
       project-code: 4996418468000
-  message:
-    type: none
+      tenant-code: algdataonline
+      token: c6258d4a509df0f1b89f77fb552d8ddf
   ingestion:
-    service-host: localhost:8080
-    collector-execute-url: http://{0}/collector/execute
+    service-address: localhost:8801
+    collector-execute-rest: http://{0}/collector/execute
+  message:
+    type: pulsar
+    meta-event-topic: &meta-event-topic my-topic
+    pulsar:
+      service-url: http://pulsar-idc-qa.zpidc.com:8080
+      producers:
+        starfishMetaEvent:
+          topic-name: *meta-event-topic
+          schema: STRING
+          producer-name: meta
+      consumers:
+        starfishMetaEvent:
+          topic-name: *meta-event-topic
+          subscription-name: my-subscription
+          subscription-type: Key_Shared
 
-knife4j:
-  enable: true
+# Override by profile
+---
+spring:
+  config:
+    activate:
+      on-profile: postgresql
+  datasource:
+    driver-class-name: org.postgresql.Driver
+    url: jdbc:postgresql://localhost:5432/postgres?serverTimezone=CST
+    username: test
+    password: test
+
+---
+spring:
+  config:
+    activate:
+      on-profile: mysql
+  datasource:
+    driver-class-name: com.mysql.cj.jdbc.Driver
+    url: jdbc:mysql://127.0.0.1:3306/starfish?useUnicode=true&characterEncoding=UTF-8
+    username: root
+    password: root

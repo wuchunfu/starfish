@@ -40,7 +40,7 @@ import static org.metahut.starfish.ingestion.collector.hive.Constants.TYPE_NAME_
 import static org.metahut.starfish.ingestion.collector.hive.Constants.TYPE_NAME_COLUMN;
 import static org.metahut.starfish.ingestion.collector.hive.Constants.TYPE_NAME_DB;
 import static org.metahut.starfish.ingestion.collector.hive.Constants.TYPE_NAME_TABLE;
-import static org.metahut.starfish.ingestion.common.EntityUtils.generateName;
+import static org.metahut.starfish.unit.EntityNameGentrator.generateName;
 
 public class HiveCollectorTask implements ICollectorTask {
 

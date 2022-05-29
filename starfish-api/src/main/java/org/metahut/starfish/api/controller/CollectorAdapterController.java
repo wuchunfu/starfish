@@ -8,6 +8,7 @@ import org.metahut.starfish.api.dto.ResultEntity;
 
 import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiOperation;
+import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
@@ -21,6 +22,7 @@ import java.util.Collection;
 
 @Api(tags = "COLLECTOR_ADAPTER_TAG")
 @RequestMapping("collectorAdapter")
+@Validated
 public interface CollectorAdapterController {
 
     @GetMapping("testConnection")
@@ -29,11 +31,11 @@ public interface CollectorAdapterController {
 
     @PostMapping
     @ApiOperation(value = "create", notes = "CREATE_COLLECTOR_ADAPTER_NOTES")
-    ResultEntity<CollectorAdapterResponseDTO> create(@RequestBody CollectorAdapterCreateOrUpdateRequestDTO requestDTO);
+    ResultEntity<CollectorAdapterResponseDTO> create(@RequestBody @Validated CollectorAdapterCreateOrUpdateRequestDTO requestDTO);
 
     @PutMapping("{id}")
     @ApiOperation(value = "update", notes = "UPDATE_COLLECTOR_ADAPTER_NOTES")
-    ResultEntity<CollectorAdapterResponseDTO> update(@PathVariable(value = "id") Long id, @RequestBody CollectorAdapterCreateOrUpdateRequestDTO requestDTO);
+    ResultEntity<CollectorAdapterResponseDTO> update(@PathVariable(value = "id") Long id, @RequestBody @Validated CollectorAdapterCreateOrUpdateRequestDTO requestDTO);
 
     @DeleteMapping("{id}")
     @ApiOperation(value = "deleteById", notes = "DELETE_COLLECTOR_ADAPTER_BY_ID_NOTES")
