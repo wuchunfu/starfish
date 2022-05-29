@@ -17,6 +17,8 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
+import static org.metahut.starfish.api.Constants.COLLECTOR_ADAPTER_TYPE_NAME;
+
 @ApiModel(description = "collector adapter request dto")
 public class CollectorAdapterRequestDTO extends PageRequestDTO {
 
@@ -106,7 +108,7 @@ public class CollectorAdapterRequestDTO extends PageRequestDTO {
     private ConditionPiece collectorTaskTypePiece() {
         ConditionPiece conditionPiece = new ConditionPiece();
         conditionPiece.setTableType(TableType.ENTITY);
-        conditionPiece.setExpressions(Expression.type("org.starfish.CollectorAdapter"));
+        conditionPiece.setExpressions(Expression.type(COLLECTOR_ADAPTER_TYPE_NAME));
         return conditionPiece;
     }
 

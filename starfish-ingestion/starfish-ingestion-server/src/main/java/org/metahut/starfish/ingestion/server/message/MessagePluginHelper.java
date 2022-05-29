@@ -20,12 +20,10 @@ package org.metahut.starfish.ingestion.server.message;
 import org.metahut.starfish.message.api.ConsumerResult;
 import org.metahut.starfish.message.api.IMessageConsumer;
 import org.metahut.starfish.message.api.IMessageManager;
-import org.metahut.starfish.message.api.MessageException;
 import org.metahut.starfish.message.api.MessageType;
 import org.metahut.starfish.service.AbstractMetaDataService;
 import org.metahut.starfish.unit.row.RowData;
 
-import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;

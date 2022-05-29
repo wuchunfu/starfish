@@ -10,7 +10,6 @@ import org.metahut.starfish.unit.expression.ConditionPiece;
 import org.metahut.starfish.unit.expression.EachPointer;
 import org.metahut.starfish.unit.expression.Expression;
 
-import org.apache.commons.lang3.ObjectUtils;
 import org.apache.commons.lang3.StringUtils;
 
 import java.util.ArrayList;
@@ -19,6 +18,8 @@ import java.util.Date;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+
+import static org.metahut.starfish.api.Constants.HIVE_TABLE_TYPE_NAME;
 
 /**
  *
@@ -122,7 +123,7 @@ public class HiveTableQueryDTO extends PageRequestDTO {
         List<BinaryExpression> expressions = new ArrayList<>();
         Map<String,ConditionPiece> map = new HashMap<>();
         map.putAll(rel1());
-        if (ObjectUtils.allNotNull(hiveClusterName,createBeginTime,createEndTime,updateBeginTime,updateEndTime)) {
+        if (StringUtils.isNotEmpty(hiveTableName)) {
             map.putAll(rel0());
         }
         if (StringUtils.isNotEmpty(hiveDbName) && StringUtils.isNotEmpty(hiveClusterName)) {
@@ -141,13 +142,13 @@ public class HiveTableQueryDTO extends PageRequestDTO {
         }
         if (this.updateBeginTime != null) {
             if (this.updateEndTime != null) {
-                expressions.addAll(Expression.keyValueDateBetweenAnd("createTime", this.updateBeginTime,this.updateEndTime));
+                expressions.addAll(Expression.keyValueDateBetweenAnd("updateTime", this.updateBeginTime,this.updateEndTime));
             } else {
-                expressions.addAll(Expression.keyValueDateGreaterThanOrEqualTo("createTime",this.updateBeginTime));
+                expressions.addAll(Expression.keyValueDateGreaterThanOrEqualTo("updateTime",this.updateBeginTime));
             }
         } else {
             if (this.updateEndTime != null) {
-                expressions.addAll(Expression.keyValueDateLessThanOrEqualTo("createTime",this.updateEndTime));
+                expressions.addAll(Expression.keyValueDateLessThanOrEqualTo("updateTime",this.updateEndTime));
             }
         }
         conditionPiece.setExpressions(expressions);
@@ -191,7 +192,7 @@ public class HiveTableQueryDTO extends PageRequestDTO {
     private ConditionPiece collectorTaskTypePiece() {
         ConditionPiece conditionPiece = new ConditionPiece();
         conditionPiece.setTableType(TableType.ENTITY);
-        conditionPiece.setExpressions(Expression.entity("org.starfish.HiveTable"));
+        conditionPiece.setExpressions(Expression.entity(HIVE_TABLE_TYPE_NAME));
         return conditionPiece;
     }
 

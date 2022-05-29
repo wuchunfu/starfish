@@ -96,6 +96,13 @@
           "relType": "PRIMITIVE",
           "array": false,
           "defaultValue": null
+        },
+        {
+          "name": "topics",
+          "className": "org.starfish.PulsarTopic",
+          "relType": "ENTITY",
+          "array": true,
+          "defaultValue": null
         }
       ]
     },
@@ -124,7 +131,6 @@
           "array": false,
           "defaultValue": null
         },
-
         {
           "name": "namespace",
           "className": "org.starfish.PulsarNamespace",
@@ -267,6 +273,13 @@
           "name": "topic",
           "className": "org.starfish.PulsarTopic",
           "relType": "ENTITY",
+          "array": false,
+          "defaultValue": null
+        },
+        {
+          "name": "description",
+          "className": "java.lang.String",
+          "relType": "PRIMITIVE",
           "array": false,
           "defaultValue": null
         }

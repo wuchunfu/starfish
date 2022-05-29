@@ -210,21 +210,7 @@ public class CollectorTaskRequestDTO extends PageRequestDTO {
         ConditionPiece conditionPiece = new ConditionPiece();
         conditionPiece.setTableType(TableType.RELATION);
         conditionPiece.setExpressions(Expression.rel(LinkCategory.TYPE_ENTITY,LinkCategory.TYPE_ENTITY.name()));
-        conditionPiece.setNextConditionChain(rel6());
         return conditionPiece;
     }
 
-    private Map<String,ConditionPiece> rel6() {
-        Map<String,ConditionPiece> result = new HashMap<>();
-        result.put("startNodeEntity",adapterPiece());
-        return result;
-    }
-
-    private ConditionPiece adapterPiece() {
-        ConditionPiece conditionPiece = new ConditionPiece();
-        conditionPiece.setTableType(TableType.ENTITY);
-        conditionPiece.setExpressions(Expression.entity("org.starfish.CollectorAdapter"));
-        conditionPiece.setNextConditionChain(rel6());
-        return conditionPiece;
-    }
 }

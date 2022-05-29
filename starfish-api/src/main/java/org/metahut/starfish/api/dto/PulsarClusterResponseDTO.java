@@ -1,5 +1,7 @@
 package org.metahut.starfish.api.dto;
 
+import java.util.List;
+
 /**
  *
  */
@@ -9,13 +11,11 @@ public class PulsarClusterResponseDTO {
 
     private String serviceUrl;
 
-    private String serviceUrlTls;
+    private String listenerName;
 
-    private String brokerServiceUrl;
+    private String description;
 
-    private String brokerServiceUrlTls;
-
-    private String proxyServiceUrl;
+    private List<PulsarTenantResponseDTO> allowedTenants;
 
     public String getName() {
         return name;
@@ -33,35 +33,27 @@ public class PulsarClusterResponseDTO {
         this.serviceUrl = serviceUrl;
     }
 
-    public String getServiceUrlTls() {
-        return serviceUrlTls;
+    public String getListenerName() {
+        return listenerName;
     }
 
-    public void setServiceUrlTls(String serviceUrlTls) {
-        this.serviceUrlTls = serviceUrlTls;
+    public void setListenerName(String listenerName) {
+        this.listenerName = listenerName;
     }
 
-    public String getBrokerServiceUrl() {
-        return brokerServiceUrl;
+    public String getDescription() {
+        return description;
     }
 
-    public void setBrokerServiceUrl(String brokerServiceUrl) {
-        this.brokerServiceUrl = brokerServiceUrl;
+    public void setDescription(String description) {
+        this.description = description;
     }
 
-    public String getBrokerServiceUrlTls() {
-        return brokerServiceUrlTls;
+    public List<PulsarTenantResponseDTO> getAllowedTenants() {
+        return allowedTenants;
     }
 
-    public void setBrokerServiceUrlTls(String brokerServiceUrlTls) {
-        this.brokerServiceUrlTls = brokerServiceUrlTls;
-    }
-
-    public String getProxyServiceUrl() {
-        return proxyServiceUrl;
-    }
-
-    public void setProxyServiceUrl(String proxyServiceUrl) {
-        this.proxyServiceUrl = proxyServiceUrl;
+    public void setAllowedTenants(List<PulsarTenantResponseDTO> allowedTenants) {
+        this.allowedTenants = allowedTenants;
     }
 }

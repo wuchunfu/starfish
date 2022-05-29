@@ -6,6 +6,9 @@ import org.metahut.starfish.api.dto.HiveDBQueryDTO;
 import org.metahut.starfish.api.dto.HiveTableQueryDTO;
 import org.metahut.starfish.api.dto.HiveTableResponseDTO;
 import org.metahut.starfish.api.dto.PageResponseDTO;
+import org.metahut.starfish.api.dto.PulsarClusterResponseDTO;
+import org.metahut.starfish.api.dto.PulsarTopicQueryDTO;
+import org.metahut.starfish.api.dto.PulsarTopicResponseDTO;
 import org.metahut.starfish.api.dto.ResultEntity;
 import org.metahut.starfish.unit.TypeNameQueryCondition;
 import org.metahut.starfish.unit.TypeNameQueryConditionWithPage;
@@ -41,5 +44,11 @@ public interface EntityController {
 
     @GetMapping("tables")
     ResultEntity<PageResponseDTO<HiveTableResponseDTO>> tables(HiveTableQueryDTO hiveTableQueryDTO);
+
+    @GetMapping("pulsarClusters")
+    ResultEntity<Collection<PulsarClusterResponseDTO>> pulsarClusters();
+
+    @GetMapping("pulsarTopics")
+    ResultEntity<PageResponseDTO<PulsarTopicResponseDTO>> topics(PulsarTopicQueryDTO pulsarTopicQueryDTO);
 
 }
