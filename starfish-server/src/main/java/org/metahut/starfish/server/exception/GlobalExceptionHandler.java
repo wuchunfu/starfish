@@ -15,7 +15,7 @@ import static org.metahut.starfish.api.enums.Status.UNKNOWN_EXCEPTION;
 @RestControllerAdvice
 public class GlobalExceptionHandler {
 
-    private static final Logger logger = LoggerFactory.getLogger(GlobalExceptionHandler.class);
+    private static final Logger LOGGER = LoggerFactory.getLogger(GlobalExceptionHandler.class);
 
     private MessageSource messageSource;
 
@@ -25,7 +25,7 @@ public class GlobalExceptionHandler {
 
     @ExceptionHandler(value = BusinessException.class)
     public ResultEntity exceptionHandler(BusinessException exception) {
-        logger.error(exception.getMessage(), exception);
+        LOGGER.error(exception.getMessage(), exception);
         String message = messageSource.getMessage(exception.getMessage(), exception.getArgs(), LocaleContextHolder.getLocale());
         return ResultEntity.of(exception.getCode(), message);
     }
@@ -37,7 +37,7 @@ public class GlobalExceptionHandler {
      */
     @ExceptionHandler(value = Exception.class)
     public ResultEntity exceptionHandler(Exception exception) {
-        logger.error(exception.getMessage(), exception);
+        LOGGER.error(exception.getMessage(), exception);
         String message = messageSource.getMessage(UNKNOWN_EXCEPTION.getMessage(), new Object[]{exception.getMessage()}, LocaleContextHolder.getLocale());
         return ResultEntity.of(UNKNOWN_EXCEPTION.getCode(), message);
     }

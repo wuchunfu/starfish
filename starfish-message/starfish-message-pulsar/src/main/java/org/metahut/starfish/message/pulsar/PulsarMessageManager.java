@@ -46,7 +46,7 @@ import static org.metahut.starfish.message.api.MessageType.pulsar;
 @ConditionalOnProperty(prefix = MESSAGE_CONFIG_PREFIX, name = "type", havingValue = "pulsar")
 public class PulsarMessageManager implements IMessageManager {
 
-    private static final Logger logger = LoggerFactory.getLogger(PulsarMessageManager.class);
+    private static final Logger LOGGER = LoggerFactory.getLogger(PulsarMessageManager.class);
 
     private PulsarClient client;
 
@@ -95,7 +95,7 @@ public class PulsarMessageManager implements IMessageManager {
                     .producerName(properties.getProducerName())
                     .create());
         } catch (PulsarClientException e) {
-            logger.error(e.getMessage(), e);
+            LOGGER.error(e.getMessage(), e);
             // TODO Exception type???
             throw new IllegalArgumentException(e);
         }
@@ -112,7 +112,7 @@ public class PulsarMessageManager implements IMessageManager {
                     .subscriptionName(properties.getSubscriptionName())
                     .subscribe());
         } catch (PulsarClientException e) {
-            logger.error(e.getMessage(), e);
+            LOGGER.error(e.getMessage(), e);
             // TODO Exception type???
             throw new IllegalArgumentException(e);
         }
@@ -139,7 +139,7 @@ public class PulsarMessageManager implements IMessageManager {
             try {
                 producer.close();
             } catch (Exception e) {
-                logger.error(e.getMessage(), e);
+                LOGGER.error(e.getMessage(), e);
             }
         });
 
@@ -147,7 +147,7 @@ public class PulsarMessageManager implements IMessageManager {
             try {
                 consumer.close();
             } catch (Exception e) {
-                logger.error(e.getMessage(), e);
+                LOGGER.error(e.getMessage(), e);
             }
         });
 

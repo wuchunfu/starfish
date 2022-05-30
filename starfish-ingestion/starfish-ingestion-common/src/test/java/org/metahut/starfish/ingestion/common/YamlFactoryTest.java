@@ -28,13 +28,13 @@ import java.util.Properties;
 
 public class YamlFactoryTest {
 
-    private static final Logger logger = LoggerFactory.getLogger(YamlFactoryTest.class);
+    private static final Logger LOGGER = LoggerFactory.getLogger(YamlFactoryTest.class);
 
     @Test
     public void testLoadYamlToProperties() {
         Properties properties = YamlFactory.loadYamlToProperties(Constants.INGESTION_CONFIG_FILE);
         String value = properties.getProperty("starfish.message.type");
-        logger.info("type value:{}", value);
+        LOGGER.info("type value:{}", value);
         Assertions.assertNotNull(value);
     }
 
@@ -42,13 +42,13 @@ public class YamlFactoryTest {
     public void testMessageParseObject() {
         MessageProperties messageProperties = YamlFactory.parseObject("starfish.message", Constants.INGESTION_CONFIG_FILE, new MessageProperties());
         Assertions.assertNotNull(messageProperties);
-        logger.info("messageProperties:{}", messageProperties);
+        LOGGER.info("messageProperties:{}", messageProperties);
     }
 
     @Test
     public void testParseObject() {
         IngestionProperties ingestionProperties = YamlFactory.parseObject("starfish", Constants.INGESTION_CONFIG_FILE, new IngestionProperties());
         Assertions.assertNotNull(ingestionProperties);
-        logger.info("messageProperties:{}", ingestionProperties);
+        LOGGER.info("messageProperties:{}", ingestionProperties);
     }
 }

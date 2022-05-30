@@ -32,7 +32,7 @@ import java.util.ServiceLoader;
 
 public class MetaMessageProducerTest {
 
-    private static final Logger logger = LoggerFactory.getLogger(MetaMessageProducerTest.class);
+    private static final Logger LOGGER = LoggerFactory.getLogger(MetaMessageProducerTest.class);
 
     @Test
     public void testServiceLoader() {
@@ -47,7 +47,7 @@ public class MetaMessageProducerTest {
             if (Objects.nonNull(messageManager)) {
                 throw new IllegalArgumentException(MessageFormat.format("Duplicate message type exists: {0}", type));
             }
-            logger.info("type:{}, message manager:{}", type, manager);
+            LOGGER.info("type:{}, message manager:{}", type, manager);
             managerMap.put(type, manager);
 
         });

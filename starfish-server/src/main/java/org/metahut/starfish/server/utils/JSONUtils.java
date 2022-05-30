@@ -33,7 +33,7 @@ import static com.fasterxml.jackson.databind.DeserializationFeature.READ_UNKNOWN
 
 public class JSONUtils {
 
-    private static final Logger logger = LoggerFactory.getLogger(JSONUtils.class);
+    private static final Logger LOGGER = LoggerFactory.getLogger(JSONUtils.class);
 
     private JSONUtils() {
     }
@@ -51,7 +51,7 @@ public class JSONUtils {
         try {
             return OBJECT_MAPPER.readValue(file, clazz);
         } catch (Exception e) {
-            logger.error("JSON parse Object exception, file name:{}, Class:{}", file.getName(), clazz, e);
+            LOGGER.error("JSON parse Object exception, file name:{}, Class:{}", file.getName(), clazz, e);
             return null;
         }
     }
@@ -64,7 +64,7 @@ public class JSONUtils {
         try {
             return OBJECT_MAPPER.readValue(json, clazz);
         } catch (Exception e) {
-            logger.error("JSON parse Object exception, JSON:{}, Class:{}", json, clazz, e);
+            LOGGER.error("JSON parse Object exception, JSON:{}, Class:{}", json, clazz, e);
             return null;
         }
     }
@@ -77,7 +77,7 @@ public class JSONUtils {
         try {
             return OBJECT_MAPPER.readValue(json, type);
         } catch (Exception e) {
-            logger.error("JSON parse Object exception, JSON:{}, TypeReference:{}", json, type, e);
+            LOGGER.error("JSON parse Object exception, JSON:{}, TypeReference:{}", json, type, e);
             return null;
         }
     }

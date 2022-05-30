@@ -25,7 +25,7 @@ import static org.metahut.starfish.message.api.Constants.MESSAGE_PRODUCER_MAP_KE
 
 public class MetaClient {
 
-    private static final Logger logger = LoggerFactory.getLogger(MetaClient.class);
+    private static final Logger LOGGER = LoggerFactory.getLogger(MetaClient.class);
 
     private static class MetaClientHolder {
         private static final MetaClient INSTANCE = new MetaClient();
@@ -64,7 +64,7 @@ public class MetaClient {
                 try {
                     messageManager.init(messageProperties);
                 } catch (MessageException e) {
-                    logger.error("message init exception, message:{}", e);
+                    LOGGER.error("message init exception, message:{}", e);
                 }
 
                 if (Objects.isNull(messageManager)) {

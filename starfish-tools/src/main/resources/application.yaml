@@ -1,15 +1,13 @@
 spring:
-  main:
-    web-application-type: none
   mvc:
     pathmatch:
       matching-strategy: ant_path_matcher
   datasource:
     type: com.zaxxer.hikari.HikariDataSource
-    driver-class-name: org.postgresql.Driver
-    url: jdbc:postgresql://localhost:5432/postgres?serverTimezone=CST
-    username: test
-    password: test
+    driver-class-name: org.h2.Driver
+    url: jdbc:h2:mem:starfish;MODE=MySQL;DB_CLOSE_DELAY=-1;DATABASE_TO_LOWER=true;
+    username: sa
+    password: ""
   sql:
     init:
       schema-locations: "classpath:sql/starfish_h2.sql"

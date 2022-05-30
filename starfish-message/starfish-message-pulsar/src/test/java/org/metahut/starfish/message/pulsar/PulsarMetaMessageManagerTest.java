@@ -41,7 +41,7 @@ import java.util.Objects;
 @Disabled
 class PulsarMetaMessageManagerTest {
 
-    private static final Logger logger = LoggerFactory
+    private static final Logger LOGGER = LoggerFactory
         .getLogger(PulsarMetaMessageManagerTest.class);
 
     private PulsarMessageManager pulsarMessageManager;
@@ -100,7 +100,7 @@ class PulsarMetaMessageManagerTest {
                     Assertions.assertNotNull(result);
                 }
             } catch (MessageException e) {
-                logger.error(e.getMessage(), e);
+                LOGGER.error(e.getMessage(), e);
             }
         }
     }
