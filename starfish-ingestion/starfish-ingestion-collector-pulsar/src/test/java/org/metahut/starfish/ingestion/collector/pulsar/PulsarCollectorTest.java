@@ -22,8 +22,7 @@ public class PulsarCollectorTest {
     PulsarClient client = null;
     PulsarAdmin admin = null;
     String url = "XXX";
-    final String typeUrl = "http://localhost:8801/metaData/batchType";
-    final String instanceUrl = "http://localhost:8801/metaData/batchInstance";
+    final String pulsarUrl = "http://localhost:8801/metaData/batch";
 
     @BeforeEach
     @Disabled
@@ -185,22 +184,9 @@ public class PulsarCollectorTest {
     //    PulsarCollectorParameter parameter = new PulsarCollectorParameter();
     //    // parameter.setDatasourceId("my-topic");
     //    parameter.setDatasourceParameter(JSONUtils.toJSONString(pulsarDatasourceParameter));
-    //    BatchMetaDataDTO collectorResult = new PulsarCollectorManager()
+    //    List<BatchMetaDataDTO> collectorResult = new PulsarCollectorManager()
     //        .generateInstance(parameter).getMsg();
-    //    doPostJson(instanceUrl, JSONUtils.toJSONString(collectorResult));
-    //    Assertions.assertNotNull(collectorResult);
-    //}
-    //
-    //@Test
-    //public void testGetClassInfo() {
-    //    PulsarDatasourceParameter pulsarDatasourceParameter = new PulsarDatasourceParameter();
-    //    pulsarDatasourceParameter.setServerUrl("http://pulsar-idc-qa.zpidc.com:8080");
-    //    PulsarCollectorParameter parameter = new PulsarCollectorParameter();
-    //    // parameter.setDatasourceId("my-topic");
-    //    parameter.setDatasourceParameter(JSONUtils.toJSONString(pulsarDatasourceParameter));
-    //    BatchSchemaDTO collectorResult = new PulsarCollectorManager()
-    //            .generateInstance(parameter).getClassInfo();
-    //    doPostJson(typeUrl, JSONUtils.toJSONString(collectorResult));
+    //    doPostJson(pulsarUrl, JSONUtils.toJSONString(collectorResult.get(5)));
     //    Assertions.assertNotNull(collectorResult);
     //}
     //

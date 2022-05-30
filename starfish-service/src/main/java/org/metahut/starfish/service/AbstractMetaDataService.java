@@ -50,21 +50,21 @@ import java.util.stream.Collectors;
  * TODO 如果迁移准备json 节点迁移 带有新的数据格式 带有rootInstanceId
  * TODO 问题是class没有强关联
  * TODO 拷贝图会有问题 -> 局部校验意味着失效了（问题是带着层级校验）
- *  分开递归校验？
- *  如果只拷贝节点， 局部校验节点， 然后？
+ * 分开递归校验？
+ * 如果只拷贝节点， 局部校验节点， 然后？
  */
 @Transactional
-public abstract class AbstractMetaDataService<K,T> implements IMetaDataApi<K,T> {
+public abstract class AbstractMetaDataService<K, T> implements IMetaDataApi<K, T> {
 
-    protected abstract ISourceApi<K,T> sourceApi();
+    protected abstract ISourceApi<K, T> sourceApi();
 
-    protected abstract IGraphApi<K,T> graphApi();
+    protected abstract IGraphApi<K, T> graphApi();
 
-    protected abstract ITypeApi<K,T> typeApi();
+    protected abstract ITypeApi<K, T> typeApi();
 
     protected abstract ILinkApi<K> linkApi();
 
-    private List<K> validBatchClassInfos(K sourceId,Collection<Class> insertClassInfos,Map<K,Class> updateClassInfos) {
+    private List<K> validBatchClassInfos(K sourceId, Collection<Class> insertClassInfos, Map<K, Class> updateClassInfos) {
         List<K> typeIds = new ArrayList<>();
         Map<K, Class> existTypes = typeApi().types(sourceId);
         if (updateClassInfos != null) {
@@ -116,7 +116,7 @@ public abstract class AbstractMetaDataService<K,T> implements IMetaDataApi<K,T> 
         return typeIds;
     }
 
-    private void validAndFilterEntityOfType(Class classInfo,Map<String,T> properties) {
+    private void validAndFilterEntityOfType(Class classInfo, Map<String, T> properties) {
         if (properties != null) {
             Iterator<Map.Entry<String, T>> iterator = properties.entrySet().iterator();
             while (iterator.hasNext()) {
@@ -136,8 +136,8 @@ public abstract class AbstractMetaDataService<K,T> implements IMetaDataApi<K,T> 
         }
     }
 
-    private Map<String,T> convertTo(Object object) {
-        Map<String,T> map = new ObjectMapper().convertValue(object, Map.class);
+    private Map<String, T> convertTo(Object object) {
+        Map<String, T> map = new ObjectMapper().convertValue(object, Map.class);
         return map;
     }
 
@@ -145,9 +145,9 @@ public abstract class AbstractMetaDataService<K,T> implements IMetaDataApi<K,T> 
     public K initSourceAndType(BatchTypeBody<T> batchTypeBody) throws AbstractMetaParserException {
         K id = sourceApi().getIdByName(batchTypeBody.getSource().getName());
         K sourceId = createSource(batchTypeBody.getSource().getName(), batchTypeBody.getSource().getAttributes());
-        List<K> typeIds = validBatchClassInfos(sourceId,batchTypeBody.getTypes(),null);
+        List<K> typeIds = validBatchClassInfos(sourceId, batchTypeBody.getTypes(), null);
         for (K typeId : typeIds) {
-            linkApi().link(sourceId,typeId, LinkCategory.SOURCE_TYPE);
+            linkApi().link(sourceId, typeId, LinkCategory.SOURCE_TYPE);
         }
         return sourceId;
     }
@@ -159,10 +159,10 @@ public abstract class AbstractMetaDataService<K,T> implements IMetaDataApi<K,T> 
         if (sourceId == null) {
             throw new SourceNameNotPresentException();
         }
-        Collection<K> typeIds = linkApi().findChildren(sourceId,LinkCategory.SOURCE_TYPE);
+        Collection<K> typeIds = linkApi().findChildren(sourceId, LinkCategory.SOURCE_TYPE);
         Map<K, Class> types = typeApi().types(typeIds);
         for (Map.Entry<String, String> entry : batchInstanceBody.getInstances().entrySet()) {
-            store(entry.getKey(),entry.getValue(),types);
+            store(entry.getKey(), entry.getValue(), types);
         }
         return sourceId;
     }
@@ -173,7 +173,8 @@ public abstract class AbstractMetaDataService<K,T> implements IMetaDataApi<K,T> 
             for (EntityRow entity : rowData.getEntities()) {
                 AbstractQueryCondition<Map> condition = new AbstractQueryCondition<>();
                 condition.setResultType(Map.class);
-                condition.setFilters(Arrays.asList(ConditionPiece.entityWithType(entity.getHeader().getTypeName())));
+                condition.setFilters(Arrays.asList(ConditionPiece.entityWithTypeAndQualifiedName(entity.getHeader().getTypeName()
+                        , entity.getHeader().getId(), entity.getHeader().getQualifiedName())));
                 Set<K> instanceIds = graphApi().query(condition).stream().map(map -> (K) map.get("id")).collect(Collectors.toSet());
                 Map<String, T> properties = entity.getProperties();
                 switch (entity.getRowKind()) {
@@ -230,7 +231,8 @@ public abstract class AbstractMetaDataService<K,T> implements IMetaDataApi<K,T> 
                 }
                 AbstractQueryCondition<Map> condition1 = new AbstractQueryCondition<>();
                 condition1.setResultType(Map.class);
-                condition1.setFilters(Arrays.asList(ConditionPiece.entityWithType(relation.getStartNode().getTypeName())));
+                condition1.setFilters(Arrays.asList(ConditionPiece.entityWithTypeAndQualifiedName(relation.getStartNode().getTypeName(), relation.getStartNode().getId()
+                        , relation.getStartNode().getQualifiedName())));
                 Set<K> headIds = graphApi().query(condition1).stream().map(map -> (K) map.get("id")).collect(Collectors.toSet());
                 if (headIds == null) {
                     throw new InstanceNotPresentException("Type:" + relation.getStartNode().getTypeName() + ",Name:" + relation.getStartNode().getQualifiedName());
@@ -242,7 +244,8 @@ public abstract class AbstractMetaDataService<K,T> implements IMetaDataApi<K,T> 
                 }
                 AbstractQueryCondition<Map> condition2 = new AbstractQueryCondition<>();
                 condition2.setResultType(Map.class);
-                condition2.setFilters(Arrays.asList(ConditionPiece.entityWithType(relation.getStartNode().getTypeName())));
+                condition2.setFilters(Arrays.asList(ConditionPiece.entityWithTypeAndQualifiedName(relation.getStartNode().getTypeName()
+                        , relation.getStartNode().getId(), relation.getStartNode().getQualifiedName())));
                 Set<K> tailIds = graphApi().query(condition2).stream().map(map -> (K) map.get("id")).collect(Collectors.toSet());
                 if (tailIds == null) {
                     throw new InstanceNotPresentException("Type:" + relation.getStartNode().getTypeName() + ",Name:" + relation.getStartNode().getQualifiedName());
@@ -256,10 +259,10 @@ public abstract class AbstractMetaDataService<K,T> implements IMetaDataApi<K,T> 
                     case UPSERT:
                     case UPDATE:
                     case CREATE:
-                        link(headIds.stream().findFirst().get(),tailIds.stream().findFirst().get(),relation.getProperty());
+                        link(headIds.stream().findFirst().get(), tailIds.stream().findFirst().get(), relation.getProperty());
                         break;
                     case DELETE:
-                        crack(headIds.stream().findFirst().get(),tailIds.stream().findFirst().get(),relation.getProperty());
+                        crack(headIds.stream().findFirst().get(), tailIds.stream().findFirst().get(), relation.getProperty());
                         break;
                     default:
                 }
@@ -267,20 +270,20 @@ public abstract class AbstractMetaDataService<K,T> implements IMetaDataApi<K,T> 
         }
     }
 
-    private void store(String typeName,String json,Map<K,Class> types) {
-        InstanceAnalysisStruct<K,T> analysis = JsonExtensionVisitor.analysis(json, typeName, types);
-        for (InstanceAnalysisStruct.Instance<K,T> instance : analysis.getInstances().values()) {
+    private void store(String typeName, String json, Map<K, Class> types) {
+        InstanceAnalysisStruct<K, T> analysis = JsonExtensionVisitor.analysis(json, typeName, types);
+        for (InstanceAnalysisStruct.Instance<K, T> instance : analysis.getInstances().values()) {
             K entityId = createEntity(instance.getTypeId(), instance.getQualifiedName(), instance.getProperties());
             instance.setId(entityId);
         }
         for (InstanceAnalysisStruct.Link<K, T> link : analysis.getLinks()) {
-            link(link.getHead().getId(),link.getTail().getId(),link.getProperty());
+            link(link.getHead().getId(), link.getTail().getId(), link.getProperty());
         }
     }
 
     @Override
-    public <U> U source(K sourceId,java.lang.Class<U> returnType) throws AbstractMetaParserException {
-        return sourceApi().source(sourceId,returnType);
+    public <U> U source(K sourceId, java.lang.Class<U> returnType) throws AbstractMetaParserException {
+        return sourceApi().source(sourceId, returnType);
     }
 
     @Override
@@ -290,7 +293,7 @@ public abstract class AbstractMetaDataService<K,T> implements IMetaDataApi<K,T> 
 
     @Override
     public <U> Page<U> sources(AbstractQueryCondition<U> returnType, Pageable page) throws AbstractMetaParserException {
-        return sourceApi().query(returnType,page);
+        return sourceApi().query(returnType, page);
     }
 
     @Override
@@ -304,8 +307,8 @@ public abstract class AbstractMetaDataService<K,T> implements IMetaDataApi<K,T> 
     }
 
     @Override
-    public <U> U instance(K instanceId,java.lang.Class<U> returnType) throws AbstractMetaParserException {
-        return graphApi().node(instanceId,returnType);
+    public <U> U instance(K instanceId, java.lang.Class<U> returnType) throws AbstractMetaParserException {
+        return graphApi().node(instanceId, returnType);
     }
 
     @Override
@@ -315,52 +318,52 @@ public abstract class AbstractMetaDataService<K,T> implements IMetaDataApi<K,T> 
 
     @Override
     public <U> Page<U> instances(AbstractQueryCondition<U> condition, Pageable page) throws AbstractMetaParserException {
-        return graphApi().query(condition,page);
+        return graphApi().query(condition, page);
     }
 
     @Override
-    public <U> Collection<U> instances(K typeId,java.lang.Class<U> returnType) throws AbstractMetaParserException {
+    public <U> Collection<U> instances(K typeId, java.lang.Class<U> returnType) throws AbstractMetaParserException {
         Collection<K> instanceIds = linkApi().findChildren(typeId, LinkCategory.TYPE_ENTITY);
-        return graphApi().nodes(instanceIds,returnType);
+        return graphApi().nodes(instanceIds, returnType);
     }
 
     @Override
-    public <U> Collection<U> instancesByTypeName(String typeName,java.lang.Class<U> returnType) throws AbstractMetaParserException {
-        return instances(typeApi().getIdByName(typeName),returnType);
+    public <U> Collection<U> instancesByTypeName(String typeName, java.lang.Class<U> returnType) throws AbstractMetaParserException {
+        return instances(typeApi().getIdByName(typeName), returnType);
     }
 
     @Override
-    public <U> Page<U> instances(K typeId, Pageable page,java.lang.Class<U> returnType) throws AbstractMetaParserException {
+    public <U> Page<U> instances(K typeId, Pageable page, java.lang.Class<U> returnType) throws AbstractMetaParserException {
         Collection<K> instanceIds = linkApi().findChildren(typeId, LinkCategory.TYPE_ENTITY);
-        return graphApi().nodes(instanceIds,page,returnType);
+        return graphApi().nodes(instanceIds, page, returnType);
     }
 
     @Override
-    public <U> Page<U> instancesByTypeName(String typeName, Pageable page,java.lang.Class<U> returnType) throws AbstractMetaParserException {
-        return instances(typeApi().getIdByName(typeName),page,returnType);
+    public <U> Page<U> instancesByTypeName(String typeName, Pageable page, java.lang.Class<U> returnType) throws AbstractMetaParserException {
+        return instances(typeApi().getIdByName(typeName), page, returnType);
     }
 
     @Override
-    public <U> Collection<U> instances(K upperInstanceId, String property,java.lang.Class<U> returnType) throws AbstractMetaParserException {
-        return graphApi().nodes(upperInstanceId,property,returnType);
+    public <U> Collection<U> instances(K upperInstanceId, String property, java.lang.Class<U> returnType) throws AbstractMetaParserException {
+        return graphApi().nodes(upperInstanceId, property, returnType);
     }
 
     @Override
-    public <U> Page<U> instances(K upperInstanceId, String property, Pageable page,java.lang.Class<U> returnType) throws AbstractMetaParserException {
-        return graphApi().nodes(upperInstanceId,property,page,returnType);
+    public <U> Page<U> instances(K upperInstanceId, String property, Pageable page, java.lang.Class<U> returnType) throws AbstractMetaParserException {
+        return graphApi().nodes(upperInstanceId, property, page, returnType);
     }
 
     @Override
     public K createSource(String name, Map<String, T> properties) throws AbstractMetaParserException {
-        return sourceApi().create(name,properties);
+        return sourceApi().create(name, properties);
     }
 
     @Override
     public K createType(K sourceId, Class classInfo, Map<String, T> properties) throws AbstractMetaParserException {
         //TODO valid 创建时候两个type 要不要建立连接？
-        List<K> typeIds = validBatchClassInfos(sourceId, Arrays.asList(classInfo),null);
+        List<K> typeIds = validBatchClassInfos(sourceId, Arrays.asList(classInfo), null);
         for (K typeId : typeIds) {
-            linkApi().link(sourceId,typeId, LinkCategory.SOURCE_TYPE);
+            linkApi().link(sourceId, typeId, LinkCategory.SOURCE_TYPE);
             return typeId;
         }
         throw new TypeExistsException(classInfo.fullClassName());
@@ -369,7 +372,7 @@ public abstract class AbstractMetaDataService<K,T> implements IMetaDataApi<K,T> 
     @Override
     public K createEntityByTypeName(String typeName, String name, Map<String, T> properties) throws AbstractMetaParserException {
         K typeId = typeApi().getIdByName(typeName);
-        return createEntity(typeId,name,properties);
+        return createEntity(typeId, name, properties);
     }
 
     @Override
@@ -377,10 +380,10 @@ public abstract class AbstractMetaDataService<K,T> implements IMetaDataApi<K,T> 
         //TODO valid
         K entityId = graphApi().createNode(name, properties);
         Class type = typeApi().type(typeId);
-        validAndFilterEntityOfType(type,properties);
-        K sourceId = linkApi().findParent(typeId,LinkCategory.SOURCE_TYPE);
-        linkApi().link(sourceId,entityId,LinkCategory.SOURCE_ENTITY);
-        linkApi().link(typeId,entityId,LinkCategory.TYPE_ENTITY);
+        validAndFilterEntityOfType(type, properties);
+        K sourceId = linkApi().findParent(typeId, LinkCategory.SOURCE_TYPE);
+        linkApi().link(sourceId, entityId, LinkCategory.SOURCE_ENTITY);
+        linkApi().link(typeId, entityId, LinkCategory.TYPE_ENTITY);
         return entityId;
     }
 
@@ -394,9 +397,9 @@ public abstract class AbstractMetaDataService<K,T> implements IMetaDataApi<K,T> 
         String fullName = attribute.getClassName();
         Optional<Map.Entry<K, Class>> optionalEntry = types.entrySet().stream().filter(kClassEntry -> kClassEntry.getValue().fullClassName().equals(fullName)).findFirst();
         if (optionalEntry.isPresent()) {
-            validAndFilterEntityOfType(optionalEntry.get().getValue(),properties);
-            K newEntityKey = createEntity(optionalEntry.get().getKey(),name, properties);
-            graphApi().link(upperInstanceId,newEntityKey,propertyName);
+            validAndFilterEntityOfType(optionalEntry.get().getValue(), properties);
+            K newEntityKey = createEntity(optionalEntry.get().getKey(), name, properties);
+            graphApi().link(upperInstanceId, newEntityKey, propertyName);
             return newEntityKey;
         } else {
             throw new TypeNotPresentException(fullName + " in Source:" + sourceId);
@@ -406,16 +409,16 @@ public abstract class AbstractMetaDataService<K,T> implements IMetaDataApi<K,T> 
     @Override
     public void updateSource(K id, String name, Map<String, T> properties) throws AbstractMetaParserException {
         //TODO valid
-        sourceApi().update(id,name,properties);
+        sourceApi().update(id, name, properties);
     }
 
     @Override
     public void updateType(K id, Class classInfo, Map<String, T> properties) throws AbstractMetaParserException {
         K sourceId = linkApi().findParent(id, LinkCategory.SOURCE_TYPE);
-        Map<K,Class> updateClassInfos = new HashMap<>();
-        updateClassInfos.put(id,classInfo);
-        validBatchClassInfos(sourceId,null,updateClassInfos);
-        typeApi().update(id,classInfo,properties);
+        Map<K, Class> updateClassInfos = new HashMap<>();
+        updateClassInfos.put(id, classInfo);
+        validBatchClassInfos(sourceId, null, updateClassInfos);
+        typeApi().update(id, classInfo, properties);
     }
 
     @Override
@@ -423,8 +426,8 @@ public abstract class AbstractMetaDataService<K,T> implements IMetaDataApi<K,T> 
         //TODO valid
         K typeId = linkApi().findParent(id, LinkCategory.TYPE_ENTITY);
         Class classInfo = typeApi().type(typeId);
-        validAndFilterEntityOfType(classInfo,properties);
-        graphApi().updateNode(id,name,properties);
+        validAndFilterEntityOfType(classInfo, properties);
+        graphApi().updateNode(id, name, properties);
     }
 
     @Override
@@ -512,11 +515,11 @@ public abstract class AbstractMetaDataService<K,T> implements IMetaDataApi<K,T> 
 
     @Override
     public void link(K headId, K tailId, String property) throws AbstractMetaParserException {
-        graphApi().link(headId,tailId,property);
+        graphApi().link(headId, tailId, property);
     }
 
     @Override
     public void crack(K headId, K tailId, String property) throws AbstractMetaParserException {
-        graphApi().crack(headId,tailId,property);
+        graphApi().crack(headId, tailId, property);
     }
 }

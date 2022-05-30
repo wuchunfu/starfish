@@ -35,7 +35,8 @@ import java.util.Set;
 @Entity
 @Table(name = "t_sf_relation_entity")
 @EntityListeners(AuditingEntityListener.class)
-public class RelationEntity extends AbstractRelationEntity<Long, RelationEntityProperty, NodeEntity> {
+public class RelationEntity extends
+    AbstractRelationEntity<Long, RelationEntityProperty, NodeEntity> {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)

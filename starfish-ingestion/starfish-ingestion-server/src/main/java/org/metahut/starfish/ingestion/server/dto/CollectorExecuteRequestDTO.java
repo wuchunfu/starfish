@@ -53,12 +53,7 @@ public class CollectorExecuteRequestDTO {
     }
 
     private ConditionPiece collectorTaskCondition() {
-        ConditionPiece conditionPiece = ConditionPiece.entityWithType("org.starfish.CollectorTask");
-        List<BinaryExpression> expressions = new ArrayList<>();
-        if (id != null) {
-            expressions.add(Expression.id(id));
-        }
-        conditionPiece.setExpressions(expressions);
+        ConditionPiece conditionPiece = ConditionPiece.entityWithTypeAndQualifiedName("org.starfish.CollectorTask",this.id,this.qualifiedName);
         return conditionPiece;
     }
 }

@@ -200,7 +200,7 @@ public class HiveCollectorTask implements ICollectorTask {
             // HiveTable --> db --> HiveDB
             rowData.getRelations().add(RelationRow.of(RowKind.UPSERT, entityHeader, dbHeader, RELATION_PROPERTY_TABLE_DB));
             generateHiveColumnEntities(rowData, entityHeader, table);
-
+            sendMessage(rowData);
             return entityHeader;
 
         } catch (TException e) {
