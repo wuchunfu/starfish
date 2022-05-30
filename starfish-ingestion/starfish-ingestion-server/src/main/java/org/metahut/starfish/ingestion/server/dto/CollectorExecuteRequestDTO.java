@@ -2,6 +2,7 @@ package org.metahut.starfish.ingestion.server.dto;
 
 import org.metahut.starfish.ingestion.server.entity.CollectorTaskEntity;
 import org.metahut.starfish.unit.AbstractQueryCondition;
+import org.metahut.starfish.unit.enums.LinkCategory;
 import org.metahut.starfish.unit.enums.RelationType;
 import org.metahut.starfish.unit.enums.TypeCategory;
 import org.metahut.starfish.unit.expression.ConditionPiece;
@@ -43,7 +44,7 @@ public class CollectorExecuteRequestDTO {
 
     private Map<String, EachPointer> eachPointerMap() {
         Map<String, EachPointer> map = new HashMap<>();
-        EachPointer topicParent = new EachPointer(TypeCategory.ENTITY, RelationType.CHILD);
+        EachPointer topicParent = new EachPointer(LinkCategory.RELATIONSHIP, RelationType.CHILD);
         map.put("adapter",topicParent);
         return map;
     }

@@ -76,18 +76,16 @@ public class CollectorAdapterRequestDTO extends PageRequestDTO {
     private ConditionPiece collectorAdapterPiece() {
         ConditionPiece conditionPiece = new ConditionPiece();
         conditionPiece.setTableType(TableType.ENTITY);
-        List<BinaryExpression> expressions = new ArrayList<>();
         Map<String, ConditionPiece> map = new HashMap<>();
         map.putAll(rel1());
-        conditionPiece.setExpressions(expressions);
         conditionPiece.setNextConditionChain(map);
         return conditionPiece;
     }
 
     private Map<String, ConditionPiece> rel1() {
         Map<String, ConditionPiece> result = new HashMap<>();
-        result.put("parent", typeEntityRelationPiece());
-        result.put("properties", propertyPiece());
+        result.put(Expression.PARENT, typeEntityRelationPiece());
+        result.put(Expression.PROPERTIES, propertyPiece());
         return result;
     }
 
@@ -101,7 +99,7 @@ public class CollectorAdapterRequestDTO extends PageRequestDTO {
 
     private Map<String, ConditionPiece> rel2() {
         Map<String, ConditionPiece> result = new HashMap<>();
-        result.put("startNodeEntity", collectorTaskTypePiece());
+        result.put(Expression.START_NODE_ENTITY, collectorTaskTypePiece());
         return result;
     }
 

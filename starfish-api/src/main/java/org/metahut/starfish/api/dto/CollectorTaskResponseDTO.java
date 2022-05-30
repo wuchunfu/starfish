@@ -1,5 +1,6 @@
 package org.metahut.starfish.api.dto;
 
+import org.metahut.starfish.api.JSONUtils;
 import org.metahut.starfish.api.enums.ReleaseStateEnum;
 
 import io.swagger.annotations.ApiModel;
@@ -19,7 +20,7 @@ public class CollectorTaskResponseDTO {
     private CollectorAdapterResponseDTO adapter;
 
     @ApiModelProperty(value = "collector task plugin parameter")
-    private String parameter;
+    private Object parameter;
 
     @ApiModelProperty(value = "cron expression")
     private String cron;
@@ -61,10 +62,10 @@ public class CollectorTaskResponseDTO {
     }
 
     public String getParameter() {
-        return parameter;
+        return JSONUtils.toJSONString(parameter);
     }
 
-    public void setParameter(String parameter) {
+    public void setParameter(Object parameter) {
         this.parameter = parameter;
     }
 
