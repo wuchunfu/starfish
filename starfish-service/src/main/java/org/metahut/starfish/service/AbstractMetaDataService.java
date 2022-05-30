@@ -234,7 +234,7 @@ public abstract class AbstractMetaDataService<K, T> implements IMetaDataApi<K, T
                 condition1.setFilters(Arrays.asList(ConditionPiece.entityWithTypeAndQualifiedName(relation.getStartNode().getTypeName(), relation.getStartNode().getId()
                         , relation.getStartNode().getQualifiedName())));
                 Set<K> headIds = graphApi().query(condition1).stream().map(map -> (K) map.get("id")).collect(Collectors.toSet());
-                if (headIds == null) {
+                if (headIds == null || headIds.size() == 0) {
                     throw new InstanceNotPresentException("Type:" + relation.getStartNode().getTypeName() + ",Name:" + relation.getStartNode().getQualifiedName());
                 }
                 if (headIds.size() > 1) {
@@ -244,10 +244,10 @@ public abstract class AbstractMetaDataService<K, T> implements IMetaDataApi<K, T
                 }
                 AbstractQueryCondition<Map> condition2 = new AbstractQueryCondition<>();
                 condition2.setResultType(Map.class);
-                condition2.setFilters(Arrays.asList(ConditionPiece.entityWithTypeAndQualifiedName(relation.getStartNode().getTypeName()
-                        , relation.getStartNode().getId(), relation.getStartNode().getQualifiedName())));
+                condition2.setFilters(Arrays.asList(ConditionPiece.entityWithTypeAndQualifiedName(relation.getEndNode().getTypeName()
+                        , relation.getEndNode().getId(), relation.getEndNode().getQualifiedName())));
                 Set<K> tailIds = graphApi().query(condition2).stream().map(map -> (K) map.get("id")).collect(Collectors.toSet());
-                if (tailIds == null) {
+                if (tailIds == null || tailIds.size() == 0) {
                     throw new InstanceNotPresentException("Type:" + relation.getStartNode().getTypeName() + ",Name:" + relation.getStartNode().getQualifiedName());
                 }
                 if (tailIds.size() > 1) {

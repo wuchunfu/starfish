@@ -154,24 +154,24 @@ public class PulsarTopicQueryDTO extends PageRequestDTO {
         }
         if (this.createBeginTime != null) {
             if (this.createEndTime != null) {
-                expressions.addAll(Expression.keyValueDateBetweenAnd("createTime", this.createBeginTime,this.createEndTime));
+                expressions.add(Expression.dateBetweenAnd(Expression.CREATE_TIME,this.createBeginTime,this.createEndTime));
             } else {
-                expressions.addAll(Expression.keyValueDateGreaterThanOrEqualTo("createTime",this.createBeginTime));
+                expressions.add(Expression.dateGreaterThanOrEqualTo(Expression.CREATE_TIME,this.createBeginTime));
             }
         } else {
             if (this.createEndTime != null) {
-                expressions.addAll(Expression.keyValueDateLessThanOrEqualTo("createTime",this.createEndTime));
+                expressions.add(Expression.dateLessThanOrEqualTo(Expression.CREATE_TIME,this.createEndTime));
             }
         }
         if (this.updateBeginTime != null) {
             if (this.updateEndTime != null) {
-                expressions.addAll(Expression.keyValueDateBetweenAnd("updateTime", this.updateBeginTime,this.updateEndTime));
+                expressions.add(Expression.dateBetweenAnd(Expression.UPDATE_TIME, this.updateBeginTime,this.updateEndTime));
             } else {
-                expressions.addAll(Expression.keyValueDateGreaterThanOrEqualTo("updateTime",this.updateBeginTime));
+                expressions.add(Expression.dateGreaterThanOrEqualTo(Expression.UPDATE_TIME,this.updateBeginTime));
             }
         } else {
             if (this.updateEndTime != null) {
-                expressions.addAll(Expression.keyValueDateLessThanOrEqualTo("updateTime",this.updateEndTime));
+                expressions.add(Expression.dateLessThanOrEqualTo(Expression.UPDATE_TIME,this.updateEndTime));
             }
         }
         conditionPiece.setExpressions(expressions);

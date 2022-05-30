@@ -70,10 +70,10 @@ starfish:
   scheduler:
     type: dolphinscheduler
     dolphinscheduler:
-      service-url: http://dolphinscheduler.dev.zhaopin.com/dolphinscheduler
-      project-code: 4996418468000
+      service-url: http://dolphinscheduler.com/dolphinscheduler
+      project-code: 0
       tenant-code: algdataonline
-      token: c6258d4a509df0f1b89f77fb552d8ddf
+      token: tokenInfo
   ingestion:
     service-address: localhost:8802
     collector-execute-rest: http://{0}/collector/execute

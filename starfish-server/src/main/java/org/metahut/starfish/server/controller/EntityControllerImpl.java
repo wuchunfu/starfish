@@ -28,8 +28,8 @@ import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Map;
 
+import static org.metahut.starfish.api.Constants.HIVE_CLUSTER_TYPE_NAME;
 import static org.metahut.starfish.api.Constants.HIVE_DB_TYPE_NAME;
-import static org.metahut.starfish.api.Constants.HIVE_TABLE_TYPE_NAME;
 import static org.metahut.starfish.api.Constants.PULSAR_CLUSTER_TYPE_NAME;
 
 @RestController
@@ -66,7 +66,7 @@ public class EntityControllerImpl implements EntityController {
 
     @Override
     public ResultEntity<Collection<HiveClusterResponseDTO>> hiveClusters() {
-        return ResultEntity.success(abstractMetaDataService.instancesByTypeName(HIVE_TABLE_TYPE_NAME,HiveClusterResponseDTO.class));
+        return ResultEntity.success(abstractMetaDataService.instancesByTypeName(HIVE_CLUSTER_TYPE_NAME,HiveClusterResponseDTO.class));
     }
 
     @Override
@@ -80,9 +80,9 @@ public class EntityControllerImpl implements EntityController {
         Page<HiveTableResponseDTO> instances = abstractMetaDataService.instances(hiveTableQueryDTO.toQueryCondition(), pageable);
         PageResponseDTO<HiveTableResponseDTO> result = new PageResponseDTO<>();
         result.setData(instances.getContent());
-        result.setPageNo(result.getPageNo());
-        result.setPageSize(result.getPageSize());
-        result.setTotal(result.getTotal());
+        result.setPageNo(instances.getNumber());
+        result.setPageSize(instances.getSize());
+        result.setTotal(instances.getTotalElements());
         return ResultEntity.success(result);
 
     }

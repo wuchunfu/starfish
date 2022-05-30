@@ -4,15 +4,11 @@ import org.metahut.starfish.ingestion.server.entity.CollectorTaskEntity;
 import org.metahut.starfish.unit.AbstractQueryCondition;
 import org.metahut.starfish.unit.enums.RelationType;
 import org.metahut.starfish.unit.enums.TypeCategory;
-import org.metahut.starfish.unit.expression.BinaryExpression;
 import org.metahut.starfish.unit.expression.ConditionPiece;
 import org.metahut.starfish.unit.expression.EachPointer;
-import org.metahut.starfish.unit.expression.Expression;
 
-import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.HashMap;
-import java.util.List;
 import java.util.Map;
 
 public class CollectorExecuteRequestDTO {

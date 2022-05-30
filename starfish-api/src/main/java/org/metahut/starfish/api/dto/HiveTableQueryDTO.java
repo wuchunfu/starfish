@@ -4,7 +4,6 @@ import org.metahut.starfish.unit.AbstractQueryCondition;
 import org.metahut.starfish.unit.enums.LinkCategory;
 import org.metahut.starfish.unit.enums.RelationType;
 import org.metahut.starfish.unit.enums.TableType;
-import org.metahut.starfish.unit.enums.TypeCategory;
 import org.metahut.starfish.unit.expression.BinaryExpression;
 import org.metahut.starfish.unit.expression.ConditionPiece;
 import org.metahut.starfish.unit.expression.EachPointer;
@@ -116,15 +115,12 @@ public class HiveTableQueryDTO extends PageRequestDTO {
 
     private Map<String, EachPointer> eachPointerMap() {
         Map<String, EachPointer> map = new HashMap<>();
-        EachPointer eachPointer = new EachPointer();
-        eachPointer.setCategory(TypeCategory.ENTITY);
-        eachPointer.setRelationType(RelationType.PARENT);
-        map.put("tables",eachPointer);
-        EachPointer dbPointer = new EachPointer();
-        dbPointer.setCategory(TypeCategory.ENTITY);
-        dbPointer.setRelationType(RelationType.PARENT);
+        EachPointer eachPointer = new EachPointer(LinkCategory.RELATIONSHIP,RelationType.CHILD);
+        map.put("db",eachPointer);
+        map.put("columns",new EachPointer(LinkCategory.RELATIONSHIP,RelationType.CHILD));
+        EachPointer dbPointer = new EachPointer(LinkCategory.RELATIONSHIP,RelationType.CHILD);
         Map<String, EachPointer> map1 = new HashMap<>();
-        map1.put("dbs",dbPointer);
+        map1.put("cluster",dbPointer);
         eachPointer.setEachPointers(map1);
         return map;
     }
@@ -148,24 +144,24 @@ public class HiveTableQueryDTO extends PageRequestDTO {
         }
         if (this.createBeginTime != null) {
             if (this.createEndTime != null) {
-                expressions.addAll(Expression.keyValueDateBetweenAnd(Expression.CREATE_TIME, this.createBeginTime,this.createEndTime));
+                expressions.add(Expression.dateBetweenAnd(Expression.CREATE_TIME,this.createBeginTime,this.createEndTime));
             } else {
-                expressions.addAll(Expression.keyValueDateGreaterThanOrEqualTo(Expression.CREATE_TIME,this.createBeginTime));
+                expressions.add(Expression.dateGreaterThanOrEqualTo(Expression.CREATE_TIME,this.createBeginTime));
             }
         } else {
             if (this.createEndTime != null) {
-                expressions.addAll(Expression.keyValueDateLessThanOrEqualTo(Expression.CREATE_TIME,this.createEndTime));
+                expressions.add(Expression.dateLessThanOrEqualTo(Expression.CREATE_TIME,this.createEndTime));
             }
         }
         if (this.updateBeginTime != null) {
             if (this.updateEndTime != null) {
-                expressions.addAll(Expression.keyValueDateBetweenAnd(Expression.UPDATE_TIME, this.updateBeginTime,this.updateEndTime));
+                expressions.add(Expression.dateBetweenAnd(Expression.UPDATE_TIME, this.updateBeginTime,this.updateEndTime));
             } else {
-                expressions.addAll(Expression.keyValueDateGreaterThanOrEqualTo(Expression.UPDATE_TIME,this.updateBeginTime));
+                expressions.add(Expression.dateGreaterThanOrEqualTo(Expression.UPDATE_TIME,this.updateBeginTime));
             }
         } else {
             if (this.updateEndTime != null) {
-                expressions.addAll(Expression.keyValueDateLessThanOrEqualTo(Expression.UPDATE_TIME,this.updateEndTime));
+                expressions.add(Expression.dateLessThanOrEqualTo(Expression.UPDATE_TIME,this.updateEndTime));
             }
         }
         conditionPiece.setExpressions(expressions);
@@ -175,7 +171,6 @@ public class HiveTableQueryDTO extends PageRequestDTO {
 
     private Map<String,ConditionPiece> rel0() {
         Map<String,ConditionPiece> result = new HashMap<>();
-        result.put(Expression.PROPERTIES,propertyNamePiece());
         return result;
     }
 
@@ -209,7 +204,7 @@ public class HiveTableQueryDTO extends PageRequestDTO {
     private ConditionPiece collectorTaskTypePiece() {
         ConditionPiece conditionPiece = new ConditionPiece();
         conditionPiece.setTableType(TableType.ENTITY);
-        conditionPiece.setExpressions(Expression.entity(HIVE_TABLE_TYPE_NAME));
+        conditionPiece.setExpressions(Expression.type(HIVE_TABLE_TYPE_NAME));
         return conditionPiece;
     }
 

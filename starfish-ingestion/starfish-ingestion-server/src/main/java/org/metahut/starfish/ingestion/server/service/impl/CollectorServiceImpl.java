@@ -38,6 +38,5 @@ public class CollectorServiceImpl implements CollectorService {
         CollectorTaskEntity instance = first.get();
         ICollectorTask collector = collectorPluginHelper.generateTaskInstance(instance.getAdapter().getType(), instance.getAdapter().getParameter(), instance.getParameter());
         return collector.execute();
-
     }
 }

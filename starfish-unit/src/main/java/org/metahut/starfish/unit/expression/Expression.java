@@ -65,6 +65,54 @@ public interface Expression {
         return result;
     }
 
+    static BinaryExpression equal(String property,String value) {
+        EqualExpression expression = new EqualExpression();
+        expression.setLeftExpression(new StringExpression(property));
+        expression.setRightExpression(new StringExpression(value));
+        return expression;
+    }
+
+    static BinaryExpression like(String property,String value) {
+        LikeExpression expression = new LikeExpression();
+        expression.setLeftExpression(new StringExpression(property));
+        expression.setRightExpression(new StringExpression(value));
+        return expression;
+    }
+
+    static BinaryExpression betweenAnd(String property,String begin,String end) {
+        BetweenAndExpression expression = new BetweenAndExpression();
+        expression.setLeftExpression(new StringExpression(property));
+        StringPairExpression stringPairExpression = new StringPairExpression();
+        expression.setRightExpression(stringPairExpression);
+        stringPairExpression.setLeftExpression(new StringExpression(begin));
+        stringPairExpression.setRightExpression(new StringExpression(end));
+        return expression;
+    }
+
+    static BinaryExpression dateBetweenAnd(String property,Date begin,Date end) {
+        DateBetweenAndExpression expression = new DateBetweenAndExpression();
+        expression.setLeftExpression(new StringExpression(property));
+        DatePairExpression datePairExpression = new DatePairExpression();
+        expression.setRightExpression(datePairExpression);
+        datePairExpression.setLeftExpression(new DateExpression(begin));
+        datePairExpression.setRightExpression(new DateExpression(end));
+        return expression;
+    }
+
+    static BinaryExpression dateGreaterThanOrEqualTo(String property,Date date) {
+        GreaterThanOrEqualToExpression expression = new GreaterThanOrEqualToExpression();
+        expression.setLeftExpression(new StringExpression(property));
+        expression.setRightExpression(new DateExpression(date));
+        return expression;
+    }
+
+    static BinaryExpression dateLessThanOrEqualTo(String property,Date date) {
+        LessThanOrEqualToExpression expression = new LessThanOrEqualToExpression();
+        expression.setLeftExpression(new StringExpression(property));
+        expression.setRightExpression(new DateExpression(date));
+        return expression;
+    }
+
     static List<BinaryExpression> keyValueEqual(String key,String value) {
         List<BinaryExpression> result = new ArrayList<>();
         EqualExpression keyExpression = new EqualExpression();
