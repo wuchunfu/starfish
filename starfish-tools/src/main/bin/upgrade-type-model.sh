@@ -28,4 +28,4 @@ JAVA_OPTS=${JAVA_OPTS:-"-server -Xms1g -Xmx1g -Xmn512m -XX:+PrintGCDetails -Xlog
 PROJECT_HOME=$STARFISH_HOME/..
 
 LIBS="$STARFISH_HOME/libs/*":"$PROJECT_HOME/api-server/libs/*"
-nohup java $JAVA_OPTS -cp "$STARFISH_HOME/config":$LIBS org.metahut.starfish.InitTypeModel > $log 2>&1 &
+java $JAVA_OPTS -cp "$STARFISH_HOME/config":$LIBS org.metahut.starfish.InitTypeModel

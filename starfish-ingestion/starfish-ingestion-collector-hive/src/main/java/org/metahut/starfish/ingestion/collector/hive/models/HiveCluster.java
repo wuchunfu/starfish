@@ -1,14 +1,10 @@
 package org.metahut.starfish.ingestion.collector.hive.models;
 
-import java.util.Collection;
-
 public class HiveCluster {
 
     private String name;
     private String type;
     private String description;
-
-    private Collection<HiveDB> dbs;
 
     public String getName() {
         return name;
@@ -34,11 +30,4 @@ public class HiveCluster {
         this.description = description;
     }
 
-    public Collection<HiveDB> getDbs() {
-        return dbs;
-    }
-
-    public void setDbs(Collection<HiveDB> dbs) {
-        this.dbs = dbs;
-    }
 }

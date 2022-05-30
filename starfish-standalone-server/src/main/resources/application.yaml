@@ -48,12 +48,9 @@ spring:
   datasource:
     type: com.zaxxer.hikari.HikariDataSource
     driver-class-name: org.h2.Driver
-    url: jdbc:h2:mem:starfish;MODE=MySQL;DB_CLOSE_DELAY=-1;DATABASE_TO_LOWER=true;
+    url: jdbc:h2:mem:starfish;MODE=MySQL;DB_CLOSE_DELAY=-1;DATABASE_TO_LOWER=true;INIT=runscript from 'classpath:sql/starfish_h2.sql'
     username: sa
     password: ""
-  sql:
-    init:
-      schema-locations: "classpath:sql/starfish_h2.sql"
   jpa:
     hibernate:
       ddl-auto: update

@@ -362,11 +362,11 @@ public class PulsarCollectorTask implements ICollectorTask {
     }
 
     private EntityHeader generateNamespaceEntityHeader(EntityHeader tenantHeader, String namespaceName) {
-        return generateEntityHeader(TYPE_NAME_NAMESPACE, tenantHeader.getQualifiedName(), namespaceName);
+        return generateEntityHeader(TYPE_NAME_NAMESPACE, namespaceName);
     }
 
     private EntityHeader generateTopicEntityHeader(EntityHeader namespaceHeader, String topicName) {
-        return generateEntityHeader(TYPE_NAME_TOPIC, namespaceHeader.getQualifiedName(), topicName);
+        return generateEntityHeader(TYPE_NAME_TOPIC, topicName);
     }
 
     private EntityHeader generateSchemaEntityHeader(EntityHeader topicHeader, String schemaName) {
