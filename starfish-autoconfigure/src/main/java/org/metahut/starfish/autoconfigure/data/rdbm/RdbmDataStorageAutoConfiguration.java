@@ -54,6 +54,8 @@ import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageImpl;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.jpa.domain.Specification;
+import org.springframework.data.jpa.repository.config.EnableJpaAuditing;
+import org.springframework.orm.jpa.support.OpenEntityManagerInViewFilter;
 
 import javax.persistence.criteria.CriteriaBuilder;
 import javax.persistence.criteria.CriteriaQuery;
@@ -78,6 +80,7 @@ import java.util.stream.Collectors;
  *
  */
 @Configuration
+@EnableJpaAuditing
 @ConditionalOnClass({DataSource.class})
 @AutoConfigureAfter({DataSourceAutoConfiguration.class})
 public class RdbmDataStorageAutoConfiguration {
@@ -879,5 +882,10 @@ public class RdbmDataStorageAutoConfiguration {
                 return linkService;
             }
         };
+    }
+
+    @Bean
+    public OpenEntityManagerInViewFilter openEntityManagerInViewFilter() {
+        return new OpenEntityManagerInViewFilter();
     }
 }
