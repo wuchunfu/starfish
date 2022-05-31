@@ -22,6 +22,8 @@ import java.util.List;
 import java.util.Map;
 
 import static org.metahut.starfish.api.Constants.HIVE_TABLE_TYPE_NAME;
+import static org.metahut.starfish.api.Constants.PULSAR_CLUSTER_TYPE_NAME;
+import static org.metahut.starfish.api.Constants.PULSAR_TOPIC_TYPE_NAME;
 
 /**
  *
@@ -202,7 +204,7 @@ public class PulsarTopicQueryDTO extends PageRequestDTO {
     private ConditionPiece pulsarTypeCondition() {
         ConditionPiece conditionPiece = new ConditionPiece();
         conditionPiece.setTableType(TableType.ENTITY);
-        conditionPiece.setExpressions(Expression.entity(HIVE_TABLE_TYPE_NAME));
+        conditionPiece.setExpressions(Expression.type(PULSAR_TOPIC_TYPE_NAME));
         return conditionPiece;
     }
 

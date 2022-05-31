@@ -293,7 +293,7 @@ public class PulsarCollectorTask implements ICollectorTask {
 
             return topicHeader;
         } catch (PulsarAdminException e) {
-            throw new RuntimeException(e);
+            return null;
         }
 
     }
@@ -348,7 +348,7 @@ public class PulsarCollectorTask implements ICollectorTask {
 
             return entityHeader;
         } catch (PulsarAdminException e) {
-            throw new RuntimeException(e);
+            return null;
         }
 
     }

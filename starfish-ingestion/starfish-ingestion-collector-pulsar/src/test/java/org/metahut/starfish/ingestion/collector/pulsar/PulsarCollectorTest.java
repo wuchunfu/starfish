@@ -1,5 +1,7 @@
 package org.metahut.starfish.ingestion.collector.pulsar;
 
+import org.metahut.starfish.ingestion.collector.api.CollectorResult;
+
 import org.apache.pulsar.client.admin.PulsarAdmin;
 import org.apache.pulsar.client.admin.PulsarAdminException;
 import org.apache.pulsar.client.api.PulsarClient;
@@ -216,4 +218,14 @@ public class PulsarCollectorTest {
     //        throw new RuntimeException(ex);
     //    }
     //}
+
+    @Test
+    public void pulsarCollector() {
+        CollectorResult result = new PulsarCollectorManager()
+            .generateTaskInstance("{\"serverUrl\":\"http://pulsar-idc-qa.zpidc.com:8080\"}",
+                "{\"clusterName\":\"pulsar\"}")
+            .execute();
+        Assertions.assertEquals(true, result.getState());
+    }
+
 }
