@@ -1,3 +1,20 @@
+/*
+ * Licensed to the Apache Software Foundation (ASF) under one or more
+ * contributor license agreements.  See the NOTICE file distributed with
+ * this work for additional information regarding copyright ownership.
+ * The ASF licenses this file to You under the Apache License, Version 2.0
+ * (the "License"); you may not use this file except in compliance with
+ * the License.  You may obtain a copy of the License at
+ *
+ *    http://www.apache.org/licenses/LICENSE-2.0
+ *
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
+ */
+
 package org.metahut.starfish.api.dto;
 
 import org.metahut.starfish.unit.AbstractQueryCondition;
@@ -18,7 +35,8 @@ import java.util.Date;
 import java.util.HashMap;
 import java.util.Map;
 
-import static org.metahut.starfish.api.Constants.COLLECTOR_TASK_TYPE_NAME;
+import static org.metahut.starfish.api.Constants.RELATION_PROPERTY_COLLECTOR_TASK_ADAPTER;
+import static org.metahut.starfish.api.Constants.TYPE_NAME_COLLECTOR_TASK;
 
 @ApiModel(description = "collector task request dto")
 public class CollectorTaskRequestDTO extends PageRequestDTO {
@@ -91,7 +109,7 @@ public class CollectorTaskRequestDTO extends PageRequestDTO {
         EachPointer eachPointer = new EachPointer();
         eachPointer.setCategory(LinkCategory.RELATIONSHIP);
         eachPointer.setRelationType(RelationType.CHILD);
-        map.put("adapter",eachPointer);
+        map.put(RELATION_PROPERTY_COLLECTOR_TASK_ADAPTER, eachPointer);
         return map;
     }
 
@@ -151,7 +169,7 @@ public class CollectorTaskRequestDTO extends PageRequestDTO {
     private ConditionPiece collectorTaskTypePiece() {
         ConditionPiece conditionPiece = new ConditionPiece();
         conditionPiece.setTableType(TableType.ENTITY);
-        conditionPiece.setExpressions(Expression.type(COLLECTOR_TASK_TYPE_NAME));
+        conditionPiece.setExpressions(Expression.type(TYPE_NAME_COLLECTOR_TASK));
         return conditionPiece;
     }
 
@@ -164,7 +182,7 @@ public class CollectorTaskRequestDTO extends PageRequestDTO {
     private ConditionPiece entityRel() {
         ConditionPiece conditionPiece = new ConditionPiece();
         conditionPiece.setTableType(TableType.RELATION);
-        conditionPiece.setExpressions(Expression.rel(LinkCategory.RELATIONSHIP,"adapter"));
+        conditionPiece.setExpressions(Expression.rel(LinkCategory.RELATIONSHIP, RELATION_PROPERTY_COLLECTOR_TASK_ADAPTER));
         conditionPiece.setNextConditionChain(rel4());
         return conditionPiece;
     }

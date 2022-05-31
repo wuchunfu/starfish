@@ -1,7 +1,24 @@
+/*
+ * Licensed to the Apache Software Foundation (ASF) under one or more
+ * contributor license agreements.  See the NOTICE file distributed with
+ * this work for additional information regarding copyright ownership.
+ * The ASF licenses this file to You under the Apache License, Version 2.0
+ * (the "License"); you may not use this file except in compliance with
+ * the License.  You may obtain a copy of the License at
+ *
+ *    http://www.apache.org/licenses/LICENSE-2.0
+ *
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
+ */
+
 package org.metahut.starfish.ingestion.collector.pulsar;
 
+import org.metahut.starfish.ingestion.collector.api.AbstractCollectorTask;
 import org.metahut.starfish.ingestion.collector.api.CollectorResult;
-import org.metahut.starfish.ingestion.collector.api.ICollectorTask;
 import org.metahut.starfish.ingestion.collector.pulsar.models.PulsarCluster;
 import org.metahut.starfish.ingestion.collector.pulsar.models.PulsarNamespace;
 import org.metahut.starfish.ingestion.collector.pulsar.models.PulsarPublisher;
@@ -34,11 +51,14 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.util.CollectionUtils;
 
+import java.text.MessageFormat;
+import java.util.Collections;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.Objects;
 import java.util.Set;
+import java.util.StringJoiner;
 
 import static org.metahut.starfish.ingestion.collector.pulsar.Constants.COLLECTOR_TYPE;
 import static org.metahut.starfish.ingestion.collector.pulsar.Constants.RELATION_PROPERTY_CLUSTER_TENANT;
@@ -59,7 +79,7 @@ import static org.metahut.starfish.ingestion.collector.pulsar.Constants.TYPE_NAM
 import static org.metahut.starfish.ingestion.collector.pulsar.Constants.TYPE_NAME_TOPIC;
 import static org.metahut.starfish.unit.EntityNameGentrator.generateName;
 
-public class PulsarCollectorTask implements ICollectorTask {
+public class PulsarCollectorTask extends AbstractCollectorTask {
 
     private static Logger LOGGER = LoggerFactory.getLogger(PulsarCollectorTask.class);
 
@@ -77,11 +97,13 @@ public class PulsarCollectorTask implements ICollectorTask {
 
     private final Map<String, EntityHeader> clusterMap = new HashMap<>();
 
+    private final StringJoiner messageJoiner = new StringJoiner("\n");
+
     @Override
     public CollectorResult execute() {
 
         generatePulsarClusterEntities();
-        generatePulsarTenantAndNamespaceEntities();
+        generatePulsarTenantEntities();
 
         CollectorResult collectorResult = new CollectorResult();
         collectorResult.setMessage("get metaData is success");
@@ -103,69 +125,68 @@ public class PulsarCollectorTask implements ICollectorTask {
     }
 
     private void generatePulsarClusterEntities() {
-
         Clusters clusters = pulsarAdmin.clusters();
+        List<String> clusterNames = Collections.emptyList();
         try {
-            List<String> clusterNames = clusters.getClusters();
-
-            if (CollectionUtils.isEmpty(clusterNames)) {
-                return;
-            }
-
-            RowData rowData = new RowData();
-            for (String clusterName : clusterNames) {
-                ClusterData cluster = clusters.getCluster(clusterName);
-                EntityHeader entityHeader = generatePulsarClusterEntity(rowData, clusterName, cluster);
-                clusterMap.put(clusterName, entityHeader);
-            }
-            sendMessage(rowData);
-
+            clusterNames = clusters.getClusters();
         } catch (PulsarAdminException e) {
-            throw new RuntimeException(e);
+            isThrowException("Pulsar query all cluster names exception", e, parameter.isThrowException());
+        }
+
+        LOGGER.info("Pulsar query cluster names size:{}", clusterNames.size());
+        if (CollectionUtils.isEmpty(clusterNames)) {
+            return;
+        }
+
+        RowData rowData = new RowData();
+        for (String clusterName : clusterNames) {
+            EntityHeader entityHeader = generatePulsarClusterEntity(rowData, clusterName, clusters);
+            if (Objects.isNull(entityHeader)) {
+                continue;
+            }
+            clusterMap.put(clusterName, entityHeader);
+        }
+        sendMessage(rowData);
+    }
+
+    private void generatePulsarTenantEntities() {
+        Tenants tenants = pulsarAdmin.tenants();
+        List<String> tenantNames = Collections.emptyList();
+        try {
+            tenantNames = tenants.getTenants();
+        } catch (PulsarAdminException e) {
+            isThrowException("Pulsar query all tenant names exception", e, parameter.isThrowException());
+        }
+
+        LOGGER.info("Pulsar query tenant names size:{}", tenantNames.size());
+        if (CollectionUtils.isEmpty(tenantNames)) {
+            return;
+        }
+
+        for (String tenantName : tenantNames) {
+            EntityHeader tenantHeader = generatePulsarTenantEntity(tenants, tenantName);
+            if (Objects.isNull(tenantHeader)) {
+                continue;
+            }
+
+            generatePulsarNamespaceEntities(tenantHeader, tenantName);
         }
 
     }
 
-    private void generatePulsarTenantAndNamespaceEntities() {
+    private EntityHeader generatePulsarClusterEntity(RowData rowData, String clusterName, Clusters clusters) {
+        LOGGER.info("Pulsar generate pulsar cluster entity: {}", clusterName);
+        ClusterData clusterData = null;
         try {
-            Tenants tenants = pulsarAdmin.tenants();
-
-            List<String> tenantNames = tenants.getTenants();
-            if (CollectionUtils.isEmpty(tenantNames)) {
-                return;
-            }
-            Namespaces namespaces = pulsarAdmin.namespaces();
-
-            for (String tenantName : tenantNames) {
-                TenantInfo tenantInfo = tenants.getTenantInfo(tenantName);
-                EntityHeader tenantHeader = generatePulsarTenantEntity(tenantName, tenantInfo);
-
-                List<String> namespaceNames = namespaces.getNamespaces(tenantName);
-                if (CollectionUtils.isEmpty(namespaceNames)) {
-                    continue;
-                }
-
-                RowData rowData = new RowData();
-                for (String namespaceName : namespaceNames) {
-
-                    EntityHeader namespaceHeader = generatePulsarNamespaceEntity(tenantHeader, namespaceName, namespaces);
-
-                    // PulsarTenant  --> namespaces -->  PulsarNamespace
-                    rowData.getRelations().add(RelationRow.of(RowKind.UPSERT, tenantHeader, namespaceHeader, RELATION_PROPERTY_TENANT_NAMESPACE));
-
-                    // generate pulsar topic
-                    generatePulsarTopicEntities(namespaceHeader, namespaceName);
-                }
-
-                sendMessage(rowData);
-            }
+            clusterData = clusters.getCluster(clusterName);
         } catch (PulsarAdminException e) {
-            throw new RuntimeException(e);
+            isThrowException(MessageFormat.format("Pulsar query cluster:{} info exception", clusterName), e, parameter.isThrowException());
         }
-    }
 
-    private EntityHeader generatePulsarClusterEntity(RowData rowData, String clusterName, ClusterData clusterData) {
-        LOGGER.info("generate pulsar cluster entity: {}", clusterName);
+        if (Objects.isNull(clusterData)) {
+            return null;
+        }
+
         PulsarCluster pulsarCluster = new PulsarCluster();
         pulsarCluster.setName(clusterName);
         pulsarCluster.setType(COLLECTOR_TYPE);
@@ -180,7 +201,19 @@ public class PulsarCollectorTask implements ICollectorTask {
         return entityHeader;
     }
 
-    private EntityHeader generatePulsarTenantEntity(String tenantName, TenantInfo tenantInfo) {
+    private EntityHeader generatePulsarTenantEntity(Tenants tenants, String tenantName) {
+        LOGGER.info("Pulsar generate pulsar tenant entity: {}", tenantName);
+        TenantInfo tenantInfo = null;
+        try {
+            tenantInfo = tenants.getTenantInfo(tenantName);
+        } catch (PulsarAdminException e) {
+            isThrowException(MessageFormat.format("Pulsar query tenant:{} info exception", tenantName), e, parameter.isThrowException());
+        }
+
+        if (Objects.isNull(tenantInfo)) {
+            return null;
+        }
+
         PulsarTenant pulsarTenant = new PulsarTenant();
         pulsarTenant.setName(tenantName);
         EntityHeader entityHeader = generateTenantEntityHeader(tenantName);
@@ -205,49 +238,81 @@ public class PulsarCollectorTask implements ICollectorTask {
         return entityHeader;
     }
 
+    private void generatePulsarNamespaceEntities(EntityHeader tenantHeader, String tenantName) {
+        Namespaces namespaces = pulsarAdmin.namespaces();
+
+        List<String> namespaceNames = Collections.emptyList();
+        try {
+            namespaceNames = namespaces.getNamespaces(tenantName);
+        } catch (PulsarAdminException e) {
+            isThrowException(MessageFormat.format("PulsarTenant:{0}, query all namespace names exception", tenantHeader.getQualifiedName()), e, parameter.isThrowException());
+        }
+
+        LOGGER.info("PulsarTenant:{}, query HiveNamespace size:{}", tenantHeader.getQualifiedName(), namespaceNames.size());
+        if (CollectionUtils.isEmpty(namespaceNames)) {
+            return;
+        }
+
+        RowData rowData = new RowData();
+        for (String namespaceName : namespaceNames) {
+
+            EntityHeader namespaceHeader = generatePulsarNamespaceEntity(tenantHeader, namespaceName, namespaces);
+
+            // PulsarTenant  --> namespaces -->  PulsarNamespace
+            rowData.getRelations().add(RelationRow.of(RowKind.UPSERT, tenantHeader, namespaceHeader, RELATION_PROPERTY_TENANT_NAMESPACE));
+
+            // generate pulsar topic
+            generatePulsarTopicEntities(namespaceHeader, namespaceName);
+        }
+        sendMessage(rowData);
+    }
+
     private EntityHeader generatePulsarNamespaceEntity(EntityHeader tenantHeader, String namespaceName, Namespaces namespaces) {
+        LOGGER.info("PulsarTenant:{}, generate pulsar namespace entity: {}", tenantHeader.getQualifiedName(), namespaceName);
         PulsarNamespace pulsarNamespace = new PulsarNamespace();
         pulsarNamespace.setName(namespaceName);
         try {
             pulsarNamespace.setMessageTTL(namespaces.getNamespaceMessageTTL(namespaceName));
-
-            EntityHeader entityHeader = generateNamespaceEntityHeader(tenantHeader, namespaceName);
-
-            RowData rowData = new RowData();
-            rowData.getEntities().add(EntityRow.of(RowKind.UPSERT, entityHeader, pulsarNamespace));
-
-            // PulsarNamespace --> tenant --> PulsarTenant
-            rowData.getRelations().add(RelationRow.of(RowKind.UPSERT, entityHeader, tenantHeader, RELATION_PROPERTY_NAMESPACE_TENANT));
-
-            sendMessage(rowData);
-
-            return entityHeader;
         } catch (PulsarAdminException e) {
-            throw new RuntimeException(e);
+            isThrowException(MessageFormat.format("PulsarTenant:{0}, query namespace info:{1} exception", tenantHeader.getQualifiedName(), namespaceName), e, parameter.isThrowException());
         }
+        EntityHeader entityHeader = generateNamespaceEntityHeader(tenantHeader, namespaceName);
 
+        RowData rowData = new RowData();
+        rowData.getEntities().add(EntityRow.of(RowKind.UPSERT, entityHeader, pulsarNamespace));
+
+        // PulsarNamespace --> tenant --> PulsarTenant
+        rowData.getRelations().add(RelationRow.of(RowKind.UPSERT, entityHeader, tenantHeader, RELATION_PROPERTY_NAMESPACE_TENANT));
+
+        sendMessage(rowData);
+
+        return entityHeader;
     }
 
     private void generatePulsarTopicEntities(EntityHeader namespaceHeader, String namespaceName) {
         Topics topics = pulsarAdmin.topics();
+        List<String> topicNames = Collections.emptyList();
         try {
-            List<String> topicNames = topics.getList(namespaceName);
-            if (CollectionUtils.isEmpty(topicNames)) {
-                return;
-            }
-
-            RowData rowData = new RowData();
-            for (String topicName : topicNames) {
-                EntityHeader entityHeader = generatePulsarTopicEntity(namespaceHeader, topicName);
-
-                // PulsarNamespace --> topics --> PulsarTopic
-                rowData.getRelations().add(RelationRow.of(RowKind.UPSERT, namespaceHeader, entityHeader, RELATION_PROPERTY_NAMESPACE_TOPIC));
-            }
-            sendMessage(rowData);
-
+            topicNames = topics.getList(namespaceName);
         } catch (PulsarAdminException e) {
-            throw new RuntimeException(e);
+            isThrowException(MessageFormat.format("PulsarNamespace:{0}, query all topic names exception", namespaceHeader.getQualifiedName()), e, parameter.isThrowException());
         }
+        LOGGER.info("PulsarNamespace:{}, query all pulsar topic size:{}", namespaceHeader.getQualifiedName(), topicNames.size());
+        if (CollectionUtils.isEmpty(topicNames)) {
+            return;
+        }
+
+        RowData rowData = new RowData();
+        for (String topicName : topicNames) {
+            EntityHeader entityHeader = generatePulsarTopicEntity(namespaceHeader, topicName);
+            if (Objects.isNull(entityHeader)) {
+                continue;
+            }
+
+            // PulsarNamespace --> topics --> PulsarTopic
+            rowData.getRelations().add(RelationRow.of(RowKind.UPSERT, namespaceHeader, entityHeader, RELATION_PROPERTY_NAMESPACE_TOPIC));
+        }
+        sendMessage(rowData);
 
     }
 
@@ -260,45 +325,56 @@ public class PulsarCollectorTask implements ICollectorTask {
      * @return
      */
     private EntityHeader generatePulsarTopicEntity(EntityHeader namespaceHeader, String topicName) {
+        LOGGER.info("PulsarNamespace:{}, generate pulsar topic entity: {}", namespaceHeader.getQualifiedName(), topicName);
         Topics topics = pulsarAdmin.topics();
-        RowData rowData = new RowData();
+        TopicStats stats = null;
         try {
-            TopicStats stats = topics.getStats(topicName);
-            stats.getBacklogSize();
-            PulsarTopic pulsarTopic = new PulsarTopic();
-            pulsarTopic.setName(topicName);
-            pulsarTopic.setStorageSize(stats.getStorageSize());
-            pulsarTopic.setBacklogSize(stats.getBacklogSize());
-
-            EntityHeader topicHeader = generateTopicEntityHeader(namespaceHeader, topicName);
-            rowData.getEntities().add(EntityRow.of(RowKind.UPSERT, topicHeader, pulsarTopic));
-
-            // PulsarTopic --> namespace --> PulsarNamespace
-            rowData.getRelations().add(RelationRow.of(RowKind.UPSERT, topicHeader, namespaceHeader, RELATION_PROPERTY_TOPIC_NAMESPACE));
-
-            List<? extends PublisherStats> publishers = stats.getPublishers();
-            for (PublisherStats publisher : publishers) {
-                EntityHeader publisherHeader = generatePulsarPublisherEntity(rowData, topicHeader, publisher);
-
-                // PulsarTopic --> publishers --> PulsarPublisher
-                rowData.getRelations().add(RelationRow.of(RowKind.UPSERT, topicHeader, publisherHeader, RELATION_PROPERTY_TOPIC_PUBLISHER));
-            }
-
-            EntityHeader schemaHeader = generatePulsarSchemaEntity(rowData, topicHeader, topicName);
-
-            // PulsarTopic --> schemas --> PulsarSchema
-            rowData.getRelations().add(RelationRow.of(RowKind.UPSERT, topicHeader, schemaHeader, RELATION_PROPERTY_TOPIC_SCHEMA));
-
-            sendMessage(rowData);
-
-            return topicHeader;
+            stats = topics.getStats(topicName);
         } catch (PulsarAdminException e) {
+            isThrowException(MessageFormat.format("PulsarNamespace:{0}, query topic stats info:{1} exception", namespaceHeader.getQualifiedName(), topicName), e, parameter.isThrowException());
+        }
+
+        if (Objects.isNull(stats)) {
             return null;
         }
 
+        stats.getBacklogSize();
+        PulsarTopic pulsarTopic = new PulsarTopic();
+        pulsarTopic.setName(topicName);
+        pulsarTopic.setStorageSize(stats.getStorageSize());
+        pulsarTopic.setBacklogSize(stats.getBacklogSize());
+
+        EntityHeader topicHeader = generateTopicEntityHeader(namespaceHeader, topicName);
+        RowData rowData = new RowData();
+        rowData.getEntities().add(EntityRow.of(RowKind.UPSERT, topicHeader, pulsarTopic));
+
+        // PulsarTopic --> namespace --> PulsarNamespace
+        rowData.getRelations().add(RelationRow.of(RowKind.UPSERT, topicHeader, namespaceHeader, RELATION_PROPERTY_TOPIC_NAMESPACE));
+
+        // generate pulsar publisher entities
+        List<? extends PublisherStats> publishers = stats.getPublishers();
+        for (PublisherStats publisher : publishers) {
+            EntityHeader publisherHeader = generatePulsarPublisherEntity(rowData, topicHeader, publisher);
+
+            // PulsarTopic --> publishers --> PulsarPublisher
+            rowData.getRelations().add(RelationRow.of(RowKind.UPSERT, topicHeader, publisherHeader, RELATION_PROPERTY_TOPIC_PUBLISHER));
+        }
+
+        // generate pulsar schema entity
+        EntityHeader schemaHeader = generatePulsarSchemaEntity(rowData, topicHeader, topicName);
+        if (Objects.nonNull(schemaHeader)) {
+            // PulsarTopic --> schemas --> PulsarSchema
+            rowData.getRelations().add(RelationRow.of(RowKind.UPSERT, topicHeader, schemaHeader, RELATION_PROPERTY_TOPIC_SCHEMA));
+        }
+
+        sendMessage(rowData);
+
+        return topicHeader;
     }
 
     private EntityHeader generatePulsarPublisherEntity(RowData rowData, EntityHeader topicHeader, PublisherStats publisher) {
+        String name = StringUtils.isBlank(publisher.getProducerName()) ? String.valueOf(publisher.getProducerId()) : publisher.getProducerName();
+        LOGGER.info("PulsarTopic:{}, generate pulsar publisher entity: {}", topicHeader.getQualifiedName(), name);
 
         PulsarPublisher pulsarPublisher = new PulsarPublisher();
         pulsarPublisher.setAccessMode(publisher.getAccessMode().name());
@@ -311,7 +387,7 @@ public class PulsarCollectorTask implements ICollectorTask {
         pulsarPublisher.setAddress(publisher.getAddress());
         pulsarPublisher.setConnectedSince(publisher.getConnectedSince());
         pulsarPublisher.setClientVersion(publisher.getClientVersion());
-        String name = StringUtils.isBlank(pulsarPublisher.getProducerName()) ? String.valueOf(pulsarPublisher.getProducerId()) : pulsarPublisher.getProducerName();
+
         EntityHeader entityHeader = generatePublisherEntityHeader(topicHeader, name);
 
         rowData.getEntities().add(EntityRow.of(RowKind.UPSERT, entityHeader, pulsarPublisher));
@@ -331,26 +407,32 @@ public class PulsarCollectorTask implements ICollectorTask {
      * @return
      */
     private EntityHeader generatePulsarSchemaEntity(RowData rowData, EntityHeader topicHeader, String topicName) {
+        LOGGER.info("PulsarTopic:{}, generate pulsar schema entity", topicHeader.getQualifiedName());
         Schemas schemas = pulsarAdmin.schemas();
+        SchemaInfo schemaInfo = null;
         try {
-            SchemaInfo schemaInfo = schemas.getSchemaInfo(topicName);
-            PulsarSchema pulsarSchema = new PulsarSchema();
-            pulsarSchema.setName(schemaInfo.getName());
-            pulsarSchema.setType(schemaInfo.getType().name());
-            pulsarSchema.setDefinition(schemaInfo.getSchemaDefinition());
-            pulsarSchema.setSchema(new String(schemaInfo.getSchema()));
-
-            EntityHeader entityHeader = generateSchemaEntityHeader(topicHeader, schemaInfo.getName());
-            rowData.getEntities().add(EntityRow.of(RowKind.UPSERT, entityHeader, pulsarSchema));
-
-            // PulsarSchema --> topic --> PulsarTopic
-            rowData.getRelations().add(RelationRow.of(RowKind.UPSERT, entityHeader, topicHeader, RELATION_PROPERTY_SCHEMA_TOPIC));
-
-            return entityHeader;
+            schemaInfo = schemas.getSchemaInfo(topicName);
         } catch (PulsarAdminException e) {
+            isThrowException(MessageFormat.format("PulsarTopic:{0}, pulsar admin client query schema exception", topicHeader.getQualifiedName()), e, parameter.isThrowException());
+        }
+
+        if (Objects.isNull(schemaInfo)) {
             return null;
         }
 
+        PulsarSchema pulsarSchema = new PulsarSchema();
+        pulsarSchema.setName(schemaInfo.getName());
+        pulsarSchema.setType(schemaInfo.getType().name());
+        pulsarSchema.setDefinition(schemaInfo.getSchemaDefinition());
+        pulsarSchema.setSchema(new String(schemaInfo.getSchema()));
+
+        EntityHeader entityHeader = generateSchemaEntityHeader(topicHeader, schemaInfo.getName());
+        rowData.getEntities().add(EntityRow.of(RowKind.UPSERT, entityHeader, pulsarSchema));
+
+        // PulsarSchema --> topic --> PulsarTopic
+        rowData.getRelations().add(RelationRow.of(RowKind.UPSERT, entityHeader, topicHeader, RELATION_PROPERTY_SCHEMA_TOPIC));
+
+        return entityHeader;
     }
 
     private EntityHeader generateClusterEntityHeader(String clusterName) {

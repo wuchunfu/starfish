@@ -15,24 +15,17 @@
  * limitations under the License.
  */
 
-package org.metahut.starfish.api.controller;
+package org.metahut.starfish.ingestion.server.utils;
 
-import org.metahut.starfish.api.dto.ResultEntity;
-import org.metahut.starfish.api.dto.TypeRequestBatchCreateOrUpdateDTO;
-import org.metahut.starfish.api.dto.TypeResponseDTO;
+public class Constants {
 
-import io.swagger.annotations.Api;
-import io.swagger.annotations.ApiOperation;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RequestMapping;
+    private Constants() {
 
-@Api(tags = "TYPE_TAG")
-@RequestMapping("type")
-public interface TypeController {
+    }
 
-    @PostMapping("init")
-    @ApiOperation(value = "init", notes = "BATCH_CREATE_TYPE_NOTES")
-    ResultEntity<TypeResponseDTO> init(@RequestBody TypeRequestBatchCreateOrUpdateDTO requestDTO);
+    public static final String TYPE_NAME_COLLECTOR_TASK = "org.starfish.CollectorTask";
+
+    public static final String RELATION_PROPERTY_COLLECTOR_TASK_ADAPTER = "adapter";
+
 
 }

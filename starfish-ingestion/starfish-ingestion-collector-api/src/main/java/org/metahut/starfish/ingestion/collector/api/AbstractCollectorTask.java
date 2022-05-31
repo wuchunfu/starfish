@@ -17,10 +17,30 @@
 
 package org.metahut.starfish.ingestion.collector.api;
 
-public interface ICollectorAdapter extends AutoCloseable {
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
-    CollectorResult testConnection();
+import java.util.StringJoiner;
 
-    <T> T getMetaClient();
+public abstract class AbstractCollectorTask implements ICollectorTask {
+    private static final Logger LOGGER = LoggerFactory.getLogger(AbstractCollectorTask.class);
 
+    private final StringJoiner messageJoiner = new StringJoiner("\n");
+
+    protected void println(String message) {
+        LOGGER.info(message);
+        messageJoiner.add(message);
+    }
+
+    protected void isThrowException(String message, Throwable throwable, boolean isThrowException) {
+        LOGGER.error(message, throwable);
+        messageJoiner.add(message);
+        if (isThrowException) {
+            throw new CollectorException(message, throwable);
+        }
+    }
+
+    protected String getMessage() {
+        return messageJoiner.toString();
+    }
 }

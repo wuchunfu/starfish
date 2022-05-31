@@ -34,8 +34,8 @@ import java.util.HashMap;
 import java.util.Map;
 import java.util.Objects;
 
-import static org.metahut.starfish.api.Constants.COLLECTOR_TASK_TYPE_NAME;
 import static org.metahut.starfish.api.Constants.RELATION_PROPERTY_COLLECTOR_TASK_ADAPTER;
+import static org.metahut.starfish.api.Constants.TYPE_NAME_COLLECTOR_TASK;
 import static org.metahut.starfish.api.enums.Status.COLLECTOR_TASK_CREATE_SCHEDULE_FAIL;
 
 @Service
@@ -63,10 +63,10 @@ public class CollectorTaskServiceImpl implements CollectorTaskService {
     @Override
     public CollectorTaskResponseDTO create(CollectorTaskCreateOrUpdateRequestDTO requestDTO) {
 
-        String qualifiedName = EntityNameGentrator.generateName(COLLECTOR_TASK_TYPE_NAME, requestDTO.getName());
+        String qualifiedName = EntityNameGentrator.generateName(TYPE_NAME_COLLECTOR_TASK, requestDTO.getName());
         // create collector instance
         Map<String, Object> convert = conversionService.convert(requestDTO, Map.class);
-        Long entityId = metaDataService.createEntityByTypeName(COLLECTOR_TASK_TYPE_NAME, qualifiedName, convert);
+        Long entityId = metaDataService.createEntityByTypeName(TYPE_NAME_COLLECTOR_TASK, qualifiedName, convert);
 
         String schedulerFlowCode = requestDTO.getSchedulerFlowCode();
         if (StringUtils.isBlank(schedulerFlowCode)) {
@@ -113,7 +113,7 @@ public class CollectorTaskServiceImpl implements CollectorTaskService {
 
         // update scheduler flow code in the collector task instance
         metaDataService.updateEntity(entityId, qualifiedName, convert);
-        metaDataService.link(entityId, requestDTO.getAdapterId(), "adapter");
+        metaDataService.link(entityId, requestDTO.getAdapterId(), RELATION_PROPERTY_COLLECTOR_TASK_ADAPTER);
         CollectorTaskResponseDTO collectorTaskResponseDTO = new CollectorTaskResponseDTO();
         collectorTaskResponseDTO.setId(entityId);
         return collectorTaskResponseDTO;
@@ -146,7 +146,7 @@ public class CollectorTaskServiceImpl implements CollectorTaskService {
             scheduler.updateSchedule(scheduleParameter);
         }
 
-        String qualifiedName = EntityNameGentrator.generateName(COLLECTOR_TASK_TYPE_NAME, requestDTO.getName());
+        String qualifiedName = EntityNameGentrator.generateName(TYPE_NAME_COLLECTOR_TASK, requestDTO.getName());
 
         Map<String, Object> convert = conversionService.convert(requestDTO, Map.class);
         // update collector instance

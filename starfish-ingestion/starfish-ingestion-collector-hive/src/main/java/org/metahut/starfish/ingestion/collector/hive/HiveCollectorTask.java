@@ -1,7 +1,24 @@
+/*
+ * Licensed to the Apache Software Foundation (ASF) under one or more
+ * contributor license agreements.  See the NOTICE file distributed with
+ * this work for additional information regarding copyright ownership.
+ * The ASF licenses this file to You under the Apache License, Version 2.0
+ * (the "License"); you may not use this file except in compliance with
+ * the License.  You may obtain a copy of the License at
+ *
+ *    http://www.apache.org/licenses/LICENSE-2.0
+ *
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
+ */
+
 package org.metahut.starfish.ingestion.collector.hive;
 
+import org.metahut.starfish.ingestion.collector.api.AbstractCollectorTask;
 import org.metahut.starfish.ingestion.collector.api.CollectorResult;
-import org.metahut.starfish.ingestion.collector.api.ICollectorTask;
 import org.metahut.starfish.ingestion.collector.hive.models.HiveCluster;
 import org.metahut.starfish.ingestion.collector.hive.models.HiveColumn;
 import org.metahut.starfish.ingestion.collector.hive.models.HiveDB;
@@ -24,6 +41,8 @@ import org.apache.thrift.TException;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import java.text.MessageFormat;
+import java.util.Collections;
 import java.util.List;
 import java.util.Objects;
 
@@ -42,7 +61,7 @@ import static org.metahut.starfish.ingestion.collector.hive.Constants.TYPE_NAME_
 import static org.metahut.starfish.ingestion.collector.hive.Constants.TYPE_NAME_TABLE;
 import static org.metahut.starfish.unit.EntityNameGentrator.generateName;
 
-public class HiveCollectorTask implements ICollectorTask {
+public class HiveCollectorTask extends AbstractCollectorTask {
 
     private static final Logger LOGGER = LoggerFactory.getLogger(HiveCollectorTask.class);
 
@@ -80,7 +99,7 @@ public class HiveCollectorTask implements ICollectorTask {
         CollectorResult collectorResult = new CollectorResult();
 
         collectorResult.setState(true);
-        collectorResult.setMessage("send hive messages is success");
+        collectorResult.setMessage(getMessage());
         return collectorResult;
     }
 
@@ -113,31 +132,45 @@ public class HiveCollectorTask implements ICollectorTask {
     }
 
     private void generateHiveDBEntities(EntityHeader clusterHeader) {
+        List<String> allDatabases = Collections.emptyList();
         try {
-            List<String> allDatabases = metaStoreClient.getAllDatabases();
-            LOGGER.info("HiveCluster:{}, query HiveDB size:{}", this.parameter.getClusterName(), allDatabases.size());
-            if (CollectionUtils.isEmpty(allDatabases)) {
-                return;
-            }
-
-            RowData rowData = new RowData();
-            for (String dbName : allDatabases) {
-                EntityHeader entityHeader = generateHiveDBEntity(clusterHeader, dbName);
-
-                // HiveCluster -> dbs -> HiveDB
-                rowData.getRelations().add(RelationRow.of(RowKind.UPSERT, clusterHeader, entityHeader, RELATION_PROPERTY_CLUSTER_DB));
-            }
-
-            sendMessage(rowData);
+            allDatabases = metaStoreClient.getAllDatabases();
         } catch (TException e) {
-            // TODO exception handler
-            throw new RuntimeException(e);
+            isThrowException(MessageFormat.format("HiveCluster:{0}, meta store client query all databases exception", clusterHeader.getQualifiedName()), e, parameter.isThrowException());
         }
+
+        LOGGER.info("HiveCluster:{}, query HiveDB size:{}", this.parameter.getClusterName(), allDatabases.size());
+        if (CollectionUtils.isEmpty(allDatabases)) {
+            return;
+        }
+
+        RowData rowData = new RowData();
+        for (String dbName : allDatabases) {
+            EntityHeader entityHeader = generateHiveDBEntity(clusterHeader, dbName);
+            if (Objects.isNull(entityHeader)) {
+                continue;
+            }
+
+            // HiveCluster -> dbs -> HiveDB
+            rowData.getRelations().add(RelationRow.of(RowKind.UPSERT, clusterHeader, entityHeader, RELATION_PROPERTY_CLUSTER_DB));
+        }
+
+        sendMessage(rowData);
+
     }
 
-    private EntityHeader generateHiveDBEntity(EntityHeader clusterHeader, String dbName) throws TException {
-        LOGGER.info("generate hive db entity: {}", dbName);
-        Database database = metaStoreClient.getDatabase(dbName);
+    private EntityHeader generateHiveDBEntity(EntityHeader clusterHeader, String dbName) {
+        LOGGER.info("HiveCluster:{}, generate hive db entity: {}", clusterHeader.getQualifiedName(), dbName);
+        Database database = null;
+        try {
+            database = metaStoreClient.getDatabase(dbName);
+        } catch (TException e) {
+            isThrowException(MessageFormat.format("HiveCluster:{0}, generate hive db entity: {1} exception", clusterHeader.getQualifiedName(), dbName), e, parameter.isThrowException());
+        }
+
+        if (Objects.isNull(database)) {
+            return null;
+        }
 
         HiveDB hiveDB = new HiveDB();
         hiveDB.setName(database.getName());
@@ -159,62 +192,72 @@ public class HiveCollectorTask implements ICollectorTask {
     }
 
     private void generateHiveTableEntities(EntityHeader dbHeader, String dbName) {
+        List<String> allTables = Collections.emptyList();
         try {
-            List<String> allTables = metaStoreClient.getAllTables(dbName);
-            LOGGER.info("HiveDB:{}, query HiveTable size:{}", dbHeader.getQualifiedName(), allTables.size());
-
-            if (CollectionUtils.isEmpty(allTables)) {
-                return;
-            }
-
-            RowData rowData = new RowData();
-            for (String tableName : allTables) {
-                EntityHeader entityHeader = generateHiveTableEntity(dbHeader, dbName, tableName);
-                // HiveDB -> tables -> HiveTable
-                rowData.getRelations().add(RelationRow.of(RowKind.UPSERT, dbHeader, entityHeader, RELATION_PROPERTY_DB_TABLE));
-            }
-
-            sendMessage(rowData);
-
+            allTables = metaStoreClient.getAllTables(dbName);
         } catch (TException e) {
-            throw new RuntimeException(e);
+            isThrowException(MessageFormat.format("HiveDB:{0}, meta store client query all tables exception", dbHeader.getQualifiedName()), e, parameter.isThrowException());
         }
+
+        LOGGER.info("HiveDB:{}, query HiveTable size:{}", dbHeader.getQualifiedName(), allTables.size());
+        if (CollectionUtils.isEmpty(allTables)) {
+            return;
+        }
+
+        RowData rowData = new RowData();
+        for (String tableName : allTables) {
+            EntityHeader entityHeader = generateHiveTableEntity(dbHeader, dbName, tableName);
+            if (Objects.isNull(entityHeader)) {
+                continue;
+            }
+            // HiveDB -> tables -> HiveTable
+            rowData.getRelations().add(RelationRow.of(RowKind.UPSERT, dbHeader, entityHeader, RELATION_PROPERTY_DB_TABLE));
+        }
+
+        sendMessage(rowData);
     }
 
     private EntityHeader generateHiveTableEntity(EntityHeader dbHeader, String dbName, String tableName) {
-        LOGGER.info("generate hive table entity: {}", tableName);
+        LOGGER.info("HiveDB:{}, generate hive table entity: {}", dbHeader.getQualifiedName(), tableName);
 
+        Table table = null;
         try {
-            Table table = metaStoreClient.getTable(dbName, tableName);
-
-            HiveTable hiveTable = new HiveTable();
-            hiveTable.setName(tableName);
-            hiveTable.setComment(table.getParameters().get(PROPERTY_TABLE_COMMENT));
-            hiveTable.setCreateTime(table.getCreateTime());
-            hiveTable.setLastAccessTime(table.getLastAccessTime() > 0 ? table.getLastAccessTime() : table.getCreateTime());
-            hiveTable.setOwner(table.getTableType());
-            hiveTable.setTemporary(table.isTemporary());
-
-            EntityHeader entityHeader = generateTableEntityHeader(dbHeader, tableName);
-
-            RowData rowData = new RowData();
-            rowData.getEntities().add(EntityRow.of(RowKind.UPSERT, entityHeader, hiveTable));
-
-            // HiveTable --> db --> HiveDB
-            rowData.getRelations().add(RelationRow.of(RowKind.UPSERT, entityHeader, dbHeader, RELATION_PROPERTY_TABLE_DB));
-
-            generateHiveColumnEntities(rowData, entityHeader, table);
-            sendMessage(rowData);
-            return entityHeader;
-
+            table = metaStoreClient.getTable(dbName, tableName);
         } catch (TException e) {
-            throw new RuntimeException(e);
+            isThrowException(MessageFormat.format("HiveDB:{0}, generate hive table entity: {1} exception", dbHeader.getQualifiedName(), tableName), e, parameter.isThrowException());
         }
+
+        if (Objects.isNull(table)) {
+            return null;
+        }
+
+        HiveTable hiveTable = new HiveTable();
+        hiveTable.setName(tableName);
+        hiveTable.setComment(table.getParameters().get(PROPERTY_TABLE_COMMENT));
+        hiveTable.setCreateTime(table.getCreateTime());
+        hiveTable.setLastAccessTime(table.getLastAccessTime() > 0 ? table.getLastAccessTime() : table.getCreateTime());
+        hiveTable.setOwner(table.getTableType());
+        hiveTable.setTemporary(table.isTemporary());
+
+        EntityHeader entityHeader = generateTableEntityHeader(dbHeader, tableName);
+
+        RowData rowData = new RowData();
+        rowData.getEntities().add(EntityRow.of(RowKind.UPSERT, entityHeader, hiveTable));
+
+        // HiveTable --> db --> HiveDB
+        rowData.getRelations().add(RelationRow.of(RowKind.UPSERT, entityHeader, dbHeader, RELATION_PROPERTY_TABLE_DB));
+
+        // generate HiveColumn entities
+        generateHiveColumnEntities(rowData, entityHeader, table);
+
+        sendMessage(rowData);
+
+        return entityHeader;
     }
 
     private void generateHiveColumnEntities(RowData rowData, EntityHeader tableHeader, Table table) {
         List<FieldSchema> partitionKeys = table.getPartitionKeys();
-        LOGGER.info("HiveTable:{}, query HivePartition size:{}", tableHeader.getQualifiedName(), partitionKeys.size());
+        LOGGER.info("HiveTable:{}, query HivePartition size:{}", tableHeader.getQualifiedName(), CollectionUtils.isEmpty(partitionKeys) ? 0 : partitionKeys.size());
 
         for (FieldSchema partitionKey : partitionKeys) {
             EntityHeader entityHeader = generateHiveColumnEntity(rowData, tableHeader, partitionKey);
@@ -225,7 +268,7 @@ public class HiveCollectorTask implements ICollectorTask {
 
         // TODO how to get column
         List<FieldSchema> cols = table.getSd().getCols();
-        LOGGER.info("HiveTable:{}, query HiveColumn size:{}", tableHeader.getQualifiedName(), cols.size());
+        LOGGER.info("HiveTable:{}, query HiveColumn size:{}", tableHeader.getQualifiedName(), CollectionUtils.isEmpty(cols) ? 0 : cols.size());
 
         for (FieldSchema col : cols) {
             EntityHeader entityHeader = generateHiveColumnEntity(rowData, tableHeader, col);
@@ -237,7 +280,7 @@ public class HiveCollectorTask implements ICollectorTask {
     }
 
     private EntityHeader generateHiveColumnEntity(RowData rowData, EntityHeader tableHeader, FieldSchema schema) {
-        LOGGER.info("generate hive column entity: {}", schema.getName());
+        LOGGER.info("HiveTable:{}, generate hive column entity: {}", tableHeader.getQualifiedName(), schema.getName());
 
         HiveColumn hiveColumn = new HiveColumn();
         hiveColumn.setName(schema.getName());

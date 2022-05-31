@@ -20,7 +20,7 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
-import static org.metahut.starfish.api.Constants.HIVE_TABLE_TYPE_NAME;
+import static org.metahut.starfish.api.Constants.TYPE_NAME_HIVE_TABLE;
 
 /**
  *
@@ -204,7 +204,7 @@ public class HiveTableQueryDTO extends PageRequestDTO {
     private ConditionPiece collectorTaskTypePiece() {
         ConditionPiece conditionPiece = new ConditionPiece();
         conditionPiece.setTableType(TableType.ENTITY);
-        conditionPiece.setExpressions(Expression.type(HIVE_TABLE_TYPE_NAME));
+        conditionPiece.setExpressions(Expression.type(TYPE_NAME_HIVE_TABLE));
         return conditionPiece;
     }
 

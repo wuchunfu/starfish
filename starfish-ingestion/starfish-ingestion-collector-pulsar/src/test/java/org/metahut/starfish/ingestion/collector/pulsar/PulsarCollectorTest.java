@@ -1,3 +1,20 @@
+/*
+ * Licensed to the Apache Software Foundation (ASF) under one or more
+ * contributor license agreements.  See the NOTICE file distributed with
+ * this work for additional information regarding copyright ownership.
+ * The ASF licenses this file to You under the Apache License, Version 2.0
+ * (the "License"); you may not use this file except in compliance with
+ * the License.  You may obtain a copy of the License at
+ *
+ *    http://www.apache.org/licenses/LICENSE-2.0
+ *
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
+ */
+
 package org.metahut.starfish.ingestion.collector.pulsar;
 
 import org.metahut.starfish.ingestion.collector.api.CollectorResult;
@@ -166,58 +183,6 @@ public class PulsarCollectorTest {
         }
         Assertions.assertNotNull(topicStats);
     }
-
-    //@Test
-    //public void execute() {
-    //    PulsarDatasourceParameter pulsarDatasourceParameter = new PulsarDatasourceParameter();
-    //    pulsarDatasourceParameter.setServerUrl("http://pulsar-idc-qa.zpidc.com:8080");
-    //    PulsarCollectorParameter parameter = new PulsarCollectorParameter();
-    //    // parameter.setDatasourceId("my-topic");
-    //    parameter.setDatasourceParameter(JSONUtils.toJSONString(pulsarDatasourceParameter));
-    //    CollectorResult collectorResult = new PulsarCollectorManager().generateInstance(parameter)
-    //        .execute();
-    //    Assertions.assertNotNull(collectorResult);
-    //}
-    //
-    //@Test
-    //public void createMsg() {
-    //    PulsarDatasourceParameter pulsarDatasourceParameter = new PulsarDatasourceParameter();
-    //    pulsarDatasourceParameter.setServerUrl("http://pulsar-idc-qa.zpidc.com:8080");
-    //    PulsarCollectorParameter parameter = new PulsarCollectorParameter();
-    //    // parameter.setDatasourceId("my-topic");
-    //    parameter.setDatasourceParameter(JSONUtils.toJSONString(pulsarDatasourceParameter));
-    //    List<BatchMetaDataDTO> collectorResult = new PulsarCollectorManager()
-    //        .generateInstance(parameter).getMsg();
-    //    doPostJson(pulsarUrl, JSONUtils.toJSONString(collectorResult.get(5)));
-    //    Assertions.assertNotNull(collectorResult);
-    //}
-    //
-    //public static String doPostJson(String url, String params) {
-    //    try {
-    //        HttpClientBuilder httpClientBuilder = HttpClientBuilder.create();
-    //        HttpPost httpPost = new HttpPost(url);
-    //        RequestConfig requestConfig = RequestConfig.custom().setSocketTimeout(60000)
-    //            .setConnectTimeout(600000).build();
-    //        httpPost.setConfig(requestConfig);
-    //        httpPost.setHeader("Content-Type", "application/json;charset=UTF-8");
-    //        StringEntity stringEntity = new StringEntity(params);
-    //        stringEntity.setContentType("text/json");
-    //        httpPost.setEntity(stringEntity);
-    //        return postResponse(httpClientBuilder, httpPost);
-    //    } catch (Exception ex) {
-    //        throw new RuntimeException(ex);
-    //    }
-    //}
-    //
-    //public static String postResponse(HttpClientBuilder httpClientBuilder, HttpPost httpPost) {
-    //    try (CloseableHttpResponse closeableHttpResponse = httpClientBuilder.build()
-    //        .execute(httpPost)) {
-    //        HttpEntity httpEntity = closeableHttpResponse.getEntity();
-    //        return EntityUtils.toString(httpEntity, "UTF-8");
-    //    } catch (Exception ex) {
-    //        throw new RuntimeException(ex);
-    //    }
-    //}
 
     @Test
     public void pulsarCollector() {

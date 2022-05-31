@@ -4,7 +4,6 @@ import org.metahut.starfish.unit.AbstractQueryCondition;
 import org.metahut.starfish.unit.enums.LinkCategory;
 import org.metahut.starfish.unit.enums.RelationType;
 import org.metahut.starfish.unit.enums.TableType;
-import org.metahut.starfish.unit.enums.TypeCategory;
 import org.metahut.starfish.unit.expression.BinaryExpression;
 import org.metahut.starfish.unit.expression.ConditionPiece;
 import org.metahut.starfish.unit.expression.EachPointer;
@@ -21,9 +20,7 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
-import static org.metahut.starfish.api.Constants.HIVE_TABLE_TYPE_NAME;
-import static org.metahut.starfish.api.Constants.PULSAR_CLUSTER_TYPE_NAME;
-import static org.metahut.starfish.api.Constants.PULSAR_TOPIC_TYPE_NAME;
+import static org.metahut.starfish.api.Constants.TYPE_NAME_PULSAR_TOPIC;
 
 /**
  *
@@ -204,7 +201,7 @@ public class PulsarTopicQueryDTO extends PageRequestDTO {
     private ConditionPiece pulsarTypeCondition() {
         ConditionPiece conditionPiece = new ConditionPiece();
         conditionPiece.setTableType(TableType.ENTITY);
-        conditionPiece.setExpressions(Expression.type(PULSAR_TOPIC_TYPE_NAME));
+        conditionPiece.setExpressions(Expression.type(TYPE_NAME_PULSAR_TOPIC));
         return conditionPiece;
     }
 

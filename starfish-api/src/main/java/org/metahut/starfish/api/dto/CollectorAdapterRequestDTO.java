@@ -3,7 +3,6 @@ package org.metahut.starfish.api.dto;
 import org.metahut.starfish.unit.AbstractQueryCondition;
 import org.metahut.starfish.unit.enums.LinkCategory;
 import org.metahut.starfish.unit.enums.TableType;
-import org.metahut.starfish.unit.expression.BinaryExpression;
 import org.metahut.starfish.unit.expression.ConditionPiece;
 import org.metahut.starfish.unit.expression.Expression;
 
@@ -14,10 +13,9 @@ import org.apache.commons.lang3.StringUtils;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.HashMap;
-import java.util.List;
 import java.util.Map;
 
-import static org.metahut.starfish.api.Constants.COLLECTOR_ADAPTER_TYPE_NAME;
+import static org.metahut.starfish.api.Constants.TYPE_NAME_COLLECTOR_ADAPTER;
 
 @ApiModel(description = "collector adapter request dto")
 public class CollectorAdapterRequestDTO extends PageRequestDTO {
@@ -106,7 +104,7 @@ public class CollectorAdapterRequestDTO extends PageRequestDTO {
     private ConditionPiece collectorTaskTypePiece() {
         ConditionPiece conditionPiece = new ConditionPiece();
         conditionPiece.setTableType(TableType.ENTITY);
-        conditionPiece.setExpressions(Expression.type(COLLECTOR_ADAPTER_TYPE_NAME));
+        conditionPiece.setExpressions(Expression.type(TYPE_NAME_COLLECTOR_ADAPTER));
         return conditionPiece;
     }
 
