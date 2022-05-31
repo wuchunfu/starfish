@@ -8,6 +8,7 @@ import org.metahut.starfish.api.dto.CollectorTaskRequestDTO;
 import org.metahut.starfish.api.dto.CollectorTaskResponseDTO;
 import org.metahut.starfish.api.dto.PageResponseDTO;
 import org.metahut.starfish.scheduler.api.IScheduler;
+import org.metahut.starfish.scheduler.api.SchedulerException;
 import org.metahut.starfish.scheduler.api.parameters.HttpTaskParameter;
 import org.metahut.starfish.scheduler.api.parameters.ScheduleCronParameter;
 import org.metahut.starfish.scheduler.api.parameters.ScheduleParameter;
@@ -15,10 +16,13 @@ import org.metahut.starfish.scheduler.api.parameters.TaskParameter;
 import org.metahut.starfish.scheduler.dolphinscheduler.JSONUtils;
 import org.metahut.starfish.server.config.IngestionConfiguration;
 import org.metahut.starfish.server.service.CollectorTaskService;
+import org.metahut.starfish.server.utils.Assert;
 import org.metahut.starfish.service.AbstractMetaDataService;
 import org.metahut.starfish.unit.EntityNameGentrator;
 
 import org.apache.commons.lang3.StringUtils;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.core.convert.ConversionService;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
@@ -28,13 +32,16 @@ import org.springframework.stereotype.Service;
 import java.util.Collection;
 import java.util.HashMap;
 import java.util.Map;
+import java.util.Objects;
 
 import static org.metahut.starfish.api.Constants.COLLECTOR_TASK_TYPE_NAME;
 import static org.metahut.starfish.api.Constants.RELATION_PROPERTY_COLLECTOR_TASK_ADAPTER;
+import static org.metahut.starfish.api.enums.Status.COLLECTOR_TASK_CREATE_SCHEDULE_FAIL;
 
 @Service
 public class CollectorTaskServiceImpl implements CollectorTaskService {
 
+    private static final Logger LOGGER = LoggerFactory.getLogger(CollectorTaskServiceImpl.class);
     private final IScheduler scheduler;
     private final IngestionConfiguration ingestionConfiguration;
     private final ConversionService conversionService;
@@ -63,37 +70,42 @@ public class CollectorTaskServiceImpl implements CollectorTaskService {
 
         String schedulerFlowCode = requestDTO.getSchedulerFlowCode();
         if (StringUtils.isBlank(schedulerFlowCode)) {
-            // create single http task
-            TaskParameter taskParameter = new TaskParameter();
-            taskParameter.setTaskType("HTTP");
-            taskParameter.setName(requestDTO.getName());
-            taskParameter.setDescription(requestDTO.getDescription());
+            try {
+                // create single http task
+                TaskParameter taskParameter = new TaskParameter();
+                taskParameter.setTaskType("HTTP");
+                taskParameter.setName(requestDTO.getName());
+                taskParameter.setDescription(requestDTO.getDescription());
 
-            HttpTaskParameter httpTaskParameter = new HttpTaskParameter();
-            httpTaskParameter.setMethod("POST");
+                HttpTaskParameter httpTaskParameter = new HttpTaskParameter();
+                httpTaskParameter.setMethod("POST");
 
-            // TODO How to deal with the generated scheduler task instance data when the url is changed?
-            httpTaskParameter.setUrl(ingestionConfiguration.getCollectorExecuteRest());
+                // TODO How to deal with the generated scheduler task instance data when the url is changed?
+                httpTaskParameter.setUrl(ingestionConfiguration.getCollectorExecuteRest());
 
-            // TODO use java bean
-            Map<String, Object> bodyMap = new HashMap<>();
-            bodyMap.put("id", entityId);
-            bodyMap.put("qualifiedName", qualifiedName);
-            httpTaskParameter.setBody(JSONUtils.toJSONString(bodyMap));
+                // TODO use java bean
+                Map<String, Object> bodyMap = new HashMap<>();
+                bodyMap.put("id", entityId);
+                httpTaskParameter.setBody(JSONUtils.toJSONString(bodyMap));
 
-            taskParameter.setTaskParams(JSONUtils.toJSONString(httpTaskParameter));
+                taskParameter.setTaskParams(JSONUtils.toJSONString(httpTaskParameter));
 
-            // create a schedule flow
-            String flowCode = scheduler.createSingleHttpTask(taskParameter);
+                // create a schedule flow
+                String flowCode = scheduler.createSingleHttpTask(taskParameter);
 
-            // configure a timing expression
-            ScheduleParameter scheduleParameter = new ScheduleParameter();
-            scheduleParameter.setFlowCode(flowCode);
-            ScheduleCronParameter scheduleCronParameter = new ScheduleCronParameter();
-            scheduleCronParameter.setCrontab(requestDTO.getCron());
-            scheduleParameter.setScheduleCronParameter(scheduleCronParameter);
+                // configure a timing expression
+                ScheduleParameter scheduleParameter = new ScheduleParameter();
+                scheduleParameter.setFlowCode(flowCode);
+                ScheduleCronParameter scheduleCronParameter = new ScheduleCronParameter();
+                scheduleCronParameter.setCrontab(requestDTO.getCron());
+                scheduleParameter.setScheduleCronParameter(scheduleCronParameter);
 
-            schedulerFlowCode = scheduler.createSchedule(scheduleParameter);
+                schedulerFlowCode = scheduler.createSchedule(scheduleParameter);
+            } catch (SchedulerException e) {
+                LOGGER.error("collector task entity :{}, create schedule exception.", e);
+                deleteById(entityId);
+                Assert.throwException(e, COLLECTOR_TASK_CREATE_SCHEDULE_FAIL, requestDTO.getName());
+            }
         }
 
         //TODO The update method needs to be optimized to support partial update
@@ -101,7 +113,7 @@ public class CollectorTaskServiceImpl implements CollectorTaskService {
 
         // update scheduler flow code in the collector task instance
         metaDataService.updateEntity(entityId, qualifiedName, convert);
-
+        metaDataService.link(entityId, requestDTO.getAdapterId(), "adapter");
         CollectorTaskResponseDTO collectorTaskResponseDTO = new CollectorTaskResponseDTO();
         collectorTaskResponseDTO.setId(entityId);
         return collectorTaskResponseDTO;
@@ -113,11 +125,15 @@ public class CollectorTaskServiceImpl implements CollectorTaskService {
         CollectorTaskResponseDTO instance = metaDataService.instance(id, CollectorTaskResponseDTO.class);
 
         // compare before and after update
-        if (!instance.getAdapter().getId().equals(requestDTO.getAdapterId())) {
+        if (Objects.isNull(instance.getAdapter())) {
             // add relation
             metaDataService.link(id, requestDTO.getAdapterId(), RELATION_PROPERTY_COLLECTOR_TASK_ADAPTER);
+        } else if (!instance.getAdapter().getId().equals(requestDTO.getAdapterId())) {
             // delete relation
             metaDataService.crack(id, instance.getAdapter().getId(), RELATION_PROPERTY_COLLECTOR_TASK_ADAPTER);
+
+            // add relation
+            metaDataService.link(id, requestDTO.getAdapterId(), RELATION_PROPERTY_COLLECTOR_TASK_ADAPTER);
         }
 
         // determine if the schedule cron instance needs to be updated

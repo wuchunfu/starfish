@@ -115,6 +115,7 @@ public class HiveCollectorTask implements ICollectorTask {
     private void generateHiveDBEntities(EntityHeader clusterHeader) {
         try {
             List<String> allDatabases = metaStoreClient.getAllDatabases();
+            LOGGER.info("HiveCluster:{}, query HiveDB size:{}", this.parameter.getClusterName(), allDatabases.size());
             if (CollectionUtils.isEmpty(allDatabases)) {
                 return;
             }
@@ -160,6 +161,8 @@ public class HiveCollectorTask implements ICollectorTask {
     private void generateHiveTableEntities(EntityHeader dbHeader, String dbName) {
         try {
             List<String> allTables = metaStoreClient.getAllTables(dbName);
+            LOGGER.info("HiveDB:{}, query HiveTable size:{}", dbHeader.getQualifiedName(), allTables.size());
+
             if (CollectionUtils.isEmpty(allTables)) {
                 return;
             }
@@ -199,6 +202,7 @@ public class HiveCollectorTask implements ICollectorTask {
 
             // HiveTable --> db --> HiveDB
             rowData.getRelations().add(RelationRow.of(RowKind.UPSERT, entityHeader, dbHeader, RELATION_PROPERTY_TABLE_DB));
+
             generateHiveColumnEntities(rowData, entityHeader, table);
             sendMessage(rowData);
             return entityHeader;
@@ -210,6 +214,8 @@ public class HiveCollectorTask implements ICollectorTask {
 
     private void generateHiveColumnEntities(RowData rowData, EntityHeader tableHeader, Table table) {
         List<FieldSchema> partitionKeys = table.getPartitionKeys();
+        LOGGER.info("HiveTable:{}, query HivePartition size:{}", tableHeader.getQualifiedName(), partitionKeys.size());
+
         for (FieldSchema partitionKey : partitionKeys) {
             EntityHeader entityHeader = generateHiveColumnEntity(rowData, tableHeader, partitionKey);
 
@@ -219,6 +225,7 @@ public class HiveCollectorTask implements ICollectorTask {
 
         // TODO how to get column
         List<FieldSchema> cols = table.getSd().getCols();
+        LOGGER.info("HiveTable:{}, query HiveColumn size:{}", tableHeader.getQualifiedName(), cols.size());
 
         for (FieldSchema col : cols) {
             EntityHeader entityHeader = generateHiveColumnEntity(rowData, tableHeader, col);

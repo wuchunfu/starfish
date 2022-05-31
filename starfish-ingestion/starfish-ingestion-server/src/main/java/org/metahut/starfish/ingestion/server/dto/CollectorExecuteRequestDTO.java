@@ -16,22 +16,12 @@ public class CollectorExecuteRequestDTO {
 
     private Long id;
 
-    private String qualifiedName;
-
     public Long getId() {
         return id;
     }
 
     public void setId(Long id) {
         this.id = id;
-    }
-
-    public String getQualifiedName() {
-        return qualifiedName;
-    }
-
-    public void setQualifiedName(String qualifiedName) {
-        this.qualifiedName = qualifiedName;
     }
 
     public AbstractQueryCondition<CollectorTaskEntity> toCondition() {
@@ -50,7 +40,7 @@ public class CollectorExecuteRequestDTO {
     }
 
     private ConditionPiece collectorTaskCondition() {
-        ConditionPiece conditionPiece = ConditionPiece.entityWithTypeAndQualifiedName("org.starfish.CollectorTask",this.id,this.qualifiedName);
+        ConditionPiece conditionPiece = ConditionPiece.entityWithTypeAndQualifiedName("org.starfish.CollectorTask",this.id, null);
         return conditionPiece;
     }
 }

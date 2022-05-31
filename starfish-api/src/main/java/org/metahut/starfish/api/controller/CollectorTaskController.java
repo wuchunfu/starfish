@@ -43,7 +43,7 @@ public interface CollectorTaskController {
     ResultEntity deleteById(@PathVariable(value = "ide") Long id);
 
     @GetMapping("{id}")
-    @ApiOperation(value = "queryDatasourceById", notes = "QUERY_COLLECTOR_TASK_BY_ID_NOTES")
+    @ApiOperation(value = "queryById", notes = "QUERY_COLLECTOR_TASK_BY_ID_NOTES")
     ResultEntity<CollectorTaskResponseDTO> queryById(@PathVariable(value = "id") Long id);
 
     @GetMapping("queryListPage")
