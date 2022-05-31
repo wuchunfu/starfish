@@ -25,5 +25,5 @@ public interface CollectorTaskService {
 
     PageResponseDTO<CollectorTaskInstanceResponseDTO> queryInstanceListPage(CollectorTaskInstanceRequestDTO requestDTO);
 
-    CollectorTaskInstanceLogResponseDTO queryInstanceLog(String instanceId);
+    CollectorTaskInstanceLogResponseDTO queryInstanceLog(Integer instanceId, Integer offset, Integer limit);
 }

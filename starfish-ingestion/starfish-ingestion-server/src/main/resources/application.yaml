@@ -45,5 +45,14 @@ starfish:
     type: pulsar
     meta-event-topic: &meta-event-topic my-topic
     pulsar:
-      service-url: XXXX
-
+      service-url: http://pulsar-idc-qa.zpidc.com:8080
+      producers:
+        starfishMetaEvent:
+          topic-name: *meta-event-topic
+          schema: STRING
+          producer-name: meta
+      consumers:
+        starfishMetaEvent:
+          topic-name: *meta-event-topic
+          subscription-name: my-subscription
+          subscription-type: Key_Shared

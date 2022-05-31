@@ -78,7 +78,7 @@ public class CollectorTaskControllerImpl implements CollectorTaskController {
     }
 
     @Override
-    public ResultEntity<CollectorTaskInstanceLogResponseDTO> queryInstanceLog(String instanceId) {
-        return ResultEntity.success(collectorTaskService.queryInstanceLog(instanceId));
+    public ResultEntity<CollectorTaskInstanceLogResponseDTO> queryInstanceLog(Integer instanceId, Integer offset, Integer limit) {
+        return ResultEntity.success(collectorTaskService.queryInstanceLog(instanceId, offset, limit));
     }
 }

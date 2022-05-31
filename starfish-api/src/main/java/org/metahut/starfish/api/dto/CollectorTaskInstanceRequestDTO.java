@@ -6,14 +6,15 @@ import io.swagger.annotations.ApiModelProperty;
 import java.util.Date;
 
 @ApiModel(description = "collector task instance request dto")
-public class CollectorTaskInstanceRequestDTO {
+public class CollectorTaskInstanceRequestDTO extends PageRequestDTO {
 
-    @ApiModelProperty(value = "collector adapter name")
-    private String adapterName;
+    @ApiModelProperty(value = "The identifier of the collector adapter")
+    private Long adapterId;
 
     @ApiModelProperty(value = "collector type")
     private String type;
 
+    @ApiModelProperty(value = "The name of a collector task")
     private String name;
 
     private String executionStatus;
@@ -24,12 +25,12 @@ public class CollectorTaskInstanceRequestDTO {
     @ApiModelProperty(value = "execute end time")
     private Date endTime;
 
-    public String getAdapterName() {
-        return adapterName;
+    public Long getAdapterId() {
+        return adapterId;
     }
 
-    public void setAdapterName(String adapterName) {
-        this.adapterName = adapterName;
+    public void setAdapterId(Long adapterId) {
+        this.adapterId = adapterId;
     }
 
     public String getType() {

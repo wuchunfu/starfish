@@ -28,6 +28,8 @@ import org.metahut.starfish.api.dto.PageResponseDTO;
 import org.metahut.starfish.api.dto.ResultEntity;
 
 import io.swagger.annotations.Api;
+import io.swagger.annotations.ApiImplicitParam;
+import io.swagger.annotations.ApiImplicitParams;
 import io.swagger.annotations.ApiOperation;
 import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.DeleteMapping;
@@ -37,6 +39,7 @@ import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestParam;
 
 import java.util.Collection;
 
@@ -78,6 +81,12 @@ public interface CollectorTaskController {
     ResultEntity<PageResponseDTO<CollectorTaskInstanceResponseDTO>> queryInstanceListPage(CollectorTaskInstanceRequestDTO requestDTO);
 
     @ApiOperation(value = "queryInstanceLog", notes = "QUERY_COLLECTOR_TASK_INSTANCE_LOG_NOTES")
+    @ApiImplicitParams({
+        @ApiImplicitParam(name = "offset", value = "offset", required = false, dataType = "Int", example = "0"),
+        @ApiImplicitParam(name = "limit", value = "LIMIT", required = false, dataType = "Int", example = "1000")
+    })
     @GetMapping("instance/log/{id}")
-    ResultEntity<CollectorTaskInstanceLogResponseDTO> queryInstanceLog(@PathVariable(value = "id") String instanceId);
+    ResultEntity<CollectorTaskInstanceLogResponseDTO> queryInstanceLog(@PathVariable(value = "id") Integer instanceId,
+        @RequestParam(value = "offset", required = false) Integer offset,
+        @RequestParam(value = "limit", required = false) Integer limit);
 }

@@ -1,13 +1,14 @@
 package org.metahut.starfish.scheduler.dolphinscheduler;
 
-import org.metahut.starfish.scheduler.api.PageResponse;
+import org.metahut.starfish.scheduler.api.ExecutionStatus;
 import org.metahut.starfish.scheduler.api.SchedulerProperties;
 import org.metahut.starfish.scheduler.api.SchedulerTypeEnum;
 import org.metahut.starfish.scheduler.api.entity.FlowDefinition;
-import org.metahut.starfish.scheduler.api.entity.FlowInstance;
+import org.metahut.starfish.scheduler.api.parameters.FlowInstanceRequestParameter;
 import org.metahut.starfish.scheduler.api.parameters.HttpTaskParameter;
-import org.metahut.starfish.scheduler.api.parameters.PageRequest;
 import org.metahut.starfish.scheduler.api.parameters.ScheduleCronParameter;
+import org.metahut.starfish.scheduler.api.parameters.TaskInstanceLogRequestParameter;
+import org.metahut.starfish.scheduler.api.parameters.TaskInstanceRequestParameter;
 import org.metahut.starfish.scheduler.api.parameters.TaskParameter;
 
 import org.junit.jupiter.api.Assertions;
@@ -29,6 +30,7 @@ public class DolphinSchedulerTest {
     private DolphinScheduler scheduler;
 
     private static final String SERVICE_URL = "http://localhost:8080/dolphinscheduler";
+
     private static final String TOKEN = "c6258d4a509df0f1b89f77fb552d8ddf";
     private static final String PROJECT_CODE = "4996418468000";
 
@@ -100,13 +102,32 @@ public class DolphinSchedulerTest {
 
     @Test
     public void testQueryFlowInstanceListPage() {
-        PageRequest pageRequest = new PageRequest();
+        FlowInstanceRequestParameter pageRequest = new FlowInstanceRequestParameter();
         pageRequest.setPageNo(1);
         pageRequest.setPageSize(10);
-
-        PageResponse<FlowInstance> pageResponse = scheduler.queryFlowInstanceListPage(pageRequest);
+        pageRequest.setExecutionStatus(ExecutionStatus.FAIL);
 
         Assertions.assertDoesNotThrow(() -> scheduler.queryFlowInstanceListPage(pageRequest));
+    }
+
+    @Test
+    public void testQueryTaskInstanceListPage() {
+        TaskInstanceRequestParameter requestParameter = new TaskInstanceRequestParameter();
+        requestParameter.setPageNo(1);
+        requestParameter.setPageSize(10);
+        requestParameter.setExecutionStatus(ExecutionStatus.ALL);
+
+        Assertions.assertDoesNotThrow(() -> scheduler.queryTaskInstanceListPage(requestParameter));
+    }
+
+    @Test
+    public void testQueryTaskInstanceLog() {
+        TaskInstanceLogRequestParameter requestParameter = new TaskInstanceLogRequestParameter();
+        requestParameter.setOffset(0);
+        requestParameter.setLimit(1000);
+        requestParameter.setTaskInstanceId(265848);
+
+        Assertions.assertDoesNotThrow(() -> scheduler.queryFlowInstanceLog(requestParameter));
     }
 
 }

@@ -41,6 +41,11 @@ public class FlowInstance {
     private String name;
 
     /**
+     * description
+     */
+    private String desc;
+
+    /**
      * schedule time
      */
     private Date scheduleTime;

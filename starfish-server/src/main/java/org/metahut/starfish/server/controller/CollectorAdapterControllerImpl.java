@@ -77,6 +77,7 @@ public class CollectorAdapterControllerImpl implements CollectorAdapterControlle
 
     @Override
     public ResultEntity<Collection<CollectorAdapterResponseDTO>> queryList(CollectorAdapterRequestDTO requestDTO) {
-        return ResultEntity.success(collectorAdapterService.queryList(requestDTO));
+        Collection<CollectorAdapterResponseDTO> collection = collectorAdapterService.queryList(requestDTO);
+        return ResultEntity.success(collection);
     }
 }

@@ -63,7 +63,7 @@ starfish:
   scheduler:
     type: dolphinscheduler
     dolphinscheduler:
-      service-url: http://dolphinscheduler.xxx.xxx.com/dolphinscheduler
+      service-url: http://dolphinscheduler.com/dolphinscheduler
       project-code: 4996418468000
       tenant-code: algdataonline
       token: c6258d4a509df0f1b89f77fb552d8ddf
@@ -95,8 +95,8 @@ spring:
   datasource:
     driver-class-name: org.postgresql.Driver
     url: jdbc:postgresql://localhost:5432/postgres?serverTimezone=CST
-    username: test
-    password: test
+    username: root
+    password: root
 
 ---
 spring:

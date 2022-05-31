@@ -4,9 +4,6 @@ import lombok.Data;
 
 @Data
 public class PageRequest {
-
-    private String searchVal;
     private Integer pageNo;
     private Integer pageSize;
-
 }

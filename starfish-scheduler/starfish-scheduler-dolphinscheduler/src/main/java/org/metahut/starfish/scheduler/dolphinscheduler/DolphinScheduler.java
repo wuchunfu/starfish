@@ -6,12 +6,16 @@ import org.metahut.starfish.scheduler.api.SchedulerException;
 import org.metahut.starfish.scheduler.api.SchedulerProperties;
 import org.metahut.starfish.scheduler.api.entity.FlowDefinition;
 import org.metahut.starfish.scheduler.api.entity.FlowInstance;
+import org.metahut.starfish.scheduler.api.entity.TaskInstance;
+import org.metahut.starfish.scheduler.api.parameters.FlowInstanceRequestParameter;
 import org.metahut.starfish.scheduler.api.parameters.HttpTaskParameter;
-import org.metahut.starfish.scheduler.api.parameters.PageRequest;
 import org.metahut.starfish.scheduler.api.parameters.ScheduleCronParameter;
 import org.metahut.starfish.scheduler.api.parameters.ScheduleParameter;
+import org.metahut.starfish.scheduler.api.parameters.TaskInstanceLogRequestParameter;
+import org.metahut.starfish.scheduler.api.parameters.TaskInstanceRequestParameter;
 import org.metahut.starfish.scheduler.api.parameters.TaskParameter;
 import org.metahut.starfish.scheduler.dolphinscheduler.entity.ComplexProcessDefinition;
+import org.metahut.starfish.scheduler.dolphinscheduler.entity.DolphinTaskInstance;
 import org.metahut.starfish.scheduler.dolphinscheduler.entity.ProcessDefinition;
 import org.metahut.starfish.scheduler.dolphinscheduler.entity.ProcessInstance;
 import org.metahut.starfish.scheduler.dolphinscheduler.entity.Schedule;
@@ -37,6 +41,7 @@ import java.io.IOException;
 import java.text.MessageFormat;
 import java.time.LocalDateTime;
 import java.time.ZoneId;
+import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
@@ -51,6 +56,8 @@ public class DolphinScheduler implements IScheduler {
 
     private final OkHttpClient client;
     private final SchedulerProperties.DolphinScheduler properties;
+
+    private final DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyy-MM-dd+HH:mm:ss");
 
     public DolphinScheduler(OkHttpClient client, SchedulerProperties.DolphinScheduler properties) {
         this.client = client;
@@ -320,12 +327,23 @@ public class DolphinScheduler implements IScheduler {
     }
 
     @Override
-    public PageResponse<FlowInstance> queryFlowInstanceListPage(PageRequest pageRequest) {
-        String url = MessageFormat.format("/projects/{0}/process-instances??searchVal={1}&pageSize={2}&pageNo={3}",
+    public PageResponse<FlowInstance> queryFlowInstanceListPage(
+        FlowInstanceRequestParameter parameter) {
+        String executionStatusCode = "";
+        if (Objects.nonNull(parameter.getExecutionStatus()) && parameter.getExecutionStatus().getCode() != 0) {
+            if (parameter.getExecutionStatus().getCode() == 1) {
+                executionStatusCode =  "7";
+            } else if (parameter.getExecutionStatus().getCode() == 2) {
+                executionStatusCode =  "6";
+            }
+        }
+        String url = MessageFormat.format("/projects/{0}/process-instances?searchVal={1}&pageSize={2}&pageNo={3}&stateType=",
             properties.getProjectCode(),
-            StringUtils.isNotBlank(pageRequest.getSearchVal()) ? pageRequest.getSearchVal() : "",
-            pageRequest.getPageSize(),
-            pageRequest.getPageNo());
+            StringUtils.isNotBlank(parameter.getName()) ? parameter.getName() : "",
+            parameter.getPageSize().toString(),
+            parameter.getPageNo().toString(),
+            executionStatusCode
+        );
 
         try {
             String resultJson = get(url);
@@ -351,6 +369,76 @@ public class DolphinScheduler implements IScheduler {
             return pageResponse;
         } catch (IOException e) {
             throw new SchedulerException("dolphin scheduler call queryFlowInstanceListPage method exception", e);
+        }
+    }
+
+    @Override
+    public PageResponse<TaskInstance> queryTaskInstanceListPage(
+        TaskInstanceRequestParameter parameter) {
+
+        String executionStatusCode = "";
+        if (Objects.nonNull(parameter.getExecutionStatus()) && parameter.getExecutionStatus().getCode() != 0) {
+            if (parameter.getExecutionStatus().getCode() == 1) {
+                executionStatusCode =  "7";
+            } else if (parameter.getExecutionStatus().getCode() == 2) {
+                executionStatusCode =  "6";
+            }
+        }
+
+        String url = MessageFormat.format("/projects/{0}/task-instances?searchVal={1}&pageSize={2}&pageNo={3}&stateType={4}&startDate={5}&endDate={6}&processInstanceName={7}",
+            properties.getProjectCode(),
+            StringUtils.isNotBlank(parameter.getName()) ? parameter.getName() : "",
+            parameter.getPageSize().toString(),
+            parameter.getPageNo().toString(),
+            executionStatusCode,
+            Objects.nonNull(parameter.getBeginTime()) ? formatter.format(parameter.getBeginTime().toInstant()) : "",
+            Objects.nonNull(parameter.getEndTime()) ? formatter.format(parameter.getEndTime().toInstant()) : "",
+            StringUtils.isNotBlank(parameter.getFlowInstanceName()) ? parameter.getFlowInstanceName() : ""
+        );
+
+        try {
+            String resultJson = get(url);
+            DolphinResult<DolphinPageInfo<DolphinTaskInstance>> result = JSONUtils.parseObject(
+                resultJson, new TypeReference<DolphinResult<DolphinPageInfo<DolphinTaskInstance>>>() {});
+
+            DolphinPageInfo<DolphinTaskInstance> pageInfo = result.getData();
+
+            PageResponse<TaskInstance> pageResponse = new PageResponse<>();
+
+            pageResponse.setPageNo(pageInfo.getCurrentPage());
+            pageResponse.setPageSize(pageInfo.getPageSize());
+            pageResponse.setTotal(Integer.toUnsignedLong(pageInfo.getTotal()));
+            List<TaskInstance> list = new ArrayList<>();
+            pageResponse.setData(list);
+
+            pageInfo.getTotalList().forEach(instance -> {
+                TaskInstance taskInstance = new TaskInstance();
+                BeanUtils.copyProperties(instance, taskInstance);
+                taskInstance.setFlowInstanceId(instance.getProcessInstanceId());
+                list.add(taskInstance);
+            });
+            return pageResponse;
+        } catch (IOException e) {
+            throw new SchedulerException("dolphin scheduler call queryTaskInstanceListPage method exception", e);
+        }
+    }
+
+    @Override
+    public String queryFlowInstanceLog(TaskInstanceLogRequestParameter requestParameter) {
+        String url = String.format("/log/detail?taskInstanceId=%s&skipLineNum=%s&limit=%s",
+            requestParameter.getTaskInstanceId(),
+            requestParameter.getOffset(),
+            requestParameter.getLimit()
+        );
+
+        try {
+            String resultJson = get(url);
+            DolphinResult<String> result = JSONUtils.parseObject(
+                resultJson, new TypeReference<DolphinResult<String>>() {});
+
+            return result.getData();
+        } catch (IOException e) {
+            throw new SchedulerException("dolphin scheduler call queryFlowInstanceLog method exception", e);
         }
     }
 

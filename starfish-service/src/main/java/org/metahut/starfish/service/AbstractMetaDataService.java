@@ -378,9 +378,9 @@ public abstract class AbstractMetaDataService<K, T> implements IMetaDataApi<K, T
     @Override
     public K createEntity(K typeId, String name, Map<String, T> properties) throws AbstractMetaParserException {
         //TODO valid
-        K entityId = graphApi().createNode(name, properties);
         Class type = typeApi().type(typeId);
         validAndFilterEntityOfType(type, properties);
+        K entityId = graphApi().createNode(name, properties);
         K sourceId = linkApi().findParent(typeId, LinkCategory.SOURCE_TYPE);
         linkApi().link(sourceId, entityId, LinkCategory.SOURCE_ENTITY);
         linkApi().link(typeId, entityId, LinkCategory.TYPE_ENTITY);
