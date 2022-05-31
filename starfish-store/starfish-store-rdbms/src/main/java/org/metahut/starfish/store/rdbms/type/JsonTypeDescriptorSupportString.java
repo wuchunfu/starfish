@@ -30,6 +30,12 @@ public class JsonTypeDescriptorSupportString extends JsonTypeDescriptor {
 
     @Override
     public Object fromString(String string) {
+        if (string != null && string.length() > 0) {
+            char firstChar = string.charAt(0);
+            if (firstChar != '[' && firstChar != '{') {
+                return string;
+            }
+        }
         try {
             return super.fromString(string);
         } catch (Exception exception) {
