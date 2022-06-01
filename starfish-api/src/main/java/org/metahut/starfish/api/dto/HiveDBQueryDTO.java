@@ -1,6 +1,16 @@
 package org.metahut.starfish.api.dto;
 
+import org.metahut.starfish.api.Constants;
+import org.metahut.starfish.unit.AbstractQueryCondition;
+import org.metahut.starfish.unit.enums.TableType;
+import org.metahut.starfish.unit.expression.ConditionPiece;
+import org.metahut.starfish.unit.expression.Expression;
+
 import io.swagger.annotations.ApiModelProperty;
+import org.apache.commons.lang3.StringUtils;
+
+import java.util.ArrayList;
+import java.util.Arrays;
 
 /**
  *
@@ -60,5 +70,42 @@ public class HiveDBQueryDTO extends PageRequestDTO {
 
     public void setParameters(String parameters) {
         this.parameters = parameters;
+    }
+
+    public AbstractQueryCondition<HiveDBResponseDTO> toCondition() {
+        AbstractQueryCondition<HiveDBResponseDTO> condition = new AbstractQueryCondition<>();
+        condition.setResultType(HiveDBResponseDTO.class);
+        condition.setFilters(Arrays.asList(typePiece()));
+        return condition;
+    }
+
+    private ConditionPiece typePiece() {
+        ConditionPiece conditionPiece = ConditionPiece.entityWithType(Constants.HIVE_CLUSTER_TYPE_NAME);
+        if (!StringUtils.isAllEmpty(this.name,this.description,this.owner,this.location,this.parameters)) {
+            conditionPiece.getNextConditionChain().put(Expression.PROPERTIES, Arrays.asList(propertyCondition()));
+        }
+        return conditionPiece;
+    }
+
+    private ConditionPiece propertyCondition() {
+        ConditionPiece conditionPiece = new ConditionPiece();
+        conditionPiece.setTableType(TableType.ENTITY_PROPERTY);
+        conditionPiece.setExpressions(new ArrayList<>());
+        if (StringUtils.isNotEmpty(this.name)) {
+            conditionPiece.getExpressions().add(Expression.and(Expression.keyValueLike("name",this.name)));
+        }
+        if (StringUtils.isNotEmpty(this.description)) {
+            conditionPiece.getExpressions().add(Expression.and(Expression.keyValueLike("description",this.description)));
+        }
+        if (StringUtils.isNotEmpty(this.owner)) {
+            conditionPiece.getExpressions().add(Expression.and(Expression.keyValueLike("owner",this.owner)));
+        }
+        if (StringUtils.isNotEmpty(this.location)) {
+            conditionPiece.getExpressions().add(Expression.and(Expression.keyValueLike("location",this.location)));
+        }
+        if (StringUtils.isNotEmpty(this.parameters)) {
+            conditionPiece.getExpressions().add(Expression.and(Expression.keyValueLike("parameters",this.parameters)));
+        }
+        return propertyCondition();
     }
 }

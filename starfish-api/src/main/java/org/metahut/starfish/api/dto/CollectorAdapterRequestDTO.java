@@ -13,9 +13,10 @@ import org.apache.commons.lang3.StringUtils;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 
-import static org.metahut.starfish.api.Constants.TYPE_NAME_COLLECTOR_ADAPTER;
+import static org.metahut.starfish.api.Constants.COLLECTOR_ADAPTER_TYPE_NAME;
 
 @ApiModel(description = "collector adapter request dto")
 public class CollectorAdapterRequestDTO extends PageRequestDTO {
@@ -74,16 +75,16 @@ public class CollectorAdapterRequestDTO extends PageRequestDTO {
     private ConditionPiece collectorAdapterPiece() {
         ConditionPiece conditionPiece = new ConditionPiece();
         conditionPiece.setTableType(TableType.ENTITY);
-        Map<String, ConditionPiece> map = new HashMap<>();
+        Map<String, List<ConditionPiece>> map = new HashMap<>();
         map.putAll(rel1());
         conditionPiece.setNextConditionChain(map);
         return conditionPiece;
     }
 
-    private Map<String, ConditionPiece> rel1() {
-        Map<String, ConditionPiece> result = new HashMap<>();
-        result.put(Expression.PARENT, typeEntityRelationPiece());
-        result.put(Expression.PROPERTIES, propertyPiece());
+    private Map<String, List<ConditionPiece>> rel1() {
+        Map<String, List<ConditionPiece>> result = new HashMap<>();
+        result.put(Expression.PARENT, Arrays.asList(typeEntityRelationPiece()));
+        result.put(Expression.PROPERTIES, Arrays.asList(propertyPiece()));
         return result;
     }
 
@@ -95,16 +96,16 @@ public class CollectorAdapterRequestDTO extends PageRequestDTO {
         return conditionPiece;
     }
 
-    private Map<String, ConditionPiece> rel2() {
-        Map<String, ConditionPiece> result = new HashMap<>();
-        result.put(Expression.START_NODE_ENTITY, collectorTaskTypePiece());
+    private Map<String, List<ConditionPiece>> rel2() {
+        Map<String, List<ConditionPiece>> result = new HashMap<>();
+        result.put(Expression.START_NODE_ENTITY, Arrays.asList(collectorTaskTypePiece()));
         return result;
     }
 
     private ConditionPiece collectorTaskTypePiece() {
         ConditionPiece conditionPiece = new ConditionPiece();
         conditionPiece.setTableType(TableType.ENTITY);
-        conditionPiece.setExpressions(Expression.type(TYPE_NAME_COLLECTOR_ADAPTER));
+        conditionPiece.setExpressions(Expression.type(COLLECTOR_ADAPTER_TYPE_NAME));
         return conditionPiece;
     }
 

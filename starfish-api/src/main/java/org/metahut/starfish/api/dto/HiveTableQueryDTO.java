@@ -20,13 +20,16 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
-import static org.metahut.starfish.api.Constants.TYPE_NAME_HIVE_TABLE;
+import static org.metahut.starfish.api.Constants.HIVE_TABLE_TYPE_NAME;
 
 /**
  *
  */
 @ApiModel("hive table page query dto")
 public class HiveTableQueryDTO extends PageRequestDTO {
+
+    @ApiModelProperty(value = "hive cluster id")
+    private Long hiveClusterId;
 
     @ApiModelProperty(value = "hive cluster name")
     private String hiveClusterName;
@@ -48,6 +51,14 @@ public class HiveTableQueryDTO extends PageRequestDTO {
 
     @ApiModelProperty(value = "hive update end time")
     private Date updateEndTime;
+
+    public Long getHiveClusterId() {
+        return hiveClusterId;
+    }
+
+    public void setHiveClusterId(Long hiveClusterId) {
+        this.hiveClusterId = hiveClusterId;
+    }
 
     public String getHiveClusterName() {
         return hiveClusterName;
@@ -105,7 +116,7 @@ public class HiveTableQueryDTO extends PageRequestDTO {
         this.updateEndTime = updateEndTime;
     }
 
-    public AbstractQueryCondition<HiveTableResponseDTO> toQueryCondition() {
+    public AbstractQueryCondition<HiveTableResponseDTO> toCondition() {
         AbstractQueryCondition<HiveTableResponseDTO> condition = new AbstractQueryCondition<>();
         condition.setResultType(HiveTableResponseDTO.class);
         condition.setFilters(Arrays.asList(collectorTaskPiece()));
@@ -134,13 +145,10 @@ public class HiveTableQueryDTO extends PageRequestDTO {
         ConditionPiece conditionPiece = new ConditionPiece();
         conditionPiece.setTableType(TableType.ENTITY);
         List<BinaryExpression> expressions = new ArrayList<>();
-        Map<String,ConditionPiece> map = new HashMap<>();
+        Map<String,List<ConditionPiece>> map = new HashMap<>();
         map.putAll(rel1());
         if (StringUtils.isNotEmpty(hiveTableName)) {
             map.putAll(rel0());
-        }
-        if (StringUtils.isNotEmpty(hiveDbName) && StringUtils.isNotEmpty(hiveClusterName)) {
-            map.putAll(rel3());
         }
         if (this.createBeginTime != null) {
             if (this.createEndTime != null) {
@@ -169,8 +177,9 @@ public class HiveTableQueryDTO extends PageRequestDTO {
         return conditionPiece;
     }
 
-    private Map<String,ConditionPiece> rel0() {
-        Map<String,ConditionPiece> result = new HashMap<>();
+    private Map<String,List<ConditionPiece>> rel0() {
+        Map<String,List<ConditionPiece>> result = new HashMap<>();
+        result.put(Expression.PROPERTIES,Arrays.asList(propertyNamePiece()));
         return result;
     }
 
@@ -181,9 +190,14 @@ public class HiveTableQueryDTO extends PageRequestDTO {
         return conditionPiece;
     }
 
-    private Map<String,ConditionPiece> rel1() {
-        Map<String,ConditionPiece> result = new HashMap<>();
-        result.put(Expression.PARENT,typeEntityRelationPiece());
+    private Map<String,List<ConditionPiece>> rel1() {
+        Map<String,List<ConditionPiece>> result = new HashMap<>();
+        List<ConditionPiece> conditionPieces = new ArrayList<>();
+        conditionPieces.add(typeEntityRelationPiece());
+        if (!StringUtils.isAllEmpty(hiveDbName,hiveClusterName) || hiveClusterId != null) {
+            conditionPieces.add(entityRel());
+        }
+        result.put(Expression.PARENT,conditionPieces);
         return result;
     }
 
@@ -195,23 +209,17 @@ public class HiveTableQueryDTO extends PageRequestDTO {
         return conditionPiece;
     }
 
-    private Map<String,ConditionPiece> rel2() {
-        Map<String,ConditionPiece> result = new HashMap<>();
-        result.put(Expression.START_NODE_ENTITY,collectorTaskTypePiece());
+    private Map<String,List<ConditionPiece>> rel2() {
+        Map<String,List<ConditionPiece>> result = new HashMap<>();
+        result.put(Expression.START_NODE_ENTITY,Arrays.asList(collectorTaskTypePiece()));
         return result;
     }
 
     private ConditionPiece collectorTaskTypePiece() {
         ConditionPiece conditionPiece = new ConditionPiece();
         conditionPiece.setTableType(TableType.ENTITY);
-        conditionPiece.setExpressions(Expression.type(TYPE_NAME_HIVE_TABLE));
+        conditionPiece.setExpressions(Expression.type(HIVE_TABLE_TYPE_NAME));
         return conditionPiece;
-    }
-
-    private Map<String,ConditionPiece> rel3() {
-        Map<String,ConditionPiece> result = new HashMap<>();
-        result.put(Expression.PARENT,entityRel());
-        return result;
     }
 
     private ConditionPiece entityRel() {
@@ -222,9 +230,9 @@ public class HiveTableQueryDTO extends PageRequestDTO {
         return conditionPiece;
     }
 
-    private Map<String,ConditionPiece> rel4() {
-        Map<String,ConditionPiece> result = new HashMap<>();
-        result.put(Expression.END_NODE_ENTITY,collectorAdapterPiece());
+    private Map<String,List<ConditionPiece>> rel4() {
+        Map<String,List<ConditionPiece>> result = new HashMap<>();
+        result.put(Expression.START_NODE_ENTITY,Arrays.asList(collectorAdapterPiece()));
         return result;
     }
 
@@ -235,10 +243,12 @@ public class HiveTableQueryDTO extends PageRequestDTO {
         return conditionPiece;
     }
 
-    private Map<String, ConditionPiece> rel5() {
-        Map<String,ConditionPiece> result = new HashMap<>();
-        result.put(Expression.PROPERTIES,propertyPiece());
-        result.put(Expression.PARENT, hiveDbRelPiece());
+    private Map<String, List<ConditionPiece>> rel5() {
+        Map<String,List<ConditionPiece>> result = new HashMap<>();
+        if (StringUtils.isNotEmpty(hiveDbName)) {
+            result.put(Expression.PROPERTIES, Arrays.asList(propertyPiece()));
+        }
+        result.put(Expression.PARENT, Arrays.asList(hiveDbRelPiece()));
         return result;
     }
 
@@ -252,27 +262,32 @@ public class HiveTableQueryDTO extends PageRequestDTO {
     private ConditionPiece hiveDbRelPiece() {
         ConditionPiece conditionPiece = new ConditionPiece();
         conditionPiece.setTableType(TableType.RELATION);
-        conditionPiece.setExpressions(Expression.rel(LinkCategory.RELATIONSHIP,"cluster"));
+        conditionPiece.setExpressions(Expression.rel(LinkCategory.RELATIONSHIP,"dbs"));
         conditionPiece.setNextConditionChain(rel6());
         return conditionPiece;
     }
 
-    private Map<String,ConditionPiece> rel6() {
-        Map<String,ConditionPiece> result = new HashMap<>();
-        result.put(Expression.END_NODE_ENTITY,adapterPiece());
+    private Map<String,List<ConditionPiece>> rel6() {
+        Map<String,List<ConditionPiece>> result = new HashMap<>();
+        result.put(Expression.START_NODE_ENTITY, Arrays.asList(hiveClusterPiece()));
         return result;
     }
 
-    private ConditionPiece adapterPiece() {
+    private ConditionPiece hiveClusterPiece() {
         ConditionPiece conditionPiece = new ConditionPiece();
         conditionPiece.setTableType(TableType.ENTITY);
-        conditionPiece.setNextConditionChain(rel7());
+        if (hiveClusterId != null) {
+            conditionPiece.setExpressions(Arrays.asList(Expression.id(this.hiveClusterId)));
+        }
+        if (StringUtils.isNotEmpty(hiveClusterName)) {
+            conditionPiece.setNextConditionChain(rel7());
+        }
         return conditionPiece;
     }
 
-    private Map<String,ConditionPiece> rel7() {
-        Map<String,ConditionPiece> result = new HashMap<>();
-        result.put(Expression.PROPERTIES,clusterPropertyPiece());
+    private Map<String,List<ConditionPiece>> rel7() {
+        Map<String,List<ConditionPiece>> result = new HashMap<>();
+        result.put(Expression.PROPERTIES,Arrays.asList(clusterPropertyPiece()));
         return result;
     }
 

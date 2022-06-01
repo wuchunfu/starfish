@@ -24,6 +24,7 @@ import org.metahut.starfish.unit.row.RelationRow;
 import org.metahut.starfish.unit.row.RowData;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
+import org.apache.commons.lang3.ObjectUtils;
 import org.apache.commons.lang3.StringUtils;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
@@ -121,6 +122,9 @@ public abstract class AbstractMetaDataService<K, T> implements IMetaDataApi<K, T
             Iterator<Map.Entry<String, T>> iterator = properties.entrySet().iterator();
             while (iterator.hasNext()) {
                 Map.Entry<String, T> entry = iterator.next();
+                if (ObjectUtils.allNull(entry.getValue())) {
+                    iterator.remove();
+                }
                 boolean exist = false;
                 if (classInfo.getAttributes() != null) {
                     for (Attribute attribute : classInfo.getAttributes()) {

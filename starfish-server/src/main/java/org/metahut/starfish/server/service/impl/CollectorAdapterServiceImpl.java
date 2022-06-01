@@ -37,7 +37,7 @@ import org.springframework.stereotype.Service;
 import java.util.Collection;
 import java.util.Map;
 
-import static org.metahut.starfish.api.Constants.TYPE_NAME_COLLECTOR_ADAPTER;
+import static org.metahut.starfish.api.Constants.COLLECTOR_ADAPTER_TYPE_NAME;
 import static org.metahut.starfish.api.enums.Status.COLLECTOR_ADAPTER_TEST_CONNECTION_FAIL;
 
 @Service
@@ -63,7 +63,7 @@ public class CollectorAdapterServiceImpl implements CollectorAdapterService {
         CollectorResult collectorResult = this.testConnection(requestDTO.getType(), requestDTO.getParameter());
         Assert.notTrue(collectorResult.getState(), COLLECTOR_ADAPTER_TEST_CONNECTION_FAIL, collectorResult.getMessage());
         Map<String, Object> convert = conversionService.convert(requestDTO, Map.class);
-        Long entityId = metaDataService.createEntityByTypeName(TYPE_NAME_COLLECTOR_ADAPTER, EntityNameGentrator.generateName(TYPE_NAME_COLLECTOR_ADAPTER, requestDTO.getName()), convert);
+        Long entityId = metaDataService.createEntityByTypeName(COLLECTOR_ADAPTER_TYPE_NAME, EntityNameGentrator.generateName(COLLECTOR_ADAPTER_TYPE_NAME, requestDTO.getName()), convert);
         CollectorAdapterResponseDTO collectorAdapterResponseDTO = new CollectorAdapterResponseDTO();
         collectorAdapterResponseDTO.setId(entityId);
         return collectorAdapterResponseDTO;
@@ -74,7 +74,7 @@ public class CollectorAdapterServiceImpl implements CollectorAdapterService {
         CollectorResult collectorResult = this.testConnection(requestDTO.getType(), requestDTO.getParameter());
         Assert.notTrue(collectorResult.getState(), COLLECTOR_ADAPTER_TEST_CONNECTION_FAIL, collectorResult.getMessage());
         Map<String, Object> convert = conversionService.convert(requestDTO, Map.class);
-        metaDataService.updateEntity(id, EntityNameGentrator.generateName(TYPE_NAME_COLLECTOR_ADAPTER, requestDTO.getName()), convert);
+        metaDataService.updateEntity(id, EntityNameGentrator.generateName(COLLECTOR_ADAPTER_TYPE_NAME, requestDTO.getName()), convert);
         CollectorAdapterResponseDTO collectorAdapterResponseDTO = new CollectorAdapterResponseDTO();
         collectorAdapterResponseDTO.setId(id);
         return collectorAdapterResponseDTO;

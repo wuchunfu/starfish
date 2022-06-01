@@ -33,10 +33,11 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Date;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 
-import static org.metahut.starfish.api.Constants.RELATION_PROPERTY_COLLECTOR_TASK_ADAPTER;
-import static org.metahut.starfish.api.Constants.TYPE_NAME_COLLECTOR_TASK;
+import static org.metahut.starfish.api.Constants.COLLECTOR_TASK_TYPE_NAME;
+import static org.metahut.starfish.api.Constants.PROPERTY_COLLECTOR_TASK_ADAPTER_RELATION;
 
 @ApiModel(description = "collector task request dto")
 public class CollectorTaskRequestDTO extends PageRequestDTO {
@@ -109,7 +110,7 @@ public class CollectorTaskRequestDTO extends PageRequestDTO {
         EachPointer eachPointer = new EachPointer();
         eachPointer.setCategory(LinkCategory.RELATIONSHIP);
         eachPointer.setRelationType(RelationType.CHILD);
-        map.put(RELATION_PROPERTY_COLLECTOR_TASK_ADAPTER, eachPointer);
+        map.put(PROPERTY_COLLECTOR_TASK_ADAPTER_RELATION, eachPointer);
         return map;
     }
 
@@ -121,7 +122,7 @@ public class CollectorTaskRequestDTO extends PageRequestDTO {
     private ConditionPiece collectorTaskPiece() {
         ConditionPiece conditionPiece = new ConditionPiece();
         conditionPiece.setTableType(TableType.ENTITY);
-        Map<String,ConditionPiece> map = new HashMap<>();
+        Map<String, List<ConditionPiece>> map = new HashMap<>();
         map.putAll(rel1());
         if (StringUtils.isNotEmpty(this.name)) {
             map.putAll(rel0());
@@ -133,9 +134,9 @@ public class CollectorTaskRequestDTO extends PageRequestDTO {
         return conditionPiece;
     }
 
-    private Map<String,ConditionPiece> rel0() {
-        Map<String,ConditionPiece> result = new HashMap<>();
-        result.put(Expression.PROPERTIES,propertyNamePiece());
+    private Map<String,List<ConditionPiece>> rel0() {
+        Map<String,List<ConditionPiece>> result = new HashMap<>();
+        result.put(Expression.PROPERTIES,Arrays.asList(propertyNamePiece()));
         return result;
     }
 
@@ -146,9 +147,9 @@ public class CollectorTaskRequestDTO extends PageRequestDTO {
         return conditionPiece;
     }
 
-    private Map<String,ConditionPiece> rel1() {
-        Map<String,ConditionPiece> result = new HashMap<>();
-        result.put(Expression.PARENT,typeEntityRelationPiece());
+    private Map<String,List<ConditionPiece>> rel1() {
+        Map<String,List<ConditionPiece>> result = new HashMap<>();
+        result.put(Expression.PARENT,Arrays.asList(typeEntityRelationPiece()));
         return result;
     }
 
@@ -160,36 +161,36 @@ public class CollectorTaskRequestDTO extends PageRequestDTO {
         return conditionPiece;
     }
 
-    private Map<String,ConditionPiece> rel2() {
-        Map<String,ConditionPiece> result = new HashMap<>();
-        result.put(Expression.START_NODE_ENTITY,collectorTaskTypePiece());
+    private Map<String,List<ConditionPiece>> rel2() {
+        Map<String,List<ConditionPiece>> result = new HashMap<>();
+        result.put(Expression.START_NODE_ENTITY,Arrays.asList(collectorTaskTypePiece()));
         return result;
     }
 
     private ConditionPiece collectorTaskTypePiece() {
         ConditionPiece conditionPiece = new ConditionPiece();
         conditionPiece.setTableType(TableType.ENTITY);
-        conditionPiece.setExpressions(Expression.type(TYPE_NAME_COLLECTOR_TASK));
+        conditionPiece.setExpressions(Expression.type(COLLECTOR_TASK_TYPE_NAME));
         return conditionPiece;
     }
 
-    private Map<String,ConditionPiece> rel3() {
-        Map<String,ConditionPiece> result = new HashMap<>();
-        result.put("children",entityRel());
+    private Map<String,List<ConditionPiece>> rel3() {
+        Map<String,List<ConditionPiece>> result = new HashMap<>();
+        result.put("children",Arrays.asList(entityRel()));
         return result;
     }
 
     private ConditionPiece entityRel() {
         ConditionPiece conditionPiece = new ConditionPiece();
         conditionPiece.setTableType(TableType.RELATION);
-        conditionPiece.setExpressions(Expression.rel(LinkCategory.RELATIONSHIP, RELATION_PROPERTY_COLLECTOR_TASK_ADAPTER));
+        conditionPiece.setExpressions(Expression.rel(LinkCategory.RELATIONSHIP, PROPERTY_COLLECTOR_TASK_ADAPTER_RELATION));
         conditionPiece.setNextConditionChain(rel4());
         return conditionPiece;
     }
 
-    private Map<String,ConditionPiece> rel4() {
-        Map<String,ConditionPiece> result = new HashMap<>();
-        result.put("endNodeEntity",collectorAdapterPiece());
+    private Map<String,List<ConditionPiece>> rel4() {
+        Map<String,List<ConditionPiece>> result = new HashMap<>();
+        result.put("endNodeEntity",Arrays.asList(collectorAdapterPiece()));
         return result;
     }
 
@@ -200,9 +201,9 @@ public class CollectorTaskRequestDTO extends PageRequestDTO {
         return conditionPiece;
     }
 
-    private Map<String,ConditionPiece> rel6() {
-        Map<String,ConditionPiece> result = new HashMap<>();
-        result.put(Expression.PROPERTIES,propertyPiece1());
+    private Map<String,List<ConditionPiece>> rel6() {
+        Map<String,List<ConditionPiece>> result = new HashMap<>();
+        result.put(Expression.PROPERTIES,Arrays.asList(propertyPiece1()));
         return result;
     }
 

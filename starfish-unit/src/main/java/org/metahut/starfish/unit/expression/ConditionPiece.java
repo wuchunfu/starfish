@@ -4,6 +4,7 @@ import org.metahut.starfish.unit.enums.LinkCategory;
 import org.metahut.starfish.unit.enums.TableType;
 
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -20,7 +21,7 @@ public class ConditionPiece {
      * String : property
      * join ->  join
      */
-    private Map<String,ConditionPiece> nextConditionChain;
+    private Map<String,List<ConditionPiece>> nextConditionChain;
 
     public TableType getTableType() {
         return tableType;
@@ -38,29 +39,29 @@ public class ConditionPiece {
         this.expressions = expressions;
     }
 
-    public Map<String, ConditionPiece> getNextConditionChain() {
+    public Map<String, List<ConditionPiece>> getNextConditionChain() {
         return nextConditionChain;
     }
 
-    public void setNextConditionChain(Map<String, ConditionPiece> nextConditionChain) {
+    public void setNextConditionChain(Map<String, List<ConditionPiece>> nextConditionChain) {
         this.nextConditionChain = nextConditionChain;
     }
 
     public static ConditionPiece entityWithType(String typeName) {
         ConditionPiece conditionPiece = new ConditionPiece();
         conditionPiece.setTableType(TableType.ENTITY);
-        Map<String,ConditionPiece> map = new HashMap<>();
+        Map<String,List<ConditionPiece>> map = new HashMap<>();
         conditionPiece.setNextConditionChain(map);
         ConditionPiece conditionParent = new ConditionPiece();
         conditionParent.setTableType(TableType.RELATION);
         conditionParent.setExpressions(Expression.rel(LinkCategory.TYPE_ENTITY,LinkCategory.TYPE_ENTITY.name()));
-        Map<String,ConditionPiece> next = new HashMap<>();
+        Map<String,List<ConditionPiece>> next = new HashMap<>();
         ConditionPiece typeCondition = new ConditionPiece();
         typeCondition.setTableType(TableType.ENTITY);
         typeCondition.setExpressions(Expression.type(typeName));
-        next.put("startNodeEntity",typeCondition);
+        next.put(Expression.START_NODE_ENTITY, Arrays.asList(typeCondition));
         conditionParent.setNextConditionChain(next);
-        map.put("parent",conditionParent);
+        map.put(Expression.PARENT,Arrays.asList(conditionParent));
         return conditionPiece;
     }
 

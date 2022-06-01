@@ -18,15 +18,20 @@
 package org.metahut.starfish.api.controller;
 
 import org.metahut.starfish.api.dto.EntityQueryDTO;
+import org.metahut.starfish.api.dto.HiveClusterQueryDTO;
 import org.metahut.starfish.api.dto.HiveClusterResponseDTO;
+import org.metahut.starfish.api.dto.HiveDBQueryDTO;
 import org.metahut.starfish.api.dto.HiveDBResponseDTO;
 import org.metahut.starfish.api.dto.HiveTableQueryDTO;
 import org.metahut.starfish.api.dto.HiveTableResponseDTO;
 import org.metahut.starfish.api.dto.PageResponseDTO;
+import org.metahut.starfish.api.dto.PulsarClusterQueryDTO;
 import org.metahut.starfish.api.dto.PulsarClusterResponseDTO;
 import org.metahut.starfish.api.dto.PulsarTopicQueryDTO;
 import org.metahut.starfish.api.dto.PulsarTopicResponseDTO;
 import org.metahut.starfish.api.dto.ResultEntity;
+import org.metahut.starfish.api.dto.SourceRequestDTO;
+import org.metahut.starfish.api.dto.SourceResponseDTO;
 import org.metahut.starfish.unit.TypeNameQueryCondition;
 import org.metahut.starfish.unit.TypeNameQueryConditionWithPage;
 
@@ -57,11 +62,11 @@ public interface EntityController {
 
     @GetMapping("hiveClusters")
     @ApiOperation(value = "hiveClusters", notes = "ALL_HIVE_CLUSTER_INFOS")
-    ResultEntity<Collection<HiveClusterResponseDTO>> hiveClusters();
+    ResultEntity<PageResponseDTO<HiveClusterResponseDTO>> hiveClusters(HiveClusterQueryDTO hiveClusterQueryDTO);
 
     @GetMapping("hiveDbs")
     @ApiOperation(value = "hiveDbs", notes = "ALL_HIVE_DB_INFOS")
-    ResultEntity<Collection<HiveDBResponseDTO>> hiveDbs();
+    ResultEntity<PageResponseDTO<HiveDBResponseDTO>> hiveDbs(HiveDBQueryDTO hiveDBQueryDTO);
 
     @GetMapping("hiveTables")
     @ApiOperation(value = "hiveTables", notes = "HIVE_TABLES_WITH_PAGE")
@@ -69,10 +74,14 @@ public interface EntityController {
 
     @GetMapping("pulsarClusters")
     @ApiOperation(value = "pulsarClusters", notes = "ALL_PULSAR_CLUSTER_INFOS")
-    ResultEntity<Collection<PulsarClusterResponseDTO>> pulsarClusters();
+    ResultEntity<PageResponseDTO<PulsarClusterResponseDTO>> pulsarClusters(PulsarClusterQueryDTO pulsarClusterQueryDTO);
 
     @GetMapping("pulsarTopics")
     @ApiOperation(value = "pulsarTopics", notes = "PULSAR_TOPIC_WITH_PAGE")
     ResultEntity<PageResponseDTO<PulsarTopicResponseDTO>> pulsarTopics(PulsarTopicQueryDTO pulsarTopicQueryDTO);
+
+    @GetMapping("sources")
+    @ApiOperation(value = "sources", notes = "ALL_SOURCES_WITH_PAGE")
+    ResultEntity<PageResponseDTO<SourceResponseDTO>> sources(SourceRequestDTO sourceRequestDTO);
 
 }

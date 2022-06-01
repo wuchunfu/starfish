@@ -20,7 +20,7 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
-import static org.metahut.starfish.api.Constants.TYPE_NAME_PULSAR_TOPIC;
+import static org.metahut.starfish.api.Constants.PULSAR_TOPIC_TYPE_NAME;
 
 /**
  *
@@ -30,6 +30,9 @@ public class PulsarTopicQueryDTO extends PageRequestDTO {
 
     @ApiModelProperty(value = "pulsar topic name")
     private String topicName;
+
+    @ApiModelProperty(value = "pulsar cluster id")
+    private Long clusterId;
 
     @ApiModelProperty(value = "pulsar cluster name")
     private String clusterName;
@@ -58,6 +61,14 @@ public class PulsarTopicQueryDTO extends PageRequestDTO {
 
     public void setTopicName(String topicName) {
         this.topicName = topicName;
+    }
+
+    public Long getClusterId() {
+        return clusterId;
+    }
+
+    public void setClusterId(Long clusterId) {
+        this.clusterId = clusterId;
     }
 
     public String getClusterName() {
@@ -143,12 +154,12 @@ public class PulsarTopicQueryDTO extends PageRequestDTO {
         ConditionPiece conditionPiece = new ConditionPiece();
         conditionPiece.setTableType(TableType.ENTITY);
         List<BinaryExpression> expressions = new ArrayList<>();
-        Map<String,ConditionPiece> map = new HashMap<>();
+        Map<String,List<ConditionPiece>> map = new HashMap<>();
         map.putAll(pulsarTopicParentRelEnd());
         if (StringUtils.isNotEmpty(topicName)) {
             map.putAll(pulsarTopicPropRel());
         }
-        if (StringUtils.isNotEmpty(publisherName) && StringUtils.isNotEmpty(publisherTeam)) {
+        if (!StringUtils.isAllEmpty(publisherName,publisherTeam)) {
             map.putAll(pulsarChildrenRelStart());
         }
         if (this.createBeginTime != null) {
@@ -178,9 +189,14 @@ public class PulsarTopicQueryDTO extends PageRequestDTO {
         return conditionPiece;
     }
 
-    private Map<String,ConditionPiece> pulsarTopicParentRelEnd() {
-        Map<String,ConditionPiece> result = new HashMap<>();
-        result.put("parent",pulsarTypeRel());
+    private Map<String,List<ConditionPiece>> pulsarTopicParentRelEnd() {
+        Map<String,List<ConditionPiece>> result = new HashMap<>();
+        List<ConditionPiece> conditionPieces = new ArrayList<>();
+        conditionPieces.add(pulsarTypeRel());
+        if (clusterId != null && StringUtils.isNotEmpty(clusterName)) {
+            conditionPieces.add(pulsarNamespaceRel());
+        }
+        result.put("parent",conditionPieces);
         return result;
     }
 
@@ -192,22 +208,89 @@ public class PulsarTopicQueryDTO extends PageRequestDTO {
         return conditionPiece;
     }
 
-    private Map<String,ConditionPiece> pulsarTopicParentRelStart() {
-        Map<String,ConditionPiece> result = new HashMap<>();
-        result.put("startNodeEntity",pulsarTypeCondition());
+    private ConditionPiece pulsarNamespaceRel() {
+        ConditionPiece conditionPiece = new ConditionPiece();
+        conditionPiece.setTableType(TableType.RELATION);
+        conditionPiece.setExpressions(Expression.rel(LinkCategory.RELATIONSHIP,"topics"));
+        conditionPiece.setNextConditionChain(pulsarNamespaceRelStart());
+        return conditionPiece;
+    }
+
+    private Map<String,List<ConditionPiece>> pulsarNamespaceRelStart() {
+        Map<String,List<ConditionPiece>> result = new HashMap<>();
+        result.put(Expression.START_NODE_ENTITY,Arrays.asList(pulsarTenant()));
+        return result;
+    }
+
+    private ConditionPiece pulsarTenant() {
+        ConditionPiece conditionPiece = new ConditionPiece();
+        conditionPiece.setTableType(TableType.ENTITY);
+        conditionPiece.setNextConditionChain(pulsarNamespaceRelEnd());
+        return conditionPiece;
+    }
+
+    private Map<String,List<ConditionPiece>> pulsarNamespaceRelEnd() {
+        Map<String,List<ConditionPiece>> result = new HashMap<>();
+        result.put(Expression.PARENT,Arrays.asList(pulsarClusterRel()));
+        return result;
+    }
+
+    private ConditionPiece pulsarClusterRel() {
+        ConditionPiece conditionPiece = new ConditionPiece();
+        conditionPiece.setTableType(TableType.RELATION);
+        conditionPiece.setExpressions(Expression.rel(LinkCategory.RELATIONSHIP,"allowedTenants"));
+        conditionPiece.setNextConditionChain(pulsarClusterRelStart());
+        return conditionPiece;
+    }
+
+    private Map<String,List<ConditionPiece>> pulsarClusterRelStart() {
+        Map<String,List<ConditionPiece>> result = new HashMap<>();
+        result.put(Expression.START_NODE_ENTITY,Arrays.asList(pulsarCluster()));
+        return result;
+    }
+
+    private ConditionPiece pulsarCluster() {
+        ConditionPiece conditionPiece = new ConditionPiece();
+        conditionPiece.setTableType(TableType.ENTITY);
+        if (clusterId != null) {
+            conditionPiece.setExpressions(Arrays.asList(Expression.id(clusterId)));
+        }
+        conditionPiece.setNextConditionChain(pulsarClusterProps());
+        return conditionPiece;
+    }
+
+    private Map<String,List<ConditionPiece>> pulsarClusterProps() {
+        Map<String,List<ConditionPiece>> result = new HashMap<>();
+        result.put(Expression.PROPERTIES,Arrays.asList(pulsarClusterPropsCondition()));
+        return result;
+    }
+
+    private ConditionPiece pulsarClusterPropsCondition() {
+        ConditionPiece conditionPiece = new ConditionPiece();
+        conditionPiece.setTableType(TableType.ENTITY_PROPERTY);
+        if (StringUtils.isNotEmpty(this.clusterName)) {
+            conditionPiece.setExpressions(Arrays.asList(Expression.and(Expression.keyValueLike("name", this.clusterName))));
+        }
+        return conditionPiece;
+    }
+
+
+    private Map<String,List<ConditionPiece>> pulsarTopicParentRelStart() {
+        Map<String,List<ConditionPiece>> result = new HashMap<>();
+        result.put(Expression.START_NODE_ENTITY,Arrays.asList(pulsarTypeCondition()));
         return result;
     }
 
     private ConditionPiece pulsarTypeCondition() {
         ConditionPiece conditionPiece = new ConditionPiece();
         conditionPiece.setTableType(TableType.ENTITY);
-        conditionPiece.setExpressions(Expression.type(TYPE_NAME_PULSAR_TOPIC));
+        conditionPiece.setExpressions(Expression.entity(PULSAR_TOPIC_TYPE_NAME));
         return conditionPiece;
     }
 
-    private Map<String,ConditionPiece> pulsarTopicPropRel() {
-        Map<String,ConditionPiece> result = new HashMap<>();
-        result.put("properties",pulsarTopicPropCondition());
+    private Map<String,List<ConditionPiece>> pulsarTopicPropRel() {
+        Map<String,List<ConditionPiece>> result = new HashMap<>();
+        result.put(Expression.PROPERTIES,Arrays.asList(pulsarTopicPropCondition()));
         return result;
     }
 
@@ -218,9 +301,9 @@ public class PulsarTopicQueryDTO extends PageRequestDTO {
         return conditionPiece;
     }
 
-    private Map<String,ConditionPiece> pulsarChildrenRelStart() {
-        Map<String,ConditionPiece> result = new HashMap<>();
-        result.put("children",pulsarPublisherRel());
+    private Map<String,List<ConditionPiece>> pulsarChildrenRelStart() {
+        Map<String,List<ConditionPiece>> result = new HashMap<>();
+        result.put(Expression.CHILDREN,Arrays.asList(pulsarPublisherRel()));
         return result;
     }
 
@@ -232,9 +315,9 @@ public class PulsarTopicQueryDTO extends PageRequestDTO {
         return conditionPiece;
     }
 
-    private Map<String,ConditionPiece> pulsarChildrenRelEnd() {
-        Map<String,ConditionPiece> result = new HashMap<>();
-        result.put("endNodeEntity",pulsarPublisherCondition());
+    private Map<String,List<ConditionPiece>> pulsarChildrenRelEnd() {
+        Map<String,List<ConditionPiece>> result = new HashMap<>();
+        result.put(Expression.END_NODE_ENTITY,Arrays.asList(pulsarPublisherCondition()));
         return result;
     }
 
@@ -245,20 +328,21 @@ public class PulsarTopicQueryDTO extends PageRequestDTO {
         return conditionPiece;
     }
 
-    private Map<String,ConditionPiece> pulsarPublisherPropRel() {
-        Map<String,ConditionPiece> result = new HashMap<>();
-        result.put("properties",pulsarPublisherPropCondition());
+    private Map<String,List<ConditionPiece>> pulsarPublisherPropRel() {
+        Map<String,List<ConditionPiece>> result = new HashMap<>();
+        result.put(Expression.PROPERTIES,Arrays.asList(pulsarPublisherPropCondition()));
         return result;
     }
 
     private ConditionPiece pulsarPublisherPropCondition() {
         ConditionPiece conditionPiece = new ConditionPiece();
         conditionPiece.setTableType(TableType.ENTITY_PROPERTY);
+        conditionPiece.setExpressions(new ArrayList<>());
         if (StringUtils.isNotEmpty(this.publisherName)) {
-            conditionPiece.setExpressions(Arrays.asList(Expression.and(Expression.keyValueLike("producerName", this.publisherName))));
+            conditionPiece.getExpressions().add(Expression.and(Expression.keyValueLike("producerName", this.publisherName)));
         }
         if (StringUtils.isNotEmpty(this.publisherTeam)) {
-            conditionPiece.setExpressions(Arrays.asList(Expression.and(Expression.keyValueLike("description", this.publisherTeam))));
+            conditionPiece.getExpressions().add(Expression.and(Expression.keyValueLike("description", this.publisherTeam)));
         }
         return conditionPiece;
     }

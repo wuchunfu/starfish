@@ -31,8 +31,25 @@ public interface Expression {
 
     String END_NODE_ENTITY = "endNodeEntity";
 
+    String CHILDREN = "children";
+
     static List<BinaryExpression> entity() {
         return entity(null);
+    }
+
+    static List<BinaryExpression> source(String name) {
+        List<BinaryExpression> result = new ArrayList<>();
+        EqualExpression equalExpression = new EqualExpression();
+        equalExpression.setLeftExpression(new StringExpression(CATEGORY));
+        equalExpression.setRightExpression(new StringExpression(TypeCategory.SOURCE.name()));
+        if (name != null && !"".equals(name)) {
+            LikeExpression nameExpression = new LikeExpression();
+            nameExpression.setLeftExpression(new StringExpression(QUALIFIED_NAME));
+            nameExpression.setRightExpression(new StringExpression(name));
+            result.add(nameExpression);
+        }
+        result.add(equalExpression);
+        return result;
     }
 
     static List<BinaryExpression> entity(String name) {

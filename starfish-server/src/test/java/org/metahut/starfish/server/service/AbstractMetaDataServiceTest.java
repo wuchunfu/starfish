@@ -186,8 +186,8 @@ class AbstractMetaDataServiceTest {
         ConditionPiece conditionNext = new ConditionPiece();
         conditionNext.setTableType(TableType.RELATION);
         conditionNext.setExpressions(Arrays.asList(typeEntityCategory()));
-        Map<String,ConditionPiece> map = new HashMap();
-        map.put("startNodeEntity",typeCondition());
+        Map<String,List<ConditionPiece>> map = new HashMap();
+        map.put("startNodeEntity",Arrays.asList(typeCondition()));
         conditionNext.setNextConditionChain(map);
         return conditionNext;
     }
@@ -199,9 +199,9 @@ class AbstractMetaDataServiceTest {
         equalExpression.setLeftExpression(new StringExpression("qualifiedName"));
         equalExpression.setRightExpression(new StringExpression("1111"));
         conditionPiece.setExpressions(Arrays.asList(equalExpression,entityCategory()));
-        Map<String,ConditionPiece> map = new HashMap<>();
-        map.put("properties",properties());
-        map.put("parent",parentTypeRelation());
+        Map<String,List<ConditionPiece>> map = new HashMap<>();
+        map.put("properties",Arrays.asList(properties()));
+        map.put("parent",Arrays.asList(parentTypeRelation()));
         conditionPiece.setNextConditionChain(map);
         return conditionPiece;
     }
@@ -213,10 +213,10 @@ class AbstractMetaDataServiceTest {
         equalExpression.setLeftExpression(new StringExpression("qualifiedName"));
         equalExpression.setRightExpression(new StringExpression("1111"));
         conditionPiece.setExpressions(Arrays.asList(equalExpression));
-        Map<String,ConditionPiece> map = new HashMap<>();
+        Map<String,List<ConditionPiece>> map = new HashMap<>();
         ConditionPiece conditionNext = new ConditionPiece();
         conditionNext.setTableType(TableType.RELATION);
-        map.put("properties",conditionNext);
+        map.put("properties",Arrays.asList(conditionNext));
         conditionPiece.setNextConditionChain(map);
         return conditionPiece;
     }
