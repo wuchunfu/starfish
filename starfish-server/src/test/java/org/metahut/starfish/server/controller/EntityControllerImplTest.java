@@ -13,11 +13,19 @@ import org.metahut.starfish.api.dto.PulsarClusterResponseDTO;
 import org.metahut.starfish.api.dto.PulsarTopicQueryDTO;
 import org.metahut.starfish.api.dto.PulsarTopicResponseDTO;
 import org.metahut.starfish.api.dto.ResultEntity;
+import org.metahut.starfish.store.rdbms.dao.NodeEntityMapper;
+import org.metahut.starfish.store.rdbms.entity.NodeEntity;
+import org.metahut.starfish.store.rdbms.repository.NodeEntityPropertyRepository;
+import org.metahut.starfish.store.rdbms.repository.NodeEntityRepository;
+import org.metahut.starfish.unit.enums.TypeCategory;
 
 import org.junit.jupiter.api.Assertions;
+import org.junit.jupiter.api.Disabled;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
+import org.springframework.transaction.annotation.Transactional;
+import org.springframework.transaction.support.TransactionTemplate;
 
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
@@ -95,5 +103,48 @@ class EntityControllerImplTest {
             .pulsarTopics(pulsarTopicQueryDTO);
         Assertions.assertEquals(true, pulsarTopics.isSuccess());
         assertNotNull(pulsarTopics);
+    }
+
+    @Autowired
+    private NodeEntityMapper nodeEntityMapper;
+
+    @Autowired
+    private NodeEntityRepository nodeEntityRepository;
+
+    @Autowired
+    private NodeEntityPropertyRepository  nodeEntityPropertyRepository;
+
+    @Autowired
+    private TransactionTemplate transactionTemplate;
+
+    @Test
+    @Disabled
+    public void testFindByIdAndPropertyCache() {
+        transactionTemplate.execute((status) -> {
+            NodeEntity byId1 = nodeEntityMapper.findById(1525L);
+            byId1.getProperties();
+            NodeEntity node1 = nodeEntityMapper.findByCategoryAndQualifiedName(TypeCategory.ENTITY.name(), "hive@@dwdd@@dwd_agt_ass_asset_all@@spu_id");
+            NodeEntity node2 = nodeEntityMapper.findByCategoryAndQualifiedName(TypeCategory.ENTITY.name(), "hive@@dwdd@@dwd_agt_ass_asset_all@@spu_id");
+            return Boolean.TRUE;
+        });
+        transactionTemplate.execute((status) -> {
+            NodeEntity byId2 = nodeEntityMapper.findById(1525L);
+            byId2.getProperties();
+            NodeEntity node1 = nodeEntityMapper.findByCategoryAndQualifiedName(TypeCategory.ENTITY.name(), "hive@@dwdd@@dwd_agt_ass_asset_all@@spu_id");
+            NodeEntity node2 = nodeEntityMapper.findByCategoryAndQualifiedName(TypeCategory.ENTITY.name(), "hive@@dwdd@@dwd_agt_ass_asset_all@@spu_id");
+            return Boolean.TRUE;
+        });
+    }
+
+    @Test
+    @Disabled
+    @Transactional
+    void testCache() {
+        for (int i = 0; i < 100;i++) {
+            NodeEntity byId = nodeEntityMapper.findById(1525L);
+            byId.setUpdateTime(null);
+            NodeEntity update = nodeEntityMapper.update(byId);
+            NodeEntity node1 = nodeEntityMapper.findByCategoryAndQualifiedName(TypeCategory.ENTITY.name(), "hive@@dwdd@@dwd_agt_ass_asset_all@@spu_id");
+        }
     }
 }

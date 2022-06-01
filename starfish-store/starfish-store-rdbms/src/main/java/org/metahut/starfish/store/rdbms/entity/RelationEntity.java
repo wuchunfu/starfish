@@ -5,12 +5,15 @@ import org.metahut.starfish.store.model.AbstractRelationEntity;
 import com.google.common.base.Joiner;
 import lombok.Getter;
 import lombok.Setter;
+import org.hibernate.annotations.Cache;
+import org.hibernate.annotations.CacheConcurrencyStrategy;
 import org.hibernate.annotations.NotFound;
 import org.hibernate.annotations.NotFoundAction;
 import org.springframework.data.annotation.CreatedDate;
 import org.springframework.data.annotation.LastModifiedDate;
 import org.springframework.data.jpa.domain.support.AuditingEntityListener;
 
+import javax.persistence.Cacheable;
 import javax.persistence.CascadeType;
 import javax.persistence.Column;
 import javax.persistence.ConstraintMode;
@@ -34,6 +37,8 @@ import java.util.Set;
 @Getter
 @Entity
 @Table(name = "t_sf_relation_entity")
+@Cacheable
+@Cache(usage = CacheConcurrencyStrategy.READ_WRITE)
 @EntityListeners(AuditingEntityListener.class)
 public class RelationEntity extends
     AbstractRelationEntity<Long, RelationEntityProperty, NodeEntity> {

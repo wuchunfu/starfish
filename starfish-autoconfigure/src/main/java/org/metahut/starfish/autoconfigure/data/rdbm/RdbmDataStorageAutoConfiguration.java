@@ -44,10 +44,14 @@ import org.metahut.starfish.unit.expression.TrueExpression;
 import com.fasterxml.jackson.databind.DeserializationFeature;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import org.apache.commons.lang3.StringUtils;
+import org.hibernate.cache.jcache.ConfigSettings;
 import org.springframework.boot.autoconfigure.AutoConfigureAfter;
+import org.springframework.boot.autoconfigure.condition.ConditionalOnBean;
 import org.springframework.boot.autoconfigure.condition.ConditionalOnClass;
 import org.springframework.boot.autoconfigure.condition.ConditionalOnMissingBean;
 import org.springframework.boot.autoconfigure.jdbc.DataSourceAutoConfiguration;
+import org.springframework.boot.autoconfigure.orm.jpa.HibernatePropertiesCustomizer;
+import org.springframework.cache.jcache.JCacheCacheManager;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.data.domain.Page;
@@ -62,7 +66,6 @@ import javax.persistence.criteria.CriteriaQuery;
 import javax.persistence.criteria.From;
 import javax.persistence.criteria.Join;
 import javax.persistence.criteria.Predicate;
-import javax.persistence.criteria.Root;
 import javax.sql.DataSource;
 
 import java.util.ArrayList;
@@ -80,6 +83,7 @@ import java.util.stream.Collectors;
  *
  */
 @Configuration
+//@EnableCaching
 @EnableJpaAuditing
 @ConditionalOnClass({DataSource.class})
 @AutoConfigureAfter({DataSourceAutoConfiguration.class})
@@ -401,7 +405,6 @@ public class RdbmDataStorageAutoConfiguration {
         }
         return predicates;
     }
-
 
     @Bean
     @ConditionalOnMissingBean(AbstractLinkService.class)
@@ -848,5 +851,11 @@ public class RdbmDataStorageAutoConfiguration {
     @Bean
     public OpenEntityManagerInViewFilter openEntityManagerInViewFilter() {
         return new OpenEntityManagerInViewFilter();
+    }
+
+    @Bean
+    @ConditionalOnBean(JCacheCacheManager.class)
+    public HibernatePropertiesCustomizer hibernateSecondLevelCacheCustomizer(JCacheCacheManager cacheManager) {
+        return (properties) -> properties.put(ConfigSettings.CACHE_MANAGER, cacheManager.getCacheManager());
     }
 }

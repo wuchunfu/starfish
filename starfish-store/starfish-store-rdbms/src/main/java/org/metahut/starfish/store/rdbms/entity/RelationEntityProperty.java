@@ -5,6 +5,8 @@ import org.metahut.starfish.store.rdbms.type.JsonStringTypeSupportString;
 
 import lombok.Getter;
 import lombok.Setter;
+import org.hibernate.annotations.Cache;
+import org.hibernate.annotations.CacheConcurrencyStrategy;
 import org.hibernate.annotations.NotFound;
 import org.hibernate.annotations.NotFoundAction;
 import org.hibernate.annotations.Type;
@@ -13,6 +15,7 @@ import org.springframework.data.annotation.CreatedDate;
 import org.springframework.data.annotation.LastModifiedDate;
 import org.springframework.data.jpa.domain.support.AuditingEntityListener;
 
+import javax.persistence.Cacheable;
 import javax.persistence.Column;
 import javax.persistence.ConstraintMode;
 import javax.persistence.Entity;
@@ -32,6 +35,8 @@ import java.util.Date;
 @Getter
 @Entity
 @Table(name = "t_sf_relation_entity_property")
+@Cacheable
+@Cache(usage = CacheConcurrencyStrategy.READ_WRITE)
 @EntityListeners(AuditingEntityListener.class)
 @TypeDef(name = "json", typeClass = JsonStringTypeSupportString.class)
 public class RelationEntityProperty extends AbstractEntityProperty<Long, Object, RelationEntity> {

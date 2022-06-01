@@ -274,7 +274,6 @@ public class PulsarTopicQueryDTO extends PageRequestDTO {
         return conditionPiece;
     }
 
-
     private Map<String,List<ConditionPiece>> pulsarTopicParentRelStart() {
         Map<String,List<ConditionPiece>> result = new HashMap<>();
         result.put(Expression.START_NODE_ENTITY,Arrays.asList(pulsarTypeCondition()));
