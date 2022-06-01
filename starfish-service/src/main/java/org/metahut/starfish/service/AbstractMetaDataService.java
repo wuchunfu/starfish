@@ -306,6 +306,12 @@ public abstract class AbstractMetaDataService<K, T> implements IMetaDataApi<K, T
     }
 
     @Override
+    public Class typeByInstanceId(K instanceId) throws AbstractMetaParserException {
+        K typeId = linkApi().findParent(instanceId, LinkCategory.TYPE_ENTITY);
+        return type(typeId);
+    }
+
+    @Override
     public Collection<Class> types(K sourceId) throws AbstractMetaParserException {
         return typeApi().types(sourceId).values();
     }

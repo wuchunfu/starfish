@@ -35,6 +35,7 @@ import org.metahut.starfish.api.dto.PulsarTopicResponseDTO;
 import org.metahut.starfish.api.dto.ResultEntity;
 import org.metahut.starfish.api.dto.SourceRequestDTO;
 import org.metahut.starfish.api.dto.SourceResponseDTO;
+import org.metahut.starfish.parser.domain.instance.Class;
 import org.metahut.starfish.service.AbstractMetaDataService;
 import org.metahut.starfish.unit.AbstractQueryCondition;
 import org.metahut.starfish.unit.TypeNameQueryCondition;
@@ -65,6 +66,11 @@ public class EntityControllerImpl implements EntityController {
     @Override
     public ResultEntity<Map> queryById(Long id) {
         return ResultEntity.success(abstractMetaDataService.instance(id,Map.class));
+    }
+
+    @Override
+    public ResultEntity<Object> queryTypeByInstanceId(Long id) {
+        return ResultEntity.success(abstractMetaDataService.typeByInstanceId(id));
     }
 
     @Override

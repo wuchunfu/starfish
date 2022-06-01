@@ -53,6 +53,10 @@ public interface EntityController {
     @ApiOperation(value = "queryById", notes = "queryById")
     ResultEntity<Map> queryById(Long id);
 
+    @GetMapping("queryTypeByInstanceId")
+    @ApiOperation(value = "queryTypeByInstanceId", notes = "queryTypeByInstanceId")
+    ResultEntity<Object> queryTypeByInstanceId(Long id);
+
     @GetMapping("queryByTypeNameAndCondition")
     @ApiOperation(value = "queryByTypeNameAndCondition", notes = "QUERY_NODE_BY_TYPENAME_AND_CONDITION")
     ResultEntity<Collection<Map>> queryByTypeNameAndCondition(TypeNameQueryCondition typeNameQueryCondition);

@@ -77,6 +77,14 @@ interface IMetaDataApi<K,T> {
     Class type(K typeId) throws AbstractMetaParserException;
 
     /**
+     *
+     * @param instanceId
+     * @return
+     * @throws AbstractMetaParserException
+     */
+    Class typeByInstanceId(K instanceId) throws AbstractMetaParserException;
+
+    /**
      * query all types with conditions
      * @param sourceId
      * @return
