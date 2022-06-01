@@ -1,7 +1,5 @@
 package org.metahut.starfish.parser.domain;
 
-import org.metahut.starfish.parser.function.ModelGenerator;
-
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -9,7 +7,7 @@ import org.slf4j.LoggerFactory;
  *
  */
 public class SymbolConstants {
-    public static final Logger LOG = LoggerFactory.getLogger(ModelGenerator.class);
+    public static final Logger LOG = LoggerFactory.getLogger(SymbolConstants.class);
 
     public static final String PREFIX = "v";
 
