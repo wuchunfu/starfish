@@ -27,6 +27,8 @@ import org.metahut.starfish.api.dto.HiveTableResponseDTO;
 import org.metahut.starfish.api.dto.PageResponseDTO;
 import org.metahut.starfish.api.dto.PulsarClusterQueryDTO;
 import org.metahut.starfish.api.dto.PulsarClusterResponseDTO;
+import org.metahut.starfish.api.dto.PulsarNamespaceQueryDTO;
+import org.metahut.starfish.api.dto.PulsarNamespaceResponseDTO;
 import org.metahut.starfish.api.dto.PulsarTopicQueryDTO;
 import org.metahut.starfish.api.dto.PulsarTopicResponseDTO;
 import org.metahut.starfish.api.dto.ResultEntity;
@@ -78,6 +80,10 @@ public interface EntityController {
     @GetMapping("pulsarClusters")
     @ApiOperation(value = "pulsarClusters", notes = "ALL_PULSAR_CLUSTER_INFOS")
     ResultEntity<PageResponseDTO<PulsarClusterResponseDTO>> pulsarClusters(PulsarClusterQueryDTO pulsarClusterQueryDTO);
+
+    @GetMapping("pulsarNamespaces")
+    @ApiOperation(value = "pulsarNamespaces", notes = "ALL_PULSAR_NAMESPACE_INFOS")
+    ResultEntity<PageResponseDTO<PulsarNamespaceResponseDTO>> pulsarNamespaces(PulsarNamespaceQueryDTO pulsarNamespaceQueryDTO);
 
     @GetMapping("pulsarTopics")
     @ApiOperation(value = "pulsarTopics", notes = "PULSAR_TOPIC_WITH_PAGE")

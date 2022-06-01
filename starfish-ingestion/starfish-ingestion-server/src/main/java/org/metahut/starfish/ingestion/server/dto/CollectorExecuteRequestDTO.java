@@ -59,7 +59,7 @@ public class CollectorExecuteRequestDTO {
     }
 
     private ConditionPiece collectorTaskCondition() {
-        ConditionPiece conditionPiece = ConditionPiece.entityWithTypeAndQualifiedName(TYPE_NAME_COLLECTOR_TASK, this.id, null);
+        ConditionPiece conditionPiece = ConditionPiece.entityWithTypeAndIdAndQualifiedName(TYPE_NAME_COLLECTOR_TASK, this.id, null);
         return conditionPiece;
     }
 }

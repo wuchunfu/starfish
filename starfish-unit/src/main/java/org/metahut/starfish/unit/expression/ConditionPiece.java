@@ -65,7 +65,7 @@ public class ConditionPiece {
         return conditionPiece;
     }
 
-    public static ConditionPiece entityWithTypeAndQualifiedName(String typeName,Long id,String qualifiedName) {
+    public static ConditionPiece entityWithTypeAndIdAndQualifiedName(String typeName,Long id,String qualifiedName) {
         ConditionPiece conditionPiece = entityWithType(typeName);
         List<BinaryExpression> expressions = new ArrayList<>();
         if (id != null) {

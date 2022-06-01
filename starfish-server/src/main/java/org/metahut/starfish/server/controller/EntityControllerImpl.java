@@ -28,6 +28,8 @@ import org.metahut.starfish.api.dto.HiveTableResponseDTO;
 import org.metahut.starfish.api.dto.PageResponseDTO;
 import org.metahut.starfish.api.dto.PulsarClusterQueryDTO;
 import org.metahut.starfish.api.dto.PulsarClusterResponseDTO;
+import org.metahut.starfish.api.dto.PulsarNamespaceQueryDTO;
+import org.metahut.starfish.api.dto.PulsarNamespaceResponseDTO;
 import org.metahut.starfish.api.dto.PulsarTopicQueryDTO;
 import org.metahut.starfish.api.dto.PulsarTopicResponseDTO;
 import org.metahut.starfish.api.dto.ResultEntity;
@@ -113,6 +115,14 @@ public class EntityControllerImpl implements EntityController {
         PageRequest pageable = PageRequest.of(pulsarClusterQueryDTO.getPageNo() - 1, pulsarClusterQueryDTO.getPageSize());
         Page<PulsarClusterResponseDTO> pageResult = abstractMetaDataService.instances(pulsarClusterQueryDTO.toCondition(),pageable);
         return ResultEntity.success(PageResponseDTO.of(pageResult.getNumber(),pageResult.getSize(),pageResult.getTotalElements(),pageResult.getContent()));
+    }
+
+    @Override
+    public ResultEntity<PageResponseDTO<PulsarNamespaceResponseDTO>> pulsarNamespaces(PulsarNamespaceQueryDTO pulsarNamespaceQueryDTO) {
+        PageRequest pageable = PageRequest.of(pulsarNamespaceQueryDTO.getPageNo() - 1, pulsarNamespaceQueryDTO.getPageSize());
+        Page<PulsarNamespaceResponseDTO> pageResult = abstractMetaDataService.instances(pulsarNamespaceQueryDTO.toCondition(),pageable);
+        return ResultEntity.success(PageResponseDTO.of(pageResult.getNumber(),pageResult.getSize(),pageResult.getTotalElements(),pageResult.getContent()));
+
     }
 
     @Override

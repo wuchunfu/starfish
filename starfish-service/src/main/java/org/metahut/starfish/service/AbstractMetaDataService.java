@@ -177,7 +177,7 @@ public abstract class AbstractMetaDataService<K, T> implements IMetaDataApi<K, T
             for (EntityRow entity : rowData.getEntities()) {
                 AbstractQueryCondition<Map> condition = new AbstractQueryCondition<>();
                 condition.setResultType(Map.class);
-                condition.setFilters(Arrays.asList(ConditionPiece.entityWithTypeAndQualifiedName(entity.getHeader().getTypeName()
+                condition.setFilters(Arrays.asList(ConditionPiece.entityWithTypeAndIdAndQualifiedName(entity.getHeader().getTypeName()
                         , entity.getHeader().getId(), entity.getHeader().getQualifiedName())));
                 Set<K> instanceIds = graphApi().query(condition).stream().map(map -> (K) map.get("id")).collect(Collectors.toSet());
                 Map<String, T> properties = entity.getProperties();
@@ -235,7 +235,7 @@ public abstract class AbstractMetaDataService<K, T> implements IMetaDataApi<K, T
                 }
                 AbstractQueryCondition<Map> condition1 = new AbstractQueryCondition<>();
                 condition1.setResultType(Map.class);
-                condition1.setFilters(Arrays.asList(ConditionPiece.entityWithTypeAndQualifiedName(relation.getStartNode().getTypeName(), relation.getStartNode().getId()
+                condition1.setFilters(Arrays.asList(ConditionPiece.entityWithTypeAndIdAndQualifiedName(relation.getStartNode().getTypeName(), relation.getStartNode().getId()
                         , relation.getStartNode().getQualifiedName())));
                 Set<K> headIds = graphApi().query(condition1).stream().map(map -> (K) map.get("id")).collect(Collectors.toSet());
                 if (headIds == null || headIds.size() == 0) {
@@ -248,7 +248,7 @@ public abstract class AbstractMetaDataService<K, T> implements IMetaDataApi<K, T
                 }
                 AbstractQueryCondition<Map> condition2 = new AbstractQueryCondition<>();
                 condition2.setResultType(Map.class);
-                condition2.setFilters(Arrays.asList(ConditionPiece.entityWithTypeAndQualifiedName(relation.getEndNode().getTypeName()
+                condition2.setFilters(Arrays.asList(ConditionPiece.entityWithTypeAndIdAndQualifiedName(relation.getEndNode().getTypeName()
                         , relation.getEndNode().getId(), relation.getEndNode().getQualifiedName())));
                 Set<K> tailIds = graphApi().query(condition2).stream().map(map -> (K) map.get("id")).collect(Collectors.toSet());
                 if (tailIds == null || tailIds.size() == 0) {

@@ -19,6 +19,9 @@ import java.util.Arrays;
 @ApiModel(description = "pulsar cluster query dto")
 public class PulsarClusterQueryDTO extends PageRequestDTO {
 
+    @ApiModelProperty(value = "pulsar cluster id")
+    private Long id;
+
     @ApiModelProperty(value = "pulsar cluster name")
     private String name;
 
@@ -36,6 +39,14 @@ public class PulsarClusterQueryDTO extends PageRequestDTO {
 
     @ApiModelProperty(value = "pulsar cluster proxy service url")
     private String proxyServiceUrl;
+
+    public Long getId() {
+        return id;
+    }
+
+    public void setId(Long id) {
+        this.id = id;
+    }
 
     public String getName() {
         return name;
@@ -93,7 +104,7 @@ public class PulsarClusterQueryDTO extends PageRequestDTO {
     }
 
     private ConditionPiece typePiece() {
-        ConditionPiece conditionPiece = ConditionPiece.entityWithType(Constants.HIVE_CLUSTER_TYPE_NAME);
+        ConditionPiece conditionPiece = ConditionPiece.entityWithTypeAndIdAndQualifiedName(Constants.HIVE_CLUSTER_TYPE_NAME,id,null);
         if (!StringUtils.isAllEmpty(this.name,this.serviceUrl,this.serviceUrlTls,this.brokerServiceUrl,this.brokerServiceUrlTls,this.proxyServiceUrl)) {
             conditionPiece.getNextConditionChain().put(Expression.PROPERTIES, Arrays.asList(propertyCondition()));
         }
