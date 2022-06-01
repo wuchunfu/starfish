@@ -38,7 +38,6 @@ import org.metahut.starfish.unit.TypeNameQueryConditionWithPage;
 import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiOperation;
 import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 
 import java.util.Collection;
@@ -48,7 +47,11 @@ import java.util.Map;
 @RequestMapping("entity")
 public interface EntityController {
 
-    @PostMapping("queryByTypeNameAndCondition")
+    @GetMapping("queryById")
+    @ApiOperation(value = "queryById", notes = "queryById")
+    ResultEntity<Map> queryById(Long id);
+
+    @GetMapping("queryByTypeNameAndCondition")
     @ApiOperation(value = "queryByTypeNameAndCondition", notes = "QUERY_NODE_BY_TYPENAME_AND_CONDITION")
     ResultEntity<Collection<Map>> queryByTypeNameAndCondition(TypeNameQueryCondition typeNameQueryCondition);
 

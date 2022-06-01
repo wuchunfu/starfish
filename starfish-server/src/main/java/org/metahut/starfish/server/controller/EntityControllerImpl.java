@@ -61,6 +61,11 @@ public class EntityControllerImpl implements EntityController {
     }
 
     @Override
+    public ResultEntity<Map> queryById(Long id) {
+        return ResultEntity.success(abstractMetaDataService.instance(id,Map.class));
+    }
+
+    @Override
     public ResultEntity<Collection<Map>> queryByTypeNameAndCondition(TypeNameQueryCondition typeNameQueryCondition) {
         AbstractQueryCondition<Map> condition = typeNameQueryCondition;
         if (condition.getFilters() == null) {
