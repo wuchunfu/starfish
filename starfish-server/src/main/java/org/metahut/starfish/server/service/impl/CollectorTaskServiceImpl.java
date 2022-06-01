@@ -225,6 +225,7 @@ public class CollectorTaskServiceImpl implements CollectorTaskService {
         if (StringUtils.isNotBlank(requestDTO.getExecutionStatus())) {
             pageRequest.setExecutionStatus(ExecutionStatus.valueOf(requestDTO.getExecutionStatus()));
         }
+
         Collection<CollectorTaskResponseDTO> collection = this.queryList(new CollectorTaskRequestDTO());
 
         Map<String, List<CollectorTaskResponseDTO>> taskNameMaps = collection

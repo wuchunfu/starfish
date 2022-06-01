@@ -39,6 +39,8 @@ public interface IScheduler extends AutoCloseable {
 
     String createSingleHttpTask(TaskParameter taskDefinitionParameter);
 
+    String createSingleTask(TaskParameter taskParameter);
+
     void deleteFlowByCode(String flowCode);
 
     FlowDefinition queryFlowByCode(String flowCode);
