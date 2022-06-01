@@ -100,6 +100,7 @@ public class HiveCollectorTask extends AbstractCollectorTask {
 
         collectorResult.setState(true);
         collectorResult.setMessage(getMessage());
+        LOGGER.info("hive collector task execution ends ... ");
         return collectorResult;
     }
 

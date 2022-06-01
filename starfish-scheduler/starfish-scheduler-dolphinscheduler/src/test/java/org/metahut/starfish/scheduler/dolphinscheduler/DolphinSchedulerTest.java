@@ -115,7 +115,6 @@ public class DolphinSchedulerTest {
         TaskInstanceRequestParameter requestParameter = new TaskInstanceRequestParameter();
         requestParameter.setPageNo(1);
         requestParameter.setPageSize(10);
-        requestParameter.setExecutionStatus(ExecutionStatus.ALL);
 
         Assertions.assertDoesNotThrow(() -> scheduler.queryTaskInstanceListPage(requestParameter));
     }

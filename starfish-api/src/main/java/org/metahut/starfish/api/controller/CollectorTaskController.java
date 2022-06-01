@@ -60,7 +60,7 @@ public interface CollectorTaskController {
 
     @DeleteMapping("{id}")
     @ApiOperation(value = "deleteById", notes = "DELETE_COLLECTOR_TASK_BY_ID_NOTES")
-    ResultEntity deleteById(@PathVariable(value = "ide") Long id);
+    ResultEntity deleteById(@PathVariable(value = "id") Long id);
 
     @GetMapping("{id}")
     @ApiOperation(value = "queryById", notes = "QUERY_COLLECTOR_TASK_BY_ID_NOTES")

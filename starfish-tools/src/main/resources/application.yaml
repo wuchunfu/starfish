@@ -21,22 +21,14 @@ spring:
       matching-strategy: ant_path_matcher
   datasource:
     type: com.zaxxer.hikari.HikariDataSource
-    #    driver-class-name: org.h2.Driver
-    #    url: jdbc:h2:mem:starfish;MODE=MySQL;DB_CLOSE_DELAY=-1;DATABASE_TO_LOWER=true;
-    driver-class-name: org.postgresql.Driver
-    url: jdbc:postgresql://localhost:5432/starfish?serverTimezone=CST
-    #    driver-class-name: com.mysql.cj.jdbc.Driver
-    #    url: jdbc:mysql://127.0.0.1:3306/starfish?useUnicode=true&characterEncoding=UTF-8&serverTimezone=Asia/Shanghai&rewriteBatchedStatements=true
-    username: root
-    password: root
-  sql:
-    init:
-      schema-locations: "classpath:sql/starfish_h2.sql"
+    driver-class-name: org.h2.Driver
+    url: jdbc:h2:mem:starfish;MODE=MySQL;DB_CLOSE_DELAY=-1;DATABASE_TO_LOWER=true;INIT=runscript from 'classpath:sql/starfish_h2.sql'
+    username: sa
+    password: ""
   jpa:
     hibernate:
       ddl-auto: update
     show-sql: true
-
 
 starfish:
   scheduler:

@@ -20,12 +20,16 @@ package org.metahut.starfish.api.controller;
 import org.metahut.starfish.api.dto.ResultEntity;
 import org.metahut.starfish.api.dto.SchedulerCronRequestDTO;
 
+import io.swagger.annotations.Api;
+import io.swagger.annotations.ApiOperation;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 
+@Api(tags = "SCHEDULER_TAG")
 @RequestMapping("scheduler")
 public interface SchedulerController {
 
     @GetMapping("previewSchedule")
+    @ApiOperation(value = "previewSchedule", notes = "SCHEDULER_PREVIEW_SCHEDULE_NOTES")
     ResultEntity previewSchedule(SchedulerCronRequestDTO schedulerCronRequestDTO);
 }

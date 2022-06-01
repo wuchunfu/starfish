@@ -20,6 +20,7 @@ package org.metahut.starfish.server.service.impl;
 import org.metahut.starfish.api.dto.SelectItemRequestDTO;
 import org.metahut.starfish.api.dto.SelectItemResponseDTO;
 import org.metahut.starfish.api.enums.SelectItemNameEnum;
+import org.metahut.starfish.scheduler.api.ExecutionStatus;
 import org.metahut.starfish.server.collector.CollectorPluginParameterHelper;
 import org.metahut.starfish.server.service.SelectItemService;
 
@@ -65,7 +66,8 @@ public class SelectItemServiceImpl implements SelectItemService {
         switch (nameEnum) {
             case COLLECTOR_TYPE:
                 return queryCollectorTypeItem();
-
+            case EXECUTION_STATUS:
+                return queryExecutionStatusItem();
             default:
                 return Collections.EMPTY_LIST;
         }
@@ -76,8 +78,8 @@ public class SelectItemServiceImpl implements SelectItemService {
                 .map(value -> toSelectItem(value, value)).collect(Collectors.toList());
     }
 
-    private List<SelectItemResponseDTO> queryMetricsDimensionItem() {
-        return null;
+    public List<SelectItemResponseDTO> queryExecutionStatusItem() {
+        return enumsToSelectItems(ExecutionStatus.values());
     }
 
     private List<SelectItemResponseDTO> enumsToSelectItems(Enum[] enums) {

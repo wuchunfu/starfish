@@ -3,7 +3,7 @@
 DROP TABLE IF EXISTS t_sf_node_entity;
 CREATE TABLE t_sf_node_entity (
     id int(11) NOT NULL AUTO_INCREMENT,
-    qualified_name varchar(100) not NULL,
+    qualified_name varchar(255) not NULL,
     category varchar(100) not null,
     operator int DEFAULT NULL,
     create_time datetime NULL,
@@ -15,7 +15,7 @@ CREATE TABLE t_sf_node_entity (
 DROP TABLE IF EXISTS t_sf_relation_entity;
 CREATE TABLE t_sf_relation_entity (
     id int(11) NOT NULL AUTO_INCREMENT,
-    name varchar(100) not NULL,
+    name varchar(255) not NULL,
     category varchar(100),
     start_node_entity_id bigint,
     end_node_entity_id bigint,
@@ -29,8 +29,8 @@ CREATE TABLE t_sf_relation_entity (
 DROP TABLE IF EXISTS t_sf_node_entity_property;
 CREATE TABLE t_sf_node_entity_property (
     id int(11) NOT NULL AUTO_INCREMENT,
-    name varchar(100) not NULL,
-    property_value json,
+    name varchar(255) not NULL,
+    property_value text,
     entity_id bigint,
     operator int DEFAULT NULL,
     create_time datetime NULL,
@@ -41,8 +41,8 @@ CREATE TABLE t_sf_node_entity_property (
 DROP TABLE IF EXISTS t_sf_relation_entity_property;
 CREATE TABLE t_sf_relation_entity_property (
     id int(11) NOT NULL AUTO_INCREMENT,
-    name varchar(100) not NULL,
-    property_value json,
+    name varchar(255) not NULL,
+    property_value text,
     entity_id bigint,
     operator int DEFAULT NULL,
     create_time datetime NULL,

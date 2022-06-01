@@ -58,7 +58,6 @@ import java.util.List;
 import java.util.Map;
 import java.util.Objects;
 import java.util.Set;
-import java.util.StringJoiner;
 
 import static org.metahut.starfish.ingestion.collector.pulsar.Constants.COLLECTOR_TYPE;
 import static org.metahut.starfish.ingestion.collector.pulsar.Constants.RELATION_PROPERTY_CLUSTER_TENANT;
@@ -97,8 +96,6 @@ public class PulsarCollectorTask extends AbstractCollectorTask {
 
     private final Map<String, EntityHeader> clusterMap = new HashMap<>();
 
-    private final StringJoiner messageJoiner = new StringJoiner("\n");
-
     @Override
     public CollectorResult execute() {
 
@@ -106,8 +103,9 @@ public class PulsarCollectorTask extends AbstractCollectorTask {
         generatePulsarTenantEntities();
 
         CollectorResult collectorResult = new CollectorResult();
-        collectorResult.setMessage("get metaData is success");
+        collectorResult.setMessage(getMessage());
         collectorResult.setState(true);
+        LOGGER.info("pulsar collector task execution ends ... ");
         return collectorResult;
     }
 

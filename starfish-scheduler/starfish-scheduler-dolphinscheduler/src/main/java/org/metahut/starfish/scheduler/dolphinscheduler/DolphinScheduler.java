@@ -327,8 +327,7 @@ public class DolphinScheduler implements IScheduler {
     }
 
     @Override
-    public PageResponse<FlowInstance> queryFlowInstanceListPage(
-        FlowInstanceRequestParameter parameter) {
+    public PageResponse<FlowInstance> queryFlowInstanceListPage(FlowInstanceRequestParameter parameter) {
         String executionStatusCode = "";
         if (Objects.nonNull(parameter.getExecutionStatus()) && parameter.getExecutionStatus().getCode() != 0) {
             if (parameter.getExecutionStatus().getCode() == 1) {
@@ -373,11 +372,10 @@ public class DolphinScheduler implements IScheduler {
     }
 
     @Override
-    public PageResponse<TaskInstance> queryTaskInstanceListPage(
-        TaskInstanceRequestParameter parameter) {
+    public PageResponse<TaskInstance> queryTaskInstanceListPage(TaskInstanceRequestParameter parameter) {
 
         String executionStatusCode = "";
-        if (Objects.nonNull(parameter.getExecutionStatus()) && parameter.getExecutionStatus().getCode() != 0) {
+        if (Objects.nonNull(parameter.getExecutionStatus())) {
             if (parameter.getExecutionStatus().getCode() == 1) {
                 executionStatusCode =  "7";
             } else if (parameter.getExecutionStatus().getCode() == 2) {

@@ -2,7 +2,6 @@ package org.metahut.starfish.scheduler.api;
 
 public enum ExecutionStatus {
 
-    ALL(0, "All"),
     SUCCESS(1, "Succeed"),
     FAIL(2, "Failed");
 

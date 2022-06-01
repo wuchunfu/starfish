@@ -43,31 +43,31 @@ import java.util.Collection;
 public interface CollectorAdapterController {
 
     @GetMapping("testConnection")
-    @ApiOperation(value = "testConnection", notes = "TEST_CONNECTION_COLLECTOR_ADAPTER_NOTES")
+    @ApiOperation(value = "testConnection", notes = "COLLECTOR_ADAPTER_TEST_CONNECTION_NOTES")
     ResultEntity testConnection(@RequestParam String type, @RequestParam String parameter);
 
     @PostMapping
-    @ApiOperation(value = "create", notes = "CREATE_COLLECTOR_ADAPTER_NOTES")
+    @ApiOperation(value = "create", notes = "COLLECTOR_ADAPTER_CREATE_NOTES")
     ResultEntity<CollectorAdapterResponseDTO> create(@RequestBody @Validated CollectorAdapterCreateOrUpdateRequestDTO requestDTO);
 
     @PutMapping("{id}")
-    @ApiOperation(value = "update", notes = "UPDATE_COLLECTOR_ADAPTER_NOTES")
+    @ApiOperation(value = "update", notes = "COLLECTOR_ADAPTER_UPDATE_NOTES")
     ResultEntity<CollectorAdapterResponseDTO> update(@PathVariable(value = "id") Long id, @RequestBody @Validated CollectorAdapterCreateOrUpdateRequestDTO requestDTO);
 
     @DeleteMapping("{id}")
-    @ApiOperation(value = "deleteById", notes = "DELETE_COLLECTOR_ADAPTER_BY_ID_NOTES")
+    @ApiOperation(value = "deleteById", notes = "COLLECTOR_ADAPTER_DELETE_BY_ID_NOTES")
     ResultEntity deleteById(@PathVariable(value = "id") Long id);
 
     @GetMapping("{id}")
-    @ApiOperation(value = "queryDatasourceById", notes = "QUERY_COLLECTOR_ADAPTER_BY_ID_NOTES")
+    @ApiOperation(value = "queryById", notes = "COLLECTOR_ADAPTER_QUERY_BY_ID_NOTES")
     ResultEntity<CollectorAdapterResponseDTO> queryById(@PathVariable(value = "id") Long id);
 
     @GetMapping("queryListPage")
-    @ApiOperation(value = "queryListPage", notes = "QUERY_COLLECTOR_ADAPTER_PAGE_NOTES")
+    @ApiOperation(value = "queryListPage", notes = "COLLECTOR_ADAPTER_QUERY_PAGE_NOTES")
     ResultEntity<PageResponseDTO<CollectorAdapterResponseDTO>> queryListPage(CollectorAdapterRequestDTO requestDTO);
 
     @GetMapping("queryList")
-    @ApiOperation(value = "queryList", notes = "QUERY_COLLECTOR_ADAPTER_LIST_NOTES")
+    @ApiOperation(value = "queryList", notes = "COLLECTOR_ADAPTER_QUERY_LIST_NOTES")
     ResultEntity<Collection<CollectorAdapterResponseDTO>> queryList(CollectorAdapterRequestDTO requestDTO);
 
 }
