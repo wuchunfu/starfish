@@ -23,6 +23,10 @@ public class CollectorException extends RuntimeException {
         super(message);
     }
 
+    public CollectorException(Throwable cause) {
+        super(cause);
+    }
+
     public CollectorException(String message, Throwable cause) {
         super(message, cause);
     }

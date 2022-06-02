@@ -35,7 +35,10 @@ public class PulsarMessageConsumer implements IMessageConsumer {
 
     private final Consumer consumer;
 
+    private boolean isRunning;
+
     public PulsarMessageConsumer(Consumer consumer) {
+        this.isRunning = true;
         this.consumer = consumer;
     }
 
@@ -57,6 +60,11 @@ public class PulsarMessageConsumer implements IMessageConsumer {
                     consumer.getTopic(), Objects.nonNull(message) ? message.getMessageId().toString() : null), e);
         }
 
+    }
+
+    @Override
+    public boolean isRunning() {
+        return this.isRunning;
     }
 
     @Override
@@ -84,6 +92,7 @@ public class PulsarMessageConsumer implements IMessageConsumer {
 
     @Override
     public void close() throws Exception {
+        this.isRunning = false;
         if (Objects.nonNull(consumer)) {
             consumer.close();
         }

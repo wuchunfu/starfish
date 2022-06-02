@@ -113,9 +113,8 @@ public class CollectorTaskServiceImpl implements CollectorTaskService {
 
                 scheduler.createSchedule(scheduleParameter);
             } catch (SchedulerException e) {
-                LOGGER.error("collector task entity :{}, create schedule exception.", e);
                 metaDataService.deleteEntity(entityId);
-                Assert.throwException(e, COLLECTOR_TASK_CREATE_SCHEDULE_FAIL, requestDTO.getName());
+                Assert.throwException(e, COLLECTOR_TASK_CREATE_SCHEDULE_FAIL, requestDTO.getName(), e.getMessage());
             }
         }
 

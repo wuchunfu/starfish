@@ -124,6 +124,7 @@ public abstract class AbstractMetaDataService<K, T> implements IMetaDataApi<K, T
                 Map.Entry<String, T> entry = iterator.next();
                 if (ObjectUtils.allNull(entry.getValue())) {
                     iterator.remove();
+                    continue;
                 }
                 boolean exist = false;
                 if (classInfo.getAttributes() != null) {

@@ -20,6 +20,7 @@ package org.metahut.starfish.server.collector;
 import org.metahut.starfish.ingestion.collector.api.CollectorResult;
 import org.metahut.starfish.ingestion.collector.api.ICollectorAdapter;
 import org.metahut.starfish.ingestion.collector.api.ICollectorManager;
+import org.metahut.starfish.server.utils.Assert;
 
 import org.springframework.stereotype.Component;
 
@@ -31,6 +32,8 @@ import java.util.Map;
 import java.util.Objects;
 import java.util.ServiceLoader;
 import java.util.Set;
+
+import static org.metahut.starfish.api.enums.Status.COLLECTOR_ADAPTER_TYPE_DOES_NOT_EXIST;
 
 @Component
 public class CollectorPluginParameterHelper {
@@ -55,7 +58,9 @@ public class CollectorPluginParameterHelper {
     }
 
     private ICollectorManager getCollector(String type) {
-        return COLLECTOR_MANAGER_MAP.get(type);
+        ICollectorManager collectorManager = COLLECTOR_MANAGER_MAP.get(type);
+        Assert.notNull(collectorManager, COLLECTOR_ADAPTER_TYPE_DOES_NOT_EXIST, type);
+        return collectorManager;
     }
 
     public Set<String> getAllTypes() {

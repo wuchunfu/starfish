@@ -56,7 +56,7 @@ public class CollectorAdapterEntity {
     }
 
     public String getParameter() {
-        return JSONUtils.toJSONString(this.parameter);
+        return this.parameter == null ? "{}" : JSONUtils.toJSONString(this.parameter);
     }
 
     public void setParameter(Object parameter) {

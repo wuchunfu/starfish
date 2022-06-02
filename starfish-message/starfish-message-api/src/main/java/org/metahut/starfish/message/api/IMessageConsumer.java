@@ -21,5 +21,7 @@ import java.util.List;
 
 public interface IMessageConsumer extends AutoCloseable {
 
+    boolean isRunning();
+
     List<ConsumerResult> batchReceive() throws MessageException;
 }

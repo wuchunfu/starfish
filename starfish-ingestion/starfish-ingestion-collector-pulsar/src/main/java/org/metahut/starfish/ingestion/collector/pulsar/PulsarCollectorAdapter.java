@@ -21,7 +21,9 @@ import org.metahut.starfish.ingestion.collector.api.CollectorException;
 import org.metahut.starfish.ingestion.collector.api.CollectorResult;
 import org.metahut.starfish.ingestion.collector.api.ICollectorAdapter;
 
+import org.apache.pulsar.client.admin.Clusters;
 import org.apache.pulsar.client.admin.PulsarAdmin;
+import org.apache.pulsar.client.admin.PulsarAdminException;
 import org.apache.pulsar.client.api.PulsarClientException;
 
 import java.util.Objects;
@@ -42,7 +44,18 @@ public class PulsarCollectorAdapter implements ICollectorAdapter {
 
     @Override
     public CollectorResult testConnection() {
-        return Objects.isNull(pulsarAdmin) ? new CollectorResult(false, "pulsar admin client is null") : new CollectorResult(true);
+        if (Objects.isNull(pulsarAdmin)) {
+            return new CollectorResult(false, "pulsar admin client is null");
+        }
+
+        Clusters clusters = pulsarAdmin.clusters();
+        try {
+            clusters.getClusters();
+        } catch (PulsarAdminException e) {
+            throw new CollectorException(e);
+        }
+
+        return new CollectorResult(true);
     }
 
     @Override

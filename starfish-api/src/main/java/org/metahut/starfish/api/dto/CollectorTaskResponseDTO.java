@@ -79,7 +79,7 @@ public class CollectorTaskResponseDTO {
     }
 
     public String getParameter() {
-        return JSONUtils.toJSONString(parameter);
+        return this.parameter == null ? "{}" : JSONUtils.toJSONString(this.parameter);
     }
 
     public void setParameter(Object parameter) {

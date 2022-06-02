@@ -63,7 +63,7 @@ starfish:
   scheduler:
     type: dolphinscheduler
     dolphinscheduler:
-      service-url: http://dolphinscheduler.com/dolphinscheduler
+      service-url: http://dolphinscheduler.dev.zhaopin.com/dolphinscheduler
       project-code: 4996418468000
       tenant-code: algdataonline
       token: c6258d4a509df0f1b89f77fb552d8ddf
@@ -75,11 +75,6 @@ starfish:
     meta-event-topic: &meta-event-topic my-topic
     pulsar:
       service-url: http://pulsar-idc-qa.zpidc.com:8080
-      producers:
-        starfishMetaEvent:
-          topic-name: *meta-event-topic
-          schema: STRING
-          producer-name: meta
       consumers:
         starfishMetaEvent:
           topic-name: *meta-event-topic
@@ -95,8 +90,8 @@ spring:
   datasource:
     driver-class-name: org.postgresql.Driver
     url: jdbc:postgresql://localhost:5432/postgres?serverTimezone=CST
-    username: root
-    password: root
+    username: test
+    password: test
 
 ---
 spring:

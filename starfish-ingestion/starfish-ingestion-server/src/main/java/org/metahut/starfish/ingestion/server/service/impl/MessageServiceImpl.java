@@ -60,6 +60,11 @@ public class MessageServiceImpl implements MessageService {
             throw new NullPointerException("meta event consumer is null");
         }
         while (true) {
+
+            if (!consumer.isRunning()) {
+                break;
+            }
+
             try {
                 List<ConsumerResult> result = consumer.batchReceive();
                 for (ConsumerResult consumerResult : result) {

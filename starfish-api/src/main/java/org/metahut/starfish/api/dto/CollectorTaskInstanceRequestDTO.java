@@ -20,10 +20,10 @@ public class CollectorTaskInstanceRequestDTO extends PageRequestDTO {
     private String executionStatus;
 
     @ApiModelProperty(value = "execute begin time")
-    private String beginTime;
+    private Date beginTime;
 
     @ApiModelProperty(value = "execute end time")
-    private String endTime;
+    private Date endTime;
 
     public Long getAdapterId() {
         return adapterId;
@@ -57,19 +57,19 @@ public class CollectorTaskInstanceRequestDTO extends PageRequestDTO {
         this.executionStatus = executionStatus;
     }
 
-    public String getBeginTime() {
+    public Date getBeginTime() {
         return beginTime;
     }
 
-    public void setBeginTime(String beginTime) {
+    public void setBeginTime(Date beginTime) {
         this.beginTime = beginTime;
     }
 
-    public String getEndTime() {
+    public Date getEndTime() {
         return endTime;
     }
 
-    public void setEndTime(String endTime) {
+    public void setEndTime(Date endTime) {
         this.endTime = endTime;
     }
 }
