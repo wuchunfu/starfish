@@ -18,11 +18,11 @@ public class TaskInstanceRequestParameter extends PageRequest {
     /**
      * the time when the task starts executing.
      */
-    private Date beginTime;
+    private String beginTime;
 
     /**
      * the time when the task is done.
      */
-    private Date endTime;
+    private String endTime;
 
 }

@@ -403,8 +403,8 @@ public class DolphinScheduler implements IScheduler {
                 parameter.getPageSize().toString(),
                 parameter.getPageNo().toString(),
                 executionStatusCode,
-                Objects.nonNull(parameter.getBeginTime()) ? formatter.format(parameter.getBeginTime().toInstant()) : "",
-                Objects.nonNull(parameter.getEndTime()) ? formatter.format(parameter.getEndTime().toInstant()) : "",
+                Objects.nonNull(parameter.getBeginTime()) ? parameter.getBeginTime() : "",
+                Objects.nonNull(parameter.getEndTime()) ? parameter.getEndTime() : "",
                 StringUtils.isNotBlank(parameter.getFlowInstanceName()) ? parameter.getFlowInstanceName() : ""
         );
 
