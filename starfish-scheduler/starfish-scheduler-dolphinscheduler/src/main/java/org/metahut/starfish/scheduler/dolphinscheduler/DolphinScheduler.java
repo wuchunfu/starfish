@@ -391,9 +391,9 @@ public class DolphinScheduler implements IScheduler {
         String executionStatusCode = "";
         if (Objects.nonNull(parameter.getExecutionStatus())) {
             if (parameter.getExecutionStatus().getCode() == 1) {
-                executionStatusCode =  "7";
+                executionStatusCode =  "SUCCESS";
             } else if (parameter.getExecutionStatus().getCode() == 2) {
-                executionStatusCode =  "6";
+                executionStatusCode =  "FAILURE";
             }
         }
 
