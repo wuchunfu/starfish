@@ -66,11 +66,11 @@ public class NodeEntity extends AbstractNodeEntity<Long, NodeEntityProperty,Node
     private Date updateTime;
 
     @OneToMany(fetch = FetchType.LAZY)
-    @JoinColumn(name = "start_node_entity_id", foreignKey = @ForeignKey(ConstraintMode.NO_CONSTRAINT))
+    @JoinColumn(name = "start_node_entity_id", foreignKey = @ForeignKey(ConstraintMode.NO_CONSTRAINT),insertable = false,updatable = false)
     private List<RelationEntity> children;
 
     @OneToMany(fetch = FetchType.LAZY)
-    @JoinColumn(name = "end_node_entity_id", foreignKey = @ForeignKey(ConstraintMode.NO_CONSTRAINT))
+    @JoinColumn(name = "end_node_entity_id", foreignKey = @ForeignKey(ConstraintMode.NO_CONSTRAINT),insertable = false,updatable = false)
     private List<RelationEntity> parent;
 
     @Override
