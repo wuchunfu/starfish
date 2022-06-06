@@ -33,6 +33,7 @@ import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 import java.util.Collection;
 import java.util.Map;
@@ -41,6 +42,7 @@ import static org.metahut.starfish.api.Constants.COLLECTOR_ADAPTER_TYPE_NAME;
 import static org.metahut.starfish.api.enums.Status.COLLECTOR_ADAPTER_TEST_CONNECTION_FAIL;
 
 @Service
+@Transactional
 public class CollectorAdapterServiceImpl implements CollectorAdapterService {
 
     private final CollectorPluginParameterHelper collectorPluginParameterHelper;

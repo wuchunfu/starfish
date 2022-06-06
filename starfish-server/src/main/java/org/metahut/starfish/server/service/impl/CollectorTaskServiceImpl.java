@@ -35,6 +35,7 @@ import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 import java.util.ArrayList;
 import java.util.Collection;
@@ -50,6 +51,7 @@ import static org.metahut.starfish.api.Constants.PROPERTY_COLLECTOR_TASK_ADAPTER
 import static org.metahut.starfish.api.enums.Status.COLLECTOR_TASK_CREATE_SCHEDULE_FAIL;
 
 @Service
+@Transactional
 public class CollectorTaskServiceImpl implements CollectorTaskService {
 
     private static final Logger LOGGER = LoggerFactory.getLogger(CollectorTaskServiceImpl.class);
@@ -133,19 +135,13 @@ public class CollectorTaskServiceImpl implements CollectorTaskService {
     public CollectorTaskResponseDTO update(Long id, CollectorTaskCreateOrUpdateRequestDTO requestDTO) {
         // query collector instance by code
         CollectorTaskResponseDTO instance = metaDataService.instance(id, CollectorTaskResponseDTO.class);
-
-        // compare before and after update
-        if (Objects.isNull(instance.getAdapter())) {
-            // add relation
-            metaDataService.link(id, requestDTO.getAdapterId(), PROPERTY_COLLECTOR_TASK_ADAPTER_RELATION);
-        } else if (!instance.getAdapter().getId().equals(requestDTO.getAdapterId())) {
-            // delete relation
+        if (instance.getAdapter() != null && instance.getAdapter().getId() != requestDTO.getAdapterId()) {
             metaDataService.crack(id, instance.getAdapter().getId(), PROPERTY_COLLECTOR_TASK_ADAPTER_RELATION);
-
-            // add relation
+        }
+        CollectorAdapterResponseDTO adapter = metaDataService.instance(requestDTO.getAdapterId(), CollectorAdapterResponseDTO.class);
+        if (adapter != null) {
             metaDataService.link(id, requestDTO.getAdapterId(), PROPERTY_COLLECTOR_TASK_ADAPTER_RELATION);
         }
-
         // determine if the schedule cron instance needs to be updated
         if (!instance.getCron().equals(requestDTO.getCron())) {
             ScheduleParameter scheduleParameter = new ScheduleParameter();

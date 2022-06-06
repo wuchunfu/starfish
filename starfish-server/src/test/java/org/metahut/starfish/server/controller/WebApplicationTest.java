@@ -5,6 +5,9 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.boot.test.web.client.TestRestTemplate;
 import org.springframework.boot.web.server.LocalServerPort;
+import org.springframework.test.web.servlet.MockMvc;
+import org.springframework.test.web.servlet.setup.MockMvcBuilders;
+import org.springframework.web.context.WebApplicationContext;
 
 import java.net.URL;
 
@@ -16,12 +19,18 @@ public class WebApplicationTest {
 
     protected URL base;
 
+    protected MockMvc mockMvc;
+
     @Autowired
     protected TestRestTemplate restTemplate;
+
+    @Autowired
+    private WebApplicationContext webApplicationContext;
 
     @BeforeEach
     public void setUp() throws Exception {
         this.base = new URL("http://localhost:" + port + "/");
+        mockMvc = MockMvcBuilders.webAppContextSetup(webApplicationContext).build();
     }
 
 }
