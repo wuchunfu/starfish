@@ -32,7 +32,8 @@ public class PulsarCollectorManager implements ICollectorManager {
 
     @Override
     public PulsarCollectorTask generateTaskInstance(String adapterParameter, String parameter) {
-        PulsarCollectorTaskParameter taskParameter = JSONUtils.parseObject(parameter, PulsarCollectorTaskParameter.class);
+        PulsarCollectorTaskParameter taskParameter = new PulsarCollectorTaskParameter();
+        //TODO JSONUtils.parseObject(parameter, PulsarCollectorTaskParameter.class);
         PulsarCollectorAdapter adapter = generateAdapterInstance(adapterParameter);
         return new PulsarCollectorTask(adapter, taskParameter);
     }

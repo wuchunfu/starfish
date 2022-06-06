@@ -23,12 +23,12 @@ public class Constants {
     }
 
     public static final String COLLECTOR_TYPE = "Pulsar";
-    public static final String TYPE_NAME_CLUSTER = "PulsarCluster";
-    public static final String TYPE_NAME_TENANT = "PulsarTenant";
-    public static final String TYPE_NAME_NAMESPACE = "PulsarNamespace";
-    public static final String TYPE_NAME_TOPIC = "PulsarTopic";
-    public static final String TYPE_NAME_SCHEMA = "PulsarSchema";
-    public static final String TYPE_NAME_PUBLISHER = "PulsarPublisher";
+    public static final String TYPE_NAME_CLUSTER = "org.starfish.PulsarCluster";
+    public static final String TYPE_NAME_TENANT = "org.starfish.PulsarTenant";
+    public static final String TYPE_NAME_NAMESPACE = "org.starfish.PulsarNamespace";
+    public static final String TYPE_NAME_TOPIC = "org.starfish.PulsarTopic";
+    public static final String TYPE_NAME_SCHEMA = "org.starfish.PulsarSchema";
+    public static final String TYPE_NAME_PUBLISHER = "org.starfish.PulsarPublisher";
 
     public static final String RELATION_PROPERTY_CLUSTER_TENANT = "allowedTenants";
     public static final String RELATION_PROPERTY_TENANT_CLUSTER = "allowedClusters";
