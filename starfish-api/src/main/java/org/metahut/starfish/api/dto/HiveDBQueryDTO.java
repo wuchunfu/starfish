@@ -2,6 +2,7 @@ package org.metahut.starfish.api.dto;
 
 import org.metahut.starfish.api.Constants;
 import org.metahut.starfish.unit.AbstractQueryCondition;
+import org.metahut.starfish.unit.enums.LinkCategory;
 import org.metahut.starfish.unit.enums.TableType;
 import org.metahut.starfish.unit.expression.ConditionPiece;
 import org.metahut.starfish.unit.expression.Expression;
@@ -11,6 +12,9 @@ import org.apache.commons.lang3.StringUtils;
 
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
 
 /**
  *
@@ -34,6 +38,9 @@ public class HiveDBQueryDTO extends PageRequestDTO {
 
     @ApiModelProperty(value = "hive db parameters")
     private String parameters;
+
+    @ApiModelProperty(value = "hive cluster id")
+    private Long clusterId;
 
     public Long getId() {
         return id;
@@ -83,6 +90,14 @@ public class HiveDBQueryDTO extends PageRequestDTO {
         this.parameters = parameters;
     }
 
+    public Long getClusterId() {
+        return clusterId;
+    }
+
+    public void setClusterId(Long clusterId) {
+        this.clusterId = clusterId;
+    }
+
     public AbstractQueryCondition<HiveDBResponseDTO> toCondition() {
         AbstractQueryCondition<HiveDBResponseDTO> condition = new AbstractQueryCondition<>();
         condition.setResultType(HiveDBResponseDTO.class);
@@ -95,6 +110,26 @@ public class HiveDBQueryDTO extends PageRequestDTO {
         if (!StringUtils.isAllEmpty(this.name,this.description,this.owner,this.location,this.parameters)) {
             conditionPiece.getNextConditionChain().put(Expression.PROPERTIES, Arrays.asList(propertyCondition()));
         }
+        if (clusterId != null) {
+            conditionPiece.getNextConditionChain().put(Expression.CHILDREN,Arrays.asList(clusterRelation()));
+        }
+        return conditionPiece;
+    }
+
+    private ConditionPiece clusterRelation() {
+        ConditionPiece conditionPiece = new ConditionPiece();
+        conditionPiece.setTableType(TableType.RELATION);
+        conditionPiece.setExpressions(Expression.rel(LinkCategory.RELATIONSHIP,"cluster"));
+        Map<String, List<ConditionPiece>> map = new HashMap<>();
+        map.put(Expression.END_NODE_ENTITY,Arrays.asList(clusterIdCondition()));
+        conditionPiece.setNextConditionChain(map);
+        return conditionPiece;
+    }
+
+    private ConditionPiece clusterIdCondition() {
+        ConditionPiece conditionPiece = new ConditionPiece();
+        conditionPiece.setTableType(TableType.ENTITY);
+        conditionPiece.setExpressions(Arrays.asList(Expression.id(clusterId)));
         return conditionPiece;
     }
 
@@ -117,6 +152,6 @@ public class HiveDBQueryDTO extends PageRequestDTO {
         if (StringUtils.isNotEmpty(this.parameters)) {
             conditionPiece.getExpressions().add(Expression.and(Expression.keyValueLike("parameters",this.parameters)));
         }
-        return propertyCondition();
+        return conditionPiece;
     }
 }
