@@ -37,6 +37,7 @@ import org.metahut.starfish.api.dto.SourceRequestDTO;
 import org.metahut.starfish.api.dto.SourceResponseDTO;
 import org.metahut.starfish.service.AbstractMetaDataService;
 import org.metahut.starfish.unit.AbstractQueryCondition;
+import org.metahut.starfish.unit.IdTypeNameQueryCondition;
 import org.metahut.starfish.unit.TypeNameQueryCondition;
 import org.metahut.starfish.unit.TypeNameQueryConditionWithPage;
 import org.metahut.starfish.unit.expression.ConditionPiece;
@@ -50,6 +51,7 @@ import javax.annotation.Resource;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Map;
+import java.util.Optional;
 
 @RestController
 public class EntityControllerImpl implements EntityController {
@@ -70,6 +72,22 @@ public class EntityControllerImpl implements EntityController {
     @Override
     public ResultEntity<Object> queryTypeByInstanceId(Long id) {
         return ResultEntity.success(abstractMetaDataService.typeByInstanceId(id));
+    }
+
+    @Override
+    public ResultEntity<Map> queryByIdAndTypeNameAndCondition(IdTypeNameQueryCondition idTypeNameQueryCondition) {
+        AbstractQueryCondition<Map> condition = idTypeNameQueryCondition;
+        if (condition.getFilters() == null) {
+            condition.setFilters(new ArrayList<>());
+        }
+        condition.getFilters().add(ConditionPiece.entityWithTypeAndIdAndQualifiedName(idTypeNameQueryCondition.getTypeName(),idTypeNameQueryCondition.getId(),idTypeNameQueryCondition.getQualifiedName()));
+        Collection<Map> instances = abstractMetaDataService.instances(condition);
+        Optional<Map> first = instances.stream().findFirst();
+        if (first.isPresent()) {
+            return ResultEntity.success(first.get());
+        } else {
+            return ResultEntity.success();
+        }
     }
 
     @Override

@@ -34,6 +34,7 @@ import org.metahut.starfish.api.dto.PulsarTopicResponseDTO;
 import org.metahut.starfish.api.dto.ResultEntity;
 import org.metahut.starfish.api.dto.SourceRequestDTO;
 import org.metahut.starfish.api.dto.SourceResponseDTO;
+import org.metahut.starfish.unit.IdTypeNameQueryCondition;
 import org.metahut.starfish.unit.TypeNameQueryCondition;
 import org.metahut.starfish.unit.TypeNameQueryConditionWithPage;
 
@@ -56,6 +57,10 @@ public interface EntityController {
     @GetMapping("queryTypeByInstanceId")
     @ApiOperation(value = "queryTypeByInstanceId", notes = "queryTypeByInstanceId")
     ResultEntity<Object> queryTypeByInstanceId(Long id);
+
+    @GetMapping("queryByIdAndTypeNameAndCondition")
+    @ApiOperation(value = "queryByIdAndTypeNameAndCondition", notes = "QUERY_NODE_BY_ID_AND_TYPENAME_AND_CONDITION")
+    ResultEntity<Map> queryByIdAndTypeNameAndCondition(IdTypeNameQueryCondition idTypeNameQueryCondition);
 
     @GetMapping("queryByTypeNameAndCondition")
     @ApiOperation(value = "queryByTypeNameAndCondition", notes = "QUERY_NODE_BY_TYPENAME_AND_CONDITION")
