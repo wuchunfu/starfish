@@ -12,6 +12,7 @@ import org.metahut.starfish.scheduler.api.ExecutionStatus;
 import org.metahut.starfish.scheduler.api.IScheduler;
 import org.metahut.starfish.scheduler.api.PageResponse;
 import org.metahut.starfish.scheduler.api.SchedulerException;
+import org.metahut.starfish.scheduler.api.entity.FlowDefinition;
 import org.metahut.starfish.scheduler.api.entity.TaskInstance;
 import org.metahut.starfish.scheduler.api.parameters.HttpTaskParameter;
 import org.metahut.starfish.scheduler.api.parameters.ScheduleCronParameter;
@@ -49,6 +50,7 @@ import java.util.stream.Stream;
 import static org.metahut.starfish.api.Constants.COLLECTOR_TASK_TYPE_NAME;
 import static org.metahut.starfish.api.Constants.PROPERTY_COLLECTOR_TASK_ADAPTER_RELATION;
 import static org.metahut.starfish.api.enums.Status.COLLECTOR_TASK_CREATE_SCHEDULE_FAIL;
+import static org.metahut.starfish.api.enums.Status.COLLECTOR_TASK_SCHEDULE_DOES_NOT_EXIST;
 
 @Service
 @Transactional
@@ -84,40 +86,14 @@ public class CollectorTaskServiceImpl implements CollectorTaskService {
         String schedulerFlowCode = requestDTO.getSchedulerFlowCode();
         if (StringUtils.isBlank(schedulerFlowCode)) {
             try {
-                // create single http task
-                TaskParameter taskParameter = new TaskParameter();
-                taskParameter.setTaskType("HTTP");
-                taskParameter.setName(requestDTO.getName());
-                taskParameter.setDescription(requestDTO.getDescription());
-
-                HttpTaskParameter httpTaskParameter = new HttpTaskParameter();
-                httpTaskParameter.setMethod("POST");
-
-                // TODO How to deal with the generated scheduler task instance data when the url is changed?
-                httpTaskParameter.setUrl(ingestionConfiguration.getCollectorExecuteRest());
-
-                // TODO use java bean
-                Map<String, Object> bodyMap = new HashMap<>();
-                bodyMap.put("id", entityId);
-                httpTaskParameter.setBody(JSONUtils.toJSONString(bodyMap));
-
-                taskParameter.setTaskParams(JSONUtils.toJSONString(httpTaskParameter));
-
-                // create a schedule flow
-                schedulerFlowCode = scheduler.createSingleHttpTask(taskParameter);
-
-                // configure a timing expression
-                ScheduleParameter scheduleParameter = new ScheduleParameter();
-                scheduleParameter.setFlowCode(schedulerFlowCode);
-                ScheduleCronParameter scheduleCronParameter = new ScheduleCronParameter();
-                scheduleCronParameter.setCrontab(requestDTO.getCron());
-                scheduleParameter.setScheduleCronParameter(scheduleCronParameter);
-
-                scheduler.createSchedule(scheduleParameter);
+                schedulerFlowCode = createSingleHttpTask(entityId, requestDTO);
             } catch (SchedulerException e) {
                 metaDataService.deleteEntity(entityId);
                 Assert.throwException(e, COLLECTOR_TASK_CREATE_SCHEDULE_FAIL, requestDTO.getName(), e.getMessage());
             }
+        } else {
+            FlowDefinition flowDefinition = scheduler.queryFlowByCode(schedulerFlowCode);
+            Assert.notNull(flowDefinition, COLLECTOR_TASK_SCHEDULE_DOES_NOT_EXIST, schedulerFlowCode);
         }
 
         //TODO The update method needs to be optimized to support partial update
@@ -142,14 +118,45 @@ public class CollectorTaskServiceImpl implements CollectorTaskService {
         if (adapter != null) {
             metaDataService.link(id, requestDTO.getAdapterId(), PROPERTY_COLLECTOR_TASK_ADAPTER_RELATION);
         }
-        // determine if the schedule cron instance needs to be updated
-        if (!instance.getCron().equals(requestDTO.getCron())) {
+
+        if (!instance.getSchedulerFlowCode().equals(requestDTO.getSchedulerFlowCode())) {
+            FlowDefinition flowDefinition = scheduler.queryFlowByCode(requestDTO.getSchedulerFlowCode());
+            Assert.notNull(flowDefinition, COLLECTOR_TASK_SCHEDULE_DOES_NOT_EXIST, requestDTO.getSchedulerFlowCode());
+
             ScheduleParameter scheduleParameter = new ScheduleParameter();
             scheduleParameter.setFlowCode(instance.getSchedulerFlowCode());
             ScheduleCronParameter scheduleCronParameter = new ScheduleCronParameter();
             scheduleCronParameter.setCrontab(requestDTO.getCron());
             scheduleParameter.setScheduleCronParameter(scheduleCronParameter);
             scheduler.updateSchedule(scheduleParameter);
+
+            try {
+                // delete schedule flow instance
+                scheduler.deleteFlowByCode(instance.getSchedulerFlowCode());
+            } catch (SchedulerException e) {
+                LOGGER.error(e.getMessage(), e);
+            }
+        } else {
+            // Query whether the scheduling system exists according to the scheduling code, if not, create a new scheduling instance
+            FlowDefinition flowDefinition = scheduler.queryFlowByCode(instance.getSchedulerFlowCode());
+            if (Objects.isNull(flowDefinition)) {
+                try {
+                    requestDTO.setSchedulerFlowCode(createSingleHttpTask(id, requestDTO));
+                } catch (SchedulerException e) {
+                    Assert.throwException(e, COLLECTOR_TASK_CREATE_SCHEDULE_FAIL, requestDTO.getName(), e.getMessage());
+                }
+            } else {
+
+                // determine if the schedule cron instance needs to be updated
+                if (!instance.getCron().equals(requestDTO.getCron())) {
+                    ScheduleParameter scheduleParameter = new ScheduleParameter();
+                    scheduleParameter.setFlowCode(instance.getSchedulerFlowCode());
+                    ScheduleCronParameter scheduleCronParameter = new ScheduleCronParameter();
+                    scheduleCronParameter.setCrontab(requestDTO.getCron());
+                    scheduleParameter.setScheduleCronParameter(scheduleCronParameter);
+                    scheduler.updateSchedule(scheduleParameter);
+                }
+            }
         }
 
         String qualifiedName = EntityNameGentrator.generateName(COLLECTOR_TASK_TYPE_NAME, requestDTO.getName());
@@ -163,12 +170,49 @@ public class CollectorTaskServiceImpl implements CollectorTaskService {
         return collectorTaskResponseDTO;
     }
 
+    public String createSingleHttpTask(Long entityId, CollectorTaskCreateOrUpdateRequestDTO requestDTO) {
+        // create single http task
+        TaskParameter taskParameter = new TaskParameter();
+        taskParameter.setTaskType("HTTP");
+        taskParameter.setName(requestDTO.getName());
+        taskParameter.setDescription(requestDTO.getDescription());
+
+        HttpTaskParameter httpTaskParameter = new HttpTaskParameter();
+        httpTaskParameter.setMethod("POST");
+
+        // TODO How to deal with the generated scheduler task instance data when the url is changed?
+        httpTaskParameter.setUrl(ingestionConfiguration.getCollectorExecuteRest());
+
+        // TODO use java bean
+        Map<String, Object> bodyMap = new HashMap<>();
+        bodyMap.put("id", entityId);
+        httpTaskParameter.setBody(JSONUtils.toJSONString(bodyMap));
+
+        taskParameter.setTaskParams(JSONUtils.toJSONString(httpTaskParameter));
+
+        // create a schedule flow
+        String schedulerFlowCode = scheduler.createSingleHttpTask(taskParameter);
+
+        // configure a timing expression
+        ScheduleParameter scheduleParameter = new ScheduleParameter();
+        scheduleParameter.setFlowCode(schedulerFlowCode);
+        ScheduleCronParameter scheduleCronParameter = new ScheduleCronParameter();
+        scheduleCronParameter.setCrontab(requestDTO.getCron());
+        scheduleParameter.setScheduleCronParameter(scheduleCronParameter);
+
+        scheduler.createSchedule(scheduleParameter);
+        return schedulerFlowCode;
+    }
+
     @Override
     public void deleteById(Long id) {
         CollectorTaskResponseDTO instance = metaDataService.instance(id, CollectorTaskResponseDTO.class);
-        // delete schedule flow instance
-        scheduler.deleteFlowByCode(instance.getSchedulerFlowCode());
-
+        try {
+            // delete schedule flow instance
+            scheduler.deleteFlowByCode(instance.getSchedulerFlowCode());
+        } catch (SchedulerException e) {
+            LOGGER.error(e.getMessage(), e);
+        }
         // delete collector instance
         metaDataService.deleteEntity(id);
     }
