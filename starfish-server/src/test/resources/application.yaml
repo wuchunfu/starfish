@@ -43,3 +43,6 @@ starfish:
     type: dolphinscheduler
     dolphinscheduler:
       service-url: http://localhost:1234/dolphinscheduler
+  ingestion:
+    service-address: localhost:8802
+    collector-execute-rest: http://{0}/collector/execute

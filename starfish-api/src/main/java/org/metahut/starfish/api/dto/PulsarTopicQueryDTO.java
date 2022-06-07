@@ -283,7 +283,7 @@ public class PulsarTopicQueryDTO extends PageRequestDTO {
     private ConditionPiece pulsarTypeCondition() {
         ConditionPiece conditionPiece = new ConditionPiece();
         conditionPiece.setTableType(TableType.ENTITY);
-        conditionPiece.setExpressions(Expression.entity(PULSAR_TOPIC_TYPE_NAME));
+        conditionPiece.setExpressions(Expression.type(PULSAR_TOPIC_TYPE_NAME));
         return conditionPiece;
     }
 

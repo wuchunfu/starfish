@@ -7,8 +7,12 @@ import org.metahut.starfish.api.dto.PageResponseDTO;
 import org.metahut.starfish.api.dto.ResultEntity;
 import org.metahut.starfish.api.dto.TypeRequestBatchCreateOrUpdateDTO;
 import org.metahut.starfish.api.enums.ReleaseStateEnum;
+import org.metahut.starfish.ingestion.collector.api.CollectorResult;
+import org.metahut.starfish.ingestion.collector.hive.HiveCollectorAdapter;
+import org.metahut.starfish.ingestion.collector.hive.HiveCollectorAdapterParameter;
 import org.metahut.starfish.scheduler.api.IScheduler;
 import org.metahut.starfish.scheduler.api.parameters.TaskParameter;
+import org.metahut.starfish.server.collector.CollectorPluginParameterHelper;
 import org.metahut.starfish.server.service.TypeService;
 import org.metahut.starfish.server.utils.Assert;
 import org.metahut.starfish.server.utils.JSONUtils;
@@ -53,29 +57,36 @@ class CollectorTaskControllerImplMvcTest extends WebApplicationTest {
     @Autowired
     private TypeService typeService;
 
+    @MockBean
+    private CollectorPluginParameterHelper collectorPluginParameterHelper;
+
     private String flowId = "1";
 
     private Long adapterId = 1L;
 
-    @Test
+    private static boolean initStatus = false;
+
+    @BeforeEach
     public void initTypeModel() {
         List<File> files = null;
-        try {
-            String path = ResourceUtils.getURL("../tools/models").getPath().substring(1);
-            files = Files.walk(Paths.get(path))
-                .filter(Files::isRegularFile)
-                .map(Path::toFile)
-                .collect(Collectors.toList());
-        } catch (IOException e) {
-            Assert.throwException(e, INIT_TYPE_MODEL_TO_LOAD_FILE_FAIL);
+        if (initStatus == false) {
+            try {
+                String path = ResourceUtils.getURL("../tools/models").getPath();
+                files = Files.walk(Paths.get(path))
+                    .filter(Files::isRegularFile)
+                    .map(Path::toFile)
+                    .collect(Collectors.toList());
+            } catch (IOException e) {
+                Assert.throwException(e, INIT_TYPE_MODEL_TO_LOAD_FILE_FAIL);
+            }
+
+            files.forEach(file -> {
+                TypeRequestBatchCreateOrUpdateDTO typeRequest = JSONUtils
+                    .parseObject(file, TypeRequestBatchCreateOrUpdateDTO.class);
+                typeService.initTypes(typeRequest);
+            });
+            initStatus = true;
         }
-
-        files.forEach(file -> {
-            TypeRequestBatchCreateOrUpdateDTO typeRequest = JSONUtils
-                .parseObject(file, TypeRequestBatchCreateOrUpdateDTO.class);
-            typeService.initTypes(typeRequest);
-        });
-
     }
 
     @Test
@@ -88,7 +99,11 @@ class CollectorTaskControllerImplMvcTest extends WebApplicationTest {
         collectorTaskCreateOrUpdateRequestDTO.setState(ReleaseStateEnum.OFFLINE);
         collectorTaskCreateOrUpdateRequestDTO.setAdapterId(adapterId);
         given(scheduler.createSingleHttpTask(Mockito.any(TaskParameter.class))).willReturn(flowId);
-
+        HiveCollectorAdapterParameter hiveCollectorAdapterParameter = new HiveCollectorAdapterParameter();
+        hiveCollectorAdapterParameter.setHiveMetastoreUris("thrift://172.21.100.231:9083");
+        given(collectorPluginParameterHelper
+            .testAdapterConnection(Mockito.any(String.class), Mockito.any(String.class)))
+            .willReturn(new CollectorResult(true));
         String request = JSONUtils.toJSONString(collectorTaskCreateOrUpdateRequestDTO);
         ResultActions result = mockMvc
             .perform(MockMvcRequestBuilders.post(new URI(REST_FUNCTION_URL_PREFIX)).content(request)
@@ -108,6 +123,8 @@ class CollectorTaskControllerImplMvcTest extends WebApplicationTest {
         collectorTaskCreateOrUpdateRequestDTO.setState(ReleaseStateEnum.OFFLINE);
         collectorTaskCreateOrUpdateRequestDTO.setAdapterId(adapterId);
         given(scheduler.createSingleHttpTask(Mockito.any(TaskParameter.class))).willReturn(flowId);
+        HiveCollectorAdapterParameter hiveCollectorAdapterParameter = new HiveCollectorAdapterParameter();
+        hiveCollectorAdapterParameter.setHiveMetastoreUris("thrift://172.21.100.231:9083");
 
         String request = JSONUtils.toJSONString(collectorTaskCreateOrUpdateRequestDTO);
         ResultActions result = mockMvc
@@ -149,6 +166,8 @@ class CollectorTaskControllerImplMvcTest extends WebApplicationTest {
         collectorTaskCreateOrUpdateRequestDTO.setState(ReleaseStateEnum.OFFLINE);
         collectorTaskCreateOrUpdateRequestDTO.setAdapterId(adapterId);
         given(scheduler.createSingleHttpTask(Mockito.any(TaskParameter.class))).willReturn(flowId);
+        HiveCollectorAdapterParameter hiveCollectorAdapterParameter = new HiveCollectorAdapterParameter();
+        hiveCollectorAdapterParameter.setHiveMetastoreUris("thrift://172.21.100.231:9083");
 
         String request = JSONUtils.toJSONString(collectorTaskCreateOrUpdateRequestDTO);
         ResultActions result = mockMvc
@@ -173,12 +192,13 @@ class CollectorTaskControllerImplMvcTest extends WebApplicationTest {
     void queryById() throws Exception {
         CollectorTaskCreateOrUpdateRequestDTO collectorTaskCreateOrUpdateRequestDTO = new CollectorTaskCreateOrUpdateRequestDTO();
         collectorTaskCreateOrUpdateRequestDTO.setDescription("this is a query description");
-        collectorTaskCreateOrUpdateRequestDTO.setName("query collect task name");
+        collectorTaskCreateOrUpdateRequestDTO.setName("queryById");
         collectorTaskCreateOrUpdateRequestDTO.setCron("0 0 * * * ? *");
         collectorTaskCreateOrUpdateRequestDTO.setState(ReleaseStateEnum.OFFLINE);
         collectorTaskCreateOrUpdateRequestDTO.setAdapterId(adapterId);
         given(scheduler.createSingleHttpTask(Mockito.any(TaskParameter.class))).willReturn(flowId);
-
+        HiveCollectorAdapterParameter hiveCollectorAdapterParameter = new HiveCollectorAdapterParameter();
+        hiveCollectorAdapterParameter.setHiveMetastoreUris("thrift://172.21.100.231:9083");
         String request = JSONUtils.toJSONString(collectorTaskCreateOrUpdateRequestDTO);
         ResultActions result = mockMvc
             .perform(MockMvcRequestBuilders.post(new URI(REST_FUNCTION_URL_PREFIX)).content(request)
@@ -206,6 +226,11 @@ class CollectorTaskControllerImplMvcTest extends WebApplicationTest {
         collectorAdapterCreateOrUpdateRequestDTO
             .setParameter("{\"hiveMetastoreUris\":\"thrift://172.21.100.231:9083\"}");
         collectorAdapterCreateOrUpdateRequestDTO.setType("Hive");
+        HiveCollectorAdapterParameter hiveCollectorAdapterParameter = new HiveCollectorAdapterParameter();
+        hiveCollectorAdapterParameter.setHiveMetastoreUris("thrift://172.21.100.231:9083");
+        given(collectorPluginParameterHelper
+            .testAdapterConnection(Mockito.any(String.class), Mockito.any(String.class)))
+            .willReturn(new CollectorResult(true));
 
         String adapterRequest = JSONUtils.toJSONString(collectorAdapterCreateOrUpdateRequestDTO);
         ResultActions adapterResult = mockMvc
@@ -221,7 +246,7 @@ class CollectorTaskControllerImplMvcTest extends WebApplicationTest {
 
         CollectorTaskCreateOrUpdateRequestDTO collectorTaskCreateOrUpdateRequestDTO = new CollectorTaskCreateOrUpdateRequestDTO();
         collectorTaskCreateOrUpdateRequestDTO.setDescription("this is a query description");
-        collectorTaskCreateOrUpdateRequestDTO.setName("query collect task name");
+        collectorTaskCreateOrUpdateRequestDTO.setName("query collect task name page");
         collectorTaskCreateOrUpdateRequestDTO.setCron("0 0 * * * ? *");
         collectorTaskCreateOrUpdateRequestDTO.setState(ReleaseStateEnum.OFFLINE);
         collectorTaskCreateOrUpdateRequestDTO.setAdapterId(createObj.getData().getId());
@@ -237,7 +262,7 @@ class CollectorTaskControllerImplMvcTest extends WebApplicationTest {
         CollectorTaskCreateOrUpdateRequestDTO collectorTaskCreateOrUpdateRequestSecondDTO = new CollectorTaskCreateOrUpdateRequestDTO();
         collectorTaskCreateOrUpdateRequestSecondDTO
             .setDescription("this is a second query description ");
-        collectorTaskCreateOrUpdateRequestSecondDTO.setName("query second collect task name ");
+        collectorTaskCreateOrUpdateRequestSecondDTO.setName("query second collect task name page ");
         collectorTaskCreateOrUpdateRequestSecondDTO.setCron("0 0 * * * ? *");
         collectorTaskCreateOrUpdateRequestSecondDTO.setState(ReleaseStateEnum.OFFLINE);
         collectorTaskCreateOrUpdateRequestSecondDTO.setAdapterId(adapterId);
@@ -272,11 +297,15 @@ class CollectorTaskControllerImplMvcTest extends WebApplicationTest {
     void queryList() throws Exception {
         CollectorAdapterCreateOrUpdateRequestDTO collectorAdapterCreateOrUpdateRequestDTO = new CollectorAdapterCreateOrUpdateRequestDTO();
         collectorAdapterCreateOrUpdateRequestDTO.setDescription("this is new a hive adapter");
-        collectorAdapterCreateOrUpdateRequestDTO.setName("hive adapter test01");
+        collectorAdapterCreateOrUpdateRequestDTO.setName("hive adapter test02");
         collectorAdapterCreateOrUpdateRequestDTO
             .setParameter("{\"hiveMetastoreUris\":\"thrift://172.21.100.231:9083\"}");
         collectorAdapterCreateOrUpdateRequestDTO.setType("Hive");
-
+        HiveCollectorAdapterParameter hiveCollectorAdapterParameter = new HiveCollectorAdapterParameter();
+        hiveCollectorAdapterParameter.setHiveMetastoreUris("thrift://172.21.100.231:9083");
+        given(collectorPluginParameterHelper
+            .testAdapterConnection(Mockito.any(String.class), Mockito.any(String.class)))
+            .willReturn(new CollectorResult(true));
         String adapterRequest = JSONUtils.toJSONString(collectorAdapterCreateOrUpdateRequestDTO);
         ResultActions adapterResult = mockMvc
             .perform(MockMvcRequestBuilders.post(new URI(REST_FUNCTION_URL_ADAPTER_PREFIX))
@@ -325,7 +354,7 @@ class CollectorTaskControllerImplMvcTest extends WebApplicationTest {
             .perform(MockMvcRequestBuilders
                 .get(REST_FUNCTION_URL_PREFIX + "queryList")
                 .queryParam("type", "Hive")
-                .queryParam("adapterName", "hive adapter test01")
+                .queryParam("adapterName", "hive adapter test02")
                 .contentType(MediaType.APPLICATION_JSON));
         MvcResult pageList = pageResult.andReturn();
         ResultEntity<Collection<CollectorTaskResponseDTO>> list = JSONUtils

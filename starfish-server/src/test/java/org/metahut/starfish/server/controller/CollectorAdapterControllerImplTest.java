@@ -20,7 +20,7 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.util.UriComponentsBuilder;
 
 import java.util.Collection;
-
+@Disabled
 class CollectorAdapterControllerImplTest extends WebApplicationTest {
 
     private static final String REST_FUNCTION_URL_PREFIX = "/collectorAdapter/";
