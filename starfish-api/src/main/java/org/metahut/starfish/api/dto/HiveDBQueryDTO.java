@@ -106,7 +106,7 @@ public class HiveDBQueryDTO extends PageRequestDTO {
     }
 
     private ConditionPiece typePiece() {
-        ConditionPiece conditionPiece = ConditionPiece.entityWithTypeAndIdAndQualifiedName(Constants.HIVE_CLUSTER_TYPE_NAME,id,null);
+        ConditionPiece conditionPiece = ConditionPiece.entityWithTypeAndIdAndQualifiedName(Constants.HIVE_DB_TYPE_NAME,id,null);
         if (!StringUtils.isAllEmpty(this.name,this.description,this.owner,this.location,this.parameters)) {
             conditionPiece.getNextConditionChain().put(Expression.PROPERTIES, Arrays.asList(propertyCondition()));
         }

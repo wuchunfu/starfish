@@ -66,6 +66,6 @@ public class HiveClusterQueryDTO extends PageRequestDTO {
         if (StringUtils.isNotEmpty(this.description)) {
             conditionPiece.getExpressions().add(Expression.and(Expression.keyValueLike("description",this.description)));
         }
-        return propertyCondition();
+        return conditionPiece;
     }
 }

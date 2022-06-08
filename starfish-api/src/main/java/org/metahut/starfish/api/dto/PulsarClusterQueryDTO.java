@@ -104,7 +104,7 @@ public class PulsarClusterQueryDTO extends PageRequestDTO {
     }
 
     private ConditionPiece typePiece() {
-        ConditionPiece conditionPiece = ConditionPiece.entityWithTypeAndIdAndQualifiedName(Constants.HIVE_CLUSTER_TYPE_NAME,id,null);
+        ConditionPiece conditionPiece = ConditionPiece.entityWithTypeAndIdAndQualifiedName(Constants.PULSAR_CLUSTER_TYPE_NAME,id,null);
         if (!StringUtils.isAllEmpty(this.name,this.serviceUrl,this.serviceUrlTls,this.brokerServiceUrl,this.brokerServiceUrlTls,this.proxyServiceUrl)) {
             conditionPiece.getNextConditionChain().put(Expression.PROPERTIES, Arrays.asList(propertyCondition()));
         }
@@ -133,6 +133,6 @@ public class PulsarClusterQueryDTO extends PageRequestDTO {
         if (StringUtils.isNotEmpty(this.proxyServiceUrl)) {
             conditionPiece.getExpressions().add(Expression.and(Expression.keyValueLike("proxyServiceUrl",this.proxyServiceUrl)));
         }
-        return propertyCondition();
+        return conditionPiece;
     }
 }

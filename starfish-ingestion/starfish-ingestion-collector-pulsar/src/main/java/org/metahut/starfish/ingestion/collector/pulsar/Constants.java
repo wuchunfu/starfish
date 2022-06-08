@@ -41,5 +41,7 @@ public class Constants {
     public static final String RELATION_PROPERTY_PUBLISHER_TOPIC = "topic";
     public static final String RELATION_PROPERTY_TOPIC_PUBLISHER = "publishers";
 
+    public static final String PULSAR_DATA_PREFIX = "^data/.*";
+
 
 }

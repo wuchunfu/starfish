@@ -58,6 +58,7 @@ import java.util.Objects;
 import java.util.Set;
 
 import static org.metahut.starfish.ingestion.collector.pulsar.Constants.COLLECTOR_TYPE;
+import static org.metahut.starfish.ingestion.collector.pulsar.Constants.PULSAR_DATA_PREFIX;
 import static org.metahut.starfish.ingestion.collector.pulsar.Constants.RELATION_PROPERTY_CLUSTER_TENANT;
 import static org.metahut.starfish.ingestion.collector.pulsar.Constants.RELATION_PROPERTY_NAMESPACE_TENANT;
 import static org.metahut.starfish.ingestion.collector.pulsar.Constants.RELATION_PROPERTY_NAMESPACE_TOPIC;
@@ -247,16 +248,20 @@ public class PulsarCollectorTask extends AbstractCollectorTask {
 
         RowData rowData = new RowData();
         for (String namespaceName : namespaceNames) {
+            if (namespaceName.matches(PULSAR_DATA_PREFIX)) {
+                EntityHeader namespaceHeader = generatePulsarNamespaceEntity(tenantHeader,
+                    namespaceName, namespaces);
 
-            EntityHeader namespaceHeader = generatePulsarNamespaceEntity(tenantHeader, namespaceName, namespaces);
+                // PulsarTenant  --> namespaces -->  PulsarNamespace
+                rowData.getRelations().add(RelationRow
+                    .of(RowKind.UPSERT, tenantHeader, namespaceHeader,
+                        RELATION_PROPERTY_TENANT_NAMESPACE));
 
-            // PulsarTenant  --> namespaces -->  PulsarNamespace
-            rowData.getRelations().add(RelationRow.of(RowKind.UPSERT, tenantHeader, namespaceHeader, RELATION_PROPERTY_TENANT_NAMESPACE));
-
-            // generate pulsar topic
-            generatePulsarTopicEntities(namespaceHeader, namespaceName);
+                // generate pulsar topic
+                generatePulsarTopicEntities(namespaceHeader, namespaceName);
+            }
+            sendMessage(rowData);
         }
-        sendMessage(rowData);
     }
 
     private EntityHeader generatePulsarNamespaceEntity(EntityHeader tenantHeader, String namespaceName, Namespaces namespaces) {

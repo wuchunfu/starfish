@@ -59,6 +59,11 @@
             <version>${project.version}</version>
         </dependency>
 
+        <dependency>
+            <groupId>org.springframework.boot</groupId>
+            <artifactId>spring-boot-starter-cache</artifactId>
+        </dependency>
+
         <!--   Such plug-in modules need to be optimized and deleted, rather than directly introduced in this way     -->
 
         <dependency>
