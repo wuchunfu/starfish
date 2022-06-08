@@ -70,6 +70,7 @@ public class MetaClient {
         IngestionProperties properties = YamlFactory.parseObject(META_CONFIG_PREFIX, INGESTION_CONFIG_FILE, new IngestionProperties());
         messageProperties = properties.getMessage();
         initMessage(messageProperties);
+        LOGGER.info("Ingestion System init message plugin:[{}], meta event send batch size:[{}]", messageProperties.getType(), messageProperties.getMetaEventBatchSize());
 
         restProperties = properties.getRest();
         initRest(restProperties);
@@ -87,7 +88,7 @@ public class MetaClient {
 
     public void sendMessage(String key, RowData rowData) {
         Integer batchSize = messageProperties.getMetaEventBatchSize();
-        if (Objects.isNull(batchSize)) {
+        if (Objects.isNull(batchSize) || batchSize < 1) {
             producer.send(key, JSONUtils.toJSONString(rowData));
             return;
         }

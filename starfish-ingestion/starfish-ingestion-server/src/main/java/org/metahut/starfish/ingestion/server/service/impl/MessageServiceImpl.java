@@ -18,6 +18,7 @@
 package org.metahut.starfish.ingestion.server.service.impl;
 
 import org.metahut.starfish.ingestion.server.service.MessageService;
+import org.metahut.starfish.ingestion.server.utils.JSONUtils;
 import org.metahut.starfish.message.api.ConsumerResult;
 import org.metahut.starfish.message.api.IMessageConsumer;
 import org.metahut.starfish.message.api.IMessageManager;
@@ -60,20 +61,15 @@ public class MessageServiceImpl implements MessageService {
             throw new NullPointerException("meta event consumer is null");
         }
         while (true) {
-
             if (!consumer.isRunning()) {
                 break;
             }
-
             try {
                 List<ConsumerResult> result = consumer.batchReceive();
                 for (ConsumerResult consumerResult : result) {
-                    ObjectMapper objectMapper = new ObjectMapper();
-                    RowData<Object> rowData = objectMapper.readValue(consumerResult.getValue(), RowData.class);
+                    RowData<Object> rowData = JSONUtils.parseObject(consumerResult.getValue(), RowData.class);
                     metaDataService.batchCreateOrUpdate(rowData);
                 }
-                // TODO Store to metadata
-
             } catch (Throwable e) {
                 // TODO How to consume or handle exceptions
                 LOGGER.error(e.getMessage(), e);
