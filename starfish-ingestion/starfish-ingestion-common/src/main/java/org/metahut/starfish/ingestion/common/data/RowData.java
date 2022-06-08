@@ -20,39 +20,39 @@ package org.metahut.starfish.ingestion.common.data;
 import org.metahut.starfish.unit.row.RelationRow;
 
 import java.util.ArrayList;
-import java.util.Collection;
+import java.util.List;
 
 public class RowData {
 
-    private Collection<EntityRow> entities = new ArrayList<>();
+    private List<EntityRow> entities = new ArrayList<>();
 
-    private Collection<RelationRow> relations = new ArrayList<>();
+    private List<RelationRow> relations = new ArrayList<>();
 
     public RowData() {
     }
 
-    public RowData(Collection<EntityRow> entities, Collection<RelationRow> relations) {
+    public RowData(List<EntityRow> entities, List<RelationRow> relations) {
         this.entities = entities;
         this.relations = relations;
     }
 
-    public static RowData of(Collection<EntityRow> entities, Collection<RelationRow> relations) {
+    public static RowData of(List<EntityRow> entities, List<RelationRow> relations) {
         return new RowData(entities, relations);
     }
 
-    public Collection<EntityRow> getEntities() {
+    public List<EntityRow> getEntities() {
         return entities;
     }
 
-    public void setEntities(Collection<EntityRow> entities) {
+    public void setEntities(List<EntityRow> entities) {
         this.entities = entities;
     }
 
-    public Collection<RelationRow> getRelations() {
+    public List<RelationRow> getRelations() {
         return relations;
     }
 
-    public void setRelations(Collection<RelationRow> relations) {
+    public void setRelations(List<RelationRow> relations) {
         this.relations = relations;
     }
 }

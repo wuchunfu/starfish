@@ -17,10 +17,13 @@
 
 package org.metahut.starfish.ingestion.common;
 
+import org.metahut.starfish.ingestion.common.data.EntityRow;
+import org.metahut.starfish.ingestion.common.data.RowData;
 import org.metahut.starfish.message.api.IMessageManager;
 import org.metahut.starfish.message.api.IMessageProducer;
 import org.metahut.starfish.message.api.MessageException;
 import org.metahut.starfish.message.api.MessageProperties;
+import org.metahut.starfish.unit.row.RelationRow;
 
 import okhttp3.ConnectionPool;
 import okhttp3.MediaType;
@@ -28,10 +31,13 @@ import okhttp3.OkHttpClient;
 import okhttp3.Request;
 import okhttp3.RequestBody;
 import okhttp3.Response;
+import org.apache.pulsar.shade.com.google.common.collect.Lists;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import java.io.IOException;
+import java.util.Collections;
+import java.util.List;
 import java.util.Objects;
 import java.util.ServiceLoader;
 import java.util.concurrent.TimeUnit;
@@ -53,20 +59,62 @@ public class MetaClient {
     }
 
     private IngestionProperties.RestProperties restProperties;
+
+    private IngestionProperties.MetaMessageProperties messageProperties;
+
     private IMessageProducer producer;
 
     private OkHttpClient okHttpClient;
 
     private MetaClient() {
         IngestionProperties properties = YamlFactory.parseObject(META_CONFIG_PREFIX, INGESTION_CONFIG_FILE, new IngestionProperties());
-        initMessage(properties.getMessage());
+        messageProperties = properties.getMessage();
+        initMessage(messageProperties);
 
         restProperties = properties.getRest();
         initRest(restProperties);
     }
 
-    public IMessageProducer getMessageProducer() {
+    private IMessageProducer getMessageProducer() {
         return producer;
+    }
+
+    public void close() throws Exception {
+        if (Objects.nonNull(producer)) {
+            producer.close();
+        }
+    }
+
+    public void sendMessage(String key, RowData rowData) {
+        Integer batchSize = messageProperties.getMetaEventBatchSize();
+        if (Objects.isNull(batchSize)) {
+            producer.send(key, JSONUtils.toJSONString(rowData));
+            return;
+        }
+        int entitiesSize = rowData.getEntities().size();
+        int relationsSize = rowData.getRelations().size();
+        if (entitiesSize + relationsSize <= batchSize) {
+            producer.send(key, JSONUtils.toJSONString(rowData));
+            return;
+        }
+
+        if (entitiesSize <= batchSize) {
+            producer.send(key, JSONUtils.toJSONString(RowData.of(rowData.getEntities(), Collections.emptyList())));
+        } else {
+            List<List<EntityRow>> entityPartition = Lists.partition(rowData.getEntities(), batchSize);
+            entityPartition.forEach(list -> {
+                producer.send(key, JSONUtils.toJSONString(RowData.of(list, Collections.emptyList())));
+            });
+        }
+
+        if (relationsSize <= batchSize) {
+            producer.send(key, JSONUtils.toJSONString(RowData.of(Collections.emptyList(), rowData.getRelations())));
+        } else {
+            List<List<RelationRow>> relationPartition = Lists.partition(rowData.getRelations(), batchSize);
+            relationPartition.forEach(list -> {
+                producer.send(key, JSONUtils.toJSONString(RowData.of(Collections.emptyList(), list)));
+            });
+        }
     }
 
     public void queryMetaData() throws IOException {

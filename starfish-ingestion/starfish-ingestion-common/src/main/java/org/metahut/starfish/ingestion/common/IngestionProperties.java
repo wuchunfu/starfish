@@ -24,7 +24,19 @@ import java.text.MessageFormat;
 public class IngestionProperties {
 
     private RestProperties rest;
-    private MessageProperties message;
+    private MetaMessageProperties message;
+
+    public static class MetaMessageProperties extends MessageProperties {
+        private Integer metaEventBatchSize;
+
+        public Integer getMetaEventBatchSize() {
+            return metaEventBatchSize;
+        }
+
+        public void setMetaEventBatchSize(Integer metaEventBatchSize) {
+            this.metaEventBatchSize = metaEventBatchSize;
+        }
+    }
 
     public static class RestProperties {
         private String serviceAddress;
@@ -64,11 +76,11 @@ public class IngestionProperties {
         this.rest = rest;
     }
 
-    public MessageProperties getMessage() {
+    public MetaMessageProperties getMessage() {
         return message;
     }
 
-    public void setMessage(MessageProperties message) {
+    public void setMessage(MetaMessageProperties message) {
         this.message = message;
     }
 }

@@ -24,7 +24,7 @@ HOSTNAME=`hostname`
 
 log=$STARFISH_HOME/logs/nohup-$HOSTNAME.out
 
-JAVA_OPTS=${JAVA_OPTS:-"-server -Xms1g -Xmx1g -Xmn512m -XX:+PrintGCDetails -Xloggc:gc.log -XX:+HeapDumpOnOutOfMemoryError -XX:HeapDumpPath=dump.hprof"}
+JAVA_OPTS=${JAVA_OPTS:-"-server -Xms1g -Xmx4g -Xmn512m -XX:+PrintGCDetails -Xloggc:gc.log -XX:+HeapDumpOnOutOfMemoryError -XX:HeapDumpPath=dump.hprof"}
 
 PROJECT_HOME=$STARFISH_HOME/..
 

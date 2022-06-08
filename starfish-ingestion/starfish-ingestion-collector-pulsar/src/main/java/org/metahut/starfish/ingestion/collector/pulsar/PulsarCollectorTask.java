@@ -25,11 +25,9 @@ import org.metahut.starfish.ingestion.collector.pulsar.models.PulsarPublisher;
 import org.metahut.starfish.ingestion.collector.pulsar.models.PulsarSchema;
 import org.metahut.starfish.ingestion.collector.pulsar.models.PulsarTenant;
 import org.metahut.starfish.ingestion.collector.pulsar.models.PulsarTopic;
-import org.metahut.starfish.ingestion.common.JSONUtils;
 import org.metahut.starfish.ingestion.common.MetaClient;
 import org.metahut.starfish.ingestion.common.data.EntityRow;
 import org.metahut.starfish.ingestion.common.data.RowData;
-import org.metahut.starfish.message.api.IMessageProducer;
 import org.metahut.starfish.unit.enums.RowKind;
 import org.metahut.starfish.unit.row.EntityHeader;
 import org.metahut.starfish.unit.row.RelationRow;
@@ -83,13 +81,13 @@ public class PulsarCollectorTask extends AbstractCollectorTask {
     private static Logger LOGGER = LoggerFactory.getLogger(PulsarCollectorTask.class);
 
     private final PulsarCollectorAdapter adapter;
-    private final IMessageProducer producer;
+    private final MetaClient metaClient;
     private final PulsarAdmin pulsarAdmin;
     private final PulsarCollectorTaskParameter parameter;
 
     public PulsarCollectorTask(PulsarCollectorAdapter adapter, PulsarCollectorTaskParameter parameter) {
         this.adapter = adapter;
-        this.producer = MetaClient.getInstance().getMessageProducer();
+        this.metaClient = MetaClient.getInstance();
         this.pulsarAdmin = this.adapter.getMetaClient();
         this.parameter = parameter;
     }
@@ -109,12 +107,8 @@ public class PulsarCollectorTask extends AbstractCollectorTask {
         return collectorResult;
     }
 
-    private void sendMessage(String key, Object value) {
-        producer.send(key, JSONUtils.toJSONString(value));
-    }
-
-    private void sendMessage(Object value) {
-        sendMessage(COLLECTOR_TYPE, value);
+    private void sendMessage(RowData rowData) {
+        metaClient.sendMessage(COLLECTOR_TYPE, rowData);
     }
 
     private void deleteNonExistentMetadata() {
@@ -464,8 +458,8 @@ public class PulsarCollectorTask extends AbstractCollectorTask {
 
     @Override
     public void close() throws Exception {
-        if (Objects.nonNull(producer)) {
-            producer.close();
+        if (Objects.nonNull(metaClient)) {
+            metaClient.close();
         }
 
         if (Objects.nonNull(adapter)) {

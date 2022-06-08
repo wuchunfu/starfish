@@ -23,11 +23,9 @@ import org.metahut.starfish.ingestion.collector.hive.models.HiveCluster;
 import org.metahut.starfish.ingestion.collector.hive.models.HiveColumn;
 import org.metahut.starfish.ingestion.collector.hive.models.HiveDB;
 import org.metahut.starfish.ingestion.collector.hive.models.HiveTable;
-import org.metahut.starfish.ingestion.common.JSONUtils;
 import org.metahut.starfish.ingestion.common.MetaClient;
 import org.metahut.starfish.ingestion.common.data.EntityRow;
 import org.metahut.starfish.ingestion.common.data.RowData;
-import org.metahut.starfish.message.api.IMessageProducer;
 import org.metahut.starfish.unit.enums.RowKind;
 import org.metahut.starfish.unit.row.EntityHeader;
 import org.metahut.starfish.unit.row.RelationRow;
@@ -66,7 +64,7 @@ public class HiveCollectorTask extends AbstractCollectorTask {
     private static final Logger LOGGER = LoggerFactory.getLogger(HiveCollectorTask.class);
 
     private final HiveCollectorAdapter adapter;
-    private final IMessageProducer producer;
+    private final MetaClient metaClient;
     private final IMetaStoreClient metaStoreClient;
 
     private final HiveCollectorTaskParameter parameter;
@@ -74,14 +72,14 @@ public class HiveCollectorTask extends AbstractCollectorTask {
     public HiveCollectorTask(HiveCollectorAdapter adapter, HiveCollectorTaskParameter parameter) {
         this.adapter = adapter;
         this.metaStoreClient = this.adapter.getMetaClient();
-        this.producer = MetaClient.getInstance().getMessageProducer();
+        this.metaClient = MetaClient.getInstance();
         this.parameter = parameter;
     }
 
     @Override
     public void close() throws Exception {
-        if (Objects.nonNull(producer)) {
-            producer.close();
+        if (Objects.nonNull(metaClient)) {
+            metaClient.close();
         }
 
         if (Objects.nonNull(adapter)) {
@@ -104,12 +102,8 @@ public class HiveCollectorTask extends AbstractCollectorTask {
         return collectorResult;
     }
 
-    private void sendMessage(String key, Object value) {
-        producer.send(key, JSONUtils.toJSONString(value));
-    }
-
-    private void sendMessage(Object value) {
-        sendMessage(this.parameter.getClusterName(), value);
+    private void sendMessage(RowData rowData) {
+        metaClient.sendMessage(this.parameter.getClusterName(), rowData);
     }
 
     private void deleteNonExistentMetadata() {

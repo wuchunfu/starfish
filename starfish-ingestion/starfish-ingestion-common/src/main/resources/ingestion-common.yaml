@@ -30,3 +30,4 @@ starfish:
           topic-name: *meta-event-topic
           schema: STRING
           producer-name: meta
+    meta-event-batch-size: 1000
