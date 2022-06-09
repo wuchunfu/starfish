@@ -144,7 +144,7 @@ public class PulsarTopicQueryDTO extends PageRequestDTO {
         namespaceParent.addPointerChain("tenant", tenantPointer);
         EachPointer clusterPointer = new EachPointer(LinkCategory.RELATIONSHIP,
             RelationType.CHILD);
-        namespaceParent.addPointerChain("allowedClusters", clusterPointer);
+        tenantPointer.addPointerChain("allowedClusters", clusterPointer);
         EachPointer publisherChild = new EachPointer(LinkCategory.RELATIONSHIP, RelationType.CHILD);
         map.put("publishers", publisherChild);
         return map;
