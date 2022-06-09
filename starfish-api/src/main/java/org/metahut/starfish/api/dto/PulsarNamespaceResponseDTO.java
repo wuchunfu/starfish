@@ -19,7 +19,7 @@ public class PulsarNamespaceResponseDTO {
     private String name;
 
     @ApiModelProperty(value = "pulsar namespace allowed tenants")
-    private List<PulsarTenantResponseDTO> allowedTenants;
+    private PulsarTenantResponseDTO tenant;
 
     @ApiModelProperty(value = "pulsar namespace message ttl")
     private Integer messageTTL;
@@ -49,12 +49,12 @@ public class PulsarNamespaceResponseDTO {
         this.name = name;
     }
 
-    public List<PulsarTenantResponseDTO> getAllowedTenants() {
-        return allowedTenants;
+    public PulsarTenantResponseDTO getTenant() {
+        return tenant;
     }
 
-    public void setAllowedTenants(List<PulsarTenantResponseDTO> allowedTenants) {
-        this.allowedTenants = allowedTenants;
+    public void setTenant(PulsarTenantResponseDTO tenant) {
+        this.tenant = tenant;
     }
 
     public Integer getMessageTTL() {
