@@ -121,15 +121,11 @@ public class DolphinScheduler implements IScheduler {
     }
 
     private Schedule queryScheduleByFlowCode(String flowCode) {
-        String url = MessageFormat.format("/projects/{0}/schedules", properties.getProjectCode());
-        FormBody body = new FormBody.Builder()
-                .add("processDefinitionCode", flowCode)
-                .add("pageNo", "1")
-                .add("pageSize", "10")
-                .build();
+        String url = MessageFormat.format("/projects/{0}/schedules?processDefinitionCode={1}&pageNo={2}&pageSize={3}",
+                properties.getProjectCode(), flowCode, "1", "10");
         try {
             // create schedule instance
-            String resultJson = post(url, body);
+            String resultJson = get(url);
             DolphinResult<DolphinPageInfo<Schedule>> result = JSONUtils.parseObject(resultJson, new TypeReference<DolphinResult<DolphinPageInfo<Schedule>>>() {});
             checkResult(result, "queryScheduleByFlowCode");
             return result.getData().getTotalList().get(0);
