@@ -35,6 +35,7 @@ import java.util.Date;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.Objects;
 
 import static org.metahut.starfish.api.Constants.COLLECTOR_TASK_TYPE_NAME;
 import static org.metahut.starfish.api.Constants.PROPERTY_COLLECTOR_TASK_ADAPTER_RELATION;
@@ -56,6 +57,9 @@ public class CollectorTaskRequestDTO extends PageRequestDTO {
 
     @ApiModelProperty(value = "update end time")
     private Date updateEndTime;
+
+    @ApiModelProperty(value = "collector task id")
+    private Long taskId;
 
     public String getAdapterName() {
         return adapterName;
@@ -97,6 +101,14 @@ public class CollectorTaskRequestDTO extends PageRequestDTO {
         this.updateEndTime = updateEndTime;
     }
 
+    public Long getTaskId() {
+        return taskId;
+    }
+
+    public void setTaskId(Long taskId) {
+        this.taskId = taskId;
+    }
+
     public AbstractQueryCondition<CollectorTaskResponseDTO> toQueryCondition() {
         AbstractQueryCondition<CollectorTaskResponseDTO> condition = new AbstractQueryCondition<>();
         condition.setResultType(CollectorTaskResponseDTO.class);
@@ -115,13 +127,16 @@ public class CollectorTaskRequestDTO extends PageRequestDTO {
     }
 
     /**
-     * ENTITY
-     *      name
+     * ENTITY name
+     *
      * @return
      */
     private ConditionPiece collectorTaskPiece() {
         ConditionPiece conditionPiece = new ConditionPiece();
         conditionPiece.setTableType(TableType.ENTITY);
+        if (Objects.nonNull(this.taskId)) {
+            conditionPiece.setExpressions(Arrays.asList(Expression.id(taskId)));
+        }
         Map<String, List<ConditionPiece>> map = new HashMap<>();
         map.putAll(rel1());
         if (StringUtils.isNotEmpty(this.name)) {
@@ -134,36 +149,38 @@ public class CollectorTaskRequestDTO extends PageRequestDTO {
         return conditionPiece;
     }
 
-    private Map<String,List<ConditionPiece>> rel0() {
-        Map<String,List<ConditionPiece>> result = new HashMap<>();
-        result.put(Expression.PROPERTIES,Arrays.asList(propertyNamePiece()));
+    private Map<String, List<ConditionPiece>> rel0() {
+        Map<String, List<ConditionPiece>> result = new HashMap<>();
+        result.put(Expression.PROPERTIES, Arrays.asList(propertyNamePiece()));
         return result;
     }
 
     private ConditionPiece propertyNamePiece() {
         ConditionPiece conditionPiece = new ConditionPiece();
         conditionPiece.setTableType(TableType.ENTITY_PROPERTY);
-        conditionPiece.setExpressions(Arrays.asList(Expression.and(Expression.keyValueLike(Expression.NAME,this.name))));
+        conditionPiece.setExpressions(
+            Arrays.asList(Expression.and(Expression.keyValueLike(Expression.NAME, this.name))));
         return conditionPiece;
     }
 
-    private Map<String,List<ConditionPiece>> rel1() {
-        Map<String,List<ConditionPiece>> result = new HashMap<>();
-        result.put(Expression.PARENT,Arrays.asList(typeEntityRelationPiece()));
+    private Map<String, List<ConditionPiece>> rel1() {
+        Map<String, List<ConditionPiece>> result = new HashMap<>();
+        result.put(Expression.PARENT, Arrays.asList(typeEntityRelationPiece()));
         return result;
     }
 
     private ConditionPiece typeEntityRelationPiece() {
         ConditionPiece conditionPiece = new ConditionPiece();
         conditionPiece.setTableType(TableType.RELATION);
-        conditionPiece.setExpressions(Expression.rel(LinkCategory.TYPE_ENTITY,LinkCategory.TYPE_ENTITY.name()));
+        conditionPiece.setExpressions(
+            Expression.rel(LinkCategory.TYPE_ENTITY, LinkCategory.TYPE_ENTITY.name()));
         conditionPiece.setNextConditionChain(rel2());
         return conditionPiece;
     }
 
-    private Map<String,List<ConditionPiece>> rel2() {
-        Map<String,List<ConditionPiece>> result = new HashMap<>();
-        result.put(Expression.START_NODE_ENTITY,Arrays.asList(collectorTaskTypePiece()));
+    private Map<String, List<ConditionPiece>> rel2() {
+        Map<String, List<ConditionPiece>> result = new HashMap<>();
+        result.put(Expression.START_NODE_ENTITY, Arrays.asList(collectorTaskTypePiece()));
         return result;
     }
 
@@ -174,23 +191,24 @@ public class CollectorTaskRequestDTO extends PageRequestDTO {
         return conditionPiece;
     }
 
-    private Map<String,List<ConditionPiece>> rel3() {
-        Map<String,List<ConditionPiece>> result = new HashMap<>();
-        result.put("children",Arrays.asList(entityRel()));
+    private Map<String, List<ConditionPiece>> rel3() {
+        Map<String, List<ConditionPiece>> result = new HashMap<>();
+        result.put("children", Arrays.asList(entityRel()));
         return result;
     }
 
     private ConditionPiece entityRel() {
         ConditionPiece conditionPiece = new ConditionPiece();
         conditionPiece.setTableType(TableType.RELATION);
-        conditionPiece.setExpressions(Expression.rel(LinkCategory.RELATIONSHIP, PROPERTY_COLLECTOR_TASK_ADAPTER_RELATION));
+        conditionPiece.setExpressions(
+            Expression.rel(LinkCategory.RELATIONSHIP, PROPERTY_COLLECTOR_TASK_ADAPTER_RELATION));
         conditionPiece.setNextConditionChain(rel4());
         return conditionPiece;
     }
 
-    private Map<String,List<ConditionPiece>> rel4() {
-        Map<String,List<ConditionPiece>> result = new HashMap<>();
-        result.put("endNodeEntity",Arrays.asList(collectorAdapterPiece()));
+    private Map<String, List<ConditionPiece>> rel4() {
+        Map<String, List<ConditionPiece>> result = new HashMap<>();
+        result.put("endNodeEntity", Arrays.asList(collectorAdapterPiece()));
         return result;
     }
 
@@ -201,9 +219,9 @@ public class CollectorTaskRequestDTO extends PageRequestDTO {
         return conditionPiece;
     }
 
-    private Map<String,List<ConditionPiece>> rel6() {
-        Map<String,List<ConditionPiece>> result = new HashMap<>();
-        result.put(Expression.PROPERTIES,Arrays.asList(propertyPiece1()));
+    private Map<String, List<ConditionPiece>> rel6() {
+        Map<String, List<ConditionPiece>> result = new HashMap<>();
+        result.put(Expression.PROPERTIES, Arrays.asList(propertyPiece1()));
         return result;
     }
 
@@ -212,10 +230,12 @@ public class CollectorTaskRequestDTO extends PageRequestDTO {
         conditionPiece.setTableType(TableType.ENTITY_PROPERTY);
         conditionPiece.setExpressions(new ArrayList<>());
         if (StringUtils.isNotEmpty(this.adapterName)) {
-            conditionPiece.getExpressions().add(Expression.and(Expression.keyValueLike("name",this.adapterName)));
+            conditionPiece.getExpressions()
+                .add(Expression.and(Expression.keyValueLike("name", this.adapterName)));
         }
         if (StringUtils.isNotEmpty(this.type)) {
-            conditionPiece.getExpressions().add(Expression.and(Expression.keyValueLike("type",this.type)));
+            conditionPiece.getExpressions()
+                .add(Expression.and(Expression.keyValueLike("type", this.type)));
         }
         return conditionPiece;
     }

@@ -97,7 +97,7 @@ public class CollectorAdapterServiceImpl implements CollectorAdapterService {
         Pageable pageable = PageRequest.of(requestDTO.getPageNo() - 1, requestDTO.getPageSize());
         // TODO Assembly conditions
         Page<CollectorAdapterResponseDTO> page = metaDataService.instances(requestDTO.toQueryCondition(),pageable);
-        return PageResponseDTO.of(page.getNumber(), page.getSize(), page.getTotalElements(), page.getContent());
+        return PageResponseDTO.of(requestDTO.getPageNo(), page.getSize(), page.getTotalElements(), page.getContent());
     }
 
     @Override

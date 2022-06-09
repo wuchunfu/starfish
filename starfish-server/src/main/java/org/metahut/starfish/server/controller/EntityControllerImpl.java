@@ -108,14 +108,14 @@ public class EntityControllerImpl implements EntityController {
         }
         condition.getFilters().add(ConditionPiece.entityWithType(typeNameQueryCondition.getTypeName()));
         Page<Map> result = abstractMetaDataService.instances(condition,PageRequest.of(typeNameQueryCondition.getPageNo() - 1, typeNameQueryCondition.getPageNo()));
-        return ResultEntity.success(PageResponseDTO.of(result.getNumber(),result.getSize(),result.getTotalElements(),result.getContent()));
+        return ResultEntity.success(PageResponseDTO.of(typeNameQueryCondition.getPageNo(),result.getSize(),result.getTotalElements(),result.getContent()));
     }
 
     @Override
     public ResultEntity<PageResponseDTO<HiveClusterResponseDTO>> hiveClusters(HiveClusterQueryDTO hiveClusterQueryDTO) {
         PageRequest pageable = PageRequest.of(hiveClusterQueryDTO.getPageNo() - 1, hiveClusterQueryDTO.getPageSize());
         Page<HiveClusterResponseDTO> pageResult = abstractMetaDataService.instances(hiveClusterQueryDTO.toCondition(),pageable);
-        return ResultEntity.success(PageResponseDTO.of(pageResult.getNumber(),pageResult.getSize(),pageResult.getTotalElements(),pageResult.getContent()));
+        return ResultEntity.success(PageResponseDTO.of(hiveClusterQueryDTO.getPageNo(),pageResult.getSize(),pageResult.getTotalElements(),pageResult.getContent()));
 
     }
 
@@ -123,28 +123,28 @@ public class EntityControllerImpl implements EntityController {
     public ResultEntity<PageResponseDTO<HiveDBResponseDTO>> hiveDbs(HiveDBQueryDTO hiveDBQueryDTO) {
         PageRequest pageable = PageRequest.of(hiveDBQueryDTO.getPageNo() - 1, hiveDBQueryDTO.getPageSize());
         Page<HiveDBResponseDTO> pageResult = abstractMetaDataService.instances(hiveDBQueryDTO.toCondition(),pageable);
-        return ResultEntity.success(PageResponseDTO.of(pageResult.getNumber(),pageResult.getSize(),pageResult.getTotalElements(),pageResult.getContent()));
+        return ResultEntity.success(PageResponseDTO.of(hiveDBQueryDTO.getPageNo(),pageResult.getSize(),pageResult.getTotalElements(),pageResult.getContent()));
     }
 
     @Override
     public ResultEntity<PageResponseDTO<HiveTableResponseDTO>> hiveTables(HiveTableQueryDTO hiveTableQueryDTO) {
         PageRequest pageable = PageRequest.of(hiveTableQueryDTO.getPageNo() - 1, hiveTableQueryDTO.getPageSize());
         Page<HiveTableResponseDTO> pageResult = abstractMetaDataService.instances(hiveTableQueryDTO.toCondition(),pageable);
-        return ResultEntity.success(PageResponseDTO.of(pageResult.getNumber(),pageResult.getSize(),pageResult.getTotalElements(),pageResult.getContent()));
+        return ResultEntity.success(PageResponseDTO.of(hiveTableQueryDTO.getPageNo(),pageResult.getSize(),pageResult.getTotalElements(),pageResult.getContent()));
     }
 
     @Override
     public ResultEntity<PageResponseDTO<PulsarClusterResponseDTO>> pulsarClusters(PulsarClusterQueryDTO pulsarClusterQueryDTO) {
         PageRequest pageable = PageRequest.of(pulsarClusterQueryDTO.getPageNo() - 1, pulsarClusterQueryDTO.getPageSize());
         Page<PulsarClusterResponseDTO> pageResult = abstractMetaDataService.instances(pulsarClusterQueryDTO.toCondition(),pageable);
-        return ResultEntity.success(PageResponseDTO.of(pageResult.getNumber(),pageResult.getSize(),pageResult.getTotalElements(),pageResult.getContent()));
+        return ResultEntity.success(PageResponseDTO.of(pulsarClusterQueryDTO.getPageNo(),pageResult.getSize(),pageResult.getTotalElements(),pageResult.getContent()));
     }
 
     @Override
     public ResultEntity<PageResponseDTO<PulsarNamespaceResponseDTO>> pulsarNamespaces(PulsarNamespaceQueryDTO pulsarNamespaceQueryDTO) {
         PageRequest pageable = PageRequest.of(pulsarNamespaceQueryDTO.getPageNo() - 1, pulsarNamespaceQueryDTO.getPageSize());
         Page<PulsarNamespaceResponseDTO> pageResult = abstractMetaDataService.instances(pulsarNamespaceQueryDTO.toCondition(),pageable);
-        return ResultEntity.success(PageResponseDTO.of(pageResult.getNumber(),pageResult.getSize(),pageResult.getTotalElements(),pageResult.getContent()));
+        return ResultEntity.success(PageResponseDTO.of(pulsarNamespaceQueryDTO.getPageNo(),pageResult.getSize(),pageResult.getTotalElements(),pageResult.getContent()));
 
     }
 
@@ -152,13 +152,13 @@ public class EntityControllerImpl implements EntityController {
     public ResultEntity<PageResponseDTO<PulsarTopicResponseDTO>> pulsarTopics(PulsarTopicQueryDTO pulsarTopicQueryDTO) {
         PageRequest pageable = PageRequest.of(pulsarTopicQueryDTO.getPageNo() - 1, pulsarTopicQueryDTO.getPageSize());
         Page<PulsarTopicResponseDTO> pageResult = abstractMetaDataService.instances(pulsarTopicQueryDTO.toCondition(),pageable);
-        return ResultEntity.success(PageResponseDTO.of(pageResult.getNumber(),pageResult.getSize(),pageResult.getTotalElements(),pageResult.getContent()));
+        return ResultEntity.success(PageResponseDTO.of(pulsarTopicQueryDTO.getPageNo(),pageResult.getSize(),pageResult.getTotalElements(),pageResult.getContent()));
     }
 
     @Override
     public ResultEntity<PageResponseDTO<SourceResponseDTO>> sources(SourceRequestDTO sourceRequestDTO) {
         PageRequest pageable = PageRequest.of(sourceRequestDTO.getPageNo() - 1, sourceRequestDTO.getPageSize());
         Page<SourceResponseDTO> pageResult = abstractMetaDataService.instances(sourceRequestDTO.toCondition(),pageable);
-        return ResultEntity.success(PageResponseDTO.of(pageResult.getNumber(),pageResult.getSize(),pageResult.getTotalElements(),pageResult.getContent()));
+        return ResultEntity.success(PageResponseDTO.of(sourceRequestDTO.getPageNo(),pageResult.getSize(),pageResult.getTotalElements(),pageResult.getContent()));
     }
 }
