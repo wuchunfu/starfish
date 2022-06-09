@@ -49,6 +49,7 @@ public class ConditionPiece {
 
     public static ConditionPiece entityWithType(String typeName) {
         ConditionPiece conditionPiece = new ConditionPiece();
+        conditionPiece.setExpressions(Expression.entity());
         conditionPiece.setTableType(TableType.ENTITY);
         Map<String,List<ConditionPiece>> map = new HashMap<>();
         conditionPiece.setNextConditionChain(map);
@@ -74,6 +75,7 @@ public class ConditionPiece {
         if (qualifiedName != null && !"".equals(qualifiedName)) {
             expressions.add(Expression.qualifiedName(qualifiedName));
         }
+        expressions.addAll(Expression.entity(qualifiedName));
         conditionPiece.setExpressions(expressions);
         return conditionPiece;
     }

@@ -231,7 +231,6 @@ public class RdbmDataStorageAutoConfiguration {
         return (root, query, criteriaBuilder) -> {
             query.distinct(true);
             List<Predicate> predicates = new ArrayList<>();
-            predicates.add(criteriaBuilder.equal(root.get(NodeEntity_.CATEGORY),TypeCategory.ENTITY.name()));
             if (conditionPieces != null) {
                 for (ConditionPiece filter : conditionPieces) {
                     List<Predicate> piecePredicates = new ArrayList<>();

@@ -4,6 +4,7 @@ import org.metahut.starfish.unit.AbstractQueryCondition;
 import org.metahut.starfish.unit.enums.LinkCategory;
 import org.metahut.starfish.unit.enums.RelationType;
 import org.metahut.starfish.unit.enums.TableType;
+import org.metahut.starfish.unit.enums.TypeCategory;
 import org.metahut.starfish.unit.expression.BinaryExpression;
 import org.metahut.starfish.unit.expression.ConditionPiece;
 import org.metahut.starfish.unit.expression.EachPointer;
@@ -154,6 +155,7 @@ public class PulsarTopicQueryDTO extends PageRequestDTO {
         ConditionPiece conditionPiece = new ConditionPiece();
         conditionPiece.setTableType(TableType.ENTITY);
         List<BinaryExpression> expressions = new ArrayList<>();
+        expressions.addAll(Expression.entity());
         Map<String, List<ConditionPiece>> map = new HashMap<>();
         map.putAll(pulsarTopicParentRelEnd());
         if (StringUtils.isNotEmpty(topicName)) {

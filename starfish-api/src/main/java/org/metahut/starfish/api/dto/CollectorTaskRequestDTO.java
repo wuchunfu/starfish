@@ -134,8 +134,10 @@ public class CollectorTaskRequestDTO extends PageRequestDTO {
     private ConditionPiece collectorTaskPiece() {
         ConditionPiece conditionPiece = new ConditionPiece();
         conditionPiece.setTableType(TableType.ENTITY);
+        conditionPiece.setExpressions(new ArrayList<>());
+        conditionPiece.getExpressions().addAll(Expression.entity());
         if (Objects.nonNull(this.taskId)) {
-            conditionPiece.setExpressions(Arrays.asList(Expression.id(taskId)));
+            conditionPiece.getExpressions().addAll(Arrays.asList(Expression.id(taskId)));
         }
         Map<String, List<ConditionPiece>> map = new HashMap<>();
         map.putAll(rel1());

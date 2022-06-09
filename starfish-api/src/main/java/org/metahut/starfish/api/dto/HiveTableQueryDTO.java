@@ -145,6 +145,7 @@ public class HiveTableQueryDTO extends PageRequestDTO {
         ConditionPiece conditionPiece = new ConditionPiece();
         conditionPiece.setTableType(TableType.ENTITY);
         List<BinaryExpression> expressions = new ArrayList<>();
+        expressions.addAll(Expression.entity());
         Map<String,List<ConditionPiece>> map = new HashMap<>();
         map.putAll(rel1());
         if (StringUtils.isNotEmpty(hiveTableName)) {

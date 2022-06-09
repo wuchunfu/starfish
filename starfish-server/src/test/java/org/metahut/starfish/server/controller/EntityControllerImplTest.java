@@ -5,6 +5,8 @@ import org.metahut.starfish.api.dto.HiveClusterQueryDTO;
 import org.metahut.starfish.api.dto.HiveClusterResponseDTO;
 import org.metahut.starfish.api.dto.PageResponseDTO;
 import org.metahut.starfish.api.dto.ResultEntity;
+import org.metahut.starfish.api.dto.SourceRequestDTO;
+import org.metahut.starfish.api.dto.SourceResponseDTO;
 import org.metahut.starfish.store.rdbms.dao.NodeEntityMapper;
 import org.metahut.starfish.store.rdbms.entity.NodeEntity;
 import org.metahut.starfish.store.rdbms.repository.NodeEntityPropertyRepository;
@@ -156,5 +158,15 @@ class EntityControllerImplTest extends WebApplicationTest {
                 .findByCategoryAndQualifiedName(TypeCategory.ENTITY.name(),
                     "hive@@dwdd@@dwd_agt_ass_asset_all@@spu_id");
         }
+    }
+
+    @Test
+    void testSources() {
+        SourceRequestDTO sourceRequestDTO = new SourceRequestDTO();
+        sourceRequestDTO.setPageNo(1);
+        sourceRequestDTO.setPageSize(1);
+        sourceRequestDTO.setName("Hive");
+        ResultEntity<PageResponseDTO<SourceResponseDTO>> sources = entityController.sources(sourceRequestDTO);
+        System.out.println(sources);
     }
 }

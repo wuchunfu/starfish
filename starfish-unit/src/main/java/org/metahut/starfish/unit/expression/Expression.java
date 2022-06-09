@@ -58,10 +58,7 @@ public interface Expression {
         equalExpression.setLeftExpression(new StringExpression(CATEGORY));
         equalExpression.setRightExpression(new StringExpression(TypeCategory.ENTITY.name()));
         if (name != null && !"".equals(name)) {
-            EqualExpression nameExpression = new EqualExpression();
-            nameExpression.setLeftExpression(new StringExpression(QUALIFIED_NAME));
-            nameExpression.setRightExpression(new StringExpression(name));
-            result.add(nameExpression);
+            result.add(Expression.qualifiedName(name));
         }
         result.add(equalExpression);
         return result;

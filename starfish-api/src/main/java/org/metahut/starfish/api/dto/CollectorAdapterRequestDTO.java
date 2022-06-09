@@ -75,6 +75,7 @@ public class CollectorAdapterRequestDTO extends PageRequestDTO {
     private ConditionPiece collectorAdapterPiece() {
         ConditionPiece conditionPiece = new ConditionPiece();
         conditionPiece.setTableType(TableType.ENTITY);
+        conditionPiece.setExpressions(Expression.entity());
         Map<String, List<ConditionPiece>> map = new HashMap<>();
         map.putAll(rel1());
         conditionPiece.setNextConditionChain(map);
