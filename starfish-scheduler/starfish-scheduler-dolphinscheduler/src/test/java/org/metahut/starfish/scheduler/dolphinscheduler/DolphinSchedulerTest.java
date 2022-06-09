@@ -4,12 +4,7 @@ import org.metahut.starfish.scheduler.api.ExecutionStatus;
 import org.metahut.starfish.scheduler.api.SchedulerProperties;
 import org.metahut.starfish.scheduler.api.SchedulerTypeEnum;
 import org.metahut.starfish.scheduler.api.entity.FlowDefinition;
-import org.metahut.starfish.scheduler.api.parameters.FlowInstanceRequestParameter;
-import org.metahut.starfish.scheduler.api.parameters.HttpTaskParameter;
-import org.metahut.starfish.scheduler.api.parameters.ScheduleCronParameter;
-import org.metahut.starfish.scheduler.api.parameters.TaskInstanceLogRequestParameter;
-import org.metahut.starfish.scheduler.api.parameters.TaskInstanceRequestParameter;
-import org.metahut.starfish.scheduler.api.parameters.TaskParameter;
+import org.metahut.starfish.scheduler.api.parameters.*;
 
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.BeforeEach;
@@ -29,7 +24,7 @@ public class DolphinSchedulerTest {
 
     private DolphinScheduler scheduler;
 
-    private static final String SERVICE_URL = "http://localhost:8080/dolphinscheduler";
+    private static final String SERVICE_URL = "http://dolphinscheduler.xxx.com/dolphinscheduler";
 
     private static final String TOKEN = "c6258d4a509df0f1b89f77fb552d8ddf";
     private static final String PROJECT_CODE = "4996418468000";
@@ -68,6 +63,18 @@ public class DolphinSchedulerTest {
         parameter.setEndTime(Date.from(LocalDateTime.now().plusDays(2).atZone(ZoneId.systemDefault()).toInstant()));
         List<String> strings = scheduler.previewSchedule(parameter);
         Assertions.assertNotNull(strings);
+    }
+
+    @Test
+    public void testUpdateSchedule() {
+        String flowCode = "5802334298016";
+        String cron = "0 30 4 * * ?";
+        ScheduleParameter scheduleParameter = new ScheduleParameter();
+        scheduleParameter.setFlowCode(flowCode);
+        ScheduleCronParameter scheduleCronParameter = new ScheduleCronParameter();
+        scheduleCronParameter.setCrontab(cron);
+        scheduleParameter.setScheduleCronParameter(scheduleCronParameter);
+        scheduler.updateSchedule(scheduleParameter);
     }
 
     @Test
