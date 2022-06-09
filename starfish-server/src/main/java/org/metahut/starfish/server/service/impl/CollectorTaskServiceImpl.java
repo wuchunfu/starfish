@@ -110,7 +110,9 @@ public class CollectorTaskServiceImpl implements CollectorTaskService {
     @Override
     public CollectorTaskResponseDTO update(Long id, CollectorTaskCreateOrUpdateRequestDTO requestDTO) {
         // query collector instance by code
-        CollectorTaskResponseDTO instance = metaDataService.instance(id, CollectorTaskResponseDTO.class);
+        CollectorTaskRequestDTO queryDTO = new CollectorTaskRequestDTO();
+        queryDTO.setId(id);
+        CollectorTaskResponseDTO instance = metaDataService.instance(queryDTO.toQueryCondition());
         if (instance.getAdapter() != null && instance.getAdapter().getId() != requestDTO.getAdapterId()) {
             metaDataService.crack(id, instance.getAdapter().getId(), PROPERTY_COLLECTOR_TASK_ADAPTER_RELATION);
         }

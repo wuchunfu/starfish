@@ -323,6 +323,15 @@ public abstract class AbstractMetaDataService<K, T> implements IMetaDataApi<K, T
     }
 
     @Override
+    public <U> U instance(AbstractQueryCondition<U> condition) throws AbstractMetaParserException {
+        Optional<U> first = graphApi().query(condition).stream().findFirst();
+        if (first.isPresent()) {
+            return first.get();
+        }
+        return null;
+    }
+
+    @Override
     public <U> Collection<U> instances(AbstractQueryCondition<U> condition) throws AbstractMetaParserException {
         return graphApi().query(condition);
     }
