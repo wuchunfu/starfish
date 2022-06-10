@@ -35,6 +35,8 @@ import org.springframework.core.convert.ConversionService;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
+import org.springframework.data.domain.Sort;
+import org.springframework.data.domain.Sort.Direction;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -44,7 +46,6 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.Objects;
-import java.util.Optional;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
 
@@ -227,7 +228,8 @@ public class CollectorTaskServiceImpl implements CollectorTaskService {
 
     @Override
     public PageResponseDTO<CollectorTaskResponseDTO> queryListPage(CollectorTaskRequestDTO requestDTO) {
-        Pageable pageable = PageRequest.of(requestDTO.getPageNo() - 1, requestDTO.getPageSize());
+        Sort sort = Sort.by(Direction.DESC,"updateTime");
+        Pageable pageable = PageRequest.of(requestDTO.getPageNo() - 1, requestDTO.getPageSize(),sort);
         Page<CollectorTaskResponseDTO> page = metaDataService.instances(requestDTO.toQueryCondition(), pageable);
         return PageResponseDTO.of(page.getNumber(), page.getSize(), page.getTotalElements(), page.getContent());
     }

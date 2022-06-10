@@ -144,7 +144,7 @@ public class CollectorTaskRequestDTO extends PageRequestDTO {
         if (StringUtils.isNotEmpty(this.name)) {
             map.putAll(rel0());
         }
-        if (StringUtils.isNotEmpty(adapterName) && StringUtils.isNotEmpty(type)) {
+        if (StringUtils.isNotEmpty(adapterName) || StringUtils.isNotEmpty(type)) {
             map.putAll(rel3());
         }
         conditionPiece.setNextConditionChain(map);

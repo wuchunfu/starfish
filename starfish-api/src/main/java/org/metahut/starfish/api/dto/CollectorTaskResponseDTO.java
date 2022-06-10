@@ -23,6 +23,8 @@ import org.metahut.starfish.api.enums.ReleaseStateEnum;
 import io.swagger.annotations.ApiModel;
 import io.swagger.annotations.ApiModelProperty;
 
+import java.util.Date;
+
 @ApiModel(description = "collector task response dto")
 public class CollectorTaskResponseDTO {
 
@@ -45,6 +47,12 @@ public class CollectorTaskResponseDTO {
     private ReleaseStateEnum state;
 
     private String schedulerFlowCode;
+
+    @ApiModelProperty(value = "collector task create time")
+    private Date createTime;
+
+    @ApiModelProperty(value = "collector task update time")
+    private Date updateTime;
 
     public Long getId() {
         return id;
@@ -108,5 +116,21 @@ public class CollectorTaskResponseDTO {
 
     public void setSchedulerFlowCode(String schedulerFlowCode) {
         this.schedulerFlowCode = schedulerFlowCode;
+    }
+
+    public Date getCreateTime() {
+        return createTime;
+    }
+
+    public void setCreateTime(Date createTime) {
+        this.createTime = createTime;
+    }
+
+    public Date getUpdateTime() {
+        return updateTime;
+    }
+
+    public void setUpdateTime(Date updateTime) {
+        this.updateTime = updateTime;
     }
 }
