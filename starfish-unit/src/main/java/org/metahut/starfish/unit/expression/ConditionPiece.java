@@ -72,9 +72,6 @@ public class ConditionPiece {
         if (id != null) {
             expressions.add(Expression.id(id));
         }
-        if (qualifiedName != null && !"".equals(qualifiedName)) {
-            expressions.add(Expression.qualifiedName(qualifiedName));
-        }
         expressions.addAll(Expression.entity(qualifiedName));
         conditionPiece.setExpressions(expressions);
         return conditionPiece;
