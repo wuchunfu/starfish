@@ -58,7 +58,7 @@ public class NodeEntity extends AbstractNodeEntity<Long, NodeEntityProperty,Node
     private Integer operator;
 
     @CreatedDate
-    @Column(name = "create_time")
+    @Column(name = "create_time", nullable = false, updatable = false)
     private Date createTime;
 
     @LastModifiedDate
