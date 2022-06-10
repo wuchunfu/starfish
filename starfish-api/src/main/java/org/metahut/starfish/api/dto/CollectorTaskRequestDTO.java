@@ -139,6 +139,17 @@ public class CollectorTaskRequestDTO extends PageRequestDTO {
         if (Objects.nonNull(this.taskId)) {
             conditionPiece.getExpressions().addAll(Arrays.asList(Expression.id(taskId)));
         }
+        if (this.updateBeginTime != null) {
+            if (this.updateEndTime != null) {
+                conditionPiece.getExpressions().add(Expression.dateBetweenAnd(Expression.UPDATE_TIME, this.updateBeginTime,this.updateEndTime));
+            } else {
+                conditionPiece.getExpressions().add(Expression.dateGreaterThanOrEqualTo(Expression.UPDATE_TIME,this.updateBeginTime));
+            }
+        } else {
+            if (this.updateEndTime != null) {
+                conditionPiece.getExpressions().add(Expression.dateLessThanOrEqualTo(Expression.UPDATE_TIME,this.updateEndTime));
+            }
+        }
         Map<String, List<ConditionPiece>> map = new HashMap<>();
         map.putAll(rel1());
         if (StringUtils.isNotEmpty(this.name)) {
