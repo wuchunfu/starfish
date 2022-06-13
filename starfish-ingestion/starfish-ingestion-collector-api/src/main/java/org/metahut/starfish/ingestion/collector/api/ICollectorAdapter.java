@@ -23,4 +23,5 @@ public interface ICollectorAdapter extends AutoCloseable {
 
     <T> T getMetaClient();
 
+    AbstractCollectorParameter getParameter();
 }

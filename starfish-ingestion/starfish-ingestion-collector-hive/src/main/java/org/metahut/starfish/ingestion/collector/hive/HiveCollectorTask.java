@@ -68,9 +68,11 @@ public class HiveCollectorTask extends AbstractCollectorTask {
     private final IMetaStoreClient metaStoreClient;
 
     private final HiveCollectorTaskParameter parameter;
+    private final HiveCollectorAdapterParameter adapterParameter;
 
     public HiveCollectorTask(HiveCollectorAdapter adapter, HiveCollectorTaskParameter parameter) {
         this.adapter = adapter;
+        this.adapterParameter = adapter.getParameter();
         this.metaStoreClient = this.adapter.getMetaClient();
         this.metaClient = MetaClient.getInstance();
         this.parameter = parameter;
@@ -103,7 +105,7 @@ public class HiveCollectorTask extends AbstractCollectorTask {
     }
 
     private void sendMessage(RowData rowData) {
-        metaClient.sendMessage(this.parameter.getClusterName(), rowData);
+        metaClient.sendMessage(this.adapterParameter.getClusterName(), rowData);
     }
 
     private void deleteNonExistentMetadata() {
@@ -112,9 +114,9 @@ public class HiveCollectorTask extends AbstractCollectorTask {
     }
 
     private EntityHeader generateHiveClusterEntity() {
-        LOGGER.info("generate hive cluster entity: {}", this.parameter.getClusterName());
+        LOGGER.info("generate hive cluster entity: {}", this.adapterParameter.getClusterName());
         HiveCluster hiveCluster = new HiveCluster();
-        hiveCluster.setName(this.parameter.getClusterName());
+        hiveCluster.setName(this.adapterParameter.getClusterName());
         hiveCluster.setType(COLLECTOR_TYPE);
 
         EntityHeader entityHeader = generateClusterEntityHeader();
@@ -134,7 +136,7 @@ public class HiveCollectorTask extends AbstractCollectorTask {
             isThrowException(MessageFormat.format("HiveCluster:{0}, meta store client query all databases exception", clusterHeader.getQualifiedName()), e, parameter.isThrowException());
         }
 
-        LOGGER.info("HiveCluster:{}, query HiveDB size:{}", this.parameter.getClusterName(), allDatabases.size());
+        LOGGER.info("HiveCluster:{}, query HiveDB size:{}", this.adapterParameter.getClusterName(), allDatabases.size());
         if (CollectionUtils.isEmpty(allDatabases)) {
             return;
         }
@@ -291,11 +293,11 @@ public class HiveCollectorTask extends AbstractCollectorTask {
     }
 
     private EntityHeader generateClusterEntityHeader() {
-        return generateEntityHeader(TYPE_NAME_CLUSTER, TYPE_NAME_CLUSTER, this.parameter.getClusterName());
+        return generateEntityHeader(TYPE_NAME_CLUSTER, TYPE_NAME_CLUSTER, this.adapterParameter.getClusterName());
     }
 
     private EntityHeader generateDBEntityHeader(String dbName) {
-        return generateEntityHeader(TYPE_NAME_DB, this.parameter.getClusterName(), dbName);
+        return generateEntityHeader(TYPE_NAME_DB, this.adapterParameter.getClusterName(), dbName);
     }
 
     private EntityHeader generateTableEntityHeader(EntityHeader dbHeader, String tableName) {

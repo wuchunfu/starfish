@@ -23,18 +23,27 @@ import org.apache.commons.lang3.StringUtils;
 
 public class HiveCollectorAdapterParameter extends AbstractCollectorParameter {
 
-    private String hiveMetastoreUris;
+    private String clusterName;
+    private String metastoreUris;
 
-    public String getHiveMetastoreUris() {
-        return hiveMetastoreUris;
+    public String getClusterName() {
+        return clusterName;
     }
 
-    public void setHiveMetastoreUris(String hiveMetastoreUris) {
-        this.hiveMetastoreUris = hiveMetastoreUris;
+    public void setClusterName(String clusterName) {
+        this.clusterName = clusterName;
+    }
+
+    public String getMetastoreUris() {
+        return metastoreUris;
+    }
+
+    public void setMetastoreUris(String metastoreUris) {
+        this.metastoreUris = metastoreUris;
     }
 
     @Override
     public boolean checkParameter() {
-        return StringUtils.isNotBlank(hiveMetastoreUris);
+        return StringUtils.isNotBlank(metastoreUris);
     }
 }

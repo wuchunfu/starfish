@@ -30,10 +30,12 @@ import java.util.Objects;
 
 public class HiveCollectorAdapter implements ICollectorAdapter {
     private final IMetaStoreClient metaStoreClient;
+    private final HiveCollectorAdapterParameter parameter;
 
     public HiveCollectorAdapter(HiveCollectorAdapterParameter parameter) {
+        this.parameter = parameter;
         Configuration conf = new Configuration();
-        conf.set("hive.metastore.uris", parameter.getHiveMetastoreUris());
+        conf.set("hive.metastore.uris", parameter.getMetastoreUris());
         try {
             metaStoreClient = RetryingMetaStoreClient.getProxy(conf, false);
         } catch (MetaException e) {
@@ -49,6 +51,11 @@ public class HiveCollectorAdapter implements ICollectorAdapter {
     @Override
     public IMetaStoreClient getMetaClient() {
         return metaStoreClient;
+    }
+
+    @Override
+    public HiveCollectorAdapterParameter getParameter() {
+        return this.parameter;
     }
 
     @Override

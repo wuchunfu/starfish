@@ -34,7 +34,7 @@ public class HiveCollectorAdapterTest {
     public void testConnection() throws TException {
         String metaUris = "thrift://xx.xx.xx.xx:9083,thrift://xx.xx.xx.xx:9083";
         HiveCollectorAdapterParameter adapterParameter = new HiveCollectorAdapterParameter();
-        adapterParameter.setHiveMetastoreUris(metaUris);
+        adapterParameter.setMetastoreUris(metaUris);
         HiveCollectorAdapter adapter = new HiveCollectorAdapter(adapterParameter);
         CollectorResult collectorResult = adapter.testConnection();
         Assertions.assertNotNull(collectorResult);

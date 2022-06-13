@@ -31,8 +31,9 @@ import java.util.Objects;
 public class PulsarCollectorAdapter implements ICollectorAdapter {
 
     private final PulsarAdmin pulsarAdmin;
-
+    private final PulsarCollectorAdapterParameter parameter;
     public PulsarCollectorAdapter(PulsarCollectorAdapterParameter parameter) {
+        this.parameter = parameter;
         try {
             pulsarAdmin = PulsarAdmin.builder()
                     .serviceHttpUrl(parameter.getServerUrl())
@@ -56,6 +57,11 @@ public class PulsarCollectorAdapter implements ICollectorAdapter {
         }
 
         return new CollectorResult(true);
+    }
+
+    @Override
+    public PulsarCollectorAdapterParameter getParameter() {
+        return this.parameter;
     }
 
     @Override

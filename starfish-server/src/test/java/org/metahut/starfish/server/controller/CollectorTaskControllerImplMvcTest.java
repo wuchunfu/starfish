@@ -8,7 +8,6 @@ import org.metahut.starfish.api.dto.ResultEntity;
 import org.metahut.starfish.api.dto.TypeRequestBatchCreateOrUpdateDTO;
 import org.metahut.starfish.api.enums.ReleaseStateEnum;
 import org.metahut.starfish.ingestion.collector.api.CollectorResult;
-import org.metahut.starfish.ingestion.collector.hive.HiveCollectorAdapter;
 import org.metahut.starfish.ingestion.collector.hive.HiveCollectorAdapterParameter;
 import org.metahut.starfish.scheduler.api.IScheduler;
 import org.metahut.starfish.scheduler.api.parameters.TaskParameter;
@@ -100,7 +99,7 @@ class CollectorTaskControllerImplMvcTest extends WebApplicationTest {
         collectorTaskCreateOrUpdateRequestDTO.setAdapterId(adapterId);
         given(scheduler.createSingleHttpTask(Mockito.any(TaskParameter.class))).willReturn(flowId);
         HiveCollectorAdapterParameter hiveCollectorAdapterParameter = new HiveCollectorAdapterParameter();
-        hiveCollectorAdapterParameter.setHiveMetastoreUris("thrift://172.21.100.231:9083");
+        hiveCollectorAdapterParameter.setMetastoreUris("thrift://172.21.100.231:9083");
         given(collectorPluginParameterHelper
             .testAdapterConnection(Mockito.any(String.class), Mockito.any(String.class)))
             .willReturn(new CollectorResult(true));
@@ -124,7 +123,7 @@ class CollectorTaskControllerImplMvcTest extends WebApplicationTest {
         collectorTaskCreateOrUpdateRequestDTO.setAdapterId(adapterId);
         given(scheduler.createSingleHttpTask(Mockito.any(TaskParameter.class))).willReturn(flowId);
         HiveCollectorAdapterParameter hiveCollectorAdapterParameter = new HiveCollectorAdapterParameter();
-        hiveCollectorAdapterParameter.setHiveMetastoreUris("thrift://172.21.100.231:9083");
+        hiveCollectorAdapterParameter.setMetastoreUris("thrift://172.21.100.231:9083");
 
         String request = JSONUtils.toJSONString(collectorTaskCreateOrUpdateRequestDTO);
         ResultActions result = mockMvc
@@ -167,7 +166,7 @@ class CollectorTaskControllerImplMvcTest extends WebApplicationTest {
         collectorTaskCreateOrUpdateRequestDTO.setAdapterId(adapterId);
         given(scheduler.createSingleHttpTask(Mockito.any(TaskParameter.class))).willReturn(flowId);
         HiveCollectorAdapterParameter hiveCollectorAdapterParameter = new HiveCollectorAdapterParameter();
-        hiveCollectorAdapterParameter.setHiveMetastoreUris("thrift://172.21.100.231:9083");
+        hiveCollectorAdapterParameter.setMetastoreUris("thrift://172.21.100.231:9083");
 
         String request = JSONUtils.toJSONString(collectorTaskCreateOrUpdateRequestDTO);
         ResultActions result = mockMvc
@@ -198,7 +197,7 @@ class CollectorTaskControllerImplMvcTest extends WebApplicationTest {
         collectorTaskCreateOrUpdateRequestDTO.setAdapterId(adapterId);
         given(scheduler.createSingleHttpTask(Mockito.any(TaskParameter.class))).willReturn(flowId);
         HiveCollectorAdapterParameter hiveCollectorAdapterParameter = new HiveCollectorAdapterParameter();
-        hiveCollectorAdapterParameter.setHiveMetastoreUris("thrift://172.21.100.231:9083");
+        hiveCollectorAdapterParameter.setMetastoreUris("thrift://172.21.100.231:9083");
         String request = JSONUtils.toJSONString(collectorTaskCreateOrUpdateRequestDTO);
         ResultActions result = mockMvc
             .perform(MockMvcRequestBuilders.post(new URI(REST_FUNCTION_URL_PREFIX)).content(request)
@@ -227,7 +226,7 @@ class CollectorTaskControllerImplMvcTest extends WebApplicationTest {
             .setParameter("{\"hiveMetastoreUris\":\"thrift://172.21.100.231:9083\"}");
         collectorAdapterCreateOrUpdateRequestDTO.setType("Hive");
         HiveCollectorAdapterParameter hiveCollectorAdapterParameter = new HiveCollectorAdapterParameter();
-        hiveCollectorAdapterParameter.setHiveMetastoreUris("thrift://172.21.100.231:9083");
+        hiveCollectorAdapterParameter.setMetastoreUris("thrift://172.21.100.231:9083");
         given(collectorPluginParameterHelper
             .testAdapterConnection(Mockito.any(String.class), Mockito.any(String.class)))
             .willReturn(new CollectorResult(true));
@@ -302,7 +301,7 @@ class CollectorTaskControllerImplMvcTest extends WebApplicationTest {
             .setParameter("{\"hiveMetastoreUris\":\"thrift://172.21.100.231:9083\"}");
         collectorAdapterCreateOrUpdateRequestDTO.setType("Hive");
         HiveCollectorAdapterParameter hiveCollectorAdapterParameter = new HiveCollectorAdapterParameter();
-        hiveCollectorAdapterParameter.setHiveMetastoreUris("thrift://172.21.100.231:9083");
+        hiveCollectorAdapterParameter.setMetastoreUris("thrift://172.21.100.231:9083");
         given(collectorPluginParameterHelper
             .testAdapterConnection(Mockito.any(String.class), Mockito.any(String.class)))
             .willReturn(new CollectorResult(true));
