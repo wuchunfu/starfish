@@ -1,8 +1,6 @@
 package org.metahut.starfish.server.controller;
 
 import org.metahut.starfish.api.controller.EntityController;
-import org.metahut.starfish.api.dto.HiveClusterQueryDTO;
-import org.metahut.starfish.api.dto.HiveClusterResponseDTO;
 import org.metahut.starfish.api.dto.PageResponseDTO;
 import org.metahut.starfish.api.dto.ResultEntity;
 import org.metahut.starfish.api.dto.SourceRequestDTO;
@@ -26,7 +24,6 @@ import org.springframework.transaction.support.TransactionTemplate;
 
 import java.net.URI;
 import java.text.SimpleDateFormat;
-
 
 import static org.junit.jupiter.api.Assertions.assertNotNull;
 
@@ -167,6 +164,6 @@ class EntityControllerImplTest extends WebApplicationTest {
         sourceRequestDTO.setPageSize(1);
         sourceRequestDTO.setName("Hive");
         ResultEntity<PageResponseDTO<SourceResponseDTO>> sources = entityController.sources(sourceRequestDTO);
-        System.out.println(sources);
+        Assertions.assertNotNull(sources);
     }
 }

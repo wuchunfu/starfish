@@ -80,7 +80,8 @@ public class EntityControllerImpl implements EntityController {
         if (condition.getFilters() == null) {
             condition.setFilters(new ArrayList<>());
         }
-        condition.getFilters().add(ConditionPiece.entityWithTypeAndIdAndQualifiedName(idTypeNameQueryCondition.getTypeName(),idTypeNameQueryCondition.getId(),idTypeNameQueryCondition.getQualifiedName()));
+        condition.getFilters().add(ConditionPiece.entityWithTypeAndIdAndQualifiedName(
+                idTypeNameQueryCondition.getTypeName(),idTypeNameQueryCondition.getId(),idTypeNameQueryCondition.getQualifiedName()));
         Collection<Map> instances = abstractMetaDataService.instances(condition);
         Optional<Map> first = instances.stream().findFirst();
         if (first.isPresent()) {

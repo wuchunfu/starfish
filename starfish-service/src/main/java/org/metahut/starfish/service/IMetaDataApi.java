@@ -103,6 +103,7 @@ interface IMetaDataApi<K,T> {
     <U> U instance(K instanceId,java.lang.Class<U> returnType) throws AbstractMetaParserException;
 
     <U> U instance(AbstractQueryCondition<U> condition) throws AbstractMetaParserException;
+
     /**
      * find instances by condition
      * @param condition

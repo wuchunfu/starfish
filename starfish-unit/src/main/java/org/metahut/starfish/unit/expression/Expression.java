@@ -64,6 +64,21 @@ public interface Expression {
         return result;
     }
 
+    static List<BinaryExpression> entity(Long id,String name) {
+        List<BinaryExpression> result = new ArrayList<>();
+        EqualExpression equalExpression = new EqualExpression();
+        equalExpression.setLeftExpression(new StringExpression(CATEGORY));
+        equalExpression.setRightExpression(new StringExpression(TypeCategory.ENTITY.name()));
+        if (name != null && !"".equals(name)) {
+            result.add(Expression.qualifiedName(name));
+        }
+        if (id != null) {
+            result.add(Expression.id(id));
+        }
+        result.add(equalExpression);
+        return result;
+    }
+
     static List<BinaryExpression> type(String name) {
         List<BinaryExpression> result = new ArrayList<>();
         EqualExpression equalExpression = new EqualExpression();

@@ -19,8 +19,6 @@ package org.metahut.starfish.ingestion.collector.hive;
 
 import org.metahut.starfish.ingestion.collector.api.AbstractCollectorParameter;
 
-import org.apache.commons.lang3.StringUtils;
-
 public class HiveCollectorTaskParameter extends AbstractCollectorParameter {
 
     @Override

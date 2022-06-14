@@ -48,31 +48,37 @@ public class ConditionPiece {
     }
 
     public static ConditionPiece entityWithType(String typeName) {
-        ConditionPiece conditionPiece = new ConditionPiece();
-        conditionPiece.setExpressions(Expression.entity());
-        conditionPiece.setTableType(TableType.ENTITY);
-        Map<String,List<ConditionPiece>> map = new HashMap<>();
-        conditionPiece.setNextConditionChain(map);
-        ConditionPiece conditionParent = new ConditionPiece();
-        conditionParent.setTableType(TableType.RELATION);
-        conditionParent.setExpressions(Expression.rel(LinkCategory.TYPE_ENTITY,LinkCategory.TYPE_ENTITY.name()));
-        Map<String,List<ConditionPiece>> next = new HashMap<>();
-        ConditionPiece typeCondition = new ConditionPiece();
-        typeCondition.setTableType(TableType.ENTITY);
-        typeCondition.setExpressions(Expression.type(typeName));
-        next.put(Expression.START_NODE_ENTITY, Arrays.asList(typeCondition));
-        conditionParent.setNextConditionChain(next);
-        map.put(Expression.PARENT,Arrays.asList(conditionParent));
-        return conditionPiece;
+        return entityWithTypeAndQualifiedName(typeName,null);
+    }
+
+    public static ConditionPiece entityWithTypeAndQualifiedName(String typeName,String qualifiedName) {
+        return entityWithTypeAndIdAndQualifiedName(typeName,null,qualifiedName);
+    }
+
+    public static ConditionPiece entityWithIdAndQualifiedName(Long id,String qualifiedName) {
+        return entityWithTypeAndIdAndQualifiedName(null,id,qualifiedName);
     }
 
     public static ConditionPiece entityWithTypeAndIdAndQualifiedName(String typeName,Long id,String qualifiedName) {
-        ConditionPiece conditionPiece = entityWithType(typeName);
+        ConditionPiece conditionPiece = new ConditionPiece();
         List<BinaryExpression> expressions = new ArrayList<>();
-        if (id != null) {
-            expressions.add(Expression.id(id));
+        conditionPiece.setExpressions(expressions);
+        expressions.addAll(Expression.entity(id,qualifiedName));
+        conditionPiece.setTableType(TableType.ENTITY);
+        if (typeName != null && !"".equals(typeName)) {
+            Map<String, List<ConditionPiece>> map = new HashMap<>();
+            conditionPiece.setNextConditionChain(map);
+            ConditionPiece conditionParent = new ConditionPiece();
+            conditionParent.setTableType(TableType.RELATION);
+            conditionParent.setExpressions(Expression.rel(LinkCategory.TYPE_ENTITY, LinkCategory.TYPE_ENTITY.name()));
+            Map<String, List<ConditionPiece>> next = new HashMap<>();
+            ConditionPiece typeCondition = new ConditionPiece();
+            typeCondition.setTableType(TableType.ENTITY);
+            typeCondition.setExpressions(Expression.type(typeName));
+            next.put(Expression.START_NODE_ENTITY, Arrays.asList(typeCondition));
+            conditionParent.setNextConditionChain(next);
+            map.put(Expression.PARENT, Arrays.asList(conditionParent));
         }
-        expressions.addAll(Expression.entity(qualifiedName));
         conditionPiece.setExpressions(expressions);
         return conditionPiece;
     }
