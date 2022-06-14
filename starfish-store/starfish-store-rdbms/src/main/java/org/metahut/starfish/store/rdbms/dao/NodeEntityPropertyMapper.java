@@ -7,7 +7,6 @@ import org.metahut.starfish.store.rdbms.repository.NodeEntityPropertyRepository;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Example;
-import org.springframework.data.domain.ExampleMatcher;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.Sort;
@@ -100,24 +99,18 @@ public class NodeEntityPropertyMapper implements
 
     @Override
     public Collection<NodeEntityProperty> findByName(String name) {
-        ExampleMatcher matcher = ExampleMatcher.matching()
-            .withIgnoreCase("name");
-
         NodeEntityProperty property = new NodeEntityProperty();
         property.setName(name);
 
-        return repository.findAll(Example.of(property, matcher));
+        return repository.findAll(Example.of(property));
     }
 
     @Override
     public Page<NodeEntityProperty> findByName(String name, Pageable pageable) {
-        ExampleMatcher matcher = ExampleMatcher.matching()
-            .withIgnoreCase("name");
-
         NodeEntityProperty property = new NodeEntityProperty();
         property.setName(name);
 
-        return repository.findAll(Example.of(property, matcher), pageable);
+        return repository.findAll(Example.of(property), pageable);
     }
 
     @Override

@@ -7,7 +7,6 @@ import org.metahut.starfish.store.rdbms.repository.RelationEntityPropertyReposit
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Example;
-import org.springframework.data.domain.ExampleMatcher;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.Sort;
@@ -100,24 +99,18 @@ public class RelationEntityPropertyMapper implements
 
     @Override
     public Collection<RelationEntityProperty> findByName(String name) {
-        ExampleMatcher matcher = ExampleMatcher.matching()
-            .withIgnoreCase("name");
-
         RelationEntityProperty property = new RelationEntityProperty();
         property.setName(name);
 
-        return repository.findAll(Example.of(property, matcher));
+        return repository.findAll(Example.of(property));
     }
 
     @Override
     public Page<RelationEntityProperty> findByName(String name, Pageable pageable) {
-        ExampleMatcher matcher = ExampleMatcher.matching()
-            .withIgnoreCase("name");
-
         RelationEntityProperty property = new RelationEntityProperty();
         property.setName(name);
 
-        return repository.findAll(Example.of(property, matcher), pageable);
+        return repository.findAll(Example.of(property), pageable);
     }
 
     @Override

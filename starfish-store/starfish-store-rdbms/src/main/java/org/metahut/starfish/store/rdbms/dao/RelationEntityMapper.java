@@ -8,7 +8,6 @@ import org.metahut.starfish.store.rdbms.repository.RelationEntityRepository;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Example;
-import org.springframework.data.domain.ExampleMatcher;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.Sort;
@@ -150,18 +149,14 @@ public class RelationEntityMapper implements IRelationEntityMapper<Long, Relatio
     public Collection<RelationEntity> findByName(String name) {
         RelationEntity entity = new RelationEntity();
         entity.setName(name);
-        ExampleMatcher matcher = ExampleMatcher.matching()
-            .withIgnoreCase("name");
-        return repository.findAll(Example.of(entity, matcher));
+        return repository.findAll(Example.of(entity));
     }
 
     @Override
     public Collection<RelationEntity> findByCategory(String category) {
         RelationEntity entity = new RelationEntity();
         entity.setCategory(category);
-        ExampleMatcher matcher = ExampleMatcher.matching()
-            .withIgnoreCase("category");
-        return repository.findAll(Example.of(entity, matcher));
+        return repository.findAll(Example.of(entity));
     }
 
     @Override
@@ -169,9 +164,7 @@ public class RelationEntityMapper implements IRelationEntityMapper<Long, Relatio
         RelationEntity entity = new RelationEntity();
         entity.setCategory(category);
         entity.setName(name);
-        ExampleMatcher matcher = ExampleMatcher.matching()
-            .withIgnoreCase("category", "name");
-        return repository.findAll(Example.of(entity, matcher));
+        return repository.findAll(Example.of(entity));
     }
 
     @Override
@@ -223,18 +216,14 @@ public class RelationEntityMapper implements IRelationEntityMapper<Long, Relatio
     public Page<RelationEntity> findByName(String name, Pageable pageable) {
         RelationEntity entity = new RelationEntity();
         entity.setName(name);
-        ExampleMatcher matcher = ExampleMatcher.matching()
-            .withIgnoreCase("name");
-        return repository.findAll(Example.of(entity, matcher), pageable);
+        return repository.findAll(Example.of(entity), pageable);
     }
 
     @Override
     public Page<RelationEntity> findByCategory(String category, Pageable pageable) {
         RelationEntity entity = new RelationEntity();
         entity.setCategory(category);
-        ExampleMatcher matcher = ExampleMatcher.matching()
-            .withIgnoreCase("category");
-        return repository.findAll(Example.of(entity, matcher), pageable);
+        return repository.findAll(Example.of(entity), pageable);
     }
 
     @Override
@@ -243,9 +232,7 @@ public class RelationEntityMapper implements IRelationEntityMapper<Long, Relatio
         RelationEntity entity = new RelationEntity();
         entity.setCategory(category);
         entity.setName(name);
-        ExampleMatcher matcher = ExampleMatcher.matching()
-            .withIgnoreCase("category", "name");
-        return repository.findAll(Example.of(entity, matcher), pageable);
+        return repository.findAll(Example.of(entity), pageable);
     }
 
     @Override

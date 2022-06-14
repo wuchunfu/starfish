@@ -8,7 +8,6 @@ import org.metahut.starfish.store.rdbms.repository.RelationEntityRepository;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Example;
-import org.springframework.data.domain.ExampleMatcher;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.Sort;
@@ -152,9 +151,7 @@ public class NodeEntityMapper implements INodeEntityMapper<Long, NodeEntity, Nod
     public List<NodeEntity> findByQualifiedName(String qualifiedName) {
         NodeEntity nodeEntity = new NodeEntity();
         nodeEntity.setQualifiedName(qualifiedName);
-        ExampleMatcher matcher = ExampleMatcher.matching()
-            .withIgnoreCase("qualifiedName");
-        Example<NodeEntity> example = Example.of(nodeEntity, matcher);
+        Example<NodeEntity> example = Example.of(nodeEntity);
         return repository.findAll(example);
     }
 
@@ -162,9 +159,7 @@ public class NodeEntityMapper implements INodeEntityMapper<Long, NodeEntity, Nod
     public List<NodeEntity> findByCategory(String category) {
         NodeEntity nodeEntity = new NodeEntity();
         nodeEntity.setCategory(category);
-        ExampleMatcher matcher = ExampleMatcher.matching()
-            .withIgnoreCase("category");
-        Example<NodeEntity> example = Example.of(nodeEntity, matcher);
+        Example<NodeEntity> example = Example.of(nodeEntity);
         return repository.findAll(example);
     }
 
@@ -173,9 +168,7 @@ public class NodeEntityMapper implements INodeEntityMapper<Long, NodeEntity, Nod
         NodeEntity nodeEntity = new NodeEntity();
         nodeEntity.setCategory(category);
         nodeEntity.setQualifiedName(qualifiedName);
-        ExampleMatcher matcher = ExampleMatcher.matching()
-            .withIgnoreCase("category", "qualifiedName");
-        Example<NodeEntity> example = Example.of(nodeEntity, matcher);
+        Example<NodeEntity> example = Example.of(nodeEntity);
         return repository.findOne(example).orElse(null);
     }
 
@@ -183,9 +176,7 @@ public class NodeEntityMapper implements INodeEntityMapper<Long, NodeEntity, Nod
     public Page<NodeEntity> findByQualifiedName(String qualifiedName, Pageable pageable) {
         NodeEntity nodeEntity = new NodeEntity();
         nodeEntity.setQualifiedName(qualifiedName);
-        ExampleMatcher matcher = ExampleMatcher.matching()
-            .withIgnoreCase("qualifiedName");
-        Example<NodeEntity> example = Example.of(nodeEntity, matcher);
+        Example<NodeEntity> example = Example.of(nodeEntity);
         return repository.findAll(example, pageable);
     }
 
@@ -193,9 +184,7 @@ public class NodeEntityMapper implements INodeEntityMapper<Long, NodeEntity, Nod
     public Page<NodeEntity> findByCategory(String category, Pageable pageable) {
         NodeEntity nodeEntity = new NodeEntity();
         nodeEntity.setCategory(category);
-        ExampleMatcher matcher = ExampleMatcher.matching()
-            .withIgnoreCase("category");
-        Example<NodeEntity> example = Example.of(nodeEntity, matcher);
+        Example<NodeEntity> example = Example.of(nodeEntity);
         return repository.findAll(example, pageable);
     }
 
