@@ -28,7 +28,7 @@ public class HiveTableResponseDTO {
     private String lastAccessTime;
 
     @ApiModelProperty(value = "hive table partition keys")
-    private List<String> partitionKeys;
+    private List<HiveColumnResponseDTO> partitionKeys;
 
     @ApiModelProperty(value = "hive table type")
     private String tableType;
@@ -85,11 +85,11 @@ public class HiveTableResponseDTO {
         this.lastAccessTime = lastAccessTime;
     }
 
-    public List<String> getPartitionKeys() {
+    public List<HiveColumnResponseDTO> getPartitionKeys() {
         return partitionKeys;
     }
 
-    public void setPartitionKeys(List<String> partitionKeys) {
+    public void setPartitionKeys(List<HiveColumnResponseDTO> partitionKeys) {
         this.partitionKeys = partitionKeys;
     }
 

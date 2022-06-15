@@ -146,6 +146,54 @@
           "defaultValue": null
         },
         {
+          "name": "partitions",
+          "className": "org.starfish.PulsarPartition",
+          "relType": "ENTITY",
+          "array": true,
+          "defaultValue": null
+        }
+      ]
+    },
+    {
+      "name": "PulsarPartition",
+      "packagePath": "org.starfish",
+      "attributes": [
+        {
+          "name": "name",
+          "className": "java.lang.String",
+          "relType": "PRIMITIVE",
+          "array": false,
+          "defaultValue": null
+        },
+        {
+          "name": "storageSize",
+          "className": "java.lang.Long",
+          "relType": "PRIMITIVE",
+          "array": false,
+          "defaultValue": null
+        },
+        {
+          "name": "backlogSize",
+          "className": "java.lang.Long",
+          "relType": "PRIMITIVE",
+          "array": false,
+          "defaultValue": null
+        },
+        {
+          "name": "namespace",
+          "className": "org.starfish.PulsarNamespace",
+          "relType": "ENTITY",
+          "array": false,
+          "defaultValue": null
+        },
+        {
+          "name": "topic",
+          "className": "org.starfish.PulsarTopic",
+          "relType": "ENTITY",
+          "array": false,
+          "defaultValue": null
+        },
+        {
           "name": "publishers",
           "className": "org.starfish.PulsarPublisher",
           "relType": "ENTITY",
