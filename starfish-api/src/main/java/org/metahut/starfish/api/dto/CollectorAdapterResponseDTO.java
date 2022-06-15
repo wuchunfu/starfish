@@ -22,6 +22,8 @@ import org.metahut.starfish.api.JSONUtils;
 import io.swagger.annotations.ApiModel;
 import io.swagger.annotations.ApiModelProperty;
 
+import java.util.Date;
+
 @ApiModel(description = "collector adapter response dto")
 public class CollectorAdapterResponseDTO {
 
@@ -39,6 +41,39 @@ public class CollectorAdapterResponseDTO {
 
     @ApiModelProperty(value = "collector adapter description")
     private String description;
+
+    @ApiModelProperty(value = "collector adapter create time")
+    private Date createTime;
+
+    @ApiModelProperty(value = "collector adapter update time")
+    private Date updateTime;
+
+    @ApiModelProperty(value = "collector adapter operator")
+    private Integer operator;
+
+    public Date getCreateTime() {
+        return createTime;
+    }
+
+    public void setCreateTime(Date createTime) {
+        this.createTime = createTime;
+    }
+
+    public Date getUpdateTime() {
+        return updateTime;
+    }
+
+    public void setUpdateTime(Date updateTime) {
+        this.updateTime = updateTime;
+    }
+
+    public Integer getOperator() {
+        return operator;
+    }
+
+    public void setOperator(Integer operator) {
+        this.operator = operator;
+    }
 
     public Long getId() {
         return id;

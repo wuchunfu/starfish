@@ -8,6 +8,7 @@ import org.metahut.starfish.api.dto.CollectorTaskInstanceResponseDTO;
 import org.metahut.starfish.api.dto.CollectorTaskRequestDTO;
 import org.metahut.starfish.api.dto.CollectorTaskResponseDTO;
 import org.metahut.starfish.api.dto.PageResponseDTO;
+import org.metahut.starfish.api.enums.Status;
 import org.metahut.starfish.scheduler.api.ExecutionStatus;
 import org.metahut.starfish.scheduler.api.IScheduler;
 import org.metahut.starfish.scheduler.api.PageResponse;
@@ -211,6 +212,9 @@ public class CollectorTaskServiceImpl implements CollectorTaskService {
     @Override
     public void deleteById(Long id) {
         CollectorTaskResponseDTO instance = metaDataService.instance(id, CollectorTaskResponseDTO.class);
+        if(Objects.nonNull(instance.getAdapter())){
+            Assert.notNull(instance, Status.COLLECTOR_TASK_DELETE_ADAPTER_EXIST,instance.getAdapter().getName());
+        }
         try {
             // delete schedule flow instance
             scheduler.deleteFlowByCode(instance.getSchedulerFlowCode());
