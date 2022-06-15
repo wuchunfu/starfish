@@ -44,6 +44,6 @@ public class HiveCollectorAdapterParameter extends AbstractCollectorParameter {
 
     @Override
     public boolean checkParameter() {
-        return StringUtils.isNotBlank(metastoreUris);
+        return StringUtils.isNotBlank(metastoreUris) && StringUtils.isNotBlank(clusterName);
     }
 }

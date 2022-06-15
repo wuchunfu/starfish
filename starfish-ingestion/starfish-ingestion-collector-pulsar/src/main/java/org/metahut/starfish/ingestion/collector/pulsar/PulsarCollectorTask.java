@@ -109,7 +109,7 @@ public class PulsarCollectorTask extends AbstractCollectorTask {
     }
 
     private void sendMessage(RowData rowData) {
-        metaClient.sendMessage(COLLECTOR_TYPE, rowData);
+        metaClient.sendMessage(this.adapter.getParameter().getServerUrl(), rowData);
     }
 
     private void deleteNonExistentMetadata() {
