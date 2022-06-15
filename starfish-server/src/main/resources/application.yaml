@@ -62,19 +62,19 @@ spring:
     properties:
       hibernate:
         jdbc:
-          batch_size: 100
+          batch_size: 50
         cache:
-#          use_second_level_cache: true
-          use_query_cache: true
-          region.factory_class: org.hibernate.cache.jcache.internal.JCacheRegionFactory
-        javax.cache:
-          missing_cache_strategy: create
+          use_second_level_cache: false
+          use_query_cache: false
+#          region.factory_class: org.hibernate.cache.jcache.internal.JCacheRegionFactory
+#        javax.cache:
+#          missing_cache_strategy: create
 #          provider: org.ehcache.jsr107.EhcacheCachingProvider
     hibernate:
       ddl-auto: update
     show-sql: true
-  cache:
-    type: jcache
+#  cache:
+#    type: jcache
 
 
 knife4j:

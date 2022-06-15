@@ -54,6 +54,13 @@ spring:
   jpa:
     hibernate:
       ddl-auto: update
+    properties:
+      hibernate:
+        jdbc:
+          batch_size: 50
+        cache:
+          use_second_level_cache: false
+          use_query_cache: false
     show-sql: true
 
 knife4j:
