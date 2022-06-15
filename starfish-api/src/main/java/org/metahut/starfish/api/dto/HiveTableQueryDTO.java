@@ -129,6 +129,7 @@ public class HiveTableQueryDTO extends PageRequestDTO {
         EachPointer eachPointer = new EachPointer(LinkCategory.RELATIONSHIP,RelationType.CHILD);
         map.put("db",eachPointer);
         map.put("columns",new EachPointer(LinkCategory.RELATIONSHIP,RelationType.CHILD));
+        map.put("partitionKeys",new EachPointer(LinkCategory.RELATIONSHIP,RelationType.CHILD));
         EachPointer dbPointer = new EachPointer(LinkCategory.RELATIONSHIP,RelationType.CHILD);
         Map<String, EachPointer> map1 = new HashMap<>();
         map1.put("cluster",dbPointer);

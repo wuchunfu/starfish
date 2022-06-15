@@ -138,16 +138,16 @@ public class PulsarTopicQueryDTO extends PageRequestDTO {
 
     private Map<String, EachPointer> eachPointerMap() {
         Map<String, EachPointer> map = new HashMap<>();
-        EachPointer namespaceParent = new EachPointer(LinkCategory.RELATIONSHIP,
-            RelationType.CHILD);
+        EachPointer namespaceParent = new EachPointer(LinkCategory.RELATIONSHIP, RelationType.CHILD);
         map.put("namespace", namespaceParent);
         EachPointer tenantPointer = new EachPointer(LinkCategory.RELATIONSHIP, RelationType.CHILD);
         namespaceParent.addPointerChain("tenant", tenantPointer);
-        EachPointer clusterPointer = new EachPointer(LinkCategory.RELATIONSHIP,
-            RelationType.CHILD);
+        EachPointer clusterPointer = new EachPointer(LinkCategory.RELATIONSHIP, RelationType.CHILD);
         tenantPointer.addPointerChain("allowedClusters", clusterPointer);
+        EachPointer partitionChild = new EachPointer(LinkCategory.RELATIONSHIP, RelationType.CHILD);
+        map.put("partitions", partitionChild);
         EachPointer publisherChild = new EachPointer(LinkCategory.RELATIONSHIP, RelationType.CHILD);
-        map.put("publishers", publisherChild);
+        partitionChild.addPointerChain("publishers", publisherChild);
         return map;
     }
 
@@ -162,36 +162,28 @@ public class PulsarTopicQueryDTO extends PageRequestDTO {
             map.putAll(pulsarTopicPropRel());
         }
         if (!StringUtils.isAllEmpty(publisherName, publisherTeam)) {
-            map.putAll(pulsarChildrenRelStart());
+            map.putAll(pulsarPartitionRelStart());
         }
         if (this.createBeginTime != null) {
             if (this.createEndTime != null) {
-                expressions.add(Expression
-                    .dateBetweenAnd(Expression.CREATE_TIME, this.createBeginTime,
-                        this.createEndTime));
+                expressions.add(Expression.dateBetweenAnd(Expression.CREATE_TIME, this.createBeginTime, this.createEndTime));
             } else {
-                expressions.add(Expression
-                    .dateGreaterThanOrEqualTo(Expression.CREATE_TIME, this.createBeginTime));
+                expressions.add(Expression.dateGreaterThanOrEqualTo(Expression.CREATE_TIME, this.createBeginTime));
             }
         } else {
             if (this.createEndTime != null) {
-                expressions.add(
-                    Expression.dateLessThanOrEqualTo(Expression.CREATE_TIME, this.createEndTime));
+                expressions.add(Expression.dateLessThanOrEqualTo(Expression.CREATE_TIME, this.createEndTime));
             }
         }
         if (this.updateBeginTime != null) {
             if (this.updateEndTime != null) {
-                expressions.add(Expression
-                    .dateBetweenAnd(Expression.UPDATE_TIME, this.updateBeginTime,
-                        this.updateEndTime));
+                expressions.add(Expression.dateBetweenAnd(Expression.UPDATE_TIME, this.updateBeginTime, this.updateEndTime));
             } else {
-                expressions.add(Expression
-                    .dateGreaterThanOrEqualTo(Expression.UPDATE_TIME, this.updateBeginTime));
+                expressions.add(Expression.dateGreaterThanOrEqualTo(Expression.UPDATE_TIME, this.updateBeginTime));
             }
         } else {
             if (this.updateEndTime != null) {
-                expressions.add(
-                    Expression.dateLessThanOrEqualTo(Expression.UPDATE_TIME, this.updateEndTime));
+                expressions.add(Expression.dateLessThanOrEqualTo(Expression.UPDATE_TIME, this.updateEndTime));
             }
         }
         conditionPiece.setExpressions(expressions);
@@ -206,15 +198,14 @@ public class PulsarTopicQueryDTO extends PageRequestDTO {
         if (clusterId != null || StringUtils.isNotEmpty(clusterName)) {
             conditionPieces.add(pulsarNamespaceRel());
         }
-        result.put("parent", conditionPieces);
+        result.put(Expression.PARENT, conditionPieces);
         return result;
     }
 
     private ConditionPiece pulsarTypeRel() {
         ConditionPiece conditionPiece = new ConditionPiece();
         conditionPiece.setTableType(TableType.RELATION);
-        conditionPiece.setExpressions(
-            Expression.rel(LinkCategory.TYPE_ENTITY, LinkCategory.TYPE_ENTITY.name()));
+        conditionPiece.setExpressions(Expression.rel(LinkCategory.TYPE_ENTITY, LinkCategory.TYPE_ENTITY.name()));
         conditionPiece.setNextConditionChain(pulsarTopicParentRelStart());
         return conditionPiece;
     }
@@ -263,9 +254,6 @@ public class PulsarTopicQueryDTO extends PageRequestDTO {
     private ConditionPiece pulsarTenant() {
         ConditionPiece conditionPiece = new ConditionPiece();
         conditionPiece.setTableType(TableType.ENTITY);
-        // if (clusterId != null) {
-        //     conditionPiece.setExpressions(Arrays.asList(Expression.id(clusterId)));
-        // }pulsarClusterProps()
         conditionPiece.setNextConditionChain(pulsarTenantRelEnd());
         return conditionPiece;
     }
@@ -310,8 +298,7 @@ public class PulsarTopicQueryDTO extends PageRequestDTO {
         ConditionPiece conditionPiece = new ConditionPiece();
         conditionPiece.setTableType(TableType.ENTITY_PROPERTY);
         if (StringUtils.isNotEmpty(this.clusterName)) {
-            conditionPiece.setExpressions(
-                Arrays.asList(Expression.and(Expression.keyValueLike("name", this.clusterName))));
+            conditionPiece.setExpressions(Arrays.asList(Expression.and(Expression.keyValueLike("name", this.clusterName))));
         }
         return conditionPiece;
     }
@@ -338,12 +325,38 @@ public class PulsarTopicQueryDTO extends PageRequestDTO {
     private ConditionPiece pulsarTopicPropCondition() {
         ConditionPiece conditionPiece = new ConditionPiece();
         conditionPiece.setTableType(TableType.ENTITY_PROPERTY);
-        conditionPiece.setExpressions(
-            Arrays.asList(Expression.and(Expression.keyValueLike("name", this.topicName))));
+        conditionPiece.setExpressions(Arrays.asList(Expression.and(Expression.keyValueLike("name", this.topicName))));
         return conditionPiece;
     }
 
-    private Map<String, List<ConditionPiece>> pulsarChildrenRelStart() {
+    private Map<String, List<ConditionPiece>> pulsarPartitionRelStart() {
+        Map<String, List<ConditionPiece>> result = new HashMap<>();
+        result.put(Expression.CHILDREN, Arrays.asList(pulsarPartitionRel()));
+        return result;
+    }
+
+    private ConditionPiece pulsarPartitionRel() {
+        ConditionPiece conditionPiece = new ConditionPiece();
+        conditionPiece.setTableType(TableType.RELATION);
+        conditionPiece.setExpressions(Expression.rel(LinkCategory.RELATIONSHIP, "partitions"));
+        conditionPiece.setNextConditionChain(pulsarPartitionRelEnd());
+        return conditionPiece;
+    }
+
+    private Map<String, List<ConditionPiece>> pulsarPartitionRelEnd() {
+        Map<String, List<ConditionPiece>> result = new HashMap<>();
+        result.put(Expression.END_NODE_ENTITY, Arrays.asList(pulsarPartition()));
+        return result;
+    }
+
+    private ConditionPiece pulsarPartition() {
+        ConditionPiece conditionPiece = new ConditionPiece();
+        conditionPiece.setTableType(TableType.ENTITY);
+        conditionPiece.setNextConditionChain(pulsarPublisherRelStart());
+        return conditionPiece;
+    }
+
+    private Map<String, List<ConditionPiece>> pulsarPublisherRelStart() {
         Map<String, List<ConditionPiece>> result = new HashMap<>();
         result.put(Expression.CHILDREN, Arrays.asList(pulsarPublisherRel()));
         return result;
@@ -353,11 +366,11 @@ public class PulsarTopicQueryDTO extends PageRequestDTO {
         ConditionPiece conditionPiece = new ConditionPiece();
         conditionPiece.setTableType(TableType.RELATION);
         conditionPiece.setExpressions(Expression.rel(LinkCategory.RELATIONSHIP, "publishers"));
-        conditionPiece.setNextConditionChain(pulsarChildrenRelEnd());
+        conditionPiece.setNextConditionChain(pulsarPublisherRelEnd());
         return conditionPiece;
     }
 
-    private Map<String, List<ConditionPiece>> pulsarChildrenRelEnd() {
+    private Map<String, List<ConditionPiece>> pulsarPublisherRelEnd() {
         Map<String, List<ConditionPiece>> result = new HashMap<>();
         result.put(Expression.END_NODE_ENTITY, Arrays.asList(pulsarPublisherCondition()));
         return result;
