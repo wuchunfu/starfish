@@ -139,6 +139,7 @@ public class PulsarTopicQueryDTO extends PageRequestDTO {
         Map<String, EachPointer> map = new HashMap<>();
         EachPointer namespaceParent = new EachPointer(LinkCategory.RELATIONSHIP, RelationType.CHILD);
         map.put("namespace", namespaceParent);
+        map.put("publishers",new EachPointer(LinkCategory.RELATIONSHIP, RelationType.CHILD));
         EachPointer tenantPointer = new EachPointer(LinkCategory.RELATIONSHIP, RelationType.CHILD);
         namespaceParent.addPointerChain("tenant", tenantPointer);
         EachPointer clusterPointer = new EachPointer(LinkCategory.RELATIONSHIP, RelationType.CHILD);

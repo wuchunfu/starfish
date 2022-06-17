@@ -30,8 +30,11 @@ public class PulsarTopicResponseDTO {
     @ApiModelProperty(value = "pulsar topic schemas")
     private List<PulsarSchemaResponseDTO> schemas;
 
-    @ApiModelProperty(value = "pulsar topic publishers")
+    @ApiModelProperty(value = "pulsar topic partitions")
     private List<PulsarPartitionResponseDTO> partitions;
+
+    @ApiModelProperty(value = "pulsar topic publishers")
+    private List<PulsarPublisherResponseDTO> publishers;
 
     @ApiModelProperty(value = "pulsar topic create time")
     private Date createTime;
@@ -109,5 +112,13 @@ public class PulsarTopicResponseDTO {
 
     public void setUpdateTime(Date updateTime) {
         this.updateTime = updateTime;
+    }
+
+    public List<PulsarPublisherResponseDTO> getPublishers() {
+        return publishers;
+    }
+
+    public void setPublishers(List<PulsarPublisherResponseDTO> publishers) {
+        this.publishers = publishers;
     }
 }
