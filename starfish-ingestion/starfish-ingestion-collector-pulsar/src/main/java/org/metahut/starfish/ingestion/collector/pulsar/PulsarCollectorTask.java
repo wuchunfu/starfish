@@ -474,7 +474,7 @@ public class PulsarCollectorTask extends AbstractCollectorTask {
         LOGGER.info("PulsarTopic:{}, generate pulsar publisher entity: {}, relation:{}", topicHeader.getQualifiedName(), name, relation);
 
         PulsarPublisher pulsarPublisher = new PulsarPublisher();
-        pulsarPublisher.setAccessMode(publisher.getAccessMode().name());
+        pulsarPublisher.setAccessMode(Objects.isNull(publisher.getAccessMode()) ? null : publisher.getAccessMode().name());
         pulsarPublisher.setMsgRateIn(publisher.getMsgRateIn());
         pulsarPublisher.setMsgThroughputIn(publisher.getMsgThroughputIn());
         pulsarPublisher.setAverageMsgSize(publisher.getAverageMsgSize());
