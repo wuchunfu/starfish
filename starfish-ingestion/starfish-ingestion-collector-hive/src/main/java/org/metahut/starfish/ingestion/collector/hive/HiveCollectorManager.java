@@ -19,6 +19,7 @@ package org.metahut.starfish.ingestion.collector.hive;
 
 import org.metahut.starfish.ingestion.collector.api.CollectorException;
 import org.metahut.starfish.ingestion.collector.api.ICollectorManager;
+import org.metahut.starfish.ingestion.collector.api.TaskContext;
 import org.metahut.starfish.ingestion.common.JSONUtils;
 
 import java.util.Objects;
@@ -33,9 +34,9 @@ public class HiveCollectorManager implements ICollectorManager {
     }
 
     @Override
-    public HiveCollectorTask generateTaskInstance(String adapterParameter, String parameter) {
-        HiveCollectorTaskParameter taskParameter = JSONUtils.parseObject(parameter, HiveCollectorTaskParameter.class);
-        HiveCollectorAdapter adapter = generateAdapterInstance(adapterParameter);
+    public HiveCollectorTask generateTaskInstance(TaskContext taskContext) {
+        HiveCollectorTaskParameter taskParameter = JSONUtils.parseObject(taskContext.getTaskParameter(), HiveCollectorTaskParameter.class);
+        HiveCollectorAdapter adapter = generateAdapterInstance(taskContext.getAdapterParameter());
         return new HiveCollectorTask(adapter, taskParameter);
     }
 

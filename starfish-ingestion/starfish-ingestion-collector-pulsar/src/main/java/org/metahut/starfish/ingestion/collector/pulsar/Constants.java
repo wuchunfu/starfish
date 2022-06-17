@@ -27,6 +27,7 @@ public class Constants {
     public static final String TYPE_NAME_TENANT = "org.starfish.PulsarTenant";
     public static final String TYPE_NAME_NAMESPACE = "org.starfish.PulsarNamespace";
     public static final String TYPE_NAME_TOPIC = "org.starfish.PulsarTopic";
+    public static final String TYPE_NAME_PARTITION = "org.starfish.PulsarPartition";
     public static final String TYPE_NAME_SCHEMA = "org.starfish.PulsarSchema";
     public static final String TYPE_NAME_PUBLISHER = "org.starfish.PulsarPublisher";
 
@@ -36,10 +37,14 @@ public class Constants {
     public static final String RELATION_PROPERTY_NAMESPACE_TENANT = "tenant";
     public static final String RELATION_PROPERTY_NAMESPACE_TOPIC = "topics";
     public static final String RELATION_PROPERTY_TOPIC_NAMESPACE = "namespace";
+    public static final String RELATION_PROPERTY_TOPIC_PARTITION = "partitions";
+    public static final String RELATION_PROPERTY_PARTITION_TOPIC = "topic";
+
     public static final String RELATION_PROPERTY_TOPIC_SCHEMA = "schemas";
     public static final String RELATION_PROPERTY_SCHEMA_TOPIC = "topic";
     public static final String RELATION_PROPERTY_PUBLISHER_TOPIC = "topic";
     public static final String RELATION_PROPERTY_TOPIC_PUBLISHER = "publishers";
+    public static final String RELATION_PROPERTY_PARTITION_PUBLISHER = "publishers";
 
     public static final String PULSAR_DATA_PREFIX = "^data/.*";
 

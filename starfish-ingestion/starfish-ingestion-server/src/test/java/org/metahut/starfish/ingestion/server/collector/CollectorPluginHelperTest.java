@@ -39,7 +39,7 @@ class CollectorPluginHelperTest  {
 
     @Test
     void generateTaskInstance() {
-        ICollectorTask collector = collectorPluginHelper.generateTaskInstance("parameter", "", "");
+        ICollectorTask collector = collectorPluginHelper.generateTaskInstance("parameter", null);
         Assertions.assertNotNull(collector);
     }
 }

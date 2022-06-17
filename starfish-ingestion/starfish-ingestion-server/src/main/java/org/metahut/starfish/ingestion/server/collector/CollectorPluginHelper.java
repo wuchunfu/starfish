@@ -19,6 +19,7 @@ package org.metahut.starfish.ingestion.server.collector;
 
 import org.metahut.starfish.ingestion.collector.api.ICollectorManager;
 import org.metahut.starfish.ingestion.collector.api.ICollectorTask;
+import org.metahut.starfish.ingestion.collector.api.TaskContext;
 
 import org.springframework.stereotype.Component;
 
@@ -56,7 +57,7 @@ public class CollectorPluginHelper {
         return COLLECTOR_MANAGER_MAP.get(type);
     }
 
-    public ICollectorTask generateTaskInstance(String type, String adapterParameter, String parameter) {
-        return getCollector(type).generateTaskInstance(adapterParameter, parameter);
+    public ICollectorTask generateTaskInstance(String type, TaskContext taskContext) {
+        return getCollector(type).generateTaskInstance(taskContext);
     }
 }

@@ -19,6 +19,7 @@ package org.metahut.starfish.ingestion.collector.pulsar;
 
 import org.metahut.starfish.ingestion.collector.api.CollectorException;
 import org.metahut.starfish.ingestion.collector.api.ICollectorManager;
+import org.metahut.starfish.ingestion.collector.api.TaskContext;
 import org.metahut.starfish.ingestion.common.JSONUtils;
 
 import java.util.Objects;
@@ -31,11 +32,10 @@ public class PulsarCollectorManager implements ICollectorManager {
     }
 
     @Override
-    public PulsarCollectorTask generateTaskInstance(String adapterParameter, String parameter) {
-        PulsarCollectorTaskParameter taskParameter = new PulsarCollectorTaskParameter();
-        //TODO JSONUtils.parseObject(parameter, PulsarCollectorTaskParameter.class);
-        PulsarCollectorAdapter adapter = generateAdapterInstance(adapterParameter);
-        return new PulsarCollectorTask(adapter, taskParameter);
+    public PulsarCollectorTask generateTaskInstance(TaskContext taskContext) {
+        PulsarCollectorTaskParameter taskParameter = JSONUtils.parseObject(taskContext.getTaskParameter(), PulsarCollectorTaskParameter.class);
+        PulsarCollectorAdapter adapter = generateAdapterInstance(taskContext.getAdapterParameter());
+        return new PulsarCollectorTask(adapter, taskParameter, taskContext.getAdapterId());
     }
 
     @Override

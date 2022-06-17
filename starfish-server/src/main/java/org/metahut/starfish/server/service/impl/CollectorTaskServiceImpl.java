@@ -212,7 +212,7 @@ public class CollectorTaskServiceImpl implements CollectorTaskService {
     @Override
     public void deleteById(Long id) {
         CollectorTaskResponseDTO instance = metaDataService.instance(id, CollectorTaskResponseDTO.class);
-        if(Objects.nonNull(instance.getAdapter())){
+        if (Objects.nonNull(instance.getAdapter())) {
             Assert.notNull(instance, Status.COLLECTOR_TASK_DELETE_ADAPTER_EXIST,instance.getAdapter().getName());
         }
         try {

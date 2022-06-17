@@ -18,6 +18,7 @@
 package org.metahut.starfish.ingestion.collector.hive;
 
 import org.metahut.starfish.ingestion.collector.api.CollectorResult;
+import org.metahut.starfish.ingestion.collector.api.TaskContext;
 
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.Disabled;
@@ -28,8 +29,10 @@ public class HiveCollectorTest {
 
     @Test
     public void testHiveCollectorTask() {
+        TaskContext taskContext = new TaskContext();
+        taskContext.setTaskParameter("");
         CollectorResult result = new HiveCollectorManager()
-                .generateTaskInstance("{\"hiveMetastoreUris\":\"thrift://172.21.100.219:9083,thrift://172.21.100.231:9083\"}", "{\"clusterName\":\"hive\"}")
+                .generateTaskInstance(taskContext)
                 .execute();
         Assertions.assertEquals(true, result.getState());
     }

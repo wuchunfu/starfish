@@ -21,7 +21,7 @@ public interface ICollectorManager {
 
     String getType();
 
-    ICollectorTask generateTaskInstance(String adapterParameter, String parameter);
+    ICollectorTask generateTaskInstance(TaskContext taskContext);
 
     AbstractCollectorParameter deserializeAdapterParameter(String parameter);
 

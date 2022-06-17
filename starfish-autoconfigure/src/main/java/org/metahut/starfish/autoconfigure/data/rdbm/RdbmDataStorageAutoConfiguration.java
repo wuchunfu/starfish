@@ -16,7 +16,6 @@ import org.metahut.starfish.store.rdbms.dao.NodeEntityMapper;
 import org.metahut.starfish.store.rdbms.dao.RelationEntityMapper;
 import org.metahut.starfish.store.rdbms.entity.NodeEntity;
 import org.metahut.starfish.store.rdbms.entity.NodeEntityProperty;
-import org.metahut.starfish.store.rdbms.entity.NodeEntity_;
 import org.metahut.starfish.store.rdbms.entity.RelationEntity;
 import org.metahut.starfish.unit.AbstractQueryCondition;
 import org.metahut.starfish.unit.enums.Category;

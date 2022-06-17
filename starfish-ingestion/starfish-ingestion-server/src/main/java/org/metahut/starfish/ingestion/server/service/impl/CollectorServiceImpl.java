@@ -19,6 +19,7 @@ package org.metahut.starfish.ingestion.server.service.impl;
 
 import org.metahut.starfish.ingestion.collector.api.CollectorResult;
 import org.metahut.starfish.ingestion.collector.api.ICollectorTask;
+import org.metahut.starfish.ingestion.collector.api.TaskContext;
 import org.metahut.starfish.ingestion.server.collector.CollectorPluginHelper;
 import org.metahut.starfish.ingestion.server.dto.CollectorExecuteRequestDTO;
 import org.metahut.starfish.ingestion.server.entity.CollectorTaskEntity;
@@ -62,7 +63,11 @@ public class CollectorServiceImpl implements CollectorService {
         CollectorTaskEntity instance = first.get();
         LOGGER.info("query collector task entity, result:{}", JSONUtils.toJSONString(instance));
 
-        ICollectorTask collector = collectorPluginHelper.generateTaskInstance(instance.getAdapter().getType(), instance.getAdapter().getParameter(), instance.getParameter());
+        TaskContext taskContext = new TaskContext();
+        taskContext.setAdapterId(instance.getAdapter().getId());
+        taskContext.setAdapterParameter(instance.getAdapter().getParameter());
+        taskContext.setTaskParameter(instance.getParameter());
+        ICollectorTask collector = collectorPluginHelper.generateTaskInstance(instance.getAdapter().getType(), taskContext);
         return collector.execute();
     }
 }

@@ -151,6 +151,13 @@
           "relType": "ENTITY",
           "array": true,
           "defaultValue": null
+        },
+        {
+          "name": "publishers",
+          "className": "org.starfish.PulsarPublisher",
+          "relType": "ENTITY",
+          "array": true,
+          "defaultValue": null
         }
       ]
     },
@@ -176,13 +183,6 @@
           "name": "backlogSize",
           "className": "java.lang.Long",
           "relType": "PRIMITIVE",
-          "array": false,
-          "defaultValue": null
-        },
-        {
-          "name": "namespace",
-          "className": "org.starfish.PulsarNamespace",
-          "relType": "ENTITY",
           "array": false,
           "defaultValue": null
         },

@@ -187,8 +187,7 @@ public class PulsarCollectorTest {
     @Test
     public void pulsarCollector() {
         CollectorResult result = new PulsarCollectorManager()
-            .generateTaskInstance("{\"serverUrl\":\"http://pulsar-idc-qa.zpidc.com:8080\"}",
-                "{\"clusterName\":\"pulsar\"}")
+            .generateTaskInstance(null)
             .execute();
         Assertions.assertEquals(true, result.getState());
     }
