@@ -24,7 +24,7 @@ public class PulsarSchemaResponseDTO {
     private String definition;
 
     @ApiModelProperty(value = "pulsar schema body")
-    private String schema;
+    private Object schema;
 
     @ApiModelProperty(value = "pulsar schema create time")
     private Date createTime;
@@ -64,11 +64,11 @@ public class PulsarSchemaResponseDTO {
         this.definition = definition;
     }
 
-    public String getSchema() {
+    public Object getSchema() {
         return schema;
     }
 
-    public void setSchema(String schema) {
+    public void setSchema(Object schema) {
         this.schema = schema;
     }
 
