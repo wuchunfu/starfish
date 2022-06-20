@@ -21,7 +21,7 @@ public class PulsarSchemaResponseDTO {
     private String type;
 
     @ApiModelProperty(value = "pulsar schema definition")
-    private String definition;
+    private Object definition;
 
     @ApiModelProperty(value = "pulsar schema body")
     private Object schema;
@@ -56,11 +56,11 @@ public class PulsarSchemaResponseDTO {
         this.type = type;
     }
 
-    public String getDefinition() {
+    public Object getDefinition() {
         return definition;
     }
 
-    public void setDefinition(String definition) {
+    public void setDefinition(Object definition) {
         this.definition = definition;
     }
 
