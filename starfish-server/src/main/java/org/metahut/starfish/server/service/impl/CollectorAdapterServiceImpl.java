@@ -65,7 +65,8 @@ public class CollectorAdapterServiceImpl implements CollectorAdapterService {
         CollectorResult collectorResult = this.testConnection(requestDTO.getType(), requestDTO.getParameter());
         Assert.notTrue(collectorResult.getState(), COLLECTOR_ADAPTER_TEST_CONNECTION_FAIL, collectorResult.getMessage());
         Map<String, Object> convert = conversionService.convert(requestDTO, Map.class);
-        Long entityId = metaDataService.createEntityByTypeName(COLLECTOR_ADAPTER_TYPE_NAME, EntityNameGentrator.generateName(COLLECTOR_ADAPTER_TYPE_NAME, requestDTO.getName()), convert);
+        String qualifiedName = EntityNameGentrator.generateName(COLLECTOR_ADAPTER_TYPE_NAME, requestDTO.getName());
+        Long entityId = metaDataService.createEntityByTypeName(COLLECTOR_ADAPTER_TYPE_NAME, qualifiedName, convert);
         CollectorAdapterResponseDTO collectorAdapterResponseDTO = new CollectorAdapterResponseDTO();
         collectorAdapterResponseDTO.setId(entityId);
         return collectorAdapterResponseDTO;

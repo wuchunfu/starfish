@@ -26,13 +26,25 @@ public class CollectorResult {
     public CollectorResult() {
     }
 
-    public CollectorResult(boolean state) {
+    private CollectorResult(boolean state) {
         this.state = state;
     }
 
-    public CollectorResult(boolean state, String message) {
+    private CollectorResult(boolean state, String message) {
         this.state = state;
         this.message = message;
+    }
+
+    public static CollectorResult success() {
+        return new CollectorResult(true);
+    }
+
+    public static CollectorResult error(String message) {
+        return new CollectorResult(false, message);
+    }
+
+    public static CollectorResult of(boolean state, String message) {
+        return new CollectorResult(state, message);
     }
 
     public boolean getState() {

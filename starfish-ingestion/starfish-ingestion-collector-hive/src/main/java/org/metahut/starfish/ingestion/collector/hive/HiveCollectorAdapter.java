@@ -45,7 +45,7 @@ public class HiveCollectorAdapter implements ICollectorAdapter {
 
     @Override
     public CollectorResult testConnection() {
-        return Objects.isNull(metaStoreClient) ? new CollectorResult(false, "hive meta store client is null") : new CollectorResult(true);
+        return Objects.isNull(metaStoreClient) ? CollectorResult.error("hive meta store client is null") : CollectorResult.success();
     }
 
     @Override

@@ -56,7 +56,7 @@ public class PulsarCollectorAdapter implements ICollectorAdapter {
             throw new CollectorException(e);
         }
 
-        return new CollectorResult(true);
+        return CollectorResult.success();
     }
 
     @Override

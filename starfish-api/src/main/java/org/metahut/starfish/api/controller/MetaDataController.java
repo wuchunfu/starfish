@@ -40,9 +40,7 @@ import org.springframework.web.multipart.MultipartFile;
 
 import java.util.List;
 
-/**
- *
- */
+@Deprecated
 @RequestMapping("metaData")
 public interface MetaDataController {
 

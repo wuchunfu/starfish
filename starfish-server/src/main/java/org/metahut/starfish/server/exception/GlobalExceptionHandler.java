@@ -19,6 +19,7 @@ package org.metahut.starfish.server.exception;
 
 import org.metahut.starfish.api.dto.ResultEntity;
 import org.metahut.starfish.api.exception.BusinessException;
+import org.metahut.starfish.ingestion.collector.api.CollectorException;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -42,9 +43,14 @@ public class GlobalExceptionHandler {
 
     @ExceptionHandler(value = BusinessException.class)
     public ResultEntity exceptionHandler(BusinessException exception) {
-        LOGGER.error(exception.getMessage(), exception);
-        String message = messageSource.getMessage(exception.getMessage(), exception.getArgs(), LocaleContextHolder.getLocale());
+        String message = toI18nMessage(exception, exception.getMessage(), exception.getArgs());
         return ResultEntity.of(exception.getCode(), message);
+    }
+
+    @ExceptionHandler(value = { CollectorException.class })
+    public ResultEntity exceptionHandler(RuntimeException exception) {
+        String message = toI18nMessage(exception, exception.getMessage());
+        return ResultEntity.of(UNKNOWN_EXCEPTION.getCode(), message);
     }
 
     /**
@@ -54,8 +60,17 @@ public class GlobalExceptionHandler {
      */
     @ExceptionHandler(value = Exception.class)
     public ResultEntity exceptionHandler(Exception exception) {
-        LOGGER.error(exception.getMessage(), exception);
-        String message = messageSource.getMessage(UNKNOWN_EXCEPTION.getMessage(), new Object[]{exception.getMessage()}, LocaleContextHolder.getLocale());
+        String message = toI18nMessage(exception, UNKNOWN_EXCEPTION.getMessage(), exception.getMessage());
         return ResultEntity.of(UNKNOWN_EXCEPTION.getCode(), message);
+    }
+
+    private String toI18nMessage(Throwable exception, String message, Object... args) {
+        try {
+            message = messageSource.getMessage(message, args, LocaleContextHolder.getLocale());
+        } catch (Throwable throwable) {
+            LOGGER.error(throwable.getMessage(), throwable);
+        }
+        LOGGER.error(message, exception);
+        return message;
     }
 }
