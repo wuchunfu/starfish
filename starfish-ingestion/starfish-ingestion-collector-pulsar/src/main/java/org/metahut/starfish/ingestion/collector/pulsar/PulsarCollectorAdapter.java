@@ -46,7 +46,7 @@ public class PulsarCollectorAdapter implements ICollectorAdapter {
     @Override
     public CollectorResult testConnection() {
         if (Objects.isNull(pulsarAdmin)) {
-            return new CollectorResult(false, "pulsar admin client is null");
+            return CollectorResult.error("pulsar admin client is null");
         }
 
         Clusters clusters = pulsarAdmin.clusters();
