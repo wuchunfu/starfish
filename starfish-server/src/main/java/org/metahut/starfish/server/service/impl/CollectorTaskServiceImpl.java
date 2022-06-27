@@ -262,7 +262,7 @@ public class CollectorTaskServiceImpl implements CollectorTaskService {
         if (StringUtils.isNotEmpty(requestDTO.getName())) {
             searchWord = requestDTO.getName();
         } else {
-            searchWord = Joiner.on("-").skipNulls().join(
+            searchWord = Joiner.on("_").skipNulls().join(
                 Stream.of(requestDTO.getType(), adapterName).collect(
                 Collectors.toList()));
         }
