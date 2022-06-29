@@ -26,7 +26,7 @@ public class CollectorResult {
     public CollectorResult() {
     }
 
-    private CollectorResult(boolean state) {
+    public CollectorResult(boolean state) {
         this.state = state;
     }
 
