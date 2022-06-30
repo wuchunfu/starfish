@@ -102,7 +102,14 @@ public class HiveDBQueryDTO extends PageRequestDTO {
         AbstractQueryCondition<HiveDBResponseDTO> condition = new AbstractQueryCondition<>();
         condition.setResultType(HiveDBResponseDTO.class);
         condition.setFilters(Arrays.asList(typePiece()));
+        condition.setEachPointers(eachPointerMap());
         return condition;
+    }
+    
+    private Map<String, EachPointer> eachPointerMap() {
+        Map<String, EachPointer> map = new HashMap<>();
+        map.put("cluster",new EachPointer(LinkCategory.RELATIONSHIP,RelationType.CHILD));
+        return map;
     }
 
     private ConditionPiece typePiece() {
