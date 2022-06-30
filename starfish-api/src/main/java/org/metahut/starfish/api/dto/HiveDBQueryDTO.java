@@ -5,6 +5,7 @@ import org.metahut.starfish.unit.AbstractQueryCondition;
 import org.metahut.starfish.unit.enums.LinkCategory;
 import org.metahut.starfish.unit.enums.TableType;
 import org.metahut.starfish.unit.expression.ConditionPiece;
+import org.metahut.starfish.unit.expression.EachPointer;
 import org.metahut.starfish.unit.expression.Expression;
 
 import io.swagger.annotations.ApiModelProperty;
