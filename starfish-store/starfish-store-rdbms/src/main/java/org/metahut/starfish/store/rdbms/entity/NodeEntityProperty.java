@@ -68,15 +68,4 @@ public class NodeEntityProperty extends AbstractEntityProperty<Long, Object, Nod
     @Column(name = "update_time")
     private Date updateTime;
 
-    @Override
-    public String toString() {
-        return "NodeEntityProperty("
-            + "id=" + id
-            + ",name=" + name
-            + ",value=" + value
-            + ",operator=" + operator
-            + ",createTime=" + createTime
-            + ",updateTime=" + updateTime
-            + ")";
-    }
 }
