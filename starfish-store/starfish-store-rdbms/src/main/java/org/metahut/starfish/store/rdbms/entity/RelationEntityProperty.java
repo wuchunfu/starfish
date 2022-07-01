@@ -68,15 +68,4 @@ public class RelationEntityProperty extends AbstractEntityProperty<Long, Object,
     @Column(name = "update_time")
     private Date updateTime;
 
-    @Override
-    public String toString() {
-        return "RelationEntityProperty("
-            + "id=" + id
-            + ",name=" + name
-            + ",value=" + value
-            + ",operator=" + operator
-            + ",createTime=" + createTime
-            + ",updateTime=" + updateTime
-            + ")";
-    }
 }
