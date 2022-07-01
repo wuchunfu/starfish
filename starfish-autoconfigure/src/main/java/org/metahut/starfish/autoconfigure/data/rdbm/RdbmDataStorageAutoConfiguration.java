@@ -43,6 +43,7 @@ import org.metahut.starfish.unit.expression.TrueExpression;
 import com.fasterxml.jackson.databind.DeserializationFeature;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import org.apache.commons.lang3.StringUtils;
+import org.hibernate.Session;
 import org.hibernate.cache.jcache.ConfigSettings;
 import org.springframework.boot.autoconfigure.AutoConfigureAfter;
 import org.springframework.boot.autoconfigure.condition.ConditionalOnBean;
@@ -60,6 +61,7 @@ import org.springframework.data.jpa.domain.Specification;
 import org.springframework.data.jpa.repository.config.EnableJpaAuditing;
 import org.springframework.orm.jpa.support.OpenEntityManagerInViewFilter;
 
+import javax.persistence.EntityManager;
 import javax.persistence.criteria.CriteriaBuilder;
 import javax.persistence.criteria.CriteriaQuery;
 import javax.persistence.criteria.From;
@@ -88,27 +90,27 @@ import java.util.stream.Collectors;
 @AutoConfigureAfter({DataSourceAutoConfiguration.class})
 public class RdbmDataStorageAutoConfiguration {
 
-    private <T> T convert(NodeEntity nodeEntity,java.lang.Class<T> classInfo,Map<String,EachPointer> eachPointers) {
+    private <T> T convert(NodeEntity nodeEntity,java.lang.Class<T> classInfo,Map<String,EachPointer> eachPointers,Session session) {
         ObjectMapper objectMapper = new ObjectMapper();
         objectMapper.configure(DeserializationFeature.FAIL_ON_UNKNOWN_PROPERTIES,false);
         objectMapper.configure(DeserializationFeature.ACCEPT_SINGLE_VALUE_AS_ARRAY,true);
         objectMapper.configure(DeserializationFeature.UNWRAP_SINGLE_VALUE_ARRAYS,true);
-        Map<String,Object> result = forEach(nodeEntity,eachPointers);
+        Map<String,Object> result = forEach(nodeEntity,eachPointers,session);
         return objectMapper.convertValue(result,classInfo);
     }
 
-    private Map<String,Object> forEach(NodeEntity nodeEntity,Map<String,EachPointer> eachPointers) {
+    private Map<String,Object> forEach(NodeEntity nodeEntity,Map<String,EachPointer> eachPointers,Session session) {
         Map<String,Object> resultMap = toMap(nodeEntity);
         if (eachPointers != null) {
             for (Map.Entry<String, EachPointer> entry : eachPointers.entrySet()) {
-                forEach(resultMap,nodeEntity,entry);
+                forEach(resultMap,nodeEntity,entry,session);
             }
         }
         return resultMap;
     }
 
     //TODO how to know children or child  without query typeInfo or other support
-    private void forEach(Map<String,Object> map,NodeEntity nodeEntity,Map.Entry<String, EachPointer> eachPointerEntry) {
+    private void forEach(Map<String,Object> map, NodeEntity nodeEntity, Map.Entry<String, EachPointer> eachPointerEntry, Session session) {
         List<Map<String,Object>> container = new ArrayList<>();
         EachPointer eachPointer = eachPointerEntry.getValue();
         if (eachPointer != null) {
@@ -116,24 +118,32 @@ public class RdbmDataStorageAutoConfiguration {
                 List<RelationEntity> relations;
                 switch (eachPointer.getRelationType()) {
                     case PARENT:
+                        session.enableFilter(Expression.FILTER_NAME)
+                            .setParameter(Expression.NAME,eachPointerEntry.getKey())
+                            .setParameter(Expression.CATEGORY,eachPointer.getCategory().name());
                         relations = nodeEntity.getParent();
+                        session.disableFilter(Expression.FILTER_NAME);
                         if (relations != null) {
                             for (RelationEntity relation : relations) {
                                 NodeEntity startNodeEntity = relation.getStartNodeEntity();
                                 if (startNodeEntity != null && valid(relation,eachPointerEntry.getKey(),eachPointer.getCategory())) {
-                                    Map<String, Object> next = forEach(startNodeEntity,eachPointer.getEachPointers());
+                                    Map<String, Object> next = forEach(startNodeEntity,eachPointer.getEachPointers(),session);
                                     container.add(next);
                                 }
                             }
                         }
                         break;
                     case CHILD:
+                        session.enableFilter(Expression.FILTER_NAME)
+                            .setParameter(Expression.NAME,eachPointerEntry.getKey())
+                            .setParameter(Expression.CATEGORY,eachPointer.getCategory().name());
                         relations = nodeEntity.getChildren();
+                        session.disableFilter(Expression.FILTER_NAME);
                         if (relations != null) {
                             for (RelationEntity relation : relations) {
                                 NodeEntity endNodeEntity = relation.getEndNodeEntity();
                                 if (endNodeEntity != null && valid(relation,eachPointerEntry.getKey(),eachPointer.getCategory())) {
-                                    Map<String, Object> next = forEach(endNodeEntity,eachPointer.getEachPointers());
+                                    Map<String, Object> next = forEach(endNodeEntity,eachPointer.getEachPointers(),session);
                                     container.add(next);
                                 }
                             }
@@ -146,7 +156,11 @@ public class RdbmDataStorageAutoConfiguration {
             }
         }
         if (!container.isEmpty()) {
-            map.put(eachPointerEntry.getKey(),container);
+            if (StringUtils.isNotEmpty(eachPointer.getReName())) {
+                map.put(eachPointer.getReName(),container);
+            } else {
+                map.put(eachPointerEntry.getKey(),container);
+            }
         }
     }
 
@@ -174,16 +188,16 @@ public class RdbmDataStorageAutoConfiguration {
         return map;
     }
 
-    private <T> Collection<T> convert(Collection<NodeEntity> nodeEntities,java.lang.Class<T> classInfo,Map<String,EachPointer> eachPointers) {
+    private <T> Collection<T> convert(Collection<NodeEntity> nodeEntities,java.lang.Class<T> classInfo,Map<String,EachPointer> eachPointers,Session session) {
         return nodeEntities
                 .stream()
-                .map(nodeEntity -> convert(nodeEntity,classInfo,eachPointers))
+                .map(nodeEntity -> convert(nodeEntity,classInfo,eachPointers,session))
                 .collect(Collectors.toCollection(ArrayList::new));
     }
 
-    private <T> Page<T> convert(Page<NodeEntity> pageResult,java.lang.Class<T> classInfo,Map<String,EachPointer> eachPointers) {
+    private <T> Page<T> convert(Page<NodeEntity> pageResult,java.lang.Class<T> classInfo,Map<String,EachPointer> eachPointers,Session session) {
         return new PageImpl<>(pageResult.get()
-                .map(nodeEntity -> convert(nodeEntity,classInfo,eachPointers))
+                .map(nodeEntity -> convert(nodeEntity,classInfo,eachPointers,session))
                 .collect(Collectors.toCollection(ArrayList::new)),pageResult.getPageable(),pageResult.getTotalElements());
     }
 
@@ -578,7 +592,7 @@ public class RdbmDataStorageAutoConfiguration {
 
     @Bean
     @ConditionalOnMissingBean(AbstractSourceService.class)
-    public AbstractSourceService<Long,Object> typeInstanceBridgeService(final NodeEntityMapper nodeEntityMapper) {
+    public AbstractSourceService<Long,Object> typeInstanceBridgeService(final NodeEntityMapper nodeEntityMapper, final EntityManager entityManager) {
         return new AbstractSourceService<Long,Object>() {
             @Override
             public Long create(String name, Map<String,Object> properties) {
@@ -608,24 +622,27 @@ public class RdbmDataStorageAutoConfiguration {
 
             @Override
             public <U> U source(Long sourceId, java.lang.Class<U> returnType) {
-                return convert(nodeEntityMapper.findById(sourceId),returnType,null);
+                Session session = entityManager.unwrap(Session.class);
+                return convert(nodeEntityMapper.findById(sourceId),returnType,null,session);
             }
 
             @Override
             public <T> Collection<T> query(AbstractQueryCondition<T> condition) {
-                return convert(nodeEntityMapper.findByCategory(TypeCategory.SOURCE.name()),condition.getResultType(),condition.getEachPointers());
+                Session session = entityManager.unwrap(Session.class);
+                return convert(nodeEntityMapper.findByCategory(TypeCategory.SOURCE.name()),condition.getResultType(),condition.getEachPointers(),session);
             }
 
             @Override
             public <T> Page<T> query(AbstractQueryCondition<T> condition, Pageable pageable) {
-                return convert(nodeEntityMapper.findByCategory(TypeCategory.SOURCE.name(),pageable),condition.getResultType(),condition.getEachPointers());
+                Session session = entityManager.unwrap(Session.class);
+                return convert(nodeEntityMapper.findByCategory(TypeCategory.SOURCE.name(),pageable),condition.getResultType(),condition.getEachPointers(),session);
             }
         };
     }
 
     @Bean
     @ConditionalOnMissingBean(AbstractTypeService.class)
-    public AbstractTypeService<Long,Object> typeService(final NodeEntityMapper nodeEntityMapper,final RelationEntityMapper relationEntityMapper) {
+    public AbstractTypeService<Long,Object> typeService(final NodeEntityMapper nodeEntityMapper,final RelationEntityMapper relationEntityMapper,final EntityManager entityManager) {
         return new AbstractTypeService<Long,Object>() {
 
             private void addClassInfo(NodeEntity nodeEntity,Class classInfo) {
@@ -641,12 +658,14 @@ public class RdbmDataStorageAutoConfiguration {
 
             @Override
             public <T> Collection<T> query(AbstractQueryCondition<T> condition) {
-                return convert(nodeEntityMapper.findByCategory(TypeCategory.CLASSIFICATION.name()), condition.getResultType(),condition.getEachPointers());
+                Session session = entityManager.unwrap(Session.class);
+                return convert(nodeEntityMapper.findByCategory(TypeCategory.CLASSIFICATION.name()), condition.getResultType(),condition.getEachPointers(),session);
             }
 
             @Override
             public <T> Page<T> query(AbstractQueryCondition<T> condition, Pageable pageable) {
-                return convert(nodeEntityMapper.findByCategory(TypeCategory.CLASSIFICATION.name(),pageable), condition.getResultType(),condition.getEachPointers());
+                Session session = entityManager.unwrap(Session.class);
+                return convert(nodeEntityMapper.findByCategory(TypeCategory.CLASSIFICATION.name(),pageable), condition.getResultType(),condition.getEachPointers(),session);
             }
 
             @Override
@@ -723,7 +742,7 @@ public class RdbmDataStorageAutoConfiguration {
 
     @Bean
     @ConditionalOnMissingBean(AbstractNodeService.class)
-    public AbstractNodeService<Long,Object> nodeService(final NodeEntityMapper nodeEntityMapper) {
+    public AbstractNodeService<Long,Object> nodeService(final NodeEntityMapper nodeEntityMapper,final EntityManager entityManager) {
         return new AbstractNodeService<Long, Object>() {
             @Override
             public Long create(String name, Map<String, Object> properties) throws AbstractMetaParserException {
@@ -747,38 +766,44 @@ public class RdbmDataStorageAutoConfiguration {
 
             @Override
             public <U> U node(Long nodeId, java.lang.Class<U> returnType) throws AbstractMetaParserException {
-                return convert(nodeEntityMapper.findById(nodeId),returnType,null);
+                Session session = entityManager.unwrap(Session.class);
+                return convert(nodeEntityMapper.findById(nodeId),returnType,null,session);
             }
 
             @Override
             public <U> Collection<U> nodes(Collection<Long> nodeIds, java.lang.Class<U> returnType) throws AbstractMetaParserException {
+                Session session = entityManager.unwrap(Session.class);
                 List<NodeEntity> nodeEntities = nodeEntityMapper.findAllById(nodeIds);
-                return convert(nodeEntities,returnType,null);
+                return convert(nodeEntities,returnType,null,session);
             }
 
             @Override
             public <U> Page<U> nodes(Collection<Long> nodeIds, Pageable page, java.lang.Class<U> returnType) throws AbstractMetaParserException {
+                Session session = entityManager.unwrap(Session.class);
                 Page<NodeEntity> pageResult = nodeEntityMapper.findAllById(nodeIds, page);
-                return convert(pageResult,returnType,null);
+                return convert(pageResult,returnType,null,session);
             }
 
             @Override
             public <U> Collection<U> query(AbstractQueryCondition<U> condition) {
+                Session session = entityManager.unwrap(Session.class);
                 Specification<NodeEntity> specification = convertEntity(condition.getFilters());
                 List<NodeEntity> all = nodeEntityMapper.findAll(specification);
-                return convert(all,condition.getResultType(),condition.getEachPointers());
+                return convert(all,condition.getResultType(),condition.getEachPointers(),session);
             }
 
             @Override
             public <T> Page<T> query(AbstractQueryCondition<T> condition, Pageable pageable) {
-                return convert(nodeEntityMapper.findByCategory(TypeCategory.ENTITY.name(),pageable),condition.getResultType(),condition.getEachPointers());
+                Session session = entityManager.unwrap(Session.class);
+                return convert(nodeEntityMapper.findByCategory(TypeCategory.ENTITY.name(),pageable),condition.getResultType(),condition.getEachPointers(),session);
             }
         };
     }
 
     @Bean
     @ConditionalOnMissingBean(AbstractGraphService.class)
-    public AbstractGraphService<Long,Object> graphService(NodeEntityMapper nodeEntityMapper, AbstractNodeService<Long,Object> nodeService, AbstractRelationService<Long,Object> relationService) {
+    public AbstractGraphService<Long,Object> graphService(NodeEntityMapper nodeEntityMapper, AbstractNodeService<Long,Object> nodeService,
+                                                          AbstractRelationService<Long,Object> relationService,final EntityManager entityManager) {
         return new AbstractGraphService<Long, Object>() {
             @Override
             protected AbstractNodeService<Long, Object> nodeService() {
@@ -802,16 +827,18 @@ public class RdbmDataStorageAutoConfiguration {
 
             @Override
             public <U> Collection<U> query(AbstractQueryCondition<U> condition) {
+                Session session = entityManager.unwrap(Session.class);
                 Specification<NodeEntity> specification = convertEntity(condition.getFilters());
                 List<NodeEntity> all = nodeEntityMapper.findAll(specification);
-                return convert(all,condition.getResultType(),condition.getEachPointers());
+                return convert(all,condition.getResultType(),condition.getEachPointers(),session);
             }
 
             @Override
             public <T> Page<T> query(AbstractQueryCondition<T> condition, Pageable pageable) {
+                Session session = entityManager.unwrap(Session.class);
                 Specification<NodeEntity> specification = convertEntity(condition.getFilters());
                 Page<NodeEntity> all = nodeEntityMapper.findAll(specification,pageable);
-                return convert(all,condition.getResultType(),condition.getEachPointers());
+                return convert(all,condition.getResultType(),condition.getEachPointers(),session);
             }
         };
     }

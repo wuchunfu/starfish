@@ -110,7 +110,7 @@ public class HiveDBQueryDTO extends PageRequestDTO {
     
     private Map<String, EachPointer> eachPointerMap() {
         Map<String, EachPointer> map = new HashMap<>();
-        map.put("cluster",new EachPointer(LinkCategory.RELATIONSHIP,RelationType.CHILD));
+        map.put("dbs",new EachPointer(LinkCategory.RELATIONSHIP, RelationType.PARENT,"cluster"));
         return map;
     }
 

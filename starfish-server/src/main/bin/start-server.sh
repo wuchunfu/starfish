@@ -16,6 +16,10 @@
 # See the License for the specific language governing permissions and
 # limitations under the License.
 #
+PID=`lsof -i :8801 |grep java |awk '{print $2}'`
+if [ $PID ]; then
+	kill -9 $PID
+fi
 
 BIN_DIR=$(dirname $0)
 STARFISH_HOME=${STARFISH_HOME:-$(cd $BIN_DIR/..; pwd)}

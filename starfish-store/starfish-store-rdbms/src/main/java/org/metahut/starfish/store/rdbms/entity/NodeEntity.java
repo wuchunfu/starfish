@@ -7,6 +7,9 @@ import lombok.Getter;
 import lombok.Setter;
 import org.hibernate.annotations.Cache;
 import org.hibernate.annotations.CacheConcurrencyStrategy;
+import org.hibernate.annotations.Filter;
+import org.hibernate.annotations.FilterDef;
+import org.hibernate.annotations.ParamDef;
 import org.springframework.data.annotation.CreatedDate;
 import org.springframework.data.annotation.LastModifiedDate;
 import org.springframework.data.jpa.domain.support.AuditingEntityListener;
@@ -38,7 +41,11 @@ import java.util.Set;
 @Cacheable
 @Cache(usage = CacheConcurrencyStrategy.READ_WRITE)
 @EntityListeners(AuditingEntityListener.class)
-public class NodeEntity extends AbstractNodeEntity<Long, NodeEntityProperty,NodeEntity, RelationEntity> {
+@FilterDef(name = "relationFilter", parameters = {
+    @ParamDef(name = "name", type = "string"),
+    @ParamDef(name = "category", type = "string")
+})
+public class NodeEntity extends AbstractNodeEntity<Long, NodeEntityProperty, NodeEntity, RelationEntity> {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -50,7 +57,7 @@ public class NodeEntity extends AbstractNodeEntity<Long, NodeEntityProperty,Node
     @Column(name = "category", nullable = false)
     private String category;
 
-    @OneToMany(targetEntity = NodeEntityProperty.class, fetch = FetchType.EAGER, cascade = CascadeType.ALL, orphanRemoval = true)
+    @OneToMany(targetEntity = NodeEntityProperty.class, fetch = FetchType.LAZY, cascade = CascadeType.ALL, orphanRemoval = true)
     @JoinColumn(name = "entity_id", foreignKey = @ForeignKey(ConstraintMode.NO_CONSTRAINT))
     private Set<NodeEntityProperty> properties;
 
@@ -66,11 +73,19 @@ public class NodeEntity extends AbstractNodeEntity<Long, NodeEntityProperty,Node
     private Date updateTime;
 
     @OneToMany(fetch = FetchType.LAZY)
-    @JoinColumn(name = "start_node_entity_id", foreignKey = @ForeignKey(ConstraintMode.NO_CONSTRAINT),insertable = false,updatable = false)
+    @JoinColumn(name = "start_node_entity_id", foreignKey = @ForeignKey(ConstraintMode.NO_CONSTRAINT), insertable = false, updatable = false)
+    @Filter(
+        name = "relationFilter",
+        condition = "name = :name and category = :category"
+    )
     private List<RelationEntity> children;
 
     @OneToMany(fetch = FetchType.LAZY)
-    @JoinColumn(name = "end_node_entity_id", foreignKey = @ForeignKey(ConstraintMode.NO_CONSTRAINT),insertable = false,updatable = false)
+    @JoinColumn(name = "end_node_entity_id", foreignKey = @ForeignKey(ConstraintMode.NO_CONSTRAINT), insertable = false, updatable = false)
+    @Filter(
+        name = "relationFilter",
+        condition = "name = :name and category = :category"
+    )
     private List<RelationEntity> parent;
 
     @Override

@@ -9,6 +9,8 @@ import java.util.List;
 
 public interface Expression {
 
+    String FILTER_NAME = "relationFilter";
+
     String CATEGORY = "category";
 
     String QUALIFIED_NAME = "qualifiedName";

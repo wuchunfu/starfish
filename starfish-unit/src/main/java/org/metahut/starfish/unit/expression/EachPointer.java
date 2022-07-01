@@ -11,6 +11,8 @@ import java.util.Map;
  */
 public class EachPointer {
 
+    private String reName;
+
     private Category category;
 
     private RelationType relationType;
@@ -41,6 +43,12 @@ public class EachPointer {
         this.eachPointers = eachPointers;
     }
 
+    public EachPointer(Category category, RelationType relationType,String reName) {
+        this.reName = reName;
+        this.category = category;
+        this.relationType = relationType;
+    }
+
     public EachPointer() {
     }
 
@@ -51,5 +59,13 @@ public class EachPointer {
 
     public void addPointerChain(String property,EachPointer pointer) {
         this.eachPointers.put(property,pointer);
+    }
+
+    public String getReName() {
+        return reName;
+    }
+
+    public void setReName(String reName) {
+        this.reName = reName;
     }
 }
