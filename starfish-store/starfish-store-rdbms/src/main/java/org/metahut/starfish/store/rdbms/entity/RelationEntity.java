@@ -2,19 +2,18 @@ package org.metahut.starfish.store.rdbms.entity;
 
 import org.metahut.starfish.store.model.AbstractRelationEntity;
 
-import com.google.common.base.Joiner;
 import lombok.Getter;
 import lombok.Setter;
 import org.hibernate.annotations.Cache;
 import org.hibernate.annotations.CacheConcurrencyStrategy;
 import org.hibernate.annotations.NotFound;
 import org.hibernate.annotations.NotFoundAction;
+import org.springframework.context.annotation.Lazy;
 import org.springframework.data.annotation.CreatedDate;
 import org.springframework.data.annotation.LastModifiedDate;
 import org.springframework.data.jpa.domain.support.AuditingEntityListener;
 
 import javax.persistence.Cacheable;
-import javax.persistence.CascadeType;
 import javax.persistence.Column;
 import javax.persistence.ConstraintMode;
 import javax.persistence.Entity;
@@ -53,8 +52,9 @@ public class RelationEntity extends
     @Column(name = "category")
     private String category;
 
-    @OneToMany(targetEntity = RelationEntityProperty.class, fetch = FetchType.EAGER, cascade = CascadeType.ALL, orphanRemoval = true)
+    @OneToMany(targetEntity = RelationEntityProperty.class, fetch = FetchType.LAZY, orphanRemoval = true)
     @JoinColumn(name = "entity_id", foreignKey = @ForeignKey(ConstraintMode.NO_CONSTRAINT))
+    @Lazy
     private Set<RelationEntityProperty> properties;
 
     @NotFound(action = NotFoundAction.IGNORE)
@@ -86,20 +86,5 @@ public class RelationEntity extends
     @Override
     public void setKeyedProperties(Map<String, RelationEntityProperty> properties) {
 
-    }
-
-    @Override
-    public String toString() {
-        return "RelationEntity("
-            + "id=" + id
-            + ",name=" + name
-            + ",category=" + category
-            + ",properties=" + Joiner.on(",").join(properties)
-            + ",startNodeEntity=" + startNodeEntity.toString()
-            + ",endNodeEntity=" + startNodeEntity.toString()
-            + ",operator=" + operator
-            + ",createTime=" + createTime
-            + ",updateTime=" + updateTime
-            + ")";
     }
 }
