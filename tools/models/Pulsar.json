@@ -16,6 +16,13 @@
           "defaultValue": null
         },
         {
+          "name":"type",
+          "className":"java.lang.String",
+          "relType":"PRIMITIVE",
+          "array":false,
+          "defaultValue":null
+        },
+        {
           "name": "serviceUrl",
           "className": "java.lang.String",
           "relType": "PRIMITIVE",

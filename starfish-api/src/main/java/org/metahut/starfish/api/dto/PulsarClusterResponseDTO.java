@@ -18,6 +18,9 @@ public class PulsarClusterResponseDTO {
     @ApiModelProperty(value = "pulsar cluster name")
     private String name;
 
+    @ApiModelProperty(value = "pulsar cluster type")
+    private String type;
+
     @ApiModelProperty(value = "pulsar cluster service url")
     private String serviceUrl;
 
@@ -50,6 +53,14 @@ public class PulsarClusterResponseDTO {
 
     public void setName(String name) {
         this.name = name;
+    }
+
+    public String getType() {
+        return type;
+    }
+
+    public void setType(String type) {
+        this.type = type;
     }
 
     public String getServiceUrl() {
